@@ -8,14 +8,15 @@ import (
 	"net/http"
 	"fmt"
 	"strings"
+	"bytes"
 )
 
 type Page struct {
 	Css, Ico, IcoType, Title, PageName, Menu, Source, Js string
 }
 
-func runit() map[string]func(string){
-	return map[string]func(string){
+func runit() map[string]func(http.ResponseWriter,string){
+	return map[string]func(http.ResponseWriter,string){
 		"": controller,
 		"t": home,
 	}
@@ -23,6 +24,7 @@ func runit() map[string]func(string){
 
 func main() {
 	http.HandleFunc("/", server())
+	//FEATURE add setting to change the port number
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -50,7 +52,7 @@ fmt.Print("\nURL.Path=\t"+r.URL.Path)
 		fmt.Print("\nTempUrl=\t"+tempUrl)
 		model_func, ok := runit()[tempUrl];
 		if ok {
-			model_func("hardcoded value")
+			model_func(w, "hardcoded value")
 		}else{
 			//TODO return a 404 page and display any similar pages from the DB
 			redirectHandler("404", tempUrl)
@@ -60,13 +62,13 @@ fmt.Print("\nURL.Path=\t"+r.URL.Path)
 }
 
 
-func controller(input string){
+func controller(w http.ResponseWriter, input string){
 	renderThese := settingsPage()
 	outputHtml := ""
 	for _, temp2 := range renderThese{
 //		generateViews(pane(), temp2())
 //		renderTemplate(w http.ResponseWriter, pane(), temp2())
-		generator2(pane(), temp2())
+		outputHtml += generator2(pane(), temp2())
 //		outputHtml += pane(temp2, title())
 	}
 
@@ -77,15 +79,16 @@ func controller(input string){
 		Title: "Title",
 		PageName: "PageName",
 		Menu: "Menu",
-		Source: "Source",
+		Source: outputHtml,
 		Js: "Js",
 	}
-	generator3(page(), pageSize)
+	generator3(w, page(), pageSize)
 	fmt.Print(outputHtml)
 //	letter := htmltemp()
 //	recipients := settingsPage()
 //	generater(letter, recipients )
 }
+
 func settingsPage() map[string]func()View{
 	return map[string]func()View{
 		"date": date,
@@ -100,35 +103,37 @@ func generateViews(letter string, recipients View){
 		log.Println("executing template:", err)
 	}
 }
-//func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
-//	err := templates.ExecuteTemplate(w, tmpl+".html", p)
-//	if err != nil {
-//		http.Error(w, err.Error(), http.StatusInternalServerError)
-//	}
-//}
 
 
 
 
 
-func home(input string){
+func home(w http.ResponseWriter, input string){
 	fmt.Print("inside home= "+input)
 }
-func generator3(letter string, recipients Page){
-	t := template.Must(template.New("letter").Parse(letter))
-	err := t.Execute(os.Stdout, recipients)
+func generator3(w http.ResponseWriter, letter string, recipients Page)string{
+	myhtml := template.New("letter").Funcs(template.FuncMap {
+		"XTC": func(x string) template.HTML {
+			return template.HTML(x)
+		},
+	})
+	t := template.Must(myhtml.Parse(letter))
+//	t := template.New("letter").Parse(letter)
+	err := t.Execute(w, recipients)
 	if err != nil {
 		log.Println("executing template:", err)
 	}
+	return "output?"
 }
-func generator2(letter string, recipients View){
+func generator2(letter string, recipients View)string{
 	t := template.Must(template.New("letter").Parse(letter))
-//	for _, r := range recipients {
-		err := t.Execute(os.Stdout, recipients)
-		if err != nil {
-			log.Println("executing template:", err)
-		}
-//	}
+	var doc bytes.Buffer
+	err := t.Execute(&doc, recipients)
+	output := doc.String()
+	if err != nil {
+		log.Println("executing template:", err)
+	}
+	return output
 }
 func generator(letter string, recipients []Page){
 	t := template.Must(template.New("letter").Parse(letter))
@@ -185,13 +190,15 @@ return `<!doctype html>
 </head>
 <body>
 	<div id=topBar>
-		<h1>{{.PageName}}</h1> {{.Menu}}
+		<h1>{{XTC .PageName}}</h1> {{XTC .Menu}}
 	</div>
-	{{printf "%s" .Source}}
+	{{XTC .Source}}
 	{{if .Js}}<script src={{.Js}}></script>{{end}}
 </body>
 </html>`
 }
+//{{printf "%s" .Source}}
+
 //Panes display a large heading with content in the trailing div
 //and sections follow with sub headings as <h3> tags
 //func pane(title, source string)string{
@@ -204,8 +211,9 @@ func pane()string{
 //`
 return `<h2>{{.Title}}</h2>
 <div>
-	{{printf "%s" .Source}}
+	{{XTC .Source}}
 </div>`
+//	{{printf "%s" .Source}}
 }
 
 //Sections MUST follow below sections
@@ -218,7 +226,7 @@ func section()string{
 //`
 return `<div>
 	<h3>{{.Title}}</h3>
-	{{printf "%s" .Source}}
+	{{XTC .Source}}
 </div>`
 }
 
