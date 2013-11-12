@@ -9,55 +9,41 @@ import (
 	"bytes"
 )
 //SETTINGS
-const port string = ":8080"//FEATURE add setting to change the port number
+const port string = ":80"//FEATURE add setting to change the port number
 
-func router() map[string]func(http.ResponseWriter,string){
-	return map[string]func(http.ResponseWriter,string){
+func router() map[string]func(http.ResponseWriter){
+	return map[string]func(http.ResponseWriter){
 		"": controller,
 		"t": home,
 	}
 }
 
 func main() {
-	http.HandleFunc("/", server())
+	http.HandleFunc("/", server)
 	http.ListenAndServe(port, nil)
 }
 
-func redirectHandler(path string) func(http.ResponseWriter, *http.Request) {
-	fmt.Print("\nRedirect user to lowercase path instead\n")
-	return func (w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, path, http.StatusMovedPermanently)
-	}
-}
-
 //Server() handles http requests. It checks the requested page exists, before passing the request to controller()
-func server() http.HandlerFunc{
-	return func(w http.ResponseWriter, r *http.Request) {
-		fmt.Print("\nRequestURI=\t"+r.RequestURI)//r.URL.Path
-		//TODO ability to handle /favicon.ico
-		//research returning .htm files within directories
-		tempUrl := strings.ToLower(r.URL.Path)
-		if tempUrl != r.URL.Path {
-			redirectHandler(tempUrl)
-		}
-		tempUrl = strings.Trim(tempUrl, "/")
-		fmt.Print("\nTempUrl=\t"+tempUrl)
-		model_func, ok := router()[tempUrl];
-		if ok {
-			model_func(w, "hardcoded value")
-		}else{
-			//TODO return a 404 page and display any similar pages from the DB
-			redirectHandler("404")
-		}
+func server(w http.ResponseWriter, r *http.Request){
+	fmt.Print("\nRequestURI=\t"+r.RequestURI)//r.URL.Path
+	//TODO ability to handle /favicon.ico
+	//research returning .htm files within directories
+	tempUrl := strings.Trim(strings.ToLower(r.URL.Path), "/")
+	fmt.Print("\ntempUrl=\t"+tempUrl)
+	if "/"+tempUrl != r.URL.Path {
+		http.Redirect(w,r,"http://localhost/"+tempUrl, 301)//research would like to use 308 Permanent Redirect but GO makes it 301 instead
+	}
+	if model_func, ok := router()[tempUrl]; ok {
+		model_func(w)
+	}else{
+		//TODO return a 404 page and display any similar pages from the DB
 	}
 }
 
-func controller(w http.ResponseWriter, input string){
+func controller(w http.ResponseWriter){
 	renderThese := settingsPage()
 	outputHtml := ""
 	for _, temp2 := range renderThese{
-		//		generateViews(pane(), temp2())
-		//		renderTemplate(w http.ResponseWriter, pane(), temp2())
 		outputHtml += generator2(pane(), temp2())
 	}
 	pageSize := map[string]string{
@@ -81,8 +67,8 @@ func settingsPage() map[string]func() map[string]string{
 	}
 }
 
-func home(w http.ResponseWriter, input string){
-	fmt.Print("inside home= "+input)
+func home(w http.ResponseWriter){
+	fmt.Print("inside home= "+"input")
 }
 func generator3(w http.ResponseWriter, letter string, recipients  map[string]string){
 	myhtml := template.New("letter").Funcs(template.FuncMap {
@@ -149,9 +135,7 @@ func page()string{
 </html>`
 }
 
-//Panes display a large heading with content in the trailing div
-//and sections follow with sub headings as <h3> tags
-//func pane(title, source string)string{
+//Panes display a large heading with content in the trailing div and sections follow with sub headings as <h3> tags
 func pane()string{
 	return `<h2>{{.Title}}</h2>
 <div>
@@ -160,7 +144,6 @@ func pane()string{
 }
 
 //Sections MUST follow below sections
-//func section(title, source string)string{
 func section()string{
 	return `<div>
 	<h3>{{.Title}}</h3>
