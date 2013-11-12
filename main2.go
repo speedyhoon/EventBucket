@@ -2,20 +2,16 @@ package main
 
 import (
 	"log"
-	"os"
-	//	"text/template"
-	"html/template"
+	"html/template"//"text/template"
 	"net/http"
 	"fmt"
 	"strings"
 	"bytes"
 )
+//SETTINGS
+const port string = ":8080"//FEATURE add setting to change the port number
 
-//type Page struct {
-//	Css, Ico, IcoType, Title, PageName, Menu, Source, Js string
-//}
-
-func runit() map[string]func(http.ResponseWriter,string){
+func router() map[string]func(http.ResponseWriter,string){
 	return map[string]func(http.ResponseWriter,string){
 		"": controller,
 		"t": home,
@@ -24,8 +20,7 @@ func runit() map[string]func(http.ResponseWriter,string){
 
 func main() {
 	http.HandleFunc("/", server())
-	//FEATURE add setting to change the port number
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(port, nil)
 }
 
 func redirectHandler(path string) func(http.ResponseWriter, *http.Request) {
@@ -35,13 +30,10 @@ func redirectHandler(path string) func(http.ResponseWriter, *http.Request) {
 	}
 }
 
-//Server() handles http requests. It checks the requested page exists,
-//before passing the request to controller()
-//func server(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
+//Server() handles http requests. It checks the requested page exists, before passing the request to controller()
 func server() http.HandlerFunc{
 	return func(w http.ResponseWriter, r *http.Request) {
-		fmt.Print("\nRequestURI=\t"+r.RequestURI)
-		fmt.Print("\nURL.Path=\t"+r.URL.Path)
+		fmt.Print("\nRequestURI=\t"+r.RequestURI)//r.URL.Path
 		//TODO ability to handle /favicon.ico
 		//research returning .htm files within directories
 		tempUrl := strings.ToLower(r.URL.Path)
@@ -50,16 +42,15 @@ func server() http.HandlerFunc{
 		}
 		tempUrl = strings.Trim(tempUrl, "/")
 		fmt.Print("\nTempUrl=\t"+tempUrl)
-		model_func, ok := runit()[tempUrl];
+		model_func, ok := router()[tempUrl];
 		if ok {
 			model_func(w, "hardcoded value")
 		}else{
 			//TODO return a 404 page and display any similar pages from the DB
-			redirectHandler("404")//tempUrl
+			redirectHandler("404")
 		}
 	}
 }
-
 
 func controller(w http.ResponseWriter, input string){
 	renderThese := settingsPage()
@@ -69,7 +60,6 @@ func controller(w http.ResponseWriter, input string){
 		//		renderTemplate(w http.ResponseWriter, pane(), temp2())
 		outputHtml += generator2(pane(), temp2())
 	}
-
 	pageSize := map[string]string{
 		"Css": "Css",
 		"Ico": "Ico",
@@ -90,22 +80,11 @@ func settingsPage() map[string]func() map[string]string{
 		"grades": grades,
 	}
 }
-func generateViews(letter string, recipients map[string]string){
-	t := template.Must(template.New("letter").Parse(letter))
-	err := t.Execute(os.Stdout, recipients)
-	if err != nil {
-		log.Println("executing template:", err)
-	}
-}
-
-
-
-
 
 func home(w http.ResponseWriter, input string){
 	fmt.Print("inside home= "+input)
 }
-func generator3(w http.ResponseWriter, letter string, recipients  map[string]string)string{
+func generator3(w http.ResponseWriter, letter string, recipients  map[string]string){
 	myhtml := template.New("letter").Funcs(template.FuncMap {
 		"XTC": func(x string) template.HTML {
 			return template.HTML(x)
@@ -116,7 +95,6 @@ func generator3(w http.ResponseWriter, letter string, recipients  map[string]str
 	if err != nil {
 		log.Println("executing template:", err)
 	}
-	return "output?"
 }
 func generator2(letter string, recipients map[string]string)string{
 	myhtml := template.New("letter").Funcs(template.FuncMap {
@@ -153,7 +131,6 @@ func grades() map[string]string{
 	}
 }
 
-
 func page()string{
 	return `<!doctype html>
 <html>
@@ -164,7 +141,7 @@ func page()string{
 </head>
 <body>
 	<div id=topBar>
-		<h1>{{XTC .PageName}}</h1> {{XTC .Menu}}
+		<h1>{{ .PageName}}</h1> {{XTC .Menu}}
 	</div>
 	{{XTC .Source}}
 	{{if .Js}}<script src={{.Js}}></script>{{end}}
@@ -190,7 +167,6 @@ func section()string{
 	{{XTC .Source}}
 </div>`
 }
-
 
 func minify(input string) string{
 	//input = Replace(input, "  ", " ", -1))
