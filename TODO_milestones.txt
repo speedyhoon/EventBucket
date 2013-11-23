@@ -1,9 +1,9 @@
-MongoDB
-	MongoDB installed
-	MongoDB Go driver installed
-	MongoDB connection working
+- MongoDB
++	MongoDB installed
++	MongoDB Go driver installed
++	MongoDB connection working
 	MongoDB collections created
 	MongoDB populated with shooters from NRAA
 
-Websockets
+- Websockets
 
