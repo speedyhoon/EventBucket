@@ -1,0 +1,45 @@
+include svg sprite into jss css file:
+
+WITH SPRITE:
+	less requests made
+	Less bandwidth used
+	better gziping larger file???????
+	better caching???????????????????
+	JS 2 insert sprite can be done all at once
+	less repaints??
+
+WITHOUT SPRITE:
+	faster load time of css
+	faster load time of js
+	better performance when outdated
+	more JS files to execute but smaller jobs to do
+__
+
+
+HTTP SERVER SETTINGS::
+prove only 1 request is made for combined CSS & JS
+set content type headers to */* OR app/js,text/css OR app/js;text/css
+set character encoding for html response to ascii
+
+RESEARCH::
+log the request times
+	see the difference between SVG added and removed
+	-- is there a millisecond delay for the client to request it????
+slow down network speed to witness the impact
+	--slower css rendering?? -- white page visible & repaints to blue
+	--faster image inserting?
+	--less round trip latency needed?
+	
+	
+FAVICON::
+	I think it would be better as a seperate resource
+pros:
+	less data to initially load on second request
+	not needed imediatly - ok to show a short 5second delay
+	less processing intensive immediatly
+	base64 30% overhead not downloaded
+	download favicon & cssJS at the same time
+	httprequest overhead minimised if SPDY protocol used
+cons
+	does not display imediatly
+	more http requests

@@ -1,0 +1,30 @@
+body{ background:#000;font:13px Arial, sans-serif}
+#a{ background:url(../i/range2.jpg) no-repeat #fff;max-width:670px;padding:0 15px;margin:auto;/*background-size:100%;*/ box-shadow:0 0 6px 6px #888}
+h1 a{ text-decoration:none;color:#000}
+h1{ font:66px/58px Verdana, sans-serif;margin:0}
+h2{ margin-bottom:0}
+span{ font-size:16px;margin:0 0 104px 168px;display:block;white-space:nowrap}
+#menu{ background:#444;
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#888888', GradientType=0);
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(7%, #000), color-stop(7%, #888), color-stop(80%, #000), color-stop(99%, #888));
+	background:-moz-linear-gradient(top, #000 7%, #888 7%, #000 80%, #888 99%);
+	background:-webkit-linear-gradient(top, #000 7%, #888 7%, #000 80%, #888 99%);
+	background:-o-linear-gradient(top, #000 7%, #888 7%, #000 80%, #888 99%);
+	background:-ms-linear-gradient(top, #000 7%, #888 7%, #000 80%, #888 99%);
+	background:linear-gradient(to bottom, #000 7%, #888 7%, #000 80%, #888 99%);
+	color:#fff;list-style:none;margin:0 -15px 15px;padding:5px 0 8px}
+#menu li{ display:inline;padding-left:30px}
+#menu a{ color:#fff;text-decoration:none}
+#menu a:hover{ text-decoration:underline}
+p, ul{ margin-top:0}
+a{ color:#00f}
+#b{ border-top:1px solid #000;margin:9px -15px 0;padding:3px 9px;text-align:right;font-size:9px}
+.calendar{ background:#888;border:1px solid #000;font-weight:900;text-align:center;width:90px;float:left;margin-right:5px}
+.calendar b{ display:block;font-size:26px;line-height:23px}
+.details{ background:#ddd;display:inline-block;width:100%;margin-bottom:5px}
+.blurb{ font-weight:900;padding:0 5px 0 5px;text-decoration:none;border-bottom:1px solid #000}
+.blurb a{ text-decoration:none}
+.edit{ float:right;font-weight:900;font-style:italic}
+th{ vertical-align:top}
+.r{color:red}
+@media print{#a{box-shadow:none;background:#fff}span{margin:0 0 0 168px}.edit{display:none}}
