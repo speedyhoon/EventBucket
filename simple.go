@@ -5,10 +5,11 @@ import (
 	"html/template"
 	"fmt"
 	"mgo"
+	"mgo/bson"
+//	"reflect"
+	"net/url"
 )
-//global variables that can't be a constant
-var conn *mgo.Database
-
+var conn *mgo.Database//global variables that can't be a constant
 func main(){
 	conn = DB()
 	http.HandleFunc("/", home)
@@ -16,12 +17,13 @@ func main(){
 	http.HandleFunc("/startShooting", startShooting)
 	http.HandleFunc("/clubInsert", clubInsert)
 	http.HandleFunc("/organisers", organisers)
+	http.HandleFunc("/organiser", organisers)
 	http.ListenAndServe(":80", nil)
 }
 func DB()*mgo.Database{
 	session, err := mgo.Dial("localhost")
 	checkErr(err)
-	defer session.Close()
+//	defer session.Close()
 	// Optional. Switch the session to a monotonic behavior.
 	//	session.SetMode(mgo.Monotonic, true)
 	session.SetMode(mgo.Eventual, true)//this is supposed to be faster
@@ -58,7 +60,26 @@ func generator(w http.ResponseWriter, fillin string, data map[string]interface{}
 
 
 
+func getClub()bson.M{
+	//	var result interface{}
+	//	err := conn.C("club").Find(bson.M{"name": "Ale"}).One(&result)
+//	query := conn.C("club").Find(bson.M{"location": "VIC"})
+//	checkErr(err)
+////	fmt.Println("Phone:", result)
+//return query
+
+	var m bson.M
+	err := conn.C("club").Find(nil).One(&m)
+	checkErr(err)
+	return m
+}
 func clubs(w http.ResponseWriter, r *http.Request){
+	temp := getClub()
+	fmt.Print(temp)
+//	for value := range temp{
+//		fmt.Print("\n\n\n")
+//		fmt.Print(value)
+//	}
 	templator("home", clubsView(), clubsData(), w)
 }
 func clubsData()map[string]interface{}{
@@ -81,8 +102,8 @@ func organisers(w http.ResponseWriter, r *http.Request){
 func organisersData()map[string]interface{}{
 	return map[string]interface{}{
 		"Title": "Organisers",
-//		"Source": "Insert Club",
-//		"Location": map[]interface{}{"VIC","TAS","SA","QLD","NSW","ACT","NT","WA"},
+		//todo"Location": map[]interface{}{"VIC","TAS","SA","QLD","NSW","ACT","NT","WA"},
+		//todo"Discipline": map[]interface{}{"Rifle","Pistol","Shotgun"},
 	}
 }
 func organisersView()string{
@@ -103,67 +124,152 @@ func organisersView()string{
 	<option>TAS</option>
 	<option>WA</option>
 	</select>
-
 	URL Key:<input name=url>
 	Latitude:<input name=lat>
 	Longitude:<input name=long>
 	<input type=submit value="Add Club">
 	</form>`
-
-
-//	<div id=topBar>
-//	<h1>Club Insert</h1>{{if .Menu}} {{XTC .Menu}}{{end}}
-//</div>
-//Club Name:<input>
-//{{if .Source}}{{XTC .Source}}{{end}}
-
-
-
-
-//	<input class="toggle clubNew" data-text="Club Name" value="Club Name">
-//	Discipline:<select class="clubNew"><option>Rifle</option><option disabled="">Pistol</option><option disabled="">Shotgun</option></select>
-//	Location:<select class="clubNew">
-//	<option>VIC</option>
-//	<option disabled="">ACT</option>
-//	<option disabled="">NSW</option>
-//	<option disabled="">NT</option>
-//	<option disabled="">QLD</option>
-//	<option disabled="">SA</option>
-//	<option disabled="">TAS</option>
-//	<option disabled="">WA</option>
-//	</select> Build subsite:<input type="checkbox" checked="" class="clubNew"> URL Key:<input class="clubNew">
-//	<abbr class="help" title="Each club must use an unique URL Key to access their website address.">?</abbr>
-//	<a href="clubNew=" class="submit" data-id="clubNew">Add Club</a>
 	return pane("Create Club",source)
 }
 
 
-func InsertClub(data interface{}){
-	c := conn.C("people")
-//	err := c.Insert(&Person{"Ale", "+55 53 8116 9639"},&Person{"Cla", "+55 53 8402 8510"})
-	err := c.Insert(data)
-	checkErr(err)
+func InsertDoc(data interface{}, collection string){
+//	temp := map[string]interface{}{
+//		"_id":"qwerty232",
+//		"0":"name",	//event name
+//		"1":123456,	//date time stamp
+//		"2":2,			//club id
+//		"3": map[string]interface{}{		//shooters
+//			"0":map[string]interface{}{			//shooters id
+//				"0":"grade",
+//				"1":"class",
+//				"2":map[string]interface{}{		//scores
+//					"0":map[string]interface{}{		//range id
+//						"0": 40,		//total
+//						"1": 5,		//centers
+//						"2": 7,		//x's
+//						"3": 2345678976,	//countback
+//						"4": 987456788,	//xcountback
+//					},
+//					"1":map[string]interface{}{		//range id
+//						"0": 40,		//total
+//						"1": 5,		//centers
+//						"2": 7,		//x's
+//						"3": 2345678976,	//countback
+//						"4": 987456788,	//xcountback
+//					},
+//				},
+//			},
+//		},
+//		"4":"settings",
+//		"5":"team",
+//		"6":"teamcat",
+//		"7":"handicap?",//or should this go under shooter?
+//	}
+//	data = temp
+//	data["_id"] = bson.M{}
 
-//	result := Person{}
-//	err = c.Find(bson.M{"name": "Ale"}).One(&result)
-//	checkErr(err)
-//	fmt.Println("Phone:", result.Phone)
+//	temp := map[string]interface{}{
+//		"_id": setAutoInc(collection),
+//		"name": "Bob D.",
+//	}
+	if data{
+		err := conn.C(collection).Insert(data)
+		checkErr(err)
+	}
 }
+//Basic validation to get only the items listed in options, all others are ignored
+//func validate(data map[string]interface{}, options map[int]string)interface{}{
+//func validate(data url.Values, options map[string]string)interface{}{
+func validate(form url.Values, options map[string][]int)interface{}{
+	tryThis :=  map[string]string{}
+	for option, min_max  := range options{
+		array, ok := form[option]
+		if ok{
+			length := len(array[0])
+			if length >= min_max[1] && length <= min_max[2] {
+				tryThis[option] = array[0]
+			}else if min_max[0]{
+				return false
+			}
+		}else if min_max[0]{
+			return false
+		}
+	}
 
+//	fmt.Print(data)
+//	temp_type := make([]string)
+//	output := make(map[string]string)
+//	for key,check := range data{
+////		if value,ok := data[check]; ok {
+////			if len(value) == 1{//} && reflect.TypeOf(value){
+//		fmt.Print("\nkey=")
+//		fmt.Print(key)
+//		fmt.Print(" check=")
+//		fmt.Print(check)
+////				output[key] = check[0]
+////			}
+////		}
+//	}
+	return tryThis
+}
+//http://net.tutsplus.com/tutorials/client-side-security-best-practices/
 
 func clubInsert(w http.ResponseWriter, r *http.Request){
 	if r.Method == "POST" {
-		fmt.Print("received a http POST")
-//		r.ParseForm()
-//		value := r.FormValue("value")
-//		for w := range ch {
-		for key, value := range r.Form{
-//		for index, value := {
-			fmt.Print("\nkey=")
-			fmt.Print(key)
-			fmt.Print(" value=")
-			fmt.Print(value)
+		options := map[string][]int{
+			//Required, minLength, maxLength
+			"name":[]int{1,3,99},
+			"url":[]int{1,3,26},
+			"discipline":[]int{1,5,8},
+			"location":[]int{1,3,3},
+			"lat":[]int{0,3,15},
+			"long":[]int{0,3,15},
 		}
+//		fmt.Print("received a http POST")
+		r.ParseForm()
+//		tryThis :=  map[string]string{}
+		tryThis := validate(r.Form, options)
+//		fmt.Print(r.Form)
+//		fmt.Print("\n")
+//		fmt.Print(r.Form["name"][0])
+//		fmt.Print("\n")
+//		fmt.Print(r.Form["location"][0])
+
+//		for _, value := range options{
+//			if "" != r.Form[value][0] && 100 > len(r.Form[value][0]){
+//				tryThis[value] = r.Form[value][0]
+//			}
+////		for key, value := range r.Form{
+//
+//			if len(r.Form[value]) == 1{
+
+//			}
+//			fmt.Print("\nvalue=")
+//			fmt.Print(r.Form[value][0])
+////			fmt.Print("\nkey=")
+////			fmt.Print(key)
+//			fmt.Print("\t value=")
+//			fmt.Print(value)
+//			fmt.Print("\t length=")
+//			fmt.Print(len(r.Form[value]))
+//			fmt.Print("\t NORMAL value=")
+//			fmt.Print(value[0])
+//			fmt.Print("\t type is ")
+//			fmt.Print(reflect.TypeOf(value))
+//		}
+//		options := map[string]string{
+//			"name"		:"[]string",
+//			"url"			:"[]string",
+//			"discipline":"[]string",
+//			"location"	:"[]string",
+//			"lat"			:"[]string",
+//			"long"		:"[]string",
+//		}
+//		save := validate(r.Form, options)
+//		fmt.Print(save)
+//		InsertClub(save)
+		InsertDoc(tryThis, "club")
 		templator("admin", clubInsertView(), clubInsertData(), w)
 	}else{
 		fmt.Print("did not receive a http POST")
@@ -229,6 +335,7 @@ func homeTemplate(body string)string{
 	{{if .Css}}<link rel=stylesheet href={{.Css}}>{{end}}
 	{{if .Ico}}<link rel=icon type={{.IcoType}} href={{.Ico}}>{{end}}
 	<title>EventBucket{{if .Title}} - {{.Title}}{{end}}</title>
+<style>body{background:#000}*{color:#555}</style>
 </head>
 <body>
 	` + body + `
@@ -243,6 +350,7 @@ func adminTemplate(body string)string{
 	{{if .Css}}<link rel=stylesheet href={{.Css}}>{{end}}
 	{{if .Ico}}<link rel=icon type={{.IcoType}} href={{.Ico}}>{{end}}
 	<title>EventBucket{{if .Title}} - {{.Title}}{{end}}</title>
+<style>body{background:#000}*{color:#555}</style>
 </head>
 <body>
 	` + body + `
