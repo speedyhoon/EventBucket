@@ -1,0 +1,1 @@
+!function(){"use strict";var e,n=document.getElementsByName("score"),t=function(){return function(){console.log("down")}};for(e in n)n.hasOwnProperty(e)&&(n[e].onkeyup=t());var o;window.XMLHttpRequest&&(o=new XMLHttpRequest)}();
