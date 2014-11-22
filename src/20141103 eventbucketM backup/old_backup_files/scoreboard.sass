@@ -1,0 +1,120 @@
+@import utilities
+
+$border-style: solid #000
+
+//RESET
+
+body,h1,ul
+	margin: 0
+
+body
+	font: 900 small Arial, sans-serif
+
+td,ul
+	padding: 0
+
+table,td
+	border: 0 $border-style
+
+table
+	text-align: center
+	border-width: 0 1px 1px 0
+	width: 100%
+	border-spacing: 0
+
+h1
+	text-align: center
+
+td
+	border-width: 1px 0 0 1px
+
++reset()
+//+float-left()
+
+.leg  //Legend
+	text-align: left
+	padding: 0 5px
+
+	label
+		border: 1px $border-style
+		display: inline-block
+		padding: 0 5px
+		margin: -1px 0 -1px -1px
+
+//+drop-down-menu($border-style)
+
+.p1  //First
+	+background-gradient(goldenrod, gold)
+
+.p2  //Second
+	+background-gradient(#888, silver)
+
+.p3  //Third
+	+background-gradient(sienna, peru)
+
+.rS
+	height: 2px
+	background: #888
+
+.cnr  //Class name row
+	background: #fdd
+	//page-break-after: always
+
+//.team
+//	background: #dfd
+
+
+
+//		0 = nil
+//		1 = shoot off
+//		2 = warning, no score
+//		3 = incomplete
+//		4 = highest posible score
+.w1  //ShootOff in position column
+	background: #900
+	color: #fff
+.w2	//warning no score
+	background: #00f
+	color: #fff
+.w3  //Incomplete Score
+	background: #000
+	color: #fff
+.w4  //Highest Possible Score
+	background: #707
+	color: #faf
+
+.r
+	float: right
+
+.error,.info
+	display: none
+//.error,.info
+	background: pink
+	border: 1px solid red
+	border-radius: 1em
+	padding: 0.5em
+	margin: 1em 0
+
+//.info
+	background: aqua
+	border: 1px solid blue
+
+//.error h2,.info h2
+	margin: 0
+
+
++nav-bar()
+
+menu
+	margin: 0
+	//width: inherit
+	//background: inherit
+	border: none
+	border-radius: inherit
+
+td.SB
+	background: url(/v/sortby.svg) #ccc 3px 2px no-repeat
+
+@media print
+	.error, .info, menu
+		display: none

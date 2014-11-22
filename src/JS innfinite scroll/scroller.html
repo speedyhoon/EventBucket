@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>KnockoutJS + Infinite Scroll? - jsFiddle demo</title>
+<script type="text/javascript" src="jquery-1.5.js"></script>
+<!--<script type="text/javascript" src="http://code.jquery.com/jquery-1.5.js"></script>-->
+<!--<link rel="stylesheet" type="text/css" href="/css/normalize.css">-->
+<!--<link rel="stylesheet" type="text/css" href="/css/result-light.css">-->
+<script type="text/javascript" src="knockout-3.1.0.js"></script>
+<!--<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.2.1.js"></script>-->
+<style type="text/css">
+	#main { height: 500px; width: 300px; overflow: scroll; }
+	#main div { background-color: #eee; margin: 5px; height: 100px; }
+	img { margin-left: 10px; width: 16px; height: 16px; }
+</style>
+</head>
+<body>
+  <div>
+    <span data-bind="text: items().length"></span>
+    <img src="loading.gif" data-bind="visible: pendingRequest">
+</div>
+
+<div id="main" data-bind="foreach: items, event: { scroll: scrolled }">
+    <div data-bind="text: name"></div>
+</div>
+
+
+<script type="text/javascript">//<![CDATA[
+var viewModel = {
+    items: ko.observableArray([]),
+    scrolled: function(data, event) {
+        var elem = event.target;
+        /*if (elem.scrollTop > (elem.scrollHeight - elem.offsetHeight - 200)) {
+            getItems(20);
+        }
+        if (elem.scrollTop === 0)) {
+            getItems(20);
+        }*/
+    },
+    maxId: 0,
+    pendingRequest: ko.observable(false),
+    //godown: document.querySelector("#fda").scrollTop += 100
+};
+
+
+function getItems(cnt) {
+    if (!viewModel.pendingRequest()) {
+        //create fake data to pass to echo service
+        var entries = [];
+        for (var i = 0; i < cnt; i++) {
+            var id = viewModel.maxId++;
+            entries.push({
+                id: id,
+                name: "Name" + id
+            });
+        }
+
+        viewModel.pendingRequest(true);
+
+        $.ajax({
+            type: 'POST',
+            url: '/echo/json/',
+            data: {
+                json: ko.toJSON(entries),
+                delay: .1
+            },
+            success: function(entries) {
+                ko.utils.arrayForEach(entries, function(entry) {
+                    viewModel.items.push(entry);
+                });
+                viewModel.pendingRequest(false);
+            },
+            error: function() {
+                viewModel.pendingRequest(false);
+            },
+            dataType: 'json'
+        });
+    }
+}
+
+ko.applyBindings(viewModel);
+
+getItems(20);
+
+//]]>
+
+</script>
+</body></html>

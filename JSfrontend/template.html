@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html><head>
+<style>
+label span{
+	color: red;
+	font-weight: bold;
+}
+option[value=""]{display:none;}
+</style>
+</head>
+<body>
+<h1>Employment Application</h1>
+<form name=cars method=post>
+<label>Make
+	<input name=make required>
+</label>
+<br>
+<label>Model
+	<input name=model required>
+</label>
+<br>
+<label>Wheels
+	<input type=number name=wheels required>
+</label>
+<br>
+<label>
+	<input type=submit value=Submit formaction=dcars>
+</label>
+</form>
+<br>
+<br>
+<br>
+<form name=sender action=helloThis>
+<label><span>*</span>Which position are you applying for?
+	<select name=position>
+		<option value="" disabled selected>Position</option>
+		<option value="Interface Designer">Interface Designer</option>
+		<option value="Software Engineer">Software Engineer</option>
+		<option value="System Administrator">System Administrator</option>
+		<option value="Office Manager">Office Manager</option>
+	</select>
+</label>
+<br>
+<label>First Name
+	<input name=first>
+</label>
+<br>
+<label>Surname
+	<input name=last>
+</label>
+<br>
+<label>Email
+	<input type=email name=email>
+</label>
+<br>
+<label>Comments
+	<textarea name=comments></textarea>
+</label>
+<br>
+<label>Date
+	<input type=date name=date>
+</label>
+<br>
+<label>Search
+	<input onclick="makeRequest('http://localhost:85/send');" type=button value=search>
+</label>
+<br>
+<label>Submit
+	<input type=submit value=submit>
+</label>
+</form>
+
+<script>
+'use strict';
+var httpRequest;
+//document.getElementById("ajaxButton").onclick = function() { makeRequest('localhost:85/send'); };
+
+function makeRequest(url) {
+	if (window.XMLHttpRequest) { // Mozilla, Safari, ...
+		httpRequest = new XMLHttpRequest();
+	}
+	httpRequest.onreadystatechange = alertContents;
+	httpRequest.open('GET', url);
+	httpRequest.send();
+//	alert("test");
+}
+
+function alertContents() {
+	if (httpRequest.readyState === 4){
+		console.log(httpRequest)
+
+		if(httpRequest.status === 200) {
+			alert(httpRequest.responseText);
+		}
+	}
+}
+
+//var inputs = document.body.querySelectorAll('input[type="submit"]'), max = inputs.length;
+var inputs = document.forms, max = inputs.length;
+for(var i = 0; i < max; i++){
+	inputs[i].onsubmit = (function(input){
+		return function(){
+//			input.getAttribute("action")
+//			alert(input.getAttribute("action"));
+			console.log("target", input.target);
+			console.log("target", input.getAttribute("target"));
+			console.log("name", input.name);
+			console.log("name", input.getAttribute("name"));
+			console.log("method", input.method);
+			console.log("baseURI", input.baseURI);
+			console.log("attributes", input.attributes);
+			console.log("attributes", input.getAttribute("attributes"));
+			console.log("action", input.action);
+			console.log("action", input.getAttribute("action"));
+			console.log("action", input.formAction);
+			console.log("action", input.getAttribute("formaction"));
+		}
+	})(inputs[i]);
+}
+</script>
+</body></html>

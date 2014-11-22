@@ -1,0 +1,133 @@
+@import util
+
+$border-style: solid #000
+
++reset()
++db-error()
++update()
++menu()
++menu-styled()
+
+body
+	background: #495154
+	color: #ccc
+
+h1
+	text-shadow: #000 1px 2px 0px, #07F 3px 4px 3px, #000 4px 5px 3px
+
+fieldset
+	border-radius: 8px
+	margin: 5px 0
+	background: #222
+	border-color: #777
+
+legend
+	font-size: 24px
+	font-weight: 900
+	text-shadow: #000 1px 2px 0px, #07F 3px 4px 3px, #000 4px 5px 3px
+
+fieldset fieldset legend
+	font-size: inherit
+
+select
+	vertical-align: top   //for multi line select boxes
+
+//option[value=""]
+//option.label, option[disabled=""]
+//	display: none
+
+
+#grade_settings
+	float: left
+	display: none
+
+@media print
+	#grade_settings
+		display: none !important
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//------------------
+//START-SHOOTING
+//------------------
+.startShooting
+	border-spacing: 0
+	width: 100%
+	font-family: Courier New
+
+	a,th.name
+		color: #09e
+
+	a:hover,th.name:hover
+		color: #f70
+
+	//#h td
+	//	color: #666
+	tr[data-selected="1"] td
+		border-right:  2px solid #000
+
+	.B,tr[data-selected="1"] .B
+		border-right: 2px solid #09f
+
+	tr:nth-child(odd)
+		background: #333
+
+	#bu
+		width: 90%
+		float: left
+		display: block
+	button
+		border: 1px solid #ff0
+		font-weight: 900
+		color: #ff0
+		background: #000
+		font-size: 32px
+		height: 75px
+		margin: 0.5%
+		width: 11.5%
+	.sighters
+		float: left
+		width: 9%
+		margin: 1% 1% 0 0
+		display: block
+	button:last-child
+		margin-right: 0
+
+	tr[data-selected="1"]
+		background: #777
+	td[data-selected="1"]
+		background: #088
+	td
+		text-align: center
+	.name
+		cursor: pointer
+		text-decoration: underline
+		font-size: 2em
+		white-space: nowrap
+
+	tr[data-selected="1"] .name
+		cursor: default
+		text-decoration: none
+		color: #ee0
+
+	//.k input
+	//	width: 50px
+
+	tr:not(#x) th:last-child
+		//Total fields (and heading) but no the footer with buttons
+		text-align: right
+
+	tr,th
+		padding: 0

@@ -1,0 +1,2 @@
+cd C:\Users\Developer\EBrepo\src\eventbucketM
+go run main.go database.go p_club.go p_event.go p_events.go p_event-settings.go p_home.go p_organisers.go p_scoreboard.go p_start-shooting.go p_total-scores.go pages.go schema.go settings.go template.go utils.go validation.go

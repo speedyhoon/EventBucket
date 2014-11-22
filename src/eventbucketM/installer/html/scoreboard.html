@@ -1,0 +1,92 @@
+{{$eventId := .EventId}}
+{{$sortByRange := .SortByRange}}
+{{$rangeList := .ListRanges}}
+{{$legendIncomplete := true}}
+{{$legendHighestScore := true}}
+{{$legend2nd := true}}
+{{$legend3rd := true}}
+
+{{$legendOnOff := .LegendOnOff}}
+
+{{$displayPosition := ""}}
+{{$previousGrade := ""}}
+{{$previousPosition := 0}}
+{{$fdsa := " class=sO"}}
+
+{{.ShooterList}}
+
+{{HTM .menu}}
+
+<h1>{{.EventName}}</h1>
+<table>
+	<tr>
+		<td>Pos</td>
+		<!--<td>Class</td>-->
+		<td>Grade</td>
+		<td>Shooter</td>
+		<td>ID</td>
+		<td>Club</td>
+		<td>Age Group</td>
+		{{range $range_id, $range := $rangeList}}
+			{{if eq $range_id $sortByRange}}
+				<td class=SB>
+			{{else}}
+				<td>
+			{{end}}
+			{{.Name}}</td>
+		{{end}}
+	</tr>
+
+	{{range $shooter := .ListShooters}}
+		{{if .ClassSeparator}}
+			<tr><td colspan=99 class=cnr>{{CLASSLONG .Grade}}</td></tr>
+		{{end}}
+		{{if .GradeSeparator}}
+			<tr><td class=rS colspan=99></td></tr>
+		{{end}}
+
+		<tr>
+			<td{{CSSclass "w" .Warning}}>{{.Position}}</td>
+			<!--<td>{{CLASS .Grade}}</td>-->
+			<td>{{GRADE .Grade}}</td>
+			<td>{{.FirstName}} {{.Surname}}</td>
+			<td>{{.Id}}</td>
+			<td>{{.Club}}</td>
+			<td>{{.AgeGroup}}</td>
+
+			{{range $rangeId, $rangeObj := $rangeList}}
+				{{$now := index $shooter.Scores $rangeId}}
+				<td{{POSITION $now.Position}}>
+					{{with $now}}
+						{{with.Total}}{{.}}{{end}}{{with .Centers}}<sup>{{.}}</sup>{{end}}
+					{{end}}
+				</td>
+			{{end}}
+		</tr>
+		{{/*$_ := $previousClass.Set .Grade*/}}
+	{{end}}
+	<tr>
+	<td colspan=99 class=leg>
+		{{if .Legend}}
+			Legend:~~~{{HTM .Legend}}
+		{{end}}
+		<span class=r>Powered by~~~<a href=//eventbucket.com.au target=_blank>EventBucket.com.au</a></span>
+	</td>
+</tr>
+</table>
+
+{{/*
+<div class=ddm>
+	<div class="m l">
+		<h2><a href=#>Menu</a></h2>
+		<ul>
+			<li><a href=/event/{{$eventId}}>Show Event</a></li>
+			<li><a href=/eventSettings/{{$eventId}}>Event Settings</a></li>
+			{{range $rangeId, $rangeName := $rangeList}}
+				<li><a href=/totalScores/{{$eventId}}/{{$rangeId}}>{{$rangeName.Name}}</a></li>
+			{{end}}
+		</ul>
+	</div>
+	<h2 class=l><a href=# class="x l">&times;</a></h2>
+</div>
+*/}}

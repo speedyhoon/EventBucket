@@ -1,0 +1,60 @@
+var conn *mgo.Database
+
+var chttp = http.NewServeMux()
+
+func main() {
+
+//	chttp.Handle("/", http.FileServer(http.Dir(`.\`)))
+
+//	http.HandleFunc("/", HomeHandler) // homepage
+
+	http.Handle("/i/", http.FileServer(http.Dir("./")))
+
+	http.ListenAndServe(":80", nil)
+}
+
+func HomeHandler(w http.ResponseWriter, r *http.Request) {
+
+	if (strings.Contains(r.URL.Path, ".")) {
+		chttp.ServeHTTP(w, r)
+	} else {
+		fmt.Fprintf(w, "HomeHandler")
+	}
+}
+
+
+
+
+
+
+//func httpHeadersSet(callThis func(http.ResponseWriter, *http.Request))func(http.ResponseWriter, *http.Request){
+//	return func(w http.ResponseWriter, r *http.Request) {
+func httpHeadersSet(callThis http.HandlerFunc) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+//		http://content-security-policy.com/
+		w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src: 'self'; script-src 'self'; img-src 'self';")
+		w.Header().Set("Expires", "Thu, 16 Apr 2005 20:00:00 GMT")
+//		w.Header().Set("Vary", "Accept-Encoding")
+
+		if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
+			callThis(w, r)
+			return
+		}
+		w.Header().Set("Content-Encoding", "gzip")
+		gz := gzip.NewWriter(w)
+		defer gz.Close()
+		gzr := gzipResponseWriter{Writer: gz, ResponseWriter: w}
+
+
+		callThis(gzr, r)
+	}
+}
+
+type gzipResponseWriter struct {
+	io.Writer
+	http.ResponseWriter
+}
+
+func (w gzipResponseWriter) Write(b []byte) (int, error) {
+	return w.Writer.Write(b)
+}
