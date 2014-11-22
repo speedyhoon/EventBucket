@@ -1,0 +1,24 @@
+<h2>{{.Name}}</h2>
+<h3>Mounds</h3>
+{{if.ListMounds}}
+	<table>
+		{{range $key, $value := .ListMounds}}
+			<tr>
+				<td>
+					{{$value.Distance}} {{$value.Unit}}
+				</td>
+			</tr>
+		{{end}}
+	</table>
+{{else}}
+	<p>No Mounds Listed</p>
+{{end}}
+
+<h3>Map</h3>
+{{if (.Latitude) and (.Longitude)}}
+	<p>{{.Latitude}}</p>
+	<p>{{.Longitude}}</p>
+{{else}}
+	<p>Club grounds not listed</p>
+{{end}}
+

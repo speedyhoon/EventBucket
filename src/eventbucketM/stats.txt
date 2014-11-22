@@ -1,0 +1,51 @@
+5 Jun 2014
+180 KB (185,027 bytes) All files
+128 KB (131,210 bytes) Go + batch
+127 KB (130,952 bytes) Go only
+
+10 Jun 2014
+124 KB (127,683 bytes) Go + batch
+124 KB (127,411 bytes) Go only
+
+11 Jun 2014
+66.2 KB (67,846 bytes) Go + batch
+
+14 Jun 2014
+19.7 KB Go only
+
+15 Jun 2014
+39.1 KB (40,112 bytes) Go + batch
+38.9 KB (39,879 bytes) Go only
+9.15 MB (9,594,880 bytes) Program
+
+26 Jul 2014
+62.1 KB (63,633 bytes) Go + batch
+
+1 Sep 2014
+88.7 KB (90,847 bytes) Go + batch
+88.3 KB (90,511 bytes) Go only
+9.21 MB (9,661,440 bytes) Program
+
+26 Sep 2014
+111 KB (113,726 bytes) Go only
+111 KB (114,089 bytes) Go + batch
+9.88 MB (10,360,832 bytes) Program
+
+29 Sept 2014
+114 KB (117,706 bytes) Go only
+115 KB (118,069 bytes) Go + batch
+
+14 Oct 2014
+128 KB (131,882 bytes) Go + batch
+
+10 Nov 2014
+138 KB (141,953 bytes) Go only
+
+16 Nov 2014
+126 KB (129,506 bytes) Go only
+
+21 Nov 2014
+138 KB (141,526 bytes) Go only
+
+22 Nov 2014
+127 KB (131,015 bytes) Go only

@@ -1,0 +1,13 @@
+<h1>Range Report</h1>
+<h2>{{.Event_name}}, {{.Range_name}}</h2>
+
+<table>
+	{{range $shooter := .List_shooters}}
+		<tr>
+			<td>{{$shooter.FirstName}} {{$shooter.Surname}}</td>
+			{{$score := index $shooter.Scores $.Range_id}}
+			<td>{{$score.Shots}}</td>
+			<td>{{$score.Total}}.{{$score.Centers}}</td>
+		</tr>
+	{{end}}
+</table>

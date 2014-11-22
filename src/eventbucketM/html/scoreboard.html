@@ -1,0 +1,117 @@
+{{$eventId := .EventId}}
+{{/*$sortByRange := .SortByRange*/}}
+{{$rangeList := .ListRanges}}
+{{$legendIncomplete := true}}
+{{$legendHighestScore := true}}
+{{$legend2nd := true}}
+{{$legend3rd := true}}
+
+{{$legendOnOff := .LegendOnOff}}
+
+{{$displayPosition := ""}}
+{{$previousGrade := ""}}
+{{$previousPosition := 0}}
+{{$fdsa := " class=sO"}}
+
+{{.ShooterList}}
+
+{{HTM .menu}}
+
+<h1>{{.EventName}}</h1>
+<table>
+	<tr>
+		<td>Pos</td>
+		<!--<td>Class</td>-->
+		<!--<td>Grade</td>-->
+		<td>Shooter</td>
+		<!--<td>ID</td>-->
+		<td>Club</td>
+		<!--<td>Age Group</td>-->
+		{{range $range_id, $range := $rangeList}}
+			{{if not .Hidden}}
+				{{if eq $range_id $.SortByRange}}
+					<td class=SB>
+				{{else}}
+					<td>
+				{{end}}
+				{{.Name}}</td>
+			{{end}}
+		{{end}}
+	</tr>
+	{{range $shooter := .ListShooters}}
+		{{if .GradeSeparator}}
+			<tr><td colspan=99 class=cnr>{{CLASSLONG .Grade}} {{GRADE .Grade}}</td></tr>
+			<tr><td colspan=99 class=rS></td></tr>
+		{{end}}
+		<tr>
+			<td{{CSSclass "w" .Warning}}>{{.Position}}</td>
+			<td class=tc>{{.FirstName}} {{.Surname}}</td>
+			<td>{{.Club}}</td>
+			{{range $rangeId, $rangeObj := $rangeList}}
+				{{if not .Hidden}}
+					{{$new_range_id := VAR2STR $rangeId}}
+					{{$now := index $shooter.Scores $new_range_id}}
+					<td{{POSITION $now.Position}}>
+						{{with $now}}
+							{{with.Total}}{{.}}{{end}}{{with .Centers}}<sup>{{.}}</sup>{{end}}
+						{{end}}
+					</td>
+				{{end}}
+			{{end}}
+		</tr>
+	{{end}}
+	<tr>
+		<td colspan=99 class=leg>
+			{{if .Legend}}
+			Legend:~~~{{HTM .Legend}}
+			{{end}}
+			<span class=r>Powered by~~~<a href=//eventbucket.com.au target=_blank>EventBucket.com.au</a></span>
+		</td>
+	</tr>
+</table>
+
+{{if .ListRanges}}
+<div id=scoreboard_settings>
+	{{Fieldset "Ranges &amp; Aggregates"}}
+	{{if.ListRanges}}
+	<table>
+		<tr>
+			<th>Range Id</th>
+			<th>Name</th>
+			<th>Hide</th>
+			<th>Lock</th>
+			<th></th>
+		</tr>
+		{{range $key, $value := .ListRanges}}
+		{{with $value}}
+		<tr>
+			<td>{{$key}}</td>
+			<td><input name=name value={{.Name}} form=range{{$key}}></td>
+			<td>
+				{{if not .Hidden}}
+				<input type=checkbox name=hide form=range{{$key}}>
+				{{else}}
+				<input type=checkbox name=hide form=range{{$key}} checked>
+				{{end}}
+			</td>
+			<td>
+				{{if not .Aggregate}}
+				{{if not .Locked}}
+				<input type=checkbox name=lock form=range{{$key}}>
+				{{else}}
+				<input type=checkbox name=lock form=range{{$key}} checked>
+				{{end}}
+				{{end}}
+			</td>
+			<td><form id=range{{$key}} method=post action=/updateRange><button>Save</button><input name=event_id type=hidden value={{$.EventId}}><input name=range_id type=hidden value={{$key}}></form></td>
+		</tr>
+		{{end}}
+		{{end}}
+	</table>
+	{{end}}
+
+	{{EndFieldset}}
+
+	{{HTM .SortScoreboard}}
+</div>
+{{end}}
