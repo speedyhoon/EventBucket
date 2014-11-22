@@ -1,0 +1,95 @@
+
+
+
+{{ESC .AddRange}}
+{{if.RangetList}}
+	<table><tr><th>Range</th></tr>
+		{{with.RangetList}}
+			{{range .}}
+				<tr><td>{{ESC .Name}}</td></tr>
+			{{end}}
+		{{end}}
+	</table>
+{{end}}
+<h2>Shooters</h2>
+<h3>Add Shooters</h3>
+{{ESC .AddShooter}}
+{{if.ShooterList}}
+<table><tr><th>Shooter</th><th>Club</th></tr>
+	{{with.ShooterList}}
+		{{range .}}
+			<tr><td>{{ESC .F}} {{ESC .M}}</td><td>{{ESC .C}}</td></tr>
+		{{end}}
+	{{end}}
+</table>
+{{end}}
+
+
+0	0	0			make 5
+5	0	5
+10	5	15
+20		35
+40		75
+80		155
+
+
+5	0	5
+10	5	15	20
+25	5	30	50
+55	5	60	110
+115	5	120	230
+235	5	240	470
+
+
+
+10		0	10
+10		20	30		40
+40		20	60		100
+100		20	120		220
+220		20	240		460
+460		20	480		940
+940		0	940		1880
+
+			1330
+			1340
+			1350
+			1360
+	1370
+	1380
+	1390
+	
+500
+495		5
+515		20
+510		5
+
+
+
+
+
+db.event.update( { "_id": "l" },
+                    { $inc: { "0": 1 } } )
+              db.event.find({"_id":"l"})
+			  
+db.event.findAndModify ( {
+   query: {
+            _id: "l"
+          }
+   update: {   
+                $push :{"S":{"lion":"club"}},
+             $inc: { "U.R":1 },
+           }
+} )
+
+db.event.update( { "_id": "l" },
+                    { $inc: { "0": 1 } } )
+              db.event.find({"_id":"l"})
+
+db.event.find(conditions...).forEach( function (doc) {
+  doc.field1 = doc.field2; 
+  db.item.save(doc); 
+});
+
+
+
+db.event.find({"_id":"l"},{"S":{ $elemMatch : {"C" : "!!!!!!!!"}}})

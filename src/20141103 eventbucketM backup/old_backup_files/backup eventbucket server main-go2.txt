@@ -1,0 +1,32 @@
+func main() {
+	conn = DB()
+//		panic(http.ListenAndServe(":80", http.FileServer(http.Dir(""))))
+		http.FileServer(http.Dir(""))
+//	chttp.Handle("/", http.FileServer(http.Dir("")))
+	//GET
+	//	http.HandleFunc("/", home)
+	http.HandleFunc("/organisers", organisers)
+	http.HandleFunc("/organisers/", redirectPermanent("/organisers"))
+	//	http.HandleFunc("/clubs", clubs)
+	//	http.HandleFunc("/startShooting", startShooting)
+	http.HandleFunc("/events", events)
+	http.HandleFunc("/events/", redirectPermanent("/events"))
+	http.HandleFunc("/event/", event)
+	http.HandleFunc("/club/", club)
+	//	http.HandleFunc("/eventSetup", eventSetup)
+	http.HandleFunc("/eventSettings/", httpHeadersSet(eventSettings))
+	http.HandleFunc("/startShooting/", startShooting)
+
+	//POST
+	http.HandleFunc("/clubInsert", redirectVia(clubInsert, "/organisers"))
+	http.HandleFunc("/eventInsert", redirectVia(eventInsert, "/organisers"))
+	http.HandleFunc("/champInsert", redirectVia(champInsert, "/organisers"))
+	http.HandleFunc("/rangeInsert", rangeInsert)
+	http.HandleFunc("/shooterInsert", shooterInsert)
+	//	http.HandleFunc("/rangeInsert", redirectTo("eventSettings/5317198d81a27b3006872b0f"))
+	http.HandleFunc("/clubRangeInsert", clubRangeInsert)
+	http.HandleFunc("/try", try)
+	http.ListenAndServe(":80", nil)
+}
+
+//var chttp = http.NewServeMux()

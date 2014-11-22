@@ -1,0 +1,18 @@
+<h1>{{.Title}} Settings</h1>
+<h2>Mounds</h2>
+<table>
+	{{range $key, $value := .ListMounds}}
+		<tr>
+			<td>
+				{{HTM $value}}
+			</td>
+		</tr>
+	{{end}}
+
+	<tr>
+		<td>
+			{{HTM .InsertRangeForm}}
+		</td>
+	</tr>
+</table>
+<a href="/organisers">Organisers</a>

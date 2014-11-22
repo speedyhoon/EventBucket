@@ -1,0 +1,48 @@
+multipoint server
+EventBucket test suite
+SuperCar - Beagle Bone Black
+
+
+Auto Download - uses the lest amount of energy while downloading during off peak periods
+	Torrents
+	Auto download videos
+	Music downloads
+	Books
+	Novels
+	EventBucket webpage dashboard
+	
+
+Proxy
+	Filter out unwanted network traffic
+	Firewall
+
+Dashboard
+	Lots of screens
+	Electronic TV guide
+	EventBucket webpage dashboard
+	FitBit
+	Wii Fit Plus
+	House security video
+	Air conditioning controller
+	Turn on/off lights
+	Open/close doors
+	Mobile phone calls & text messages
+
+NAS
+	TV
+	Electronic TV guide
+	Record TV
+	Music
+	Videos
+	Books
+	Documents
+	Save games
+	
+development pc
+	Lots of screens
+	Cam's workstation
+	Frequent reinstall of operating systems
+
+Linux CentOS
+	Node.js npm build tool
+	New relic analytics

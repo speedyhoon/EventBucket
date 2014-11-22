@@ -1,0 +1,11 @@
+package main
+
+import (
+	"fmt"
+	"sort"
+)
+
+func main() {
+	var number uint64 = 1
+
+}

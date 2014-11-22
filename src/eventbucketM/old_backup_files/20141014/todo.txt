@@ -1,0 +1,217 @@
+TODO::
+INSTALLER::
+	Setup icon
+	
+	test the installer on windows XP
+	test that you can uninstally everything
+	test that you can install over the top of an old folder!
+	test that installer doesn't make a duplicate eb service!
+
+EVENTBUCKET::
+	add a licence page
+		copy licence lamens terms from CC
+		view full licence page?
+		add some links to cc lamens terms and the offical licence
+		move home licence to licence page
+		change footer licence logo to simpler svg one from google images
+	
+	add a page how to use EventBucket via multiple people at once.
+		setting up a network with two devices (ad-hoc)
+		setting up a network with multiple devices
+			use a wifi access point - or a home wifi router will do just fine.
+	
+	running a prizemeeting
+		
+
+
+	add CC logo to the about page
+
+	
+START SHOOTING
+	shooter scores come up wrong??????
+scoreboard
+	fix a shooters score with only sighters and no shots can get a best score.
+	add gold silver bronze to aggregates
+	some how sort the aggregate scores when identical by the last range that was shot. At the moment the scores when identical are flipping because of random orders
+home page
+	add ranges to event list
+	finish calendar with current events
+	upcoming events
+event settings
+	aggs can add up other aggs
+	club name is not saving
+event page
+	add a form to change a shooters details - name, club, change class/grade, age group
+	
+	
+	
+	
+
+
+Additional Features:
+total scores
+	to generate scores for 358 shooters /random-data/totalScores=1 took 1h54m57.7925213s 
+Installer:
+	change eb.exe to run in minimized mode so it doesn't appear or show the logs
+	add eb.exe to the taskbar notifications
+	maybe add uninstall old version?
+about page
+	technologies?
+	about me?
+	additional Mac or linux versions may be available if you make it worth my while
+	I don't support installing EventBucket on iOS(TM) or Android(TM). However they can happily access EventBucket via your local wifi network using the Google Chrome internet browser
+update
+	check for updates on startup
+scoreboard:
+	add gold silver and bronze for each range
+	add settings to configure gold silver and bronze for ranges. able to set just gold or set the first 5 places a set colour
+event entry
+	add gender to event entry
+event-settings
+	add ability to change the default port number for EventBucket
+	add custom classes and grades
+	connect ranges shots and sighters
+	add custom classes and grades
+	add gender to classes and grades
+	archive event
+	add option to change the order of ranges displayed on the scoreboard
+	change range and aggregate form to use only one form instead of one for each table row
+open archive event
+	copy event
+start shooting
+	use event settings for ranges shots and sighters as base settings.
+all pages
+	Add help docs into forms and table headings
+	better support for displaying errors on screen and database errors
+organisers
+	move forms on organisers page to events, clubs and championship pages
+Shooter entry:
+	set default club to current club
+	when changing a shooters class/grade also update the aggregates for the old class/grade and the new class/grade
+event page
+	if the event id doesn't match anything - doesn't exist display a create event page
+home page
+	archive events
+
+
+
+Un-important optimisations or features:
+scoreboard:
+	put the next class onto a new page in print preview
+event settings
+	delete range
+	instead of setting IsPrizeMeet to false, unset the value in the collection so it doesn't exist.
+all templates
+	tidy up html templates and remove variables for globals and replace with $.SortRange http://stackoverflow.com/questions/16734503/access-out-of-loop-value-inside-golang-templates-loop
+	set a formatting rule for variable names
+all forms
+	trim white space from text fields
+	on submit redirect to form location id on form with #my_form_name to <fieldset><h2>Heading</h2><form id=my_form_name action=... etc
+validation
+	if no grade specified. set to the first one in the list. e.g. Target A or F CLass B
+event show
+	add edit button to edit existing shooter entries. Eventually chang this to just onclick so no edit button is needed. And add a help logo with tooltips
+installer
+	change installer to 64bit if possible
+scoreboard
+	reduce the number of DOM elements 4962 > 4602 > 2837
+		- join equal position cells together if they are equal
+		grade separators should only have one element with fancy borders etc, not <tr><td colspan=99 class=cnr>{{CLASSLONG .Grade}} {{.Grade}}</td></tr><tr><td colspan=99 class=rS></td></tr>
+		automatically don't show the ranges if they don't  have any scores for them.
+		try to join teble cells between ranges where shooters don't have any scores.
+	change the colspan quantity to the actual number required. so the pages validate properly
+	
+http
+	make a custom http.HandleFunc for each controller instead of the current setup http.ResponseWritter
+		have one function per page listed in main()
+		controller should know what it's own url is
+		the controller should know what kind of page it is to automatically add menus and select templates.
+		too much code is needed to setup a new page.
+server
+	add a far-future expiration date headers for favicon http://localhost/o/a
+	move sortby.svg into css as base64
+
+
+
+
+OPTIMISATION POTENTIAL:
+database
+	rename collections to one letter
+scoreboard
+	remove styles from triangle sort by svg and put them in the css fill:red;stroke:#000;
+code
+	remove html folder from install package
+	move htm folder into core source code -- could this be an automatic thing?
+	separate html from data - try to cache html for ever and send AJAX/Websockets for additional data.
+	cache all AJAX/Websocket requests in local storage if the response flag is set to cache
+		each page would have a single request with several tables that needed data like event-settings has many bits of data.
+	
+
+DONE::::::
+Shooter entry:
+	search from nraa database
+	add nraa database 
+event-entry
+	hook up grades and settings to event entry
+totalscores
+	shooter list is not ordered by grade
+organisers
+	set default club for new event to the only club available (when there is only one club)
+Forms:
+	don't set placeholder in selects when there is a selected option
+	add checking for the latest version of Chrome
+event-settings
+	change event name
+	save classes and grades in event
+	auto create 2 ranges with 1 aggregate
+	set the sort by range as the default aggregate
+	edit range and aggregate names
+scoreboard:
+	add a divider between classes
+	add a divider between classes
+	add the normal menu to the page. remove the existing white one.
+	display which range is being sorted by.
+START SHOOTING
+	add button to toggle filter shooters not finished and all shooters
+	shooter list is not ordered by grade
+	fix menu
+	footer colspan is too small when multiple classes are present
+	connect score entry to database upsert!! write new javascript send events
+Installer:
+	licence in rtf format with bold headings
+	auto start a browser when starting EB!
+about
+	add about page with the version number
+home page
+	name of day not displaying
+	
+0
+1
+2
+3
+4
+5
+
+
+	1 2 3 4 5
+0	1 2 3 4 5
+1	2 3 4 5 6
+2	3 4 5 6 7
+3	4 5 6 7 8
+4	5 6 7 8 9
+5	6 7 8 910
+
+
+
+1234567890
+VVVVVVVVVV 50 10
+3333V33333 32 1
+
+
+50 10
+
+49 9
+
+48 
+
+score needs to be at least a multiple of five to have a center.
