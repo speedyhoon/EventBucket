@@ -6,113 +6,101 @@ import (
 	"os"
 //	"code.google.com/p/go.net/websocket"
 	"websocket"
-	"bufio"
-	"net"
+	//"bufio"
+	//"net"
+    "math/rand"
+	"time"
 )
 
 func main() {
-	if len(os.Args) != 2 {
-		fmt.Println("Usage: wstelnet port")
-		os.Exit(0)
-	}
-	
-	port := os.Args[1]
-	fmt.Println("Serving web on port", port)
-	service := ":" + port
-	
 	http.Handle("/script/", http.FileServer(http.Dir(".")))
 	http.Handle("/css/", http.FileServer(http.Dir(".")))
 	http.Handle("/", http.FileServer(http.Dir("./html/")))
 	http.Handle("/websocket/", websocket.Handler(ProcessSocket))
-	err := http.ListenAndServe(service, nil)
+	err := http.ListenAndServe(":4000", nil)
 	checkError(err)
 }
 
+//func EchoServer(ws *websocket.Conn) {
+//    var msg string
+//    websocket.Message.Receive(ws, &msg)
+//    fmt.Println("Message Got: ", msg)
+//}
+
+//When the handler finishes the websocket connection is closed.
+//If you'd like to keep the socket open you have to keep the handler running.
+//eg.
+//func EchoServer(ws *websocket.Conn) {
+//    for {
+//        var msg string
+//        err := websocket.Message.Receive(ws, &msg)
+//        if err != nil{
+//            break
+//        }
+//        fmt.Println("Message Got: ", msg)
+//    }
+//}
+
 func ProcessSocket(ws *websocket.Conn) {
 	fmt.Println("In ProcessSocket")
-	var msg string
-
-	err := websocket.Message.Receive(ws, &msg)
-	if err != nil {
-		fmt.Println("ProcessSocket: got error", err)
-		_ = websocket.Message.Send(ws, "FAIL:" + err.Error())
-		return
-	}
-	fmt.Println("ProcessSocket: got message", msg)
-
-	service := msg
 	
-	tcpAddr, err := net.ResolveTCPAddr("tcp", service)
-	if err != nil {
-		fmt.Println("Error in ResolveTCPAddr:", err)
-		_ = websocket.Message.Send(ws, "FAIL:" + err.Error())
-		return
-	}
-	
-	conn, err := net.DialTCP("tcp", nil, tcpAddr)
-	if err != nil {
-		fmt.Println("Error in DialTCP:", err)
-		_ = websocket.Message.Send(ws, "FAIL:" + err.Error())
-		return
-	}
-	
-	_ = websocket.Message.Send(ws, "SUCC")
-
-	RunTelnet(ws, conn)
-}
-
-func RunTelnet(ws *websocket.Conn, conn *net.TCPConn) {
-	fmt.Println("Running telnet")
-	go ReadSocket(ws, conn)
-	
-	// Read websocket and write to socket.
-	crlf := []byte{13, 10}
-	var msg string
 	for {
+		var msg string
+
 		err := websocket.Message.Receive(ws, &msg)
 		if err != nil {
-			_ = conn.Close()
-			break
+			fmt.Println("ProcessSocket: got error", err)
+			_ = websocket.Message.Send(ws, "FAIL:" + err.Error())
+			return
 		}
-		_, err = conn.Write([]byte(msg))
-		if err != nil {
-			break
-		}
-		fmt.Println("Sent message to host:", msg)
-		// Send \r\n (as HTTP protocol requires)
-		_, err = conn.Write(crlf)
-		if err != nil {
-			break
-		}
+		fmt.Println("ProcessSocket: got message", msg)
+
+		//service := msg
+		//
+		//tcpAddr, err := net.ResolveTCPAddr("tcp", service)
+		//if err != nil {
+		//	fmt.Println("Error in ResolveTCPAddr:", err)
+		//	_ = websocket.Message.Send(ws, "FAIL:" + err.Error())
+		//	return
+		//}
+		//
+		//conn, err := net.DialTCP("tcp", nil, tcpAddr)
+		//if err != nil {
+		//	fmt.Println("Error in DialTCP:", err)
+		//	_ = websocket.Message.Send(ws, "FAIL:" + err.Error())
+		//	return
+		//}
+		
+		websocket.Message.Send(ws, "SUCC")
+		
+		go simulateEvent(ws, "High jump")
+		
 	}
-	fmt.Println("RunTelnet exit")
+
+	//RunTelnet(ws, conn)
 }
 
-// Read from socket and write to websocket
-func ReadSocket(ws *websocket.Conn, conn *net.TCPConn) {
-	reader := bufio.NewReader(conn)
-	var line string = ""
-	for {
-		if reader == nil {
-			break
-		}
-		buffer, isPrefix, err := reader.ReadLine()
-		if err != nil {
-			break
-		}
-		// fmt.Println("ReadSocket: got", len(buffer), "bytes")
-		line = line + string(buffer)
-		if !isPrefix {
-			// fmt.Println("Sending message to web socket:", line)
-			err = websocket.Message.Send(ws, line)
-			if err != nil {
-				_ = conn.Close()
-			}
-			line = ""
-		}
-	}
-	fmt.Println("ReadSocket exit")
-	ws.Close()
+//func simulateEvent(ws *websocket.Conn, name string, timeInSecs int) { 
+func simulateEvent(ws *websocket.Conn, name string) { 
+
+	//speed := random(0, 301)
+	speed := fmt.Sprintf("%v", rand.Intn(250) )
+
+    // sleep for a while to simulate time consumed by event
+    fmt.Println("speed:", speed)
+	//websocket.Message.Send(ws, "fdsa")
+	websocket.Message.Send(ws, speed)
+    //time.Sleep(timeInSecs * 1e9 )
+	
+	//time.Sleep(time.Duration(1) * time.Second)
+	//time.Sleep(0.5 * time.Second)
+	//amt := time.Duration(rand.Intn(250))
+	amt := time.Duration(40)
+	time.Sleep(time.Millisecond * amt)
+    
+	//fmt.Println("Finished ", name)
+	
+	simulateEvent(ws, "another")
 }
 
 func checkError(err error) {

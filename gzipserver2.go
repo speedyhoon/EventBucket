@@ -41,7 +41,7 @@ func main() {
 	chttp.Handle("/", http.FileServer(http.Dir("./httpsvr")))
 //	http.HandleFunc("/", HomeHandler) // homepage
 	http.HandleFunc("/", makeGzipHandler(HomeHandler)) // homepage
-	http.ListenAndServe("10.1.1.4:80", nil)
+	http.ListenAndServe(":80", nil)
 }
 
 var chttp = http.NewServeMux()
