@@ -2,37 +2,25 @@ package main
 
 import (
 	"net/http"
-	"strings"
 	"fmt"
 	"strconv"
 )
 func shooterInsert(w http.ResponseWriter, r *http.Request) {
-	var event Event
-	validated_values := check_form(event_add_shooterForm(event).Inputs, r)
+	validated_values := check_form(event_add_shooterForm("", []int{}).Inputs, r)
 	event_id := validated_values["event_id"]
 	redirecter(URL_event + event_id, w, r)
 	var new_shooter EventShooter
 	new_shooter.FirstName = validated_values["first"]
 	new_shooter.Surname = validated_values["surname"]
 	new_shooter.Club = validated_values["club"]
-//	var err error
 	new_shooter.Grade, _ = strconv.Atoi(validated_values["grade"])
-
 	if validated_values["age"] != "" {
 		new_shooter.AgeGroup = validated_values["age"]
 	}
-
 	event_shooter_insert(event_id, new_shooter)
 }
 
-//func event(w http.ResponseWriter, r *http.Request) {
-//	event_id := get_id_from_url(r, "/event/")
-//	templator(TEMPLATE_ADMIN, "event", event_Data(event_id), w)
-//}
-
-//func event_Data(event_id string) M {
 func event(event_id string) M {
-//	export(event_id)
 	event, err := getEvent(event_id)
 	if err{
 		return M{
@@ -45,28 +33,25 @@ func event(event_id string) M {
 		"Title": event.Name,
 		"EventId": event_id,
 		"ListRanges": event.Ranges,
-//		"AddShooter": generateForm2(event_add_shooterForm(event)),
 		"ListShooters": event.Shooters,
 		"Menu": event_menu(event_id, event.Ranges, URL_event, event.IsPrizeMeet),
 		"AddRange": generateForm2(eventSettings_add_rangeForm(event_id)),
 		"ExistingShooterEntry": URL_shooterListInsert,
 		"NewShooterEntry": URL_shooterInsert,
-		"GradeOptions": draw_options(Inputs{Options:available_classes_grades(event)}, ""),
+		"GradeOptions": draw_options(Inputs{Options:eventGradeOptions(event.Grades)}, ""),
 		//TODO add ClubOptions when club textbox is changed to a datalist
 		"AgeOptions": draw_options(Inputs{Options:AGE_GROUPS2()}, ""),
 		"Valid": true,
-		"EventGrades":    generateForm2(eventSettings_class_grades(event)),
+		"EventGrades":    generateForm2(eventSettingsClassGrades(event.Id, event.Grades)),
 	}
 }
 
 func shooterListInsert(w http.ResponseWriter, r *http.Request) {
-	validated_values := check_form(event_add_shooterListForm(nil).Inputs, r)
+	validated_values := check_form(event_add_shooterListForm("", []int{}).Inputs, r)
 	event_id := validated_values["event_id"]
 	redirecter(URL_event + event_id, w, r)
 	var new_shooter EventShooter
-//	var err error
 	new_shooter.Grade, _ = strconv.Atoi(validated_values["grade"])
-
 	if validated_values["age"] != "" {
 		new_shooter.AgeGroup = validated_values["age"]
 	}
@@ -81,13 +66,7 @@ func shooterListInsert(w http.ResponseWriter, r *http.Request) {
 	event_shooter_insert(event_id, new_shooter)
 }
 
-func event_add_shooterForm(event Event) Form {
-
-	var event_id string
-	if event.Id != ""{
-		event_id = event.Id
-	}
-
+func event_add_shooterForm(eventId string, grades []int) Form {
 	return Form{
 		Action: URL_shooterInsert,
 		Title: "Add Shooters",
@@ -125,7 +104,7 @@ func event_add_shooterForm(event Event) Form {
 				Label: "Class & Grade",
 				Placeholder: "Class & Grade",
 				Required: true,
-				Options: available_classes_grades(event),
+				Options: eventGradeOptions(grades),
 			},
 //			"submit":Inputs{
 //				Html:      "submit",
@@ -134,19 +113,13 @@ func event_add_shooterForm(event Event) Form {
 			{
 				Name: "event_id",
 				Html: "hidden",
-				Value: event_id,
+				Value: eventId,
 			},
 		},
 	}
 }
 
-func event_add_shooterListForm(event *Event) Form {
-	var event_id string
-	var options []Option
-	if event != nil && event.Id != ""{
-		event_id = event.Id
-		options = available_classes_grades(*event)
-	}
+func event_add_shooterListForm(eventId string, grades []int) Form {
 	return Form{
 		Action: URL_shooterInsert,
 		Title: "Add Shooters",
@@ -181,7 +154,7 @@ func event_add_shooterListForm(event *Event) Form {
 				Label: "Class & Grade",
 				Placeholder: "Class & Grade",
 				Required: true,
-				Options: options,
+				Options: eventGradeOptions(grades),
 			},
 			{
 				Name: "sid",
@@ -189,7 +162,7 @@ func event_add_shooterListForm(event *Event) Form {
 //				Label: "Class & Grade",
 //				Placeholder: "Class & Grade",
 				Required: true,
-//				SelectedValues: available_classes_grades(event),
+//				SelectedValues: eventGradeOptions(event),
 			},
 //			"submit":Inputs{
 //				Html:      "submit",
@@ -198,32 +171,25 @@ func event_add_shooterListForm(event *Event) Form {
 			{
 				Name: "event_id",
 				Html: "hidden",
-				Value: event_id,
+				Value: eventId,
 			},
 		},
 	}
 }
 
-func available_classes_grades(event Event)[]Option{
+func eventGradeOptions(eventGrades []int)[]Option{
+	//TODO add club defaults here
+	var options []Option
 	allGrades := grades()
-	var grades []Option
-	var grade_list map[string]bool
-	selected_grades := strings.Split(event.Grades, ",")
-	no_grades_selected := event.Grades == ""
-	if !no_grades_selected {
-		grade_list = slice_to_map_bool(selected_grades)
+	if len(eventGrades) < 1 {
+		//Use system default event grades
+		eventGrades = gradeList()
 	}
-
-	for _, class_settings := range DEFAULT_CLASS_SETTINGS{
-		for _, grade_id := range class_settings.Grades {
-			gradeId := fmt.Sprintf("%v",grade_id)
-			if grade_list[gradeId] || no_grades_selected {
-				grades = append(grades, Option{
-						Value: gradeId,
-						Display: allGrades[grade_id].LongName,
-					})
-			}
-		}
+	for _, gradeId := range eventGrades{
+		options = append(options, Option{
+			Value: fmt.Sprintf("%v", gradeId),
+			Display: allGrades[gradeId].LongName,
+		})
 	}
-	return grades
+	return options
 }

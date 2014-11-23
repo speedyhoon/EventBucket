@@ -142,7 +142,7 @@ func updateShotScores(w http.ResponseWriter, r *http.Request) {
 		//TODO check the range exists before accessing Locked or Aggregate
 		if !event.Ranges[rangeId].Locked && event.Ranges[rangeId].Aggregate == ""{
 			event_id := validated_values["event_id"].(string)
-			shooter_id := validated_values["shooter_id"].(string)
+			shooter_id := validated_values["shooter_id"].(int)
 			shots := validated_values["shots"].(string)
 
 			new_score := calc_total_centers(shots, grades()[event.Shooters[shooter_id].Grade].ClassId)
@@ -151,8 +151,9 @@ func updateShotScores(w http.ResponseWriter, r *http.Request) {
 			}else{
 				generator(w, fmt.Sprintf("%v", new_score.Total), make(M))
 			}
-			shooterIds := []string{shooter_id}
-			if event.Shooters[shooter_id].LinkedId != "" {
+			shooterIds := []int{shooter_id}
+			//TODO change this to a pointer
+			if event.Shooters[shooter_id].LinkedId > -1 {
 				shooterIds = append(shooterIds, event.Shooters[shooter_id].LinkedId)
 			}
 			go eventTotalScoreUpdate(event_id, rangeId, shooterIds, new_score)

@@ -4,15 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-//	"time"
 )
-
-//func updateEventName(w http.ResponseWriter, r *http.Request) {
-//	validated_values := check_form(eventSettings_event_name("","").Inputs, r)
-//	event_id := validated_values["event_id"]
-//	event_update_name(event_id, validated_values["name"])
-//	redirecter(URL_eventSettings+event_id, w, r)
-//}
 
 func rangeInsert(w http.ResponseWriter, r *http.Request) {
 	validated_values := check_form(eventSettings_add_rangeForm("").Inputs, r)
@@ -176,7 +168,7 @@ func eventSettings(event_id string) M {
 		"isPrizemeeting":	generateForm2(eventSettings_isPrizeMeet(event_id, event.IsPrizeMeet)),
 //		"AddDate":        generateForm2(eventSettings_add_dateForm(event_id, event.Date, event.Time)),
 		"menu":           event_menu(event_id, event.Ranges, URL_eventSettings, event.IsPrizeMeet),
-		"EventGrades":    generateForm2(eventSettings_class_grades(event)),
+		"EventGrades":    generateForm2(eventSettingsClassGrades(event.Id, event.Grades)),
 //		"ChangeName":     generateForm2(eventSettings_event_name(event.Name, event_id)),
 		"AllEventGrades": DEFAULT_CLASS_SETTINGS,
 		"SortScoreboard": generateForm2(eventSettings_sort_scoreboard(event_id, event.SortScoreboard, event.Ranges)),
@@ -210,7 +202,6 @@ func eventSettings_add_rangeForm(event_id string) Form {
 func updateSortScoreBoard(w http.ResponseWriter, r *http.Request) {
 	validated_values := check_form(eventSettings_sort_scoreboard("", "", make([]Range,0)).Inputs, r)
 	event_id := validated_values["event_id"]
-//	redirecter(URL_eventSettings+event_id, w, r)
 	redirecter(URL_scoreboard+event_id, w, r)
 	event_update_sort_scoreboard(event_id, validated_values["sort"])
 }
@@ -225,7 +216,6 @@ func eventSettings_sort_scoreboard(event_id string, existing_sort string, ranges
 		}
 		sort_by_ranges = append(sort_by_ranges, Option{Display: Range.Name, Value: fmt.Sprintf("%v",index), Selected: sort_by})
 	}
-	//	export(sort_by_ranges)
 	return Form{
 		Action: URL_updateSortScoreBoard,
 		Title:  "Sort Scoreboard",
@@ -250,48 +240,6 @@ func eventSettings_sort_scoreboard(event_id string, existing_sort string, ranges
 	}
 }
 
-/*func dateUpdate(w http.ResponseWriter, r *http.Request) {
-	validated_values := check_form(eventSettings_add_dateForm("", "", "").Inputs, r)
-	event_id := validated_values["event_id"]
-	redirecter(URL_eventSettings+event_id, w, r)
-	event_update_date(event_id, validated_values["date"], validated_values["time"])
-}*/
-/*func eventSettings_add_dateForm(event_id, date, hour_minute string) Form {
-	if date == "" {
-		date = time.Now().Format("2006-02-01")
-	}
-	if hour_minute == "" {
-		hour_minute = time.Now().Format("15:04")
-	}
-	return Form{
-		Action: URL_dateUpdate,
-		Title:  "Date &amp; Time",
-		Inputs: []Inputs{
-			{
-				Name: "date",
-				Html:     "date",
-				Label:    "Date",
-				Required: true,
-				Value:    date,
-			},
-			{
-				Name: "time",
-				Html:  "time",
-				Label: "Time",
-				Value: hour_minute,
-			},
-			{
-				Name: "event_id",
-				Html:  "hidden",
-				Value: event_id,
-			},
-			{
-				Html:  "submit",
-				Value: "Save Date",
-			},
-		},
-	}
-}*/
 func eventSettings_add_aggForm(event_id string, event_ranges []Option) Form {
 	return Form{
 		Action: URL_eventAggInsert,
@@ -325,8 +273,7 @@ func eventSettings_add_aggForm(event_id string, event_ranges []Option) Form {
 }
 
 func updateEventGrades(w http.ResponseWriter, r *http.Request) {
-	var event Event
-	validated_values := check_form(eventSettings_class_grades(event).Inputs, r)
+	validated_values := check_form(eventSettingsClassGrades("", []int{}).Inputs, r)
 	event_id := validated_values["event_id"]
 //	redirecter(URL_eventSettings+event_id, w, r)
 	redirecter(URL_event+event_id, w, r)
@@ -341,35 +288,7 @@ func slice_to_map_bool(input []string) map[string]bool {
 	return output
 }
 
-func eventSettings_class_grades(event Event) Form {
-	allGrades := grades()
-	var grades []Option
-	selected := false
-	var grade_list map[string]bool
-	selected_grades := strings.Split(event.Grades, ",")
-	no_grades_selected := event.Grades == ""
-	if !no_grades_selected {
-		grade_list = slice_to_map_bool(selected_grades)
-	}
-
-	for _, class_settings := range DEFAULT_CLASS_SETTINGS{
-		for _, grade_id := range class_settings.Grades {
-			selected = false
-			gradeId := fmt.Sprintf("%v",grade_id)
-			if grade_list[gradeId] || no_grades_selected {
-				selected = true
-			}
-			grades = append(grades, Option{
-				Value:    gradeId,
-				Display:  allGrades[grade_id].LongName,
-				Selected: selected,
-			})
-		}
-	}
-	var event_id string
-	if event.Id != "" {
-		event_id = event.Id
-	}
+func eventSettingsClassGrades(eventId string, grades []int) Form {
 	return Form{
 		Action: URL_updateEventGrades,
 		Title:  "Classes &amp; Grades",
@@ -379,12 +298,12 @@ func eventSettings_class_grades(event Event) Form {
 				Html:           "select",
 //				Label:          "select Classes &amp; Grades in this event",
 				MultiSelect:    true,
-				Options: grades,
+				Options: eventGradeOptions(grades),
 			},
 			{
 				Name: "event_id",
 				Html:  "hidden",
-				Value: event_id,
+				Value: eventId,
 			},
 			{
 				Html:  "submit",
@@ -394,85 +313,9 @@ func eventSettings_class_grades(event Event) Form {
 	}
 }
 
-/*func eventSettings_event_name(event_name, event_id string) Form {
-	return Form{
-		Action: URL_updateEventName,
-		Title:  "Event name",
-		Inputs: []Inputs{
-			{
-				Name: "name",
-				Html:        "text",
-				Label:       "Change event name",
-				Value:       event_name,
-				Placeholder: event_name,
-			},
-			{
-				Name: "event_id",
-				Html:  "hidden",
-				Value: event_id,
-			},
-			{
-				Html:  "submit",
-				Value: "Save",
-			},
-		},
-	}
-}*/
-
-//func totalScores_update(event_id, shooter_id, range_id string)  Form {
-//	return Form{
-//		Action: URL_updateTotalScores,
-//		Inputs: map[string]Inputs{
-//			schemaTOTAL:Inputs{
-//				Html:      "number",
-//				Label:   "Total",
-//				Required: true,
-//				Min: 0,
-//				Max: 60,
-//			},
-//			schemaCENTER:Inputs{
-//				Html:      "number",
-//				Label:   "Centers",
-//				Required: true,
-//				Min: 0,
-//				Max: 60,
-//			},
-//			"event_id":Inputs{
-//				Html: "hidden",
-//				Value: event_id,
-//				Required: true,
-//			},
-//			"shooter_id":Inputs{
-//				Html: "hidden",
-//				Value: shooter_id,
-//				Required: true,
-//			},
-//			"range_id":Inputs{
-//				Html: "hidden",
-//				Value: range_id,
-//				Required: true,
-//			},
-//			"submit":Inputs{
-//				Html:      "submit",
-//				Value:   "Save",
-//			},
-//		},
-//	}
-//}
-
-
-
-
 func eventShotsNSighters(w http.ResponseWriter, r *http.Request) {
-//	var event Event
 	r.ParseForm()
 	form := r.Form
-//	fmt.Println("event_id:::", r.Form["event_id"])
-//	fmt.Println("shots:::", r.Form["shots"])
-//	fmt.Println("sight:::", r.Form["sight"])
-//	fmt.Println("form:")
-//	export(form)
-
 	if event_id, ok := form["event_id"]; ok && len(event_id) > 0{
 		fmt.Println("event_id=",event_id)
 		if shots, ok := form["shots"]; ok {
@@ -486,19 +329,7 @@ func eventShotsNSighters(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("shots not found")
 		}
 	}
-
-//	validated_values := check_form(eventSettings_class_grades(event).Inputs, r)
-
-//	dump(form)
-
-//	event_id := validated_values["event_id"]
-//	redirecter(URL_eventSettings+event_id, w, r)
-//	event_upsert_data(event_id, M{schemaGRADES: validated_values["grades"]})
 }
-
-
-
-
 
 func updateIsPrizeMeet(w http.ResponseWriter, r *http.Request) {
 	validated_values := check_form(eventSettings_isPrizeMeet("", false).Inputs, r)

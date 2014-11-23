@@ -60,7 +60,7 @@ func totalScores_Data(data string, show_all bool) M {
 	}
 
 	var shooter_list []EventShooter
-	shooters_forms := make(map[string]string)
+	var shooters_forms []string
 	for shooter_id,shooter_data := range event.Shooters{
 		var score string
 		if shooter_data.Scores[range_id].Total > 0 {
@@ -70,7 +70,7 @@ func totalScores_Data(data string, show_all bool) M {
 			score += fmt.Sprintf(".%v", shooter_data.Scores[range_id].Centers)
 		}
 		if show_all || (!show_all && score == "") {
-			shooters_forms[shooter_id] = generateForm2(total_scores_Form(event_id, range_id, shooter_id, score))
+			shooters_forms = append(shooters_forms, generateForm2(total_scores_Form(event_id, range_id, shooter_id, score)))
 			shooter_data.Id = shooter_id
 			shooter_list = append(shooter_list, shooter_data)
 		}
@@ -96,12 +96,12 @@ func totalScores_Data(data string, show_all bool) M {
 
 func updateTotalScores(w http.ResponseWriter, r *http.Request){
 //	validated_values := check_form(total_scores_Form("", "", "", "").Inputs, r) //total_scores_Form(event_id, range_id, shooter_id, total, centers
-	validated_values, passed := valid8(total_scores_Form("", "", "", "").Inputs, r)
+	validated_values, passed := valid8(total_scores_Form("", "", -1, "").Inputs, r)
 	if passed {
 		event_id := validated_values["event_id"].(string)
 		event := validated_values["event"].(Event)
 		rangeId := validated_values["range_id"].(int)
-		shooter_id := validated_values["shooter_id"].(string)
+		shooter_id := validated_values["shooter_id"].(int)
 		score := strings.Split(validated_values["score"].(string), ".")
 		total, success := strToInt(score[0])
 		if total > 0 && success {
@@ -112,9 +112,9 @@ func updateTotalScores(w http.ResponseWriter, r *http.Request){
 				centers, _ := strToInt(score[1])
 				new_score.Centers = centers
 			}
-//			rangeId, _ := strToInt(range_id)
-			shooterIds := []string{shooter_id}
-			if event.Shooters[shooter_id].LinkedId != "" {
+			shooterIds := []int{shooter_id}
+			//TODO change to a pointer so it can be compared to nil
+			if event.Shooters[shooter_id].LinkedId > -1 {
 				shooterIds = append(shooterIds, event.Shooters[shooter_id].LinkedId)
 			}
 			go eventTotalScoreUpdate(event_id, rangeId, shooterIds, new_score)
@@ -122,8 +122,6 @@ func updateTotalScores(w http.ResponseWriter, r *http.Request){
 		redirecter(fmt.Sprintf("%v%v", URL_totalScores+event_id+"/", rangeId), w, r)
 	}
 }
-
-
 
 func search_for_aggs(event_id, range_id string)[]string{
 	var aggs_to_calculate []string
@@ -139,16 +137,7 @@ func search_for_aggs(event_id, range_id string)[]string{
 	}
 	return aggs_to_calculate
 }
-func calculate_aggs(event Event, shooter_id string, ranges []string)Event{
-//	if xx, ok := event.Shooters[shooter_id]; ok {
-//		xx.count = 2
-//		m["x"] = xx
-//	} else {
-//		panic("X isn't in the map")
-//	}
-//	if event.Shooters[shooter_id].Scores != nil{
-//		dump("new val is not none")
-//	}else{
+func calculate_aggs(event Event, shooter_id int, ranges []string)Event{
 	if event.Shooters[shooter_id].Scores == nil{
 		temp_kkk := event.Shooters[shooter_id]
 		temp_kkk.Scores = map[string]Score{}
@@ -168,23 +157,10 @@ func calculate_aggs(event Event, shooter_id string, ranges []string)Event{
 		}
 		event.Shooters[shooter_id].Scores[fmt.Sprintf("%v",agg_id)] = Score{Total: total, Centers: centers, CountBack1: count_back1}
 	}
-//		event.Shooters[shooter_id].Scores = make([]Score{}, 1)
-//		agg_total := event.Shooters[shooter_id].Scores[agg_id]
-//		agg_total.Total = 0
-//		agg_total.Centers = 0
-//		agg_total.CountBack1 = ""
-//		for _, rangeId := range event.Ranges[agg_id].Aggregate{
-//			range_id := string(rangeId)
-//			agg_total.Total += event.Shooters[shooter_id].Scores[range_id].Total
-//			agg_total.Centers += event.Shooters[shooter_id].Scores[range_id].Centers
-//			agg_total.CountBack1 += event.Shooters[shooter_id].Scores[range_id].CountBack1
-//		}
-//		event.Shooters[shooter_id].Scores[agg_id] = agg_total
-//	}
 	return event
 }
 
-func total_scores_Form(event_id, range_id, shooter_id, score string) Form {
+func total_scores_Form(event_id, range_id string, shooter_id int, score string) Form {
 	return Form{
 		Action: URL_updateTotalScores,
 		Inputs: []Inputs{
@@ -215,7 +191,8 @@ func total_scores_Form(event_id, range_id, shooter_id, score string) Form {
 			{
 				Name: "shooter_id",
 				Html: "hidden",
-				Value: shooter_id,
+				//TODO maybe change this to an interface so it can accept different types
+				Value: fmt.Sprintf("%v",shooter_id),
 			},
 			{
 				Name: "range_id",

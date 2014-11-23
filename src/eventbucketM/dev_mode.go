@@ -172,7 +172,7 @@ func dev_mode_random_data(w http.ResponseWriter, r *http.Request) {
 				//				})
 				//				defer resp.Body.Close()
 				range_Id, _ := strToInt(rangeId)
-				eventTotalScoreUpdate(eventId, range_Id, []string{shooter_id}, Score{
+				eventTotalScoreUpdate(eventId, range_Id, []int{shooter_id}, Score{
 					Total: rand.Intn(51),
 					Centers: rand.Intn(11),
 				})
@@ -183,7 +183,7 @@ func dev_mode_random_data(w http.ResponseWriter, r *http.Request) {
 				go http.PostForm("http://localhost/updateShotScores",
 						url.Values{
 							"shots":			{randomShooterScores(shooter.Grade)},
-							"shooter_id":	{shooterId},
+							"shooter_id":	{fmt.Sprintf("%v",shooterId)},
 							"range_id":		{rangeId},
 							"event_id":		{eventId},
 						},
