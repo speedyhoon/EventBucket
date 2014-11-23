@@ -59,9 +59,6 @@ func valid8(options []Inputs, r *http.Request)(M,bool){
 	for index, option := range options {
 		if option.Html != "submit" {
 			passedV8tion[index] = false
-
-
-
 			formArray, ok = form[option.Name]
 //			if ok && ((option.Required && array[0] != "") || !option.Required) {
 			if ok && (!option.Required || (option.Required && len(formArray) > 0)) {
@@ -79,7 +76,7 @@ func valid8(options []Inputs, r *http.Request)(M,bool){
 						new_values[option.Name] = valueInt
 						passedV8tion[index] = true
 //						passedValidation = true
-					}else{
+//					}else{
 //						passedValidation = 2
 					}
 				case "string":
@@ -88,7 +85,7 @@ func valid8(options []Inputs, r *http.Request)(M,bool){
 						new_values[option.Name] = value
 						passedV8tion[index] = true
 //						passedValidation = 1
-					}else{
+//					}else{
 //						passedValidation = 2
 					}
 				}
@@ -107,22 +104,23 @@ func valid8(options []Inputs, r *http.Request)(M,bool){
 		for name, value := range new_values {
 			switch name{
 			case "event_id":
-				if event, ok = getEvent(fmt.Sprintf("%v",value)); ok{
+				if event, ok = getEvent(fmt.Sprintf("%v", value)); ok {
 					new_values["event"] = event
-				}else{
+				}else {
 					fmt.Printf("event with id '%v' doesn't exist", value)
 					return make(M), false
 				}
 			case "range_id":
-				if integer, _ := value.(int); integer >= len(event.Ranges){
+				if integer, _ := value.(int); integer >= len(event.Ranges) {
 					fmt.Printf("event with range id '%v' doesn't exist", value)
 					return make(M), false
 				}
-			case "shooter_id":
-				if _, ok := event.Shooters[fmt.Sprintf("%v", value)]; !ok{
+				/*case "shooter_id":
+				//TODO how to check EventShooter is not empty?
+				if _, ok := event.Shooters[value.(int)]; !ok{
 					fmt.Printf("event with shooter id '%v' doesn't exist", value)
 					return make(M), false
-				}
+				}*/
 			}
 		}
 	}

@@ -199,6 +199,9 @@ type Grade struct{
 	ClassId int
 	Settings ClassSettings
 }
+func gradeList()[]int{
+	return []int{0,1,2,3,4,5,6,7,8,9}
+}
 func grades()[]Grade{
 	return []Grade{
 		0: Grade{Settings: DEFAULT_CLASS_SETTINGS[0], ClassId: 0,Name:"A", ClassName:"Target", LongName: "Target A"},
@@ -208,8 +211,8 @@ func grades()[]Grade{
 		4: Grade{Settings: DEFAULT_CLASS_SETTINGS[1], ClassId: 1,Name:"FB", ClassName:"F Class", LongName: "F Class B"},
 		5: Grade{Settings: DEFAULT_CLASS_SETTINGS[1], ClassId: 1,Name:"F Open", ClassName:"F Class", LongName: "F Class Open"},
 		6: Grade{Settings: DEFAULT_CLASS_SETTINGS[1], ClassId: 1,Name:"F/TR", ClassName:"F Class", LongName: "F/TR"},
-		7: Grade{Settings: DEFAULT_CLASS_SETTINGS[3], ClassId: 2,Name:"Open", ClassName:"Match", LongName: "Match Open"},
-		8: Grade{Settings: DEFAULT_CLASS_SETTINGS[3], ClassId: 2,Name:"Reserve", ClassName:"Match", LongName: "Match Reserve"},
+		7: Grade{Settings: DEFAULT_CLASS_SETTINGS[2], ClassId: 2,Name:"Open", ClassName:"Match", LongName: "Match Open"},
+		8: Grade{Settings: DEFAULT_CLASS_SETTINGS[2], ClassId: 2,Name:"Reserve", ClassName:"Match", LongName: "Match Reserve"},
 		9: Grade{Settings: DEFAULT_CLASS_SETTINGS[1], ClassId: 1,Name:"Rifle", ClassName:"303", LongName: "303 Rifle"},
 	}
 }

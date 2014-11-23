@@ -255,7 +255,7 @@ func event_shooter_insert(event_id string, shooter EventShooter) {
 	//Match Reserve
 	if shooter.Grade == 8{
 		//Shooters in grade Match Reserve also must go in grade Match Open
-		shooter.LinkedId = fmt.Sprintf("%v", event.AutoInc.Shooter + 1)
+		shooter.LinkedId = event.AutoInc.Shooter + 1
 		insert[fmt.Sprintf("%v", Dot(schemaSHOOTER, event.AutoInc.Shooter))] = shooter
 		increment = 2
 		duplicate := shooter
@@ -273,19 +273,7 @@ func event_shooter_insert(event_id string, shooter EventShooter) {
 	conn.C(TBLevent).FindId(event_id).Apply(change, make(M))
 }
 
-/*func event_total_score_update(event_id, range_id, shooter_id string, score Score) {
-//	dump("DB  range id == ")
-//	dump(range_id)
-	event := eventTotalScoreUpdate(event_id, range_id, shooter_id, score)
-	if event.Shooters[shooter_id].LinkedId != "" {
-		eventTotalScoreUpdate(event_id, range_id, event.Shooters[shooter_id].LinkedId, score)
-	}
-
-	//	aggs_list_to_update := search_for_aggs(event_id, range_id)
-
-//	event_sort_aggs_with_grade(event, range_id, shooter_id)
-}*/
-func eventTotalScoreUpdate(eventId string, rangeId int, shooterIds []string, score Score)Event{
+func eventTotalScoreUpdate(eventId string, rangeId int, shooterIds []int, score Score)Event{
 	var updateSetter M
 	for _, shooterId := range shooterIds{
 		updateSetter[Dot(schemaSHOOTER, shooterId, rangeId)] = score
@@ -298,36 +286,19 @@ func eventTotalScoreUpdate(eventId string, rangeId int, shooterIds []string, sco
 	}
 	var event Event
 	_, err := conn.C(TBLevent).FindId(eventId).Apply(change, &event)
+	//TODO better error handling would be nice
 	checkErr(err)
-
-//	if event.Shooters[shooterId].LinkedId != "" {
-//		change := mgo.Change{
-//			Upsert: true,
-//			Update: M{
-//				"$set": M{Dot(schemaSHOOTER, shooterId, rangeId): score},
-//			},
-//		}
-//		_, err = conn.C(TBLevent).FindId(eventId).Apply(change, &event)
-//		checkErr(err)
-//	}
 	return event
 }
 
 
-func event_sort_aggs_with_grade(event Event, range_id, shooter_id string){
+func event_sort_aggs_with_grade(event Event, range_id string, shooter_id int){
 	event_id := event.Id
 	ranges_to_redo := search_for_aggs(event_id, range_id)
+	//TODO this seems quite inefficent
 	event = calculate_aggs(event, shooter_id, ranges_to_redo)
-//	UpdateDoc_by_id(TBLevent, event_id, event)
-
-
-
-	//Get the up to date event
-//	event, _ = getEvent(event_id)
-
 	//Only worry about shooters in this shooters grade
 	current_grade := event.Shooters[shooter_id].Grade
-
 	//Add the current range to the list of ranges to re-calculate
 	ranges_to_redo = append(ranges_to_redo, range_id)
 	for _, rangeId := range ranges_to_redo {
@@ -369,8 +340,6 @@ func event_sort_aggs_with_grade(event Event, range_id, shooter_id string){
 
 		//loop through the list of shooters
 		for index, shooter := range shooter_list {
-			//		if shooter
-			//	}
 			this_shooter_score := shooter.Scores[rangeId]
 
 			//			if index+1 < shooter_length {
@@ -393,7 +362,6 @@ func event_sort_aggs_with_grade(event Event, range_id, shooter_id string){
 						//					shoot_equ = true
 						//					if SCOREBOARD_IGNORE_POSITION_FOR_ZERO_SCORES {
 						rank = 0
-						//							fmt.Println("none")
 						//					}
 						//						} else {
 						//							fmt.Println("exact")
@@ -407,21 +375,18 @@ func event_sort_aggs_with_grade(event Event, range_id, shooter_id string){
 					if this_shooter_score.Total != 0 {
 						//increase rank by 1
 						rank = next_ordinal
-						//							fmt.Println("go up")
 					}else{
 						rank = 0
-						//							fmt.Println("0=0=0")
 					}
 				}
 			}else {
 				//The very first shooter without a previous shooter assigned
 				//increase rank by 1
 				rank = next_ordinal
-				//					fmt.Println("go up")
 			}
-			//				fmt.Println(shooter.Id, "rank:", rank, "  ", this_shooter_score.Total, " ", this_shooter_score.Centers, "  ", next_shooter_score.Total, " ", next_shooter_score.Centers, "   next:", next_ordinal)
 
 			//update the database
+			//TODO change this to only update once. not every loop iteration
 			change := mgo.Change{
 				Update: M{                                          //position
 					"$set": M{Dot(schemaSHOOTER, shooter.Id, rangeId, "p"): rank},
@@ -432,33 +397,9 @@ func event_sort_aggs_with_grade(event Event, range_id, shooter_id string){
 			if err != nil {
 				fmt.Println("unable to update shooter rank for range: ", rangeId, ", shooter id:", shooter.Id)
 			}
-			//			}
 		}
 	}
 }
-
-
-/*
-func event_update_name(event_id, event_name string) {
-	change := mgo.Change{
-		Upsert: true,	//Maybe this shouldn't be upserted because name should ALWAYS be present
-		Update: M{
-			"$set": M{"n": event_name},
-		},
-	}
-	conn.C(TBLevent).FindId(event_id).Apply(change, make(M))
-}
-*/
-
-/*func event_update_date(event_id, date, time string) {
-	change := mgo.Change{
-		Upsert: true,
-		Update: M{
-			"$set": M{schemaDATE: date, schemaTIME: time}, //This is a separate fields because Browsers don't support a date-time field yet
-		},
-	}
-	conn.C(TBLevent).FindId(event_id).Apply(change, make(M))
-}*/
 
 func event_update_range_data(event_id string, update_data M) {
 	change := mgo.Change{
