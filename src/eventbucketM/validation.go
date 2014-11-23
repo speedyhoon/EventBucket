@@ -50,7 +50,6 @@ func valid8(options []Inputs, r *http.Request)(M,bool){
 	form := r.Form
 	new_values := make(M)
 	var passedV8tion []bool
-//	passedValidation := 0	//not processed = 0, passed = 1, failed = 2
 	var formArray []string
 	var value string
 	var ok bool
@@ -60,67 +59,60 @@ func valid8(options []Inputs, r *http.Request)(M,bool){
 		if option.Html != "submit" {
 			passedV8tion[index] = false
 			formArray, ok = form[option.Name]
-//			if ok && ((option.Required && array[0] != "") || !option.Required) {
 			if ok && (!option.Required || (option.Required && len(formArray) > 0)) {
 				if len(formArray) > 1{
 //					new_values[option.Name] = strings.Join(array, ",")
 				}else{
-//					new_values[option.Name] = strings.TrimSpace(array[0])
 					value = strings.TrimSpace(formArray[0])
 				}
-
 				switch option.VarType{
 				case "int":
 					valueInt, err = strconv.Atoi(value)
 					if err == nil{
 						new_values[option.Name] = valueInt
 						passedV8tion[index] = true
-//						passedValidation = true
-//					}else{
-//						passedValidation = 2
 					}
 				case "string":
 					valueInt = len(value)
 					if valueInt >= option.VarMinLen && valueInt <= option.VarMinLen {
 						new_values[option.Name] = value
 						passedV8tion[index] = true
-//						passedValidation = 1
-//					}else{
-//						passedValidation = 2
 					}
 				}
 			}else{
-				//TODO output this error message to screen
 				fmt.Printf("options[%v] is REQUIRED OR is not in array", option)
-//				passedValidation = 2
 			}
 		}
 	}
 
 	if !testAllTrue(passedV8tion) {
+		//TODO output all these error messages to screen at once. A form might have several invalid fields at the same time
 		return make(M), false
-	}else{
-		var event Event
-		for name, value := range new_values {
-			switch name{
-			case "event_id":
-				if event, ok = getEvent(fmt.Sprintf("%v", value)); ok {
-					new_values["event"] = event
-				}else {
-					fmt.Printf("event with id '%v' doesn't exist", value)
-					return make(M), false
-				}
-			case "range_id":
-				if integer, _ := value.(int); integer >= len(event.Ranges) {
-					fmt.Printf("event with range id '%v' doesn't exist", value)
-					return make(M), false
-				}
-				/*case "shooter_id":
-				//TODO how to check EventShooter is not empty?
-				if _, ok := event.Shooters[value.(int)]; !ok{
-					fmt.Printf("event with shooter id '%v' doesn't exist", value)
-					return make(M), false
-				}*/
+	}
+
+	var event Event
+	var tempInt int
+	for name, value := range new_values {
+		switch name{
+		case "event_id":
+			if event, ok = getEvent(fmt.Sprintf("%v", value)); ok {
+				new_values["event"] = event
+			}else {
+				fmt.Printf("event with id '%v' doesn't exist", value)
+				return make(M), false
+			}
+		case "range_id":
+			tempInt = value.(int)
+			if tempInt < 0 || tempInt > len(event.Ranges) {
+				fmt.Printf("event with range id '%v' doesn't exist", value)
+				return make(M), false
+			}
+		case "shooter_id":
+			//TODO this might be better as a pointer to check that index is not null
+			tempInt = value.(int)
+			if tempInt < 0 || tempInt > len(event.Shooters[tempInt]){
+				fmt.Printf("event with shooter id '%v' doesn't exist", value)
+				return make(M), false
 			}
 		}
 	}
