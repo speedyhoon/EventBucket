@@ -24,10 +24,9 @@
 				<p>
 					{{if.Id}}
 						<a href=/event/{{.Id}}>{{.Name}}</a>~~~
-					{{if .Time}}
-						starts at {{.Time}}
-					{{end}}
-						{{/* if event is in the future <a href=/event/{{.Id}}>Edit</a>*/}}
+						{{if .Time}}
+							starts at {{.Time}}
+						{{end}}
 					{{end}}
 				</p>
 				{{if.Club}}
@@ -38,7 +37,7 @@
 		{{end}}
 	</div>
 {{else}}
-	No events listed. <a href={{$.ArchiveLink}}>Archive</a>
+	No events listed.~~~<a href={{$.ArchiveLink}}>Archive</a>
 {{end}}
 
 {{/*with .DraftEvents}}
@@ -62,11 +61,10 @@
 				</time>
 				<p>
 					{{if.Id}}
-					<a href=/event/{{.Id}}>{{.Name}}</a>~~~
-					{{if .Time}}
-					starts at {{.Time}}
-					{{end}}
-					{{/* if event is in the future <a href=/event/{{.Id}}>Edit</a>* / }}
+						<a href=/event/{{.Id}}>{{.Name}}</a>~~~
+						{{if .Time}}
+							starts at {{.Time}}
+						{{end}}
 					{{end}}
 				</p>
 				{{if.Club}}
@@ -106,7 +104,6 @@
 					{{if .Time}}
 						starts at {{.Time}}
 					{{end}}
-						{{/* if event is in the future <a href=/event/{{.Id}}>Edit</a>* / }}
 					{{end}}
 				</p>
 				{{if.Club}}

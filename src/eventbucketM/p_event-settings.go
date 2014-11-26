@@ -33,9 +33,7 @@ func range_agg_insert(validated_values map[string]string, isAgg bool) {
 	}
 	event_id := validated_values["event_id"]
 	range_id, event_data := DB_event_add_range(event_id, new_range)
-//	if range_id > 0 {
-		go calc_new_agg_range_scores(event_id, range_id, event_data)
-//	}
+	go calc_new_agg_range_scores(event_id, range_id, event_data)
 }
 func calc_new_agg_range_scores(event_id string, range_id int, event Event) {
 	ranges := []string{fmt.Sprintf("%v",range_id)}
@@ -47,46 +45,28 @@ func calc_new_agg_range_scores(event_id string, range_id int, event Event) {
 
 func rangeUpdate2(w http.ResponseWriter, r *http.Request) {
 	validated_values := check_form(eventSettings_update_range("", "").Inputs, r)
-	event_id := validated_values["event_id"]
-	range_id := validated_values["range_id"]
-	dump("range update 2")
-	dump(event_id)
-	dump(range_id)
-	dump(validated_values)
-
-	unset := make(M)
-	set := M{
-		Dot("R",range_id,"n"): validated_values["name"],
-	}
-
-//	did_unset := false
-	if validated_values["hide"] == "on"{
-		set[Dot("R",range_id,"h")] = true
-	}else{
-		unset[Dot("R",range_id,"h")] = ""
-//		did_unset = true
-	}
-	if validated_values["lock"] == "on"{
-		set[Dot("R",range_id,"l")] = true
-	}else{
-		unset[Dot("R",range_id,"l")] = ""
-//		did_unset = true
-	}
-
+	eventId := validated_values["event_id"]
+	rangeId := validated_values["range_id"]
 	update := M{
-		"$set": set,
+		"$set": M{
+			Dot("R",rangeId,"n"): validated_values["name"],
+		},
 	}
-//	if did_unset{
-	if len(unset) >= 1{
-		update["$unset"] = unset
+	if validated_values["hide"] == "on"{
+		update["$set"].(M)[Dot("R",rangeId,"h")] = true
+	}else{
+		update["$unset"].(M)[Dot("R",rangeId,"h")] = false
 	}
 
-	dump("update Data:::")
-	dump(update)
-	event_update_range_data(event_id, update)
-	redirecter(URL_eventSettings+event_id, w, r)
+	if validated_values["lock"] == "on"{
+		update["$set"].(M)[Dot("R",rangeId,"l")] = true
+	}else{
+		update["$unset"].(M)[Dot("R",rangeId,"l")] = false
+	}
+	event_update_range_data(eventId, update)
+	redirecter(URL_eventSettings+eventId, w, r)
 }
-func eventSettings_update_range(event_id, range_id string) Form {
+func eventSettings_update_range(eventId, rangeId string) Form {
 	return Form{
 		Action: URL_updateRange,
 		Inputs: []Inputs{
@@ -99,12 +79,12 @@ func eventSettings_update_range(event_id, range_id string) Form {
 			{
 				Name: "event_id",
 				Html:  "hidden",
-				Value: event_id,
+				Value: eventId,
 			},
 			{
 				Name: "range_id",
 				Html:  "hidden",
-				Value: range_id,
+				Value: rangeId,
 			},
 			{
 				Name: "hide",
@@ -275,7 +255,6 @@ func eventSettings_add_aggForm(event_id string, event_ranges []Option) Form {
 func updateEventGrades(w http.ResponseWriter, r *http.Request) {
 	validated_values := check_form(eventSettingsClassGrades("", []int{}).Inputs, r)
 	event_id := validated_values["event_id"]
-//	redirecter(URL_eventSettings+event_id, w, r)
 	redirecter(URL_event+event_id, w, r)
 	event_upsert_data(event_id, M{schemaGRADES: validated_values["grades"]})
 }

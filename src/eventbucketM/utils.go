@@ -18,9 +18,9 @@ func dump(input interface{}) {
 //func vardump(input interface{}) {
 //	fmt.Printf("%+v\n", input) //map field names included
 //}
-//func export(input interface{}) {
-//	fmt.Printf("\n%#v\n\n", input) //can copy and declare new variable with it. Most ouput available
-//}
+func export(input interface{}) {
+	fmt.Printf("\n%#v\n\n", input) //can copy and declare new variable with it. Most ouput available
+}
 
 func exists(dict M, key string) string {
 	if val, ok := dict[key]; ok {

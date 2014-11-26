@@ -9,10 +9,11 @@ func shooterInsert(w http.ResponseWriter, r *http.Request) {
 	validated_values := check_form(event_add_shooterForm("", []int{}).Inputs, r)
 	event_id := validated_values["event_id"]
 	redirecter(URL_event + event_id, w, r)
-	var new_shooter EventShooter
-	new_shooter.FirstName = validated_values["first"]
-	new_shooter.Surname = validated_values["surname"]
-	new_shooter.Club = validated_values["club"]
+	new_shooter := EventShooter{
+		FirstName: validated_values["first"],
+		Surname: validated_values["surname"],
+		Club: validated_values["club"],
+	}
 	new_shooter.Grade, _ = strconv.Atoi(validated_values["grade"])
 	if validated_values["age"] != "" {
 		new_shooter.AgeGroup = validated_values["age"]
@@ -20,33 +21,31 @@ func shooterInsert(w http.ResponseWriter, r *http.Request) {
 	event_shooter_insert(event_id, new_shooter)
 }
 
-func event(event_id string) M {
-	event, err := getEvent(event_id)
+func event(eventId string) M {
+	event, err := getEvent20Shooters(eventId)
 	if err{
 		return M{
-			"Title": "Event not found: "+event_id,
+			"Title": "Event not found: "+eventId,
 			"Menu":  standard_menu(ORGANISERS_MENU_ITEMS),
 			"Valid": false,
 		}
 	}
 	return M{
 		"Title": event.Name,
-		"EventId": event_id,
-		"ListRanges": event.Ranges,
-		"ListShooters": event.Shooters,
-		"Menu": event_menu(event_id, event.Ranges, URL_event, event.IsPrizeMeet),
-		"AddRange": generateForm2(eventSettings_add_rangeForm(event_id)),
-		"ExistingShooterEntry": URL_shooterListInsert,
+		"Menu": event_menu(eventId, event.Ranges, URL_event, event.IsPrizeMeet),
+		"Valid": true,
 		"NewShooterEntry": URL_shooterInsert,
 		"GradeOptions": draw_options(Inputs{Options:eventGradeOptions(event.Grades)}, ""),
 		//TODO add ClubOptions when club textbox is changed to a datalist
 		"AgeOptions": draw_options(Inputs{Options:AGE_GROUPS2()}, ""),
-		"Valid": true,
+		"ExistingShooterEntry": URL_shooterListInsert,
 		"EventGrades":    generateForm2(eventSettingsClassGrades(event.Id, event.Grades)),
+		"ListShooters": event.Shooters,
+		"EventId": eventId,
 	}
 }
 
-func shooterListInsert(w http.ResponseWriter, r *http.Request) {
+func shooterListInsert(w http.ResponseWriter, r *http.Request){
 	validated_values := check_form(event_add_shooterListForm("", []int{}).Inputs, r)
 	event_id := validated_values["event_id"]
 	redirecter(URL_event + event_id, w, r)

@@ -13,15 +13,14 @@ type Event struct {
 	//	Datetime string							`bson:"d,omitempty"`		No browser currently supports date time, so settling for separate fields that google chrome allows
 	Date           string                  `bson:"d,omitempty"`
 	Time           string                  `bson:"t,omitempty"`
-//	Grades         string                  `bson:"g,omitempty"`
-	Grades         []int                  `bson:"g,omitempty"`
+	Grades         []int                   `bson:"g,omitempty"`
 	SortScoreboard string                  `bson:"o,omitempty"`
 	IsPrizeMeet    bool                    `bson:"p,omitempty"`
 	Closed		   bool                    `bson:"l,omitempty"`
 	Ranges         []Range     			   `bson:"R,omitempty"`
 	Shooters       []EventShooter 			`bson:"S,omitempty"`
-	TeamCat        map[string]TeamCat      `bson:"A,omitempty"`
-	Teams          map[string]Team         `bson:"T,omitempty"`
+//	TeamCat        map[string]TeamCat      `bson:"A,omitempty"`
+//	Teams          map[string]Team         `bson:"T,omitempty"`
 	AutoInc        AutoInc                 `bson:"U"`
 }
 
