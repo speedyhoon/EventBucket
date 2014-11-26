@@ -110,7 +110,7 @@ func valid8(options []Inputs, r *http.Request)(M,bool){
 		case "shooter_id":
 			//TODO this might be better as a pointer to check that index is not null
 			tempInt = value.(int)
-			if tempInt < 0 || tempInt > len(event.Shooters[tempInt]){
+			if tempInt < 0 || tempInt > len(event.Shooters){
 				fmt.Printf("event with shooter id '%v' doesn't exist", value)
 				return make(M), false
 			}

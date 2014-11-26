@@ -21,10 +21,7 @@
 <table>
 	<tr>
 		<td>Pos</td>
-		<!--<td>Class</td>-->
-		<!--<td>Grade</td>-->
 		<td>Shooter</td>
-		<!--<td>ID</td>-->
 		<td>Club</td>
 		<!--<td>Age Group</td>-->
 		{{range $range_id, $range := $rangeList}}
@@ -40,7 +37,7 @@
 	</tr>
 	{{range $shooter := .ListShooters}}
 		{{if .GradeSeparator}}
-			<tr><td colspan=99 class=cnr>{{CLASSLONG .Grade}} {{GRADE .Grade}}</td></tr>
+			<tr><td colspan=99 class=cnr>{{CLASSLONG .Grade}}</td></tr>
 			<tr><td colspan=99 class=rS></td></tr>
 		{{end}}
 		<tr>

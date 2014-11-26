@@ -5,11 +5,10 @@ import (
 	"mgo"
 	"strings"
 	//	"os"
-	//	"mgo/bson"
+		"mgo/bson"
 )
 
 const (
-//	DATABASE       = "eb"
 	TBLAutoInc     = "A"
 		schemaCounter  = "n"
 	TBLclub        = "C"
@@ -17,11 +16,9 @@ const (
 		schemaSHOOTER  = "S"
 		schemaAutoInc  = "U"
 		schemaRANGE    = "R"
-		schemaDATE     = "d"
-		schemaTIME     = "t"
 		schemaSORT     = "o"
 		schemaGRADES   = "g"
-	TBLchamp       = "c" //Championship
+	//TBLchamp       = "c" //Championship
 	TBLshooter     = "S"
 	TBLshooterList = "n"
 )
@@ -29,63 +26,22 @@ const (
 var (
 	conn                *mgo.Database
 	database_status     = false
-//	database_connection = 0
-	//0 = not connected
-	//1 = trying to connect
-	//2 = connected
 )
 
-// Connect to the mongo database!
-//func DB() *mgo.Database {
 func DB() {
-//	fmt.Printf("database conn = %d\n", database_connection)
-//	database_connection = 1
 	database_status = false
 	session, err := mgo.Dial("localhost:38888")
 	if err != nil {
 		//TODO it would be better to output the mongodb connection error
-		fmt.Printf("The database service is not reachable.")
-//		error_message(false, "999", "Database connection error", "The database service is not reachable. Please start the database service")
-//		remove_error("Initialising connection to DB")
-		//		db_error_connection()
-//		database_connection = 0
+		fmt.Printf("The database service is not available.")
 		return
-		//		os.Exit(999)
-		//		return conn
-	} //else{
-	//		fmt.Printf("The database connected OK.")
-	//	}
-	//	defer session.Close()
-	// Optional. Switch the session to a monotonic behavior.
-	//	session.SetMode(mgo.Monotonic, true)
-	session.SetMode(mgo.Eventual, true) //this is supposed to be faster
-	//	db_connection := session.DB(DATABASE)
-	db_connection := session.DB("local")
-
-	//	for _, table_name := range []string{TBLAutoInc, TBLclub, TBLevent, TBLchamp}{
-	//		collection := db_connection.C(table_name)
-	//		if collection != nil{
-	//						db_error_connection()
-	//			return
-	//		}
-	//	}
-	database_status = true
-//	database_connection = 2
-	conn = db_connection
-	//	return db_connection
-}
-/*func DB_connection() {
-	if database_connection==0 {
-		//		fmt.Println("Initialising connection to DB")
-		//		error_message(true, "996", "Initialising connection to DB", "Initialising connection to DB")
-		go DB()
-	} else if database_connection==1 {
-		fmt.Println("Already connecting to DB")
-		//		error_message(true, "997", "Initialising connection to DB", "Initialising connection to DB")
-	} else {
-		fmt.Println("connected to DB")
 	}
-}*/
+	//defer session.Close()
+	session.SetMode(mgo.Eventual, false)//false = the consistency guarantees won't be reset
+//	db_connection := session.DB("eb")
+	database_status = true
+	conn = session.DB("local")
+}
 
 func getCollection(collection_name string) []M {
 	var result []M
@@ -115,7 +71,6 @@ func getClub_by_name(clubName string)(Club, bool){
 	if database_status {
 		//remove double spaces
 		clubName = strings.Join(strings.Fields(clubName), " ")
-
 		if clubName != "" {
 			err := conn.C(TBLclub).Find(M{"n": M{"$regex": fmt.Sprintf(`^%v$`, clubName), "$options": "i"}}).One(&result)
 			if err==nil {
@@ -160,10 +115,19 @@ func getShooter(id int) Shooter {
 
 func getEvent(id string)(Event, bool){
 	var result Event
-
 	if database_status {
-//		checkErr(conn.C(TBLevent).FindId(id).One(&result))
 		err := conn.C(TBLevent).FindId(id).One(&result)
+		if err==nil{
+			return result, false
+		}
+	}
+	return result, true
+}
+
+func getEvent20Shooters(id string)(Event, bool){
+	var result Event
+	if database_status {
+		err := conn.C(TBLevent).FindId(id).Select(bson.M{"S": bson.M{"$slice": -20 }}).One(&result)
 		if err==nil{
 			return result, false
 		}
@@ -190,12 +154,10 @@ func getNextId(collection_name string) string {
 func id_suffix(id int) string {
 	if id < 0 {
 		fmt.Sprintf("Invalid id number supplied. Id \"%v\" is out of range", id)
-//		error_message(false, "998", "Invalid id number supplied.", fmt.Sprintf("Id \"%v\" is out of range", id))
 		return ""
 	}
 	id = id - 1
 	charset := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!*()_-."
-	//	fmt.Printf("charset length = %v", len(charset))
 	charset_length := 70
 	temp := ""
 	for id >= charset_length {
@@ -223,11 +185,8 @@ func Dot(elem ...interface{}) string {
 }
 
 func DB_event_add_range(event_id string, new_range Range) (int, Event) {
-//	event, _ := getEvent(event_id)
 	change := mgo.Change{
 		Update: M{
-//			"$inc": M{Dot(schemaAutoInc, schemaRANGE): 1},
-//			"$set": M{Dot(schemaRANGE, event.AutoInc.Range): new_range},
 			"$push":M{schemaRANGE: new_range},
 		},
 		Upsert:    true,
@@ -245,13 +204,59 @@ func DB_event_add_range(event_id string, new_range Range) (int, Event) {
 }
 
 
-func event_shooter_insert(event_id string, shooter EventShooter) {
+func event_shooter_insert(eventId string, shooter EventShooter) {
+	insert := M{
+		schemaSHOOTER: []EventShooter{shooter},
+	}
+	increment := 1
+	if shooter.Grade == 8{
+		increment = 2
+		duplicateShooter := shooter
+		duplicateShooter.Grade = 7
+		duplicateShooter.Hidden = true
+		insert[schemaSHOOTER] = []EventShooter{shooter, duplicateShooter}
+	}
+	change := mgo.Change{
+		Update: M{
+			"$pushAll": insert,
+			"$inc": M{
+				Dot(schemaAutoInc, schemaSHOOTER): increment,
+			},
+		},
+		Upsert: true,
+		ReturnNew: true,
+	}
+	var event Event
+	conn.C(TBLevent).FindId(eventId).Apply(change, &event)
+
+	if increment == 2{
+		change = mgo.Change{
+			Update: M{
+				"$set": M{
+					Dot(schemaSHOOTER, event.AutoInc.Shooter-2, "i"): event.AutoInc.Shooter-2,
+					Dot(schemaSHOOTER, event.AutoInc.Shooter-2, "l"): event.AutoInc.Shooter-1,
+					Dot(schemaSHOOTER, event.AutoInc.Shooter-1, "i"): event.AutoInc.Shooter-1,
+					Dot(schemaSHOOTER, event.AutoInc.Shooter-1, "l"): event.AutoInc.Shooter-2,
+				},
+			},
+		}
+	}else{
+		change = mgo.Change{
+			Update: M{
+				"$set": M{
+					Dot(schemaSHOOTER, event.AutoInc.Shooter-1, "i"): event.AutoInc.Shooter-1,
+				},
+			},
+		}
+	}
+
+	conn.C(TBLevent).FindId(eventId).Apply(change, &event)
+/*
 	event, _ := getEvent(event_id)
 	increment := 1
 	insert := M{
 		Dot(schemaSHOOTER, event.AutoInc.Shooter): shooter,
 	}
-
 	//Match Reserve
 	if shooter.Grade == 8{
 		//Shooters in grade Match Reserve also must go in grade Match Open
@@ -271,10 +276,11 @@ func event_shooter_insert(event_id string, shooter EventShooter) {
 		},
 	}
 	conn.C(TBLevent).FindId(event_id).Apply(change, make(M))
+	*/
 }
 
 func eventTotalScoreUpdate(eventId string, rangeId int, shooterIds []int, score Score)Event{
-	var updateSetter M
+	updateSetter := make(M)
 	for _, shooterId := range shooterIds{
 		updateSetter[Dot(schemaSHOOTER, shooterId, rangeId)] = score
 	}
