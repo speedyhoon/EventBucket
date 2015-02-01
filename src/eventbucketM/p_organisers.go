@@ -117,7 +117,7 @@ func clubInsert(w http.ResponseWriter, r *http.Request) {
 
 func insert_new_club(club_name string) string {
 	nextId, err := getNextId(TBLclub)
-	if err != 0 {
+	if err == nil {
 		var newClub Club
 		newClub.Name = club_name
 		newClub.Id = nextId

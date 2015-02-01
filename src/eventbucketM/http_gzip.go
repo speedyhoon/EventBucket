@@ -178,7 +178,7 @@ func http_headers(w http.ResponseWriter, set_headers []string) {
 		"webp": [2]string{"Content-Type", "image/webp"},
 		"svg":  [2]string{"Content-Type", "image/svg+xml"},
 	}
-	w.Header().Set("Content-Security-Policy", "Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self';")
+	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self';")
 	for _, lookup := range set_headers {
 		if lookup != "nocache" {
 			w.Header().Set(headers[lookup][0], headers[lookup][1])
