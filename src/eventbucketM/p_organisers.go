@@ -4,22 +4,29 @@ import (
 	"net/http"
 )
 
-//func organisers(w http.ResponseWriter, r *http.Request) {
-//	templator(TEMPLATE_ADMIN, "organisers", organisers_Data(), w)
-//}
+type Page struct{
+	Name string
+	Theme string	//TODO change type to struct enum to select between "TEMPLATE_HOME", "TEMPLATE_ADMIN" & "TEMPLATE_EMPTY"
+	Data M
+}
 
-func organisers() M {
+func organisers() Page {
 	clubs := getClubs()
-	return M{
-		"Title":        "Organisers",
-//		"Events":       generateForm2(organisers_eventForm(clubs)),
-		"Events":       generateForm2(home_form_new_event(clubs, "","","","",true)),
-		"EventList":    eventList(),
-		"Clubs":        generateForm2(organisers_clubForm()),
-		"ClubList":     clubs,
-//		"Championship": generateForm2(organisers_champForm()),
-		"Menu":         standard_menu(ORGANISERS_MENU_ITEMS),
-		"ShooterList":  generateForm2(organisers_update_shooter_list("")),
+	return Page {
+		Name: "Organisers",
+		Theme: TEMPLATE_HOME,
+		Data: M{
+			"Title":        "Organisers",
+			//		"Events":       generateForm2(organisers_eventForm(clubs)),
+			"Events":       generateForm2(home_form_new_event(clubs, "","","","",true)),
+			"EventList":    eventList(),
+			"Clubs":        generateForm2(organisers_clubForm()),
+			"ClubList":     clubs,
+			//		"Championship": generateForm2(organisers_champForm()),
+			//		"Menu":         standard_menu(ORGANISERS_MENU_ITEMS),
+			"Menu":     home_menu(URL_organisers, HOME_MENU_ITEMS),
+			"ShooterList":  generateForm2(organisers_update_shooter_list("")),
+		},
 	}
 }
 
@@ -27,7 +34,7 @@ func organisers_clubForm() Form {
 	//TODO add validation to
 	return Form{
 		Action: URL_clubInsert,
-		Title:  "Create Club",
+		Title:  "New Club",
 		Inputs: []Inputs{
 			{
 				Name: "name",
@@ -109,12 +116,16 @@ func clubInsert(w http.ResponseWriter, r *http.Request) {
 }
 
 func insert_new_club(club_name string) string {
-	var newClub Club
-	newClub.Name = club_name
-	newClub.Id = getNextId(TBLclub)
-	newClub.AutoInc.Mound = 1
-	InsertDoc(TBLclub, newClub)
-	return newClub.Id
+	nextId, err := getNextId(TBLclub)
+	if err != 0 {
+		var newClub Club
+		newClub.Name = club_name
+		newClub.Id = nextId
+		newClub.AutoInc.Mound = 1
+		InsertDoc(TBLclub, newClub)
+		return newClub.Id
+	}
+	return "-1"
 }
 
 /*func eventInsert(w http.ResponseWriter, r *http.Request) {

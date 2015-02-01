@@ -52,6 +52,7 @@ type Range struct {
 	Order      int    `bson:"o,omitempty"`
 	Status     int    `bson:"t,omitempty"`	//ENUM change to 1 when the first shooter has recorded their first shot change to 2 when the range is finished. http://stackoverflow.com/questions/14426366/what-is-an-idiomatic-way-of-representing-enums-in-golang
 	Class      map[string]RangeProperty `bson:"omitempty,inline"`	//TODO possibly change it to optional grades per range in future
+	Id			*int	`bson:"i,omitempty"`
 }
 type RangeProperty struct {
 	ShotsQty			int	`bson:"s,omitempty"`
@@ -88,7 +89,7 @@ type EventShooter struct {
 	Hidden    bool             `bson:"h,omitempty"`
 	AgeGroup  string           `bson:"a,omitempty"`
 	Scores    map[string]Score `bson:"omitempty,inline"` //S is not used!
-	LinkedId  int				`bson:"l,omitempty"`	//For duplicating shooters that are in different classes with the same score
+	LinkedId  *int				`bson:"l,omitempty"`	//For duplicating shooters that are in different classes with the same score
 	SID int `bson:"d,omitempty"`
 	//SCOREBOARD
 	Id       int    `bson:"i,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.

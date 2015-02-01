@@ -2,98 +2,108 @@ package main
 
 import (
 	"fmt"
+	"strings"
 )
 
 func generateForm2(form Form) string {
-	var output, attributes, element, options string
-	for _, input := range form.Inputs {
-		element = ""
-		attributes = ""
-		options = ""
-		dev_mode_check_form(input.Html!="submit"||input.Html!="number"||input.Html!="text"||input.Html!="range"||input.Html!="datalist"||input.Html!="select"||input.Html!="date"||input.Html!="hidden", "don't use element "+input.Html)
+	var output string
+	var formElements []string
+	if database_status == true {
+		var attributes, element, options string
+		for _, input := range form.Inputs {
+			element = ""
+			attributes = ""
+			options = ""
+			output = ""
+			dev_mode_check_form(input.Html != "submit" || input.Html != "number" || input.Html != "text" || input.Html != "range" || input.Html != "datalist" || input.Html != "select" || input.Html != "date" || input.Html != "hidden", "don't use element "+input.Html)
 
-		if input.Html != "submit" {
-			if input.Name != "" {
-				attributes += " name="+input.Name
-				dev_mode_check_form(input.Name == addQuotes(input.Name), "names can't have spaces")
+			if input.Html != "submit" {
+				if input.Name != "" {
+					attributes += " name="+input.Name
+					dev_mode_check_form(input.Name == addQuotes(input.Name), "names can't have spaces")
+				}
+				if input.Value != "" {
+					attributes += " value="+addQuotes(input.Value)
+					dev_mode_check_form(input.Html != "select", "select boxes shouldn't have a value attribute")
+				}
+			}else {
+				dev_mode_check_form(input.Value != "", "submits should have a value")
 			}
-			if input.Value != "" {
-				attributes += " value="+addQuotes(input.Value)
-				dev_mode_check_form(input.Html != "select", "select boxes shouldn't have a value attribute")
+			if input.Required {
+				attributes += " required"
+				dev_mode_check_form(input.Html == "number" || input.Html == "text" || input.Html == "range" || input.Html == "datalist" || input.Html == "date" || input.Html == "select" || input.Html == "tel", "this element shouldn't have required, type="+input.Html)
 			}
-		}else{
-			dev_mode_check_form(input.Value != "", "submits should have a value")
-		}
-		if input.Required {
-			attributes += " required"
-			dev_mode_check_form(input.Html=="number"||input.Html=="text"||input.Html=="range"||input.Html=="datalist"||input.Html=="date"||input.Html=="select"||input.Html=="tel", "this element shouldn't have required, type="+input.Html)
-		}
-		if input.Placeholder != "" && input.Html != "select" {
-			attributes += " placeholder="+addQuotes(input.Placeholder)
-			dev_mode_check_form(input.Html == "text"||input.Html == "number"||input.Html == "range"||input.Html == "datalist", "placeholders are only allowed on text, datalist, number and ranges")
-		}
-		if input.Min != "" {
-			attributes += fmt.Sprintf(" min=%v", input.Min)
-			dev_mode_check_form(input.Html == "number" || input.Html == "range", "min is only allowed on type  number and range")
-		}
-		if input.Max != ""{
-			attributes += fmt.Sprintf(" max=%v", input.Max)
-			dev_mode_check_form(input.Html == "number" || input.Html == "range", "max is only allowed on type  number and range")
-		}
-		if input.Step != 0 {
-			attributes += fmt.Sprintf(" step=%v", input.Step)
-			dev_mode_check_form(input.Html == "number" || input.Html == "range", "step is only allowed on type  number and range")
-		}
-		if input.Checked {
-			attributes += " checked"
-			dev_mode_check_form(input.Html == "radio" || input.Html == "checkbox", "checked is only valid on radio buttons and checkboxes")
-		}
-		if input.Size > 0 {
-			attributes += fmt.Sprintf(" size=%d", input.Size)
-			dev_mode_check_form(input.Html == "select", "size is only allowed on select tags")
-			dev_mode_check_form(input.Size >= 4, "size should be >= 4")
-		}
-		if input.AutoComplete != "" {
-			attributes += " autocomplete="+input.AutoComplete
-			dev_mode_check_form(input.Html == "datalist", "autocomplete is only allowed on datalist tags")
-		}
+			if input.Placeholder != "" && input.Html != "select" {
+				attributes += " placeholder="+addQuotes(input.Placeholder)
+				dev_mode_check_form(input.Html == "text" || input.Html == "number" || input.Html == "range" || input.Html == "datalist", "placeholders are only allowed on text, datalist, number and ranges")
+			}
+			if input.Min != "" {
+				attributes += fmt.Sprintf(" min=%v", input.Min)
+				dev_mode_check_form(input.Html == "number" || input.Html == "range", "min is only allowed on type  number and range")
+			}
+			if input.Max != "" {
+				attributes += fmt.Sprintf(" max=%v", input.Max)
+				dev_mode_check_form(input.Html == "number" || input.Html == "range", "max is only allowed on type  number and range")
+			}
+			if input.Step != 0 {
+				attributes += fmt.Sprintf(" step=%v", input.Step)
+				dev_mode_check_form(input.Html == "number" || input.Html == "range", "step is only allowed on type  number and range")
+			}
+			if input.Checked {
+				attributes += " checked"
+				dev_mode_check_form(input.Html == "radio" || input.Html == "checkbox", "checked is only valid on radio buttons and checkboxes")
+			}
+			if input.Size > 0 {
+				attributes += fmt.Sprintf(" size=%d", input.Size)
+				dev_mode_check_form(input.Html == "select", "size is only allowed on select tags")
+				dev_mode_check_form(input.Size >= 4, "size should be >= 4")
+			}
+			if input.AutoComplete != "" {
+				attributes += " autocomplete="+input.AutoComplete
+				dev_mode_check_form(input.Html == "datalist", "autocomplete is only allowed on datalist tags")
+			}
 
-		if input.MultiSelect {
-			attributes += " multiple"
-			if len(input.Options) > 4 {
-				attributes += fmt.Sprintf(" size=%d", len(input.Options))
+			if input.MultiSelect {
+				attributes += " multiple"
+				if len(input.Options) > 4 {
+					attributes += fmt.Sprintf(" size=%d", len(input.Options))
+				}
+				dev_mode_check_form(input.Html == "select", "multiple is only available on select boxes")
+				dev_mode_check_form(input.Html != "submit", "buttons and submits shouldn't have multiple")
 			}
-			dev_mode_check_form(input.Html == "select", "multiple is only available on select boxes")
-			dev_mode_check_form(input.Html != "submit", "buttons and submits shouldn't have multiple")
-		}
-		if len(input.Options) > 0 {
-			options = draw_options(input, input.Name)
-		}
-		if input.Help != "" {
-			attributes += "title=" + addQuotes(input.Help)
-		}
+			if len(input.Options) > 0 {
+				options = draw_options(input, input.Name)
+			}
+			if input.Help != "" {
+				attributes += "title="+addQuotes(input.Help)
+			}
 
 
-		if input.Html == "select" {
-			element += "<select"+attributes+">"+options+"</select>"
-		}else if input.Html == "submit" {
-			output += "<button"+attributes+">"+input.Value+"</button>"
-		}else {
-			if input.Html == "datalist" && options != ""{
-				attributes += " type=datalist id=" + input.Name
+			if input.Html == "select" {
+				element += "<select"+attributes+">"+options+"</select>"
+			}else if input.Html == "submit" {
+				output += "<button"+attributes+">"+input.Value+"</button>"
+			}else {
+				if input.Html == "datalist" && options != "" {
+					attributes += " type=datalist id="+input.Name
+				}
+				if input.Html != "text" {
+					attributes += " type="+input.Html
+				}
+				element += "<input"+attributes+">"+options
 			}
-			if input.Html != "text" {
-				attributes += " type="+input.Html
+			if input.Label != "" {
+				output += "<label>"+input.Label+": "+element+"</label>"
+				dev_mode_check_form(input.Html != "submit" || input.Html != "button", "submits and buttons shouldn't have lables")
+			}else {
+				output += element
 			}
-			element += "<input"+attributes+">"+options
+			formElements = append(formElements, output)
 		}
-		if input.Label != "" {
-			output += "<label>"+input.Label+": "+element+"</label>"
-			dev_mode_check_form(input.Html != "submit"||input.Html != "button", "submits and buttons shouldn't have lables")
-		}else{
-			output += element
-		}
+	}else {
+		formElements = []string{"<p>Unable to connect to the EventBucket database</p>"}
 	}
+	output = strings.Join(formElements, " ")
 	if form.Title != "" {
 		output = field_set(form.Title) + output + "</fieldset>"
 	}else {

@@ -239,6 +239,7 @@ all forms
 
 
 
+Server add redirects to root folders. So /c/ would go to the home page or 404 not found.
 
 
 BUILD SYSTEM
@@ -248,31 +249,73 @@ JS
 	JSHint
 	closure compiler
 	build source maps
-	save to /root/j/
-	remove file extension
+	save to /root/j/ without file extension
 
 SASS
 	listen to SASS folder
 	validate/lint SASS
 	compile into css files
 	minify css with CSSO
-	save to /root/c/
-	remove file extension
+	save to /root/c/ without file extension
 
-html
-	listen to HTML folder
+HTML
+The application should output optimised HTML that can't be minified any further.
+1. search for id and classes in html to form a list of used rules site wide
+2. find all occurrences of the rules in the css files
+3. copy the used rules into a separate css file
+4. rename the rules to as short as possible
+5. replace all the html files with the shorter rules 
+
+6.	is it possible to make all elements custom html elements so they use less characters? i.e.
+		<div>
+			<div>
+				<div>
+					<div>foobar</div>
+				</div>
+			</div>
+		</div>
+	would become 
+		<c>
+			<c>
+				<c>
+					<c>foobar</c>
+				</c>
+			</c>
+		</c>
+
+7. scan for and raise a warning for elements that have only one child. i.e.
+		<c>
+			<c>
+				<c>
+					<c>foobar</c>
+				</c>
+			</c>
+		</c>
+	would become
+		<c>foobar</c>
+	
+	
+	
+listen to HTML folder
+	
+	raise warning when found:
+		Any issues listed at https://www.npmjs.org/package/html-minifier
+		empty elements - think of a way to replace the empty elements via JS with the elements needed
+		inline styles
+		script tags in child templates
+		double spaces
+		default property values
+	
 	validate HTML5
 	minify with a tool
 	validate HTML5
-	save to /htm
-	change file extension to .htm
+	copy to /htm without file extension
 
 SVG
 	listen to SVG folder
 	validate svg
 	minify with SVGO
-	save to /root/v
-	change file extension to .htm
+	copy to /root/v without file extension
 
 Images
 	manual process

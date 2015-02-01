@@ -26,7 +26,8 @@ func event(eventId string) M {
 	if err{
 		return M{
 			"Title": "Event not found: "+eventId,
-			"Menu":  standard_menu(ORGANISERS_MENU_ITEMS),
+//			"Menu":  standard_menu(ORGANISERS_MENU_ITEMS),
+			"Menu":  standard_menu(HOME_MENU_ITEMS),
 			"Valid": false,
 		}
 	}

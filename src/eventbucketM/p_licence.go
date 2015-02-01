@@ -1,8 +1,12 @@
 package main
 
-func licence()M{
-	return M{
-		"Menu":     home_menu(URL_licence, HOME_MENU_ITEMS),
+func licence()Page{
+	return Page {
+		Name: "Licence",
+		Theme: TEMPLATE_HOME,
+		Data: M{
+			"Menu":     home_menu(URL_licence, HOME_MENU_ITEMS),
+		},
 	}
 }
 

@@ -10,6 +10,10 @@ import (
 	"strings"
 )
 
+func templatePage(url string, data Page, w http.ResponseWriter) {
+	templator(data.Theme, url, data.Data, w)
+}
+
 func templator(main_template string, content_template string, data M, w http.ResponseWriter) {
 	//Ajax responses should not use this function! Instead use "generator(w, body, data)"
 	source := loadHTM(main_template)
@@ -39,6 +43,9 @@ func generator(w http.ResponseWriter, fillin string, data M) {
 	my_html := template.New("my_template").Funcs(template.FuncMap{
 		"HTM": func(x string) template.HTML {
 			return template.HTML(x)
+		},
+		"HTMattr": func(value string) template.HTMLAttr {
+			return template.HTMLAttr(value)
 		},
 		"JS": func(x string) template.JS {
 			return template.JS(x)
@@ -239,7 +246,7 @@ var HOME_MENU_ITEMS = []Menu{
 	},
 }
 
-var ORGANISERS_MENU_ITEMS = []Menu{
+/*var ORGANISERS_MENU_ITEMS = []Menu{
 	Menu{
 		Name: "Home",
 		Link: "/",
@@ -252,7 +259,7 @@ var ORGANISERS_MENU_ITEMS = []Menu{
 		Name: "Organisers",
 		Link: URL_organisers,
 	},
-}
+}*/
 
 func standard_menu(menu_items []Menu) string {
 	menu := "<ul>"

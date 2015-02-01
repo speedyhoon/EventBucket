@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"mgo"
 )
 
 func startShooting(w http.ResponseWriter, r *http.Request) {
@@ -139,9 +140,9 @@ func updateShotScores(w http.ResponseWriter, r *http.Request) {
 	if passed{
 		event := validated_values["event"].(Event)
 		rangeId := validated_values["range_id"].(int)
-		//TODO check the range exists before accessing Locked or Aggregate
+		//TODO check the range exists (is not nill) before accessing Locked or Aggregate
 		if !event.Ranges[rangeId].Locked && event.Ranges[rangeId].Aggregate == ""{
-			event_id := validated_values["event_id"].(string)
+			eventId := validated_values["event_id"].(string)
 			shooter_id := validated_values["shooter_id"].(int)
 			shots := validated_values["shots"].(string)
 
@@ -151,12 +152,42 @@ func updateShotScores(w http.ResponseWriter, r *http.Request) {
 			}else{
 				generator(w, fmt.Sprintf("%v", new_score.Total), make(M))
 			}
+			//Add any linked shooters to this update
 			shooterIds := []int{shooter_id}
-			//TODO change this to a pointer
-			if event.Shooters[shooter_id].LinkedId > -1 {
-				shooterIds = append(shooterIds, event.Shooters[shooter_id].LinkedId)
+			if event.Shooters[shooter_id].LinkedId != nil {
+				shooterIds = append(shooterIds, *event.Shooters[shooter_id].LinkedId)
 			}
-			go eventTotalScoreUpdate(event_id, rangeId, shooterIds, new_score)
+			//Find all the aggs that this rangeId is in
+			aggsFound := searchForAggs(event.Ranges, rangeId)
+			var updateBson = make(M)
+			if len(aggsFound) > 0 {
+				updateBson = calculateAggs(event.Shooters[shooter_id].Scores, aggsFound, shooterIds, event.Ranges)
+			}
+			//			event/shooters/shooterid/rangeId
+
+			updateBson[Dot(schemaSHOOTER, shooter_id, rangeId)] = new_score
+			if event.Shooters[shooter_id].LinkedId != nil {
+				updateBson[Dot(schemaSHOOTER, event.Shooters[shooter_id].LinkedId, rangeId)] = new_score
+			}
+
+//			eventTotalScoreUpdate(event_id, rangeId, shooterIds, new_score)
+
+//			updateSetter := make(M)
+//			for _, shooterId := range shooterIds{
+//				updateSetter[Dot(schemaSHOOTER, shooterId, rangeId)] = score
+//			}
+			change := mgo.Change{
+				Upsert: true,
+				Update: M{
+					"$set": updateBson,
+				},
+			}
+			var event Event
+			_, err := conn.C(TBLevent).FindId(eventId).Apply(change, &event)
+			//TODO better error handling would be nice
+			checkErr(err)
+//			return event
+			export(updateBson)
 		}else{
 			fmt.Println("BAD updateShotScores. Current Range is locked or is an aggreate range.")
 		}

@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func archive()M{
+func archive()Page{
 	//Sort the list of shooters by grade only
 	sort_by_date := func(c1, c2 *Event) bool {
 		return c1.Date > c2.Date
@@ -65,12 +65,16 @@ func archive()M{
 		}
 	}
 
-	return M{
-				"ClosedEvents":   closedEvents,
-//		"FutureEvents":   openEvents,
-		//		"DraftEvents":   draftEvents,
-		"PageName": "Calendar",
-		"Menu":     home_menu(URL_archive, HOME_MENU_ITEMS),
-//		"FormNewEvent": generateForm2(home_form_new_event(getClubs(), "","","","",true)),
+	return Page {
+		Name: "Organisers",
+		Theme: TEMPLATE_HOME,
+		Data: M{
+			"ClosedEvents":   closedEvents,
+			//		"FutureEvents":   openEvents,
+			//		"DraftEvents":   draftEvents,
+			"PageName": "Calendar",
+			"Menu":     home_menu(URL_archive, HOME_MENU_ITEMS),
+			//		"FormNewEvent": generateForm2(home_form_new_event(getClubs(), "","","","",true)),
+		},
 	}
 }
