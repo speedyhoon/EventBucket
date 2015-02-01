@@ -77,7 +77,35 @@ func gzipper(url string, runner func()M) http.Handler {
 	}
 }
 
-func gziparameters(url string, runner func(string)M) http.Handler {
+
+
+
+//func get(url string, runner func()Page){
+//	http.Handle(url, gzipPage(url, runner))
+//}
+
+//func gzipPage(url string, runner func()Page) http.Handler {
+func get(url string, runner func()Page) {
+	pageName := url
+	if url == "/"{
+		pageName = "home"
+	}
+	if dev_mode_DEBUG{
+		http.Handle(url,
+			http.HandlerFunc(agent.WrapHTTPHandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				defer dev_mode_timeTrack(time.Now(), r.RequestURI)
+				templatePage(url, runner(), w)
+			})))
+	}else{
+		http.Handle(url,
+			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				defer dev_mode_timeTrack(time.Now(), r.RequestURI)
+				templatePage(pageName, runner(), w)
+			}))
+	}
+}
+
+func gziParameters(url string, runner func(string)M) http.Handler {
 	if dev_mode_DEBUG{
 		return http.HandlerFunc(agent.WrapHTTPHandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			//	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -110,7 +138,8 @@ func gziparameters(url string, runner func(string)M) http.Handler {
 func html_headers_n_gzip(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		defer dev_mode_timeTrack(time.Now(), r.RequestURI)
-		http_headers(w, []string{"html", "nocache0", "nocache1", "nocache2"})
+//		http_headers(w, []string{"html", "nocache0", "nocache1", "nocache2"})
+		http_headers(w, []string{"html", "nocache"})
 		if strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
 			w.Header().Set("Content-Encoding", "gzip")
 			gz := gzip.NewWriter(w)
@@ -132,11 +161,11 @@ func http_headers(w http.ResponseWriter, set_headers []string) {
 		"expire": [2]string{"Expires", time.Now().UTC().AddDate(1, 0, 0).Format(time.RFC1123)}, //TODO it should return GMT time I think
 		//		"expire":[2]string{"Expires", time.Now().UTC().Add(one_year).Format(time.RFC1123)},//TODO it should return GMT time I think
 		//		"0cache":[2]string{"Expires", time.Now().UTC().Format(time.RFC1123)},//TODO it should return GMT time I think
-		"nocache0": [2]string{"Cache-Control", "no-cache, no-store, must-revalidate"},
-		"nocache1": [2]string{"Expires", "0"},
-		"nocache2": [2]string{"Pragma", "no-cache"},
+//		"nocache0": [2]string{"Cache-Control", "no-cache, no-store, must-revalidate"},
+//		"nocache1": [2]string{"Expires", "0"},
+//		"nocache2": [2]string{"Pragma", "no-cache"},
 		"cache":    [2]string{"Vary", "Accept-Encoding"},
-		"csp":      [2]string{"Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self';"}, //content-security-policy.com
+//		"csp":      [2]string{"Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self';"}, //content-security-policy.com
 		"gzip":     [2]string{"Content-Encoding", "gzip"},
 		"html":     [2]string{"Content-Type", "text/html; charset=utf-8"},
 		"css":      [2]string{"Content-Type", "text/css; charset=utf-8"},
@@ -146,12 +175,18 @@ func http_headers(w http.ResponseWriter, set_headers []string) {
 		"png": [2]string{"Content-Type", "image/png"},
 		"jpg": [2]string{"Content-Type", "image/jpeg"},
 		"gif": [2]string{"Content-Type", "image/gif"},
-		//TODO find valid mime type for webp & svg
-		"webp": [2]string{"Content-Type", "text/webp"},
+		"webp": [2]string{"Content-Type", "image/webp"},
 		"svg":  [2]string{"Content-Type", "image/svg+xml"},
 	}
+	w.Header().Set("Content-Security-Policy", "Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self';")
 	for _, lookup := range set_headers {
-		w.Header().Set(headers[lookup][0], headers[lookup][1])
+		if lookup != "nocache" {
+			w.Header().Set(headers[lookup][0], headers[lookup][1])
+		}else{
+			w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+			w.Header().Set("Expires", "0")
+			w.Header().Set("Pragma", "no-cache")
+		}
 	}
 }
 

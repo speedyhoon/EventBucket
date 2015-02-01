@@ -113,9 +113,8 @@ func updateTotalScores(w http.ResponseWriter, r *http.Request){
 				new_score.Centers = centers
 			}
 			shooterIds := []int{shooter_id}
-			//TODO change to a pointer so it can be compared to nil
-			if event.Shooters[shooter_id].LinkedId > -1 {
-				shooterIds = append(shooterIds, event.Shooters[shooter_id].LinkedId)
+			if event.Shooters[shooter_id].LinkedId != nil {
+				shooterIds = append(shooterIds, *event.Shooters[shooter_id].LinkedId)
 			}
 			go eventTotalScoreUpdate(event_id, rangeId, shooterIds, new_score)
 		}
@@ -123,6 +122,19 @@ func updateTotalScores(w http.ResponseWriter, r *http.Request){
 	}
 }
 
+func searchForAggs(ranges []Range, rangeId int)[]int{
+	var aggFound []int
+	for _, rangeObj := range ranges{
+		if len(rangeObj.Aggregate) > 0{
+			for _, thisRangeId := range rangeObj.Aggregate{
+				if strToInt2(thisRangeId) == rangeId{
+					aggFound = append(aggFound, *rangeObj.Id)
+				}
+			}
+		}
+	}
+	return aggFound
+}
 func search_for_aggs(event_id, range_id string)[]string{
 	var aggs_to_calculate []string
 	event, _ := getEvent(event_id)
@@ -137,11 +149,35 @@ func search_for_aggs(event_id, range_id string)[]string{
 	}
 	return aggs_to_calculate
 }
+
+func calculateAggs(shooterScores map[string]Score, ranges []int, shooterIds[]int, eventRanges []Range)M{
+	if shooterScores == nil{
+		shooterScores = make(map[string]Score)
+	}
+	var total, centers int
+	var countBack, strRangeId string
+	updateBson := make(M)
+	for _, aggId := range ranges {
+		total = 0
+		centers = 0
+		for _, rangeId := range eventRanges[aggId].Aggregate {
+			strRangeId = fmt.Sprintf("%v", rangeId)
+			total += shooterScores[strRangeId].Total
+			centers += shooterScores[strRangeId].Centers
+			countBack = shooterScores[strRangeId].CountBack1
+		}
+		for _, shooterId := range shooterIds{
+			updateBson[Dot(schemaSHOOTER, shooterId, aggId)] = Score{Total: total, Centers: centers, CountBack1: countBack}
+		}
+//		shooterScores[fmt.Sprintf("%v", aggId)] = Score{Total: total, Centers: centers, CountBack1: countBack}
+	}
+	return updateBson
+}
+
+
 func calculate_aggs(event Event, shooter_id int, ranges []string)Event{
 	if event.Shooters[shooter_id].Scores == nil{
-		temp_kkk := event.Shooters[shooter_id]
-		temp_kkk.Scores = map[string]Score{}
-		event.Shooters[shooter_id] = temp_kkk
+		event.Shooters[shooter_id].Scores = make(map[string]Score)
 	}
 	for _, _agg_id := range ranges {
 		agg_id, _ := strToInt(_agg_id)

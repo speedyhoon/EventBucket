@@ -14,13 +14,13 @@
 			shooterEntryValues[inputElement.name] = inputElement.value;
 
 //			console.log("it is", shooterEntryValues, shooterEntryValues.length);
-			if(shooterEntryValues['first'].length + shooterEntryValues['surname'].length + shooterEntryValues['club'].length >= 2){
+			if(shooterEntryValues.first.length + shooterEntryValues.surname.length + shooterEntryValues.club.length >= 2){
 //			for(var i= 0; i < 3; i++){
 //				console.log("looking");
 //				if(shooterEntryValues[i].length >= 2){
 //					console.log("searched");
-					ajax();
-					return;
+				ajax();
+//					return;
 //				}
 			}
 		}

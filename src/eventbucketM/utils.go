@@ -4,6 +4,14 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/boombuler/barcode/qr"
+	"github.com/boombuler/barcode"
+	"os"
+	"image/png"
+//	"io"
+	"io/ioutil"
+	"encoding/base64"
 )
 
 //research http://net.tutsplus.com/tutorials/client-side-security-best-practices/
@@ -38,6 +46,10 @@ func strToInt(input string)(int, bool){
 		return -1, false
 	}
 	return output, true
+}
+func strToInt2(input interface{})int{
+	output, _ := strconv.Atoi(fmt.Sprintf("%v", input))
+	return output
 }
 /*func strToInt64(input string) int64 {
 	output, err := strconv.ParseInt(input, 10, 64)
@@ -91,4 +103,22 @@ func stringInSlice(a string, list []string) bool {
 		}
 	}
 	return false
+}
+
+func qrBarcode(value string)string{
+	f, _ := os.Create("temp_barcode.png")
+	defer f.Close()
+	qrcode, err := qr.Encode(value,  qr.L, qr.Auto)
+	if err == nil {
+		qrcode, err = barcode.Scale(qrcode, 100, 100)
+		if err == nil {
+			png.Encode(f, qrcode)
+			data, err := ioutil.ReadFile("temp_barcode.png")
+			if err == nil {
+				return "data:image/png;base64," + base64.StdEncoding.EncodeToString(data)
+			}
+		}
+	}
+	fmt.Println(err)
+	return ""
 }

@@ -135,7 +135,7 @@ func getEvent20Shooters(id string)(Event, bool){
 	return result, true
 }
 
-func getNextId(collection_name string) string {
+func getNextId(collection_name string)(string, error){
 	var result M
 	if database_status {
 		change := mgo.Change{
@@ -146,15 +146,16 @@ func getNextId(collection_name string) string {
 		_, err := conn.C(TBLAutoInc).FindId(collection_name).Apply(change, &result)
 		if err != nil {
 			checkErr(err)
+			return "", errors.New(fmt.Sprintf("Unable to generate the next ID: %v", err))
 		}
+		return id_suffix(result[schemaCounter].(int))
 	}
-	return id_suffix(result[schemaCounter].(int))
+	return "", errors.New("Unable to generate the next ID")
 }
 
-func id_suffix(id int) string {
+func id_suffix(id int) (string, error) {
 	if id < 0 {
-		fmt.Sprintf("Invalid id number supplied. Id \"%v\" is out of range", id)
-		return ""
+		return "", errors.New(fmt.Sprintf("Invalid id number supplied. Id \"%v\" is out of range", id))
 	}
 	id = id - 1
 	charset := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!*()_-."
@@ -164,7 +165,7 @@ func id_suffix(id int) string {
 		temp = fmt.Sprintf("%c%v", charset[id%charset_length], temp)
 		id = id/charset_length - 1
 	}
-	return fmt.Sprintf("%c%v", charset[id%charset_length], temp)
+	return fmt.Sprintf("%c%v", charset[id%charset_length], temp), nil
 }
 
 func InsertDoc(collection_name string, data interface{}) {
@@ -481,16 +482,6 @@ func searchShooters(query M) []Shooter {
 	//	dump("\n fffffffffffffffffff <<<\n\n\n")
 	err := conn.C(TBLshooter).Find(query).All(&result)
 	checkErr(err)
-
-	//	dump("length:")
-	//	dump(len(result))
-
-	//	fmt.Printf("\nloggit \n%v\n...", integer)
-	//	fmt.Printf("\nloggit \n%v\n...", er2)
-	//	dump("search for\n")
-	//	export(result)
-	//	dump("done")
 	return result
-
 	//	err = c.Find(bson.M{"path": bson.M{"$regex": bson.RegEx{`^\\[^\\]*\\$`, ""}}}).All(&nodeList)
 }

@@ -55,9 +55,9 @@ func valid8(options []Inputs, r *http.Request)(M,bool){
 	var ok bool
 	var err error
 	var valueInt int
-	for index, option := range options {
+	for _, option := range options {
 		if option.Html != "submit" {
-			passedV8tion[index] = false
+			passedV8tion = append(passedV8tion, false)
 			formArray, ok = form[option.Name]
 			if ok && (!option.Required || (option.Required && len(formArray) > 0)) {
 				if len(formArray) > 1{
@@ -70,13 +70,18 @@ func valid8(options []Inputs, r *http.Request)(M,bool){
 					valueInt, err = strconv.Atoi(value)
 					if err == nil{
 						new_values[option.Name] = valueInt
-						passedV8tion[index] = true
+						passedV8tion = append(passedV8tion, true)
+					}else{
+						passedV8tion = append(passedV8tion, false)
 					}
 				case "string":
 					valueInt = len(value)
 					if valueInt >= option.VarMinLen && valueInt <= option.VarMinLen {
 						new_values[option.Name] = value
-						passedV8tion[index] = true
+						passedV8tion = append(passedV8tion, true)
+					}else{
+						passedV8tion = append(passedV8tion, false)
+						dump("string failed")
 					}
 				}
 			}else{
@@ -87,6 +92,7 @@ func valid8(options []Inputs, r *http.Request)(M,bool){
 
 	if !testAllTrue(passedV8tion) {
 		//TODO output all these error messages to screen at once. A form might have several invalid fields at the same time
+		dump("validation was not good")
 		return make(M), false
 	}
 

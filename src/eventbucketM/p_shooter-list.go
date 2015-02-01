@@ -140,9 +140,9 @@ func queryShooterList(w http.ResponseWriter, r *http.Request) {
 	var option_list []Option
 	for _, shooter := range searchShooters(query){
 		option_list = append(option_list, Option{
-				Value: fmt.Sprintf("%v", shooter.SID),
-				Display: fmt.Sprintf("%v %v, ~~ %v", shooter.FirstName, shooter.Surname, shooter.Club),
-			})
+			Value: fmt.Sprintf("%v", shooter.SID),
+			Display: fmt.Sprintf("%v %v, ~~ %v", shooter.FirstName, shooter.Surname, shooter.Club),
+		})
 	}
 	fmt.Fprint(w, draw_options(Inputs{Options:option_list}, ""))
 }
@@ -164,40 +164,6 @@ func event_query_shooterForm() Form {
 				//TODO change club to a data-list
 				//SelectValues:   getClubSelectBox(eventsCollection),
 				Label:   "Club",
-			},
-		},
-	}
-}
-
-func event_add_existing_shooterForm() Form {
-	return Form{
-		Action: URL_shooterInsert,
-		Title: "Add Shooters",
-		Inputs: []Inputs{{
-			Name: "sid",
-				Html:      "text",
-				//TODO change club to a data-list
-				//SelectValues:   getClubSelectBox(eventsCollection),
-				Label:   "Club",
-				Required: true,
-			},{
-			Name: "age",
-				Html:      "select",
-				Label: "Age Group",
-				Options: AGE_GROUPS2(),
-				Required: true,
-			},{
-			Name: "grade",
-				Html:      "select",
-				Label: "Class & Grade",
-				Placeholder: "Class & Grade",
-				Required: true,
-				//				SelectedValues: available_classes_grades(event),
-			},{
-				Name: "event_id",
-				Html: "hidden",
-//				Value: event_id,
-				Value: "",
 			},
 		},
 	}

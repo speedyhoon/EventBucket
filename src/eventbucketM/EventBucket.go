@@ -8,22 +8,18 @@ import (
 
 const (
 	VERSION = 0.99
-
 //	PRODUCTION = false //False = output dev warnings, E.g. Template errors
 	//TEST_MODE = false //display links to add n shooters or fillout all scores for a given range
 	//Known issue - turning off minify breaks the startshooting page. moving to the next sibling in a table row return the textnode of whitespace instead of the next <td> tag
 //	MINIFY     = true  //turn on minify html
-
 	//HTML Templates:
 	//location "folder path/%v(filename).extension"
 	PATH_HTML_MINIFIED = "htm/%v.htm"
 	PATH_HTML_SOURCE   = "html/%v.html"
-
 	//Main template html files
 	TEMPLATE_HOME  = "_template_home"
 	TEMPLATE_ADMIN = "_template_admin"
 	TEMPLATE_EMPTY = "_template_empty"
-
 	//folder structure
 	DIR_ROOT = "./root/"
 	DIR_CSS  = "/c/"
@@ -35,6 +31,7 @@ const (
 
 	FAVICON = "a"
 
+	URL_home           	= "/"
 	URL_about           	= "/about"
 	URL_licence         	= "/licence"
 //	URL_licence_summary 	= "/licence-summary"
@@ -76,12 +73,12 @@ const (
 	URL_randomData           = "/random-data/"
 )
 
-func get(url string, runner func()M){
-	http.Handle(url, gzipper(url, runner))
-}
+//func get(url string, runner func()M){
+//	http.Handle(url, gzipper(url, runner))
+//}
 
 func getParameters(url string, runner func(string)M){
-	http.Handle(url, gziparameters(url, runner))
+	http.Handle(url, gziParameters(url, runner))
 }
 
 func main() {
@@ -91,7 +88,6 @@ func main() {
 		agent.NewrelicLicense = "abf730f5454a9a1e78af7a75bfe04565e9e0d3f1"
 		agent.Run()
 	}
-
 	go DB()
 	file_server := http.FileServer(http.Dir(DIR_ROOT))
 	//TODO make sure ALL resources don't have a . extension to save network bandwidth
@@ -101,10 +97,11 @@ func main() {
 	http.Handle(DIR_JPEG, file_headers_n_gzip(file_server, "jpg"))
 	http.Handle(DIR_SVG, file_headers_n_gzip(file_server, "svg"))
 
-	http.Handle("/", gzipper("home", home))
+//	http.Handle("/", gzipper("home", home))
+	get(URL_home, home)
 	get(URL_about, about)
-	get(URL_archive, archive)
 	http.HandleFunc(URL_about+"/", html_headers_n_gzip(redirectPermanent(URL_about)))
+	get(URL_archive, archive)
 	get(URL_licence, licence)
 	http.HandleFunc(URL_licence+"/", html_headers_n_gzip(redirectPermanent(URL_licence)))
 //	get(URL_licence_summary, licence_summary)
@@ -179,3 +176,41 @@ func main() {
 		fmt.Printf("ListenAndServe: %v", err)
 	}
 }
+//TODO remove all custom functions for each set of pages. Just make it overall easier & more flexible to setup new & change existing pages
+/*Pages with no data and redirects to the proper page without any parameters
+	home
+	about
+	archive
+	licence
+	organisers
+
+Pages with event Id parameter
+	event
+	event settings
+	scoreboard
+
+Pages with event Id and Range Id
+	start shooting
+	start shooting all
+	total scores
+	total scores all
+
+Post data to Update
+	query shooter list
+	club insert
+	event insert
+	update range
+	event range insert
+	event agg insert
+	shoorter insert
+	shooter list insert
+	update total scores
+	update shot scores
+	update sort scoreboard
+	update event grades
+	update is prize meeting
+	event shots & sighters
+
+Debug tools
+	random data
+*/

@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func home()M{
+func home()Page{
 	//Sort the list of shooters by grade only
 	sort_by_date := func(c1, c2 *Event) bool {
 		return c1.Date < c2.Date
@@ -69,14 +69,19 @@ func home()M{
 
 	//TODO change getClubs to simpler DB lookup getClubNames
 	clubs := getClubs()
-	return M{
-//		"ClosedEvents":   closed_events,
-		"FutureEvents":   openEvents,
-//		"DraftEvents":   draftEvents,
-		"PageName": "Calendar",
-		"ArchiveLink": URL_archive,
-		"Menu":     home_menu("/", HOME_MENU_ITEMS),
-		"FormNewEvent": generateForm2(home_form_new_event(clubs, "","","","", true)),
+	return Page {
+		Name: "Home",
+		Theme: TEMPLATE_HOME,
+		Data: M{
+			//		"ClosedEvents":   closed_events,
+			"FutureEvents":   openEvents,
+			//		"DraftEvents":   draftEvents,
+			"PageName": "Calendar",
+			"ArchiveLink": URL_archive,
+			"Menu":     home_menu("/", HOME_MENU_ITEMS),
+			"FormNewEvent": generateForm2(home_form_new_event(clubs, "", "", "", "", true)),
+			"Barcode2": "<img src=" + qrBarcode("I love you so much!") + " alt=barcode/>",
+		},
 	}
 }
 
@@ -85,7 +90,7 @@ func home_form_new_event(clubs []Club, name, club, date, eventTime string, newEv
 	save := "Update Event"
 	action := URL_eventSettings
 	if newEvent {
-		title = "Create Event"
+		title = "New Event"
 		save = "Save Event"
 		action = URL_eventInsert
 		date = time.Now().Format("2006-01-02")
@@ -177,12 +182,16 @@ func eventInsert2(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Add default ranges and aggregate ranges
-	newEvent.Id = getNextId(TBLevent)
+	var err int
+	newEvent.Id, err = getNextId(TBLevent)
 	newEvent.AutoInc.Range = 1
-	InsertDoc(TBLevent, newEvent)
-
-	//redirect user to event settings
-	redirecter(URL_eventSettings+newEvent.Id, w, r)
+	if err != 1 {
+		InsertDoc(TBLevent, newEvent)
+		//redirect user to event settings
+		redirecter(URL_eventSettings+newEvent.Id, w, r)
+	}else {
+		//redirecter(URL_organisers, w, r)
+	}
 }
 
 
