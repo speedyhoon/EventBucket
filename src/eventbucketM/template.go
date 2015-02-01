@@ -35,7 +35,7 @@ func loadHTM(pageName string) []byte {
 	//TODO add all html sources to []byte constant in a new go file
 	pageName = strings.Replace(pageName, "/", "", -1)
 	bytes, err := ioutil.ReadFile(fmt.Sprintf(PATH_HTML_MINIFIED, pageName))
-	checkErr(err)
+	checkErr(err)		//TODO create .html and .htm files if it doesn't exist
 	return dev_mode_loadHTM(pageName, bytes)
 }
 
@@ -281,4 +281,100 @@ func home_menu(page string, menu_items []Menu) string {
 	}
 	menu += "</ul>"
 	return menu
+}
+
+func templatorNew(viewController Page, w http.ResponseWriter, r *http.Request) {
+	if viewController.v8Url != nil {
+		none := viewController.v8Url.FindStringSubmatch(r.URL.Path)
+		if none == nil {
+			http.NotFound(w, r)
+			return
+		}
+	}
+	source := loadHTM(viewController.Theme)
+	remove_chars := map[string][]byte{
+		"^^BODY^^":         loadHTM(viewController.TemplateFile),
+	}
+	for search, replace := range remove_chars {
+		source = bytes.Replace(source, []byte(search), replace, -1)
+	}
+	viewController.Data["DirCss"]		= DIR_CSS
+	//	viewController.Data["DirGif"]		= DIR_GIF
+	viewController.Data["DirJpeg"]	= DIR_JPEG
+	viewController.Data["DirJs"]		= DIR_JS
+	viewController.Data["DirPng"]		= DIR_PNG
+	viewController.Data["DirSvg"]		= DIR_SVG
+	//	viewController.Data["DirWebp"]	= DIR_WEBP
+	viewController.Data["Title"] = viewController.Title
+	viewController.Data["CurrentYear"] = time.Now().Year()
+
+	my_html := template.New(viewController.TemplateFile).Funcs(template.FuncMap{
+	"HTM": func(x string) template.HTML {
+		return template.HTML(x)
+	},
+	"HTMattr": func(value string) template.HTMLAttr {
+		return template.HTMLAttr(value)
+	},
+	"JS": func(x string) template.JS {
+		return template.JS(x)
+	},
+	"CLASS": func(grade int) string {
+		return grades()[grade].ClassName
+	},
+	"CLASSLONG": func(grade int) string {
+		return grades()[grade].LongName
+	},
+	"JSCLASS": func(grade int) string {
+		return fmt.Sprintf("%v", grades()[grade].ClassId)
+	},
+	"GRADE": func(grade int) string {
+		return grades()[grade].Name
+	},
+	"Fieldset": func(title string) template.HTML {
+		return template.HTML(field_set(title))
+	},
+	"EndFieldset": func() template.HTML {
+		return template.HTML("</fieldset>")
+	},
+	"COLSPAN": func(longest_shots []string, short_shots int) template.HTMLAttr {
+		if len(longest_shots) > short_shots {
+			return template.HTMLAttr(fmt.Sprintf(" colspan=%v", len(longest_shots)-short_shots+1))
+		}
+		return template.HTMLAttr("")
+	},
+	"CSSclass": func(class_name1, class_name2 interface{}) template.HTMLAttr {
+		if class_name1 != "" && class_name2 != "" {
+			return template.HTMLAttr(fmt.Sprintf(" class=%v%v", class_name1, class_name2))
+		}
+		return template.HTMLAttr("")
+	},
+	"DisplayShot": func(shot_index int, score Score) string {
+		if len(score.Shots) > shot_index {
+			//				return fmt.Sprintf("%s", ShotsToValue(string(score.Shots[shot_index])))
+			return ShotsToValue(string(score.Shots[shot_index]))
+		}
+		return ""
+	},
+	"START_SHOOTING_SHOTS": func(score Score) template.HTML {
+		var output string
+		for _, shot := range strings.Split(score.Shots, "") {
+			output += fmt.Sprintf("<td>%v</td>", ShotsToValue(shot))
+		}
+		return template.HTML(output)
+	},
+	"NOSHOOTERS": func() template.HTML {
+		return template.HTML("<p>No Shooters entered in this event.</p>")
+	},
+	"VAR2STR": func(input interface{}) string {
+		return fmt.Sprintf("%v", input)
+	},
+	"POSITION": func(position int) template.HTMLAttr {
+		if position > 0{
+			return template.HTMLAttr(fmt.Sprintf(" class=p%v", position))
+		}
+		return template.HTMLAttr("")
+	},
+})
+	t := template.Must(my_html.Parse(string(source)))
+	checkErr(t.Execute(w, viewController.Data))
 }
