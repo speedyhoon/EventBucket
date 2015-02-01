@@ -182,10 +182,10 @@ func eventInsert2(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Add default ranges and aggregate ranges
-	var err int
+	var err error
 	newEvent.Id, err = getNextId(TBLevent)
 	newEvent.AutoInc.Range = 1
-	if err != 1 {
+	if err == nil {
 		InsertDoc(TBLevent, newEvent)
 		//redirect user to event settings
 		redirecter(URL_eventSettings+newEvent.Id, w, r)

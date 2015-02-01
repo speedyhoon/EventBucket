@@ -6,6 +6,7 @@ import (
 	"strings"
 	//	"os"
 		"mgo/bson"
+	"errors"
 )
 
 const (
