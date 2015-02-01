@@ -1,8 +1,8 @@
 <!doctype html>
 <html>
 <head>
-	<link rel=stylesheet href=^^DIR_CSS^^home.css>
-	<link rel=icon type=image/png href=^^DIR_PNG^^^^FAVICON^^>
+	<link rel=stylesheet href={{.DirCss}}home.css>
+	<link rel=icon type=image/png href=a.png>
 	<title>EventBucket{{if .Title}} - {{.Title}}{{end}}</title>
 </head>
 <body>
@@ -17,7 +17,7 @@
 		</ul>*/}}
 {{/*	^^ERROR^^*/}}
 		^^BODY^^
-		<p id=b>Copyright &copy; 2011-^^CURRENT_YEAR^^ EventBucket<a href=licence class=r>Licence</a></p>
+		<p id=b>Copyright &copy; 2011-{{.CurrentYear}} EventBucket<a href=licence class=r>Licence</a></p>
 	</div>
 	<script src=/j/new_relic.js></script>
 </body>

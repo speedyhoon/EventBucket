@@ -21,28 +21,36 @@ func shooterInsert(w http.ResponseWriter, r *http.Request) {
 	event_shooter_insert(event_id, new_shooter)
 }
 
-func event(eventId string) M {
+func event(eventId string) Page {
 	event, err := getEvent20Shooters(eventId)
 	if err{
-		return M{
-			"Title": "Event not found: "+eventId,
-//			"Menu":  standard_menu(ORGANISERS_MENU_ITEMS),
-			"Menu":  standard_menu(HOME_MENU_ITEMS),
-			"Valid": false,
+		return Page {
+			TemplateFile: "event",
+			Theme: TEMPLATE_ADMIN,
+			Data: M{
+				"Title": "Event not found: " + eventId,
+				//			"Menu":  standard_menu(ORGANISERS_MENU_ITEMS),
+				"Menu":  standard_menu(HOME_MENU_ITEMS),
+				"Valid": false,
+			},
 		}
 	}
-	return M{
-		"Title": event.Name,
-		"Menu": event_menu(eventId, event.Ranges, URL_event, event.IsPrizeMeet),
-		"Valid": true,
-		"NewShooterEntry": URL_shooterInsert,
-		"GradeOptions": draw_options(Inputs{Options:eventGradeOptions(event.Grades)}, ""),
-		//TODO add ClubOptions when club textbox is changed to a datalist
-		"AgeOptions": draw_options(Inputs{Options:AGE_GROUPS2()}, ""),
-		"ExistingShooterEntry": URL_shooterListInsert,
-		"EventGrades":    generateForm2(eventSettingsClassGrades(event.Id, event.Grades)),
-		"ListShooters": event.Shooters,
-		"EventId": eventId,
+	return Page {
+		TemplateFile: "event",
+		Theme: TEMPLATE_ADMIN,
+		Data: M{
+			"Title": event.Name,
+			"Menu": event_menu(eventId, event.Ranges, URL_event, event.IsPrizeMeet),
+			"Valid": true,
+			"NewShooterEntry": URL_shooterInsert,
+			"GradeOptions": draw_options(Inputs{Options:eventGradeOptions(event.Grades)}, ""),
+			//TODO add ClubOptions when club textbox is changed to a datalist
+			"AgeOptions": draw_options(Inputs{Options:AGE_GROUPS2()}, ""),
+			"ExistingShooterEntry": URL_shooterListInsert,
+			"EventGrades":    generateForm2(eventSettingsClassGrades(event.Id, event.Grades)),
+			"ListShooters": event.Shooters,
+			"EventId": eventId,
+		},
 	}
 }
 

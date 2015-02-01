@@ -1,5 +1,5 @@
 package main
-
+/*
 import (
 	"fmt"
 	"net/http"
@@ -9,26 +9,32 @@ import (
 
 func startShooting(w http.ResponseWriter, r *http.Request) {
 	data := get_id_from_url(r, URL_startShooting)
-	templator(TEMPLATE_ADMIN, "start-shooting", startShooting_Data(data, false), w)
+//	templator(TEMPLATE_ADMIN, "start-shooting", startShooting_Data(data, false), w)
+	templatorNew(startShooting_Data(data, false), r, w)
 }
 
 func startShootingAll(w http.ResponseWriter, r *http.Request) {
 	data := get_id_from_url(r, URL_startShootingAll)
-	templator(TEMPLATE_ADMIN, "start-shooting", startShooting_Data(data, true), w)
+//	templator(TEMPLATE_ADMIN, "start-shooting", startShooting_Data(data, true), w)
+	templatorNew(startShooting_Data(data, true), r, w)
 }
-func startShooting_Data(data string, showAll bool) M {
+func startShooting_Data(data string, showAll bool) Page {
 	arr := strings.Split(data, "/")
 	event_id := arr[0]
 	range_id, err := strToInt(arr[1])
 	event, _ := getEvent(event_id)
 
 	if event.Ranges[range_id].Aggregate != "" || !err {
-		return M{
-			"Title":			"Start Shooting",
-			"menu": 			event_menu(event_id, event.Ranges, URL_startShooting, event.IsPrizeMeet),
-			"target_heading_cells":"",
-			"fclass_heading_cells":"",
-			"match_heading_cells": "",
+		return Page {
+			TemplateFile: "start-shooting",
+			Theme: TEMPLATE_ADMIN,
+			Data: M{
+				"Title":         "Start Shooting",
+				"menu":         event_menu(event_id, event.Ranges, URL_startShooting, event.IsPrizeMeet),
+				"target_heading_cells":"",
+				"fclass_heading_cells":"",
+				"match_heading_cells": "",
+			},
 		}
 	}
 
@@ -110,27 +116,31 @@ func startShooting_Data(data string, showAll bool) M {
 		totalScores_link = fmt.Sprintf("<a href=%v/%v/%v>View All Shooters</a>", URL_startShootingAll, event_id, range_id)
 	}
 
-	return M{
-		"Title":              "Start Shooting",
-		"EventId":            event_id,
-		"LinkToPage": 				totalScores_link,
-		"RangeName":          event.Ranges[range_id].Name,
-		"class_shots":        class_shots,
-		"menu":               event_menu(event_id, event.Ranges, URL_startShooting, event.IsPrizeMeet),
-		"strRangeId":         fmt.Sprintf("%v", range_id),
-		"RangeId":            range_id,
-		"first_class":        first_class,
-		"longest_shots":      long_shots,
-		"class_shots_length": class_shots_length,
-		"ListShooters": shooter_list,
-		"Css":          "admin.css",
-		"Js":           "start-shooting.js",
-		"available_class_shots": available_class_shots,
-		"first_class_shots": available_class_shots[first_class_int],
-		"first_loaded_colspan": longest_shots_for_current_range - len(available_class_shots[first_class_int]) + 1,
-		"target_heading_cells": html_available_class_shots[0],
-		"fclass_heading_cells": html_available_class_shots[1],
-		"match_heading_cells": html_available_class_shots[2],
+	return Page {
+		TemplateFile: "start-shooting",
+		Theme: TEMPLATE_ADMIN,
+		Data: M{
+			"Title":              "Start Shooting",
+			"EventId":            event_id,
+			"LinkToPage":            totalScores_link,
+			"RangeName":          event.Ranges[range_id].Name,
+			"class_shots":        class_shots,
+			"menu":               event_menu(event_id, event.Ranges, URL_startShooting, event.IsPrizeMeet),
+			"strRangeId":         fmt.Sprintf("%v", range_id),
+			"RangeId":            range_id,
+			"first_class":        first_class,
+			"longest_shots":      long_shots,
+			"class_shots_length": class_shots_length,
+			"ListShooters": shooter_list,
+			"Css":          "admin.css",
+			"Js":           "start-shooting.js",
+			"available_class_shots": available_class_shots,
+			"first_class_shots": available_class_shots[first_class_int],
+			"first_loaded_colspan": longest_shots_for_current_range - len(available_class_shots[first_class_int]) + 1,
+			"target_heading_cells": html_available_class_shots[0],
+			"fclass_heading_cells": html_available_class_shots[1],
+			"match_heading_cells": html_available_class_shots[2],
+		},
 	}
 }
 
@@ -211,9 +221,9 @@ func calc_total_centers(shots string, class int) Score {
 			centers += relevant_settings[shot].Centers
 			countback1 = relevant_settings[shot].CountBack1+countback1
 			//		countback2 = relevant_settings[shot].CountBack2 + countback2
-		}
-		return Score{Total: total, Centers: centers, Shots: shots /*Xs: xs,*/, CountBack1: countback1 /*CountBack2: countback2*/}
-	}
+		}*/
+/////////////////////////////		return Score{Total: total, Centers: centers, Shots: shots /*Xs: xs,*/, CountBack1: countback1 /*CountBack2: countback2*/}
+/*	}
 	return Score{}
 }
 
@@ -261,3 +271,4 @@ func startShooting_Form(event_id, range_id, shooter_id, shots string) Form {
 		},
 	}
 }
+*/

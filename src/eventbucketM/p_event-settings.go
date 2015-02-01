@@ -108,7 +108,7 @@ func eventSettings_update_range(eventId, rangeId string) Form {
 	}
 }
 
-func eventSettings(event_id string) M {
+func eventSettings(event_id string) Page {
 	event, _ := getEvent(event_id)
 	var event_ranges []Option
 	for range_id, item := range event.Ranges {
@@ -137,22 +137,26 @@ func eventSettings(event_id string) M {
 	if len(event.Ranges) >= 2 {
 		add_agg = generateForm2(eventSettings_add_aggForm(event_id, event_ranges))
 	}
-	return M{
-		"Title":          "Event Settings",
-		"EventName":      event.Name,
-		"Id":             event_id,
-		"AddRange":       generateForm2(eventSettings_add_rangeForm(event_id)),
-		"AddAgg":         add_agg,
-		"ListRanges":     event.Ranges,
-		"ListGrades":     CLASSES,
-		"isPrizemeeting":	generateForm2(eventSettings_isPrizeMeet(event_id, event.IsPrizeMeet)),
-//		"AddDate":        generateForm2(eventSettings_add_dateForm(event_id, event.Date, event.Time)),
-		"menu":           event_menu(event_id, event.Ranges, URL_eventSettings, event.IsPrizeMeet),
-		"EventGrades":    generateForm2(eventSettingsClassGrades(event.Id, event.Grades)),
-//		"ChangeName":     generateForm2(eventSettings_event_name(event.Name, event_id)),
-		"AllEventGrades": DEFAULT_CLASS_SETTINGS,
-		"SortScoreboard": generateForm2(eventSettings_sort_scoreboard(event_id, event.SortScoreboard, event.Ranges)),
-		"FormNewEvent": 	generateForm2(home_form_new_event(getClubs(), event.Name,event.Club,event.Date,event.Time,false)),
+	return Page {
+		TemplateFile: "eventSettings",
+		Theme: TEMPLATE_ADMIN,
+		Data: M{
+			"Title":          "Event Settings",
+			"EventName":      event.Name,
+			"Id":             event_id,
+			"AddRange":       generateForm2(eventSettings_add_rangeForm(event_id)),
+			"AddAgg":         add_agg,
+			"ListRanges":     event.Ranges,
+			"ListGrades":     CLASSES,
+			"isPrizemeeting":   generateForm2(eventSettings_isPrizeMeet(event_id, event.IsPrizeMeet)),
+			//		"AddDate":        generateForm2(eventSettings_add_dateForm(event_id, event.Date, event.Time)),
+			"menu":           event_menu(event_id, event.Ranges, URL_eventSettings, event.IsPrizeMeet),
+			"EventGrades":    generateForm2(eventSettingsClassGrades(event.Id, event.Grades)),
+			//		"ChangeName":     generateForm2(eventSettings_event_name(event.Name, event_id)),
+			"AllEventGrades": DEFAULT_CLASS_SETTINGS,
+			"SortScoreboard": generateForm2(eventSettings_sort_scoreboard(event_id, event.SortScoreboard, event.Ranges)),
+			"FormNewEvent":   generateForm2(home_form_new_event(getClubs(), event.Name, event.Club, event.Date, event.Time, false)),
+		},
 	}
 }
 func eventSettings_add_rangeForm(event_id string) Form {
