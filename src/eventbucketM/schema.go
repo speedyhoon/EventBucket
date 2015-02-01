@@ -147,9 +147,3 @@ type Skill struct {
 	Grade      string
 	Percentage float64 //TODO would prefer an unsigned float here
 }
-
-
-
-
-
-
