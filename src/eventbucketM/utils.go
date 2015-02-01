@@ -17,7 +17,7 @@ import (
 //research http://net.tutsplus.com/tutorials/client-side-security-best-practices/
 func checkErr(err error) {
 	if err != nil {
-		panic(err)
+		dump(err)
 	}
 }
 func dump(input interface{}) {
@@ -58,7 +58,7 @@ func strToInt2(input interface{})int{
 }*/
 
 func addQuotes(input string) string {
-	if strings.Contains(input, " ") || input == "/" {	// strings.Contains(input, "/") {
+	if strings.Contains(input, " ") { //}|| input == "/" {	// strings.Contains(input, "/") {
 		return "\"" + input + "\""
 	}
 	return input
