@@ -2,7 +2,8 @@ package main
 
 func about()Page {
 	return Page {
-		Name: "About",
+		TemplateFile: "about",
+		Title: "About",
 		Theme: TEMPLATE_HOME,
 		Data: M{
 			"Version":  VERSION,

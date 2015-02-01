@@ -66,7 +66,7 @@ func archive()Page{
 	}
 
 	return Page {
-		Name: "Organisers",
+		TemplateFile: "archive",
 		Theme: TEMPLATE_HOME,
 		Data: M{
 			"ClosedEvents":   closedEvents,

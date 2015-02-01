@@ -42,12 +42,12 @@ func warning(format string, a ...interface{}){
 
 func dev_mode_timeTrack(start time.Time, requestURI string) {
 	elapsed := time.Since(start)
-	fmt.Printf("%s took %s\n", requestURI, elapsed)
+	fmt.Printf("\n%s took %s\n", requestURI, elapsed)
 }
 
 func dev_mode_check_form(check bool, message string){
 	if !check{
-		fmt.Printf("%v\n", message)
+		fmt.Printf("\n%v\n", message)
 	}
 }
 

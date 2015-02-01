@@ -70,7 +70,7 @@ func home()Page{
 	//TODO change getClubs to simpler DB lookup getClubNames
 	clubs := getClubs()
 	return Page {
-		Name: "Home",
+		TemplateFile: "home",
 		Theme: TEMPLATE_HOME,
 		Data: M{
 			//		"ClosedEvents":   closed_events,
@@ -82,6 +82,7 @@ func home()Page{
 			"FormNewEvent": generateForm2(home_form_new_event(clubs, "", "", "", "", true)),
 			"Barcode2": "<img src=" + qrBarcode("I love you so much!") + " alt=barcode/>",
 		},
+		v8Url: VURL_home,
 	}
 }
 
@@ -153,19 +154,12 @@ func home_form_new_event(clubs []Club, name, club, date, eventTime string, newEv
 	}
 }
 
-func eventInsert2(w http.ResponseWriter, r *http.Request) {
+func eventInsert(w http.ResponseWriter, r *http.Request) {
 	var clubs []Club
 	validated_values := check_form(home_form_new_event(clubs,"","","","",true).Inputs, r)
-
-//	export(validated_values)
-
 	newEvent := Event{
 		Name: validated_values["name"],
 	}
-
-//	var newEvent Event
-//	newEvent.Name = validated_values["name"]
-
 	club, ok := getClub_by_name(validated_values["club"])
 	if ok {
 		newEvent.Club = club.Id
@@ -190,10 +184,10 @@ func eventInsert2(w http.ResponseWriter, r *http.Request) {
 		//redirect user to event settings
 		redirecter(URL_eventSettings+newEvent.Id, w, r)
 	}else {
+		//TODO go to previous referer page (home or organisers both have the form)
 		//redirecter(URL_organisers, w, r)
 	}
 }
-
 
 //Home and archive pages
 type HomeCalendar struct {

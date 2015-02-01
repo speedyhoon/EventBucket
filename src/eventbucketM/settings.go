@@ -1,5 +1,7 @@
 package main
 
+import "regexp"
+
 //truman Cell -- air purifier
 //TODO: eventually replace these settings with ones that are set for each club and sometimes overridden by a clubs event settings
 const (
@@ -69,6 +71,18 @@ const (
 	SHOOTOFF_UseXs         = 1
 	SHOOTOFF_UseCountback  = 1 //system settings
 */
+)
+
+type Page struct{
+	TemplateFile, Title string
+	Theme string	//TODO change type to struct enum to select between "TEMPLATE_HOME", "TEMPLATE_ADMIN" & "TEMPLATE_EMPTY"
+	Data M
+	v8Url *regexp.Regexp
+}
+
+var (
+	VURL_home = regexp.MustCompile("^/$")
+	VURL_event = regexp.MustCompile("^/event/([0-9]+)$")
 )
 
 type ClassSettings struct {

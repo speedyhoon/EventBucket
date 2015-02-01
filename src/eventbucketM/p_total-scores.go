@@ -1,19 +1,22 @@
 package main
 
 import (
-	"net/http"
+//	"net/http"
 	"fmt"
-	"strings"
+//	"strings"
 )
+/*
 func totalScores(w http.ResponseWriter, r *http.Request) {
 	data := get_id_from_url(r, URL_totalScores)
-	templator(TEMPLATE_ADMIN, "total-scores", totalScores_Data(data, false), w)
+//	templator(TEMPLATE_ADMIN, "total-scores", totalScores_Data(data, false), w)
+	templatorNew(totalScores_Data(data, false), r, w)
 }
 func totalScoresAll(w http.ResponseWriter, r *http.Request) {
 	data := get_id_from_url(r, URL_totalScoresAll)
-	templator(TEMPLATE_ADMIN, "total-scores", totalScores_Data(data, true), w)
+//	templator(TEMPLATE_ADMIN, "total-scores", totalScores_Data(data, true), w)
+	templatorNew(totalScores_Data(data, true), r, w)
 }
-func totalScores_Data(data string, show_all bool) M {
+func totalScores_Data(data string, show_all bool) Page {
 	arr := strings.Split(data, "/")
 	event_id := arr[0]
 	rangeId, success := strToInt(arr[1])
@@ -21,13 +24,17 @@ func totalScores_Data(data string, show_all bool) M {
 	event, eventMissing := getEvent(event_id)
 	ERROR_ENTER_SCORES_IN_AGG := "<p>This range is an aggregate. Can't enter scores!</p>"
 	if !success || eventMissing || event.Ranges[rangeId].Locked || event.Ranges[rangeId].Aggregate != ""{
-		return M{
-			"Title": "Total Scores",
-			"LinkToPage": "",
-			"EventId": "",
-			"RangeName": "",
-			"Message": ERROR_ENTER_SCORES_IN_AGG,
-			"menu": "",
+		return Page {
+			TemplateFile: "total-scores",
+			Theme: TEMPLATE_ADMIN,
+			Data: M{
+				"Title": "Total Scores",
+				"LinkToPage": "",
+				"EventId": "",
+				"RangeName": "",
+				"Message": ERROR_ENTER_SCORES_IN_AGG,
+				"menu": "",
+			},
 		}
 	}
 
@@ -41,13 +48,17 @@ func totalScores_Data(data string, show_all bool) M {
 	}
 
 	if len(selected_range.Aggregate) > 0{
-		return M{
-			"Title": "Total Scores",
-			"LinkToPage": totalScores_link,
-			"EventId": event_id,
-			"RangeName": selected_range.Name,
-			"Message": ERROR_ENTER_SCORES_IN_AGG,
-			"menu": event_menu(event_id, event.Ranges, URL_totalScores, event.IsPrizeMeet),
+		return Page {
+			TemplateFile: "total-scores",
+			Theme: TEMPLATE_ADMIN,
+			Data: M{
+				"Title": "Total Scores",
+				"LinkToPage": totalScores_link,
+				"EventId": event_id,
+				"RangeName": selected_range.Name,
+				"Message": ERROR_ENTER_SCORES_IN_AGG,
+				"menu": event_menu(event_id, event.Ranges, URL_totalScores, event.IsPrizeMeet),
+			},
 		}
 	}
 
@@ -78,19 +89,22 @@ func totalScores_Data(data string, show_all bool) M {
 
 	OrderedBy(grade, name).Sort(shooter_list)
 
-	return M{
-		"Title": "Total Scores",
-		"LinkToPage": totalScores_link,
-		"EventId": event_id,
-		"RangeName": selected_range.Name,
-		"RangeId": range_id,
-		"ListRanges": event.Ranges,
-
-//		"ListShooters": event.Shooters,
-		"ListShooters": shooter_list,
-		"menu": event_menu(event_id, event.Ranges,URL_totalScores, event.IsPrizeMeet),
-		"FormTotalScores": shooters_forms,
-		"Js": "total-scores.js",
+	return Page {
+		TemplateFile: "total-scores",
+		Theme: TEMPLATE_ADMIN,
+		Data: M{
+			"Title": "Total Scores",
+			"LinkToPage": totalScores_link,
+			"EventId": event_id,
+			"RangeName": selected_range.Name,
+			"RangeId": range_id,
+			"ListRanges": event.Ranges,
+			//		"ListShooters": event.Shooters,
+			"ListShooters": shooter_list,
+			"menu": event_menu(event_id, event.Ranges, URL_totalScores, event.IsPrizeMeet),
+			"FormTotalScores": shooters_forms,
+			"Js": "total-scores.js",
+		},
 	}
 }
 
@@ -121,7 +135,7 @@ func updateTotalScores(w http.ResponseWriter, r *http.Request){
 		redirecter(fmt.Sprintf("%v%v", URL_totalScores+event_id+"/", rangeId), w, r)
 	}
 }
-
+*/
 func searchForAggs(ranges []Range, rangeId int)[]int{
 	var aggFound []int
 	for _, rangeObj := range ranges{

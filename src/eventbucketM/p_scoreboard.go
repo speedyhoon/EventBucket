@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func scoreboard(url string) M {
+func scoreboard(url string) Page {
 	arr := strings.Split(url, "/")
 	event_id := arr[0]
 
@@ -146,7 +146,11 @@ func scoreboard(url string) M {
 		outputer["SortByRange"], _ = strToInt(sortByRange)
 		outputer["SortScoreboard"]= generateForm2(eventSettings_sort_scoreboard(event_id, event.SortScoreboard, event.Ranges))
 	}
-	return outputer
+	return Page {
+		TemplateFile: "scoreboard",
+		Theme: TEMPLATE_ADMIN,
+		Data: outputer,
+	}
 }
 
 func render_legend(items_status map[string]bool) string {

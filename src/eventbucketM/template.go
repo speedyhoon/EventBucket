@@ -291,20 +291,15 @@ func templatorNew(viewController Page, w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	source := loadHTM(viewController.Theme)
-	remove_chars := map[string][]byte{
-		"^^BODY^^":         loadHTM(viewController.TemplateFile),
-	}
-	for search, replace := range remove_chars {
-		source = bytes.Replace(source, []byte(search), replace, -1)
-	}
+	//Search in TemplateFile & replace "^^BODY^^" with Theme html file
+	source := bytes.Replace(loadHTM(viewController.Theme), []byte("^^BODY^^"), loadHTM(viewController.TemplateFile), -1)
 	viewController.Data["DirCss"]		= DIR_CSS
-	//	viewController.Data["DirGif"]		= DIR_GIF
+//	viewController.Data["DirGif"]		= DIR_GIF
 	viewController.Data["DirJpeg"]	= DIR_JPEG
 	viewController.Data["DirJs"]		= DIR_JS
 	viewController.Data["DirPng"]		= DIR_PNG
 	viewController.Data["DirSvg"]		= DIR_SVG
-	//	viewController.Data["DirWebp"]	= DIR_WEBP
+//	viewController.Data["DirWebp"]	= DIR_WEBP
 	viewController.Data["Title"] = viewController.Title
 	viewController.Data["CurrentYear"] = time.Now().Year()
 

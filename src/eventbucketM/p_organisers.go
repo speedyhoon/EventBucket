@@ -4,16 +4,10 @@ import (
 	"net/http"
 )
 
-type Page struct{
-	Name string
-	Theme string	//TODO change type to struct enum to select between "TEMPLATE_HOME", "TEMPLATE_ADMIN" & "TEMPLATE_EMPTY"
-	Data M
-}
-
 func organisers() Page {
 	clubs := getClubs()
 	return Page {
-		Name: "Organisers",
+		TemplateFile: "organisers",
 		Theme: TEMPLATE_HOME,
 		Data: M{
 			"Title":        "Organisers",
@@ -127,20 +121,6 @@ func insert_new_club(club_name string) string {
 	}
 	return "-1"
 }
-
-/*func eventInsert(w http.ResponseWriter, r *http.Request) {
-	validated_values := check_form(organisers_eventForm(getClubs()).Inputs, r)
-	newEvent := Event{
-		Name: validated_values["name"],
-	}
-	if club_name, ok := validated_values["club_insert"]; ok {
-		insert_new_club(club_name)
-	} else if club_name, ok := validated_values["club"]; ok {
-		newEvent.Club = club_name
-	}
-	newEvent.Id = getNextId(TBLevent)
-	InsertDoc(TBLevent, newEvent)
-}*/
 
 func getClubSelectionBox(club_list []Club) []Option {
 	var drop_down []Option
