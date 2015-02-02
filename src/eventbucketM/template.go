@@ -10,25 +10,26 @@ import (
 	"strings"
 )
 
-func templatePage(url string, data Page, w http.ResponseWriter) {
-	templator(data.Theme, url, data.Data, w)
-}
-
-func templator(main_template string, content_template string, data M, w http.ResponseWriter) {
-	//Ajax responses should not use this function! Instead use "generator(w, body, data)"
-	source := loadHTM(main_template)
-	remove_chars := map[string][]byte{
-		"^^DIR_JS^^":       []byte(DIR_JS),
-		"^^DIR_CSS^^":      []byte(DIR_CSS),
-		"^^DIR_PNG^^":     []byte(DIR_PNG),
-		"^^FAVICON^^":      []byte(FAVICON),
-		"^^CURRENT_YEAR^^": []byte(fmt.Sprintf("%v", time.Now().Year())),
-		"^^BODY^^":         loadHTM(content_template),
+func templator(viewController Page, w http.ResponseWriter, r *http.Request) {
+	if viewController.v8Url != nil {
+		none := viewController.v8Url.FindStringSubmatch(r.URL.Path)
+		if none == nil {
+			http.NotFound(w, r)
+			return
+		}
 	}
-	for search, replace := range remove_chars {
-		source = bytes.Replace(source, []byte(search), replace, -1)
-	}
-	generator(w, string(source), data)
+	//Search in Theme html file & replace "^^BODY^^" with TemplateFile
+	source := bytes.Replace(loadHTM(viewController.Theme), []byte("^^BODY^^"), loadHTM(viewController.TemplateFile), -1)
+	viewController.Data["DirCss"]		= DIR_CSS
+//	viewController.Data["DirGif"]		= DIR_GIF
+	viewController.Data["DirJpeg"]	= DIR_JPEG
+	viewController.Data["DirJs"]		= DIR_JS
+	viewController.Data["DirPng"]		= DIR_PNG
+	viewController.Data["DirSvg"]		= DIR_SVG
+//	viewController.Data["DirWebp"]	= DIR_WEBP
+	viewController.Data["Title"] = viewController.Title
+	viewController.Data["CurrentYear"] = time.Now().Year()
+	generator(w, string(source), viewController)
 }
 
 func loadHTM(pageName string) []byte {
@@ -39,8 +40,8 @@ func loadHTM(pageName string) []byte {
 	return dev_mode_loadHTM(pageName, bytes)
 }
 
-func generator(w http.ResponseWriter, fillin string, data M) {
-	my_html := template.New("my_template").Funcs(template.FuncMap{
+func generator(w http.ResponseWriter, fillin string, viewController Page) {
+	my_html := template.New(viewController.TemplateFile).Funcs(template.FuncMap{
 		"HTM": func(x string) template.HTML {
 			return template.HTML(x)
 		},
@@ -107,9 +108,8 @@ func generator(w http.ResponseWriter, fillin string, data M) {
 			return template.HTMLAttr("")
 		},
 	})
-
 	t := template.Must(my_html.Parse(fillin))
-	checkErr(t.Execute(w, data))
+	checkErr(t.Execute(w, viewController.Data))
 }
 
 type Menu struct {
@@ -246,21 +246,6 @@ var HOME_MENU_ITEMS = []Menu{
 	},
 }
 
-/*var ORGANISERS_MENU_ITEMS = []Menu{
-	Menu{
-		Name: "Home",
-		Link: "/",
-	},
-	Menu{
-		Name: "Archive",
-		Link: URL_archive,
-	},
-	Menu{
-		Name: "Organisers",
-		Link: URL_organisers,
-	},
-}*/
-
 func standard_menu(menu_items []Menu) string {
 	menu := "<ul>"
 	for _, menu_item := range menu_items {
@@ -281,95 +266,4 @@ func home_menu(page string, menu_items []Menu) string {
 	}
 	menu += "</ul>"
 	return menu
-}
-
-func templatorNew(viewController Page, w http.ResponseWriter, r *http.Request) {
-	if viewController.v8Url != nil {
-		none := viewController.v8Url.FindStringSubmatch(r.URL.Path)
-		if none == nil {
-			http.NotFound(w, r)
-			return
-		}
-	}
-	//Search in TemplateFile & replace "^^BODY^^" with Theme html file
-	source := bytes.Replace(loadHTM(viewController.Theme), []byte("^^BODY^^"), loadHTM(viewController.TemplateFile), -1)
-	viewController.Data["DirCss"]		= DIR_CSS
-//	viewController.Data["DirGif"]		= DIR_GIF
-	viewController.Data["DirJpeg"]	= DIR_JPEG
-	viewController.Data["DirJs"]		= DIR_JS
-	viewController.Data["DirPng"]		= DIR_PNG
-	viewController.Data["DirSvg"]		= DIR_SVG
-//	viewController.Data["DirWebp"]	= DIR_WEBP
-	viewController.Data["Title"] = viewController.Title
-	viewController.Data["CurrentYear"] = time.Now().Year()
-
-	my_html := template.New(viewController.TemplateFile).Funcs(template.FuncMap{
-	"HTM": func(x string) template.HTML {
-		return template.HTML(x)
-	},
-	"HTMattr": func(value string) template.HTMLAttr {
-		return template.HTMLAttr(value)
-	},
-	"JS": func(x string) template.JS {
-		return template.JS(x)
-	},
-	"CLASS": func(grade int) string {
-		return grades()[grade].ClassName
-	},
-	"CLASSLONG": func(grade int) string {
-		return grades()[grade].LongName
-	},
-	"JSCLASS": func(grade int) string {
-		return fmt.Sprintf("%v", grades()[grade].ClassId)
-	},
-	"GRADE": func(grade int) string {
-		return grades()[grade].Name
-	},
-	"Fieldset": func(title string) template.HTML {
-		return template.HTML(field_set(title))
-	},
-	"EndFieldset": func() template.HTML {
-		return template.HTML("</fieldset>")
-	},
-	"COLSPAN": func(longest_shots []string, short_shots int) template.HTMLAttr {
-		if len(longest_shots) > short_shots {
-			return template.HTMLAttr(fmt.Sprintf(" colspan=%v", len(longest_shots)-short_shots+1))
-		}
-		return template.HTMLAttr("")
-	},
-	"CSSclass": func(class_name1, class_name2 interface{}) template.HTMLAttr {
-		if class_name1 != "" && class_name2 != "" {
-			return template.HTMLAttr(fmt.Sprintf(" class=%v%v", class_name1, class_name2))
-		}
-		return template.HTMLAttr("")
-	},
-	"DisplayShot": func(shot_index int, score Score) string {
-		if len(score.Shots) > shot_index {
-			//				return fmt.Sprintf("%s", ShotsToValue(string(score.Shots[shot_index])))
-			return ShotsToValue(string(score.Shots[shot_index]))
-		}
-		return ""
-	},
-	"START_SHOOTING_SHOTS": func(score Score) template.HTML {
-		var output string
-		for _, shot := range strings.Split(score.Shots, "") {
-			output += fmt.Sprintf("<td>%v</td>", ShotsToValue(shot))
-		}
-		return template.HTML(output)
-	},
-	"NOSHOOTERS": func() template.HTML {
-		return template.HTML("<p>No Shooters entered in this event.</p>")
-	},
-	"VAR2STR": func(input interface{}) string {
-		return fmt.Sprintf("%v", input)
-	},
-	"POSITION": func(position int) template.HTMLAttr {
-		if position > 0{
-			return template.HTMLAttr(fmt.Sprintf(" class=p%v", position))
-		}
-		return template.HTMLAttr("")
-	},
-})
-	t := template.Must(my_html.Parse(string(source)))
-	checkErr(t.Execute(w, viewController.Data))
 }

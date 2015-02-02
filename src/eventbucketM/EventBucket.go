@@ -89,7 +89,7 @@ func main() {
 	serveDir(DIR_PNG)
 	serveDir(DIR_JPEG)
 	serveDir(DIR_SVG)
-
+	//TODO remove all custom functions for each set of pages. Just make it overall easier & more flexible to setup new & change existing pages
 	GetRedirectPermanent(URL_about, about)
 	GetRedirectPermanent(URL_archive, archive)
 	GetRedirectPermanent(URL_licence, licence)
@@ -140,42 +140,3 @@ func main() {
 	}
 	fmt.Printf("ListenAndServe: %v", http.ListenAndServe(":80", nil))
 }
-
-//TODO remove all custom functions for each set of pages. Just make it overall easier & more flexible to setup new & change existing pages
-/*Pages with no data and redirects to the proper page without any parameters
-	home
-	about
-	archive
-	licence
-	organisers
-
-Pages with event Id parameter
-	event
-	event settings
-	scoreboard
-
-Pages with event Id and Range Id
-	start shooting
-	start shooting all
-	total scores
-	total scores all
-
-Post data to Update
-	query shooter list
-	club insert
-	event insert
-	update range
-	event range insert
-	event agg insert
-	shoorter insert
-	shooter list insert
-	update total scores
-	update shot scores
-	update sort scoreboard
-	update event grades
-	update is prize meeting
-	event shots & sighters
-
-Debug tools
-	random data
-*/
