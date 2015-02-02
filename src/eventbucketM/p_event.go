@@ -8,7 +8,7 @@ import (
 func shooterInsert(w http.ResponseWriter, r *http.Request) {
 	validated_values := check_form(event_add_shooterForm("", []int{}).Inputs, r)
 	event_id := validated_values["event_id"]
-	redirecter(URL_event + event_id, w, r)
+	http.Redirect(w, r, URL_event + event_id, http.StatusSeeOther)
 	new_shooter := EventShooter{
 		FirstName: validated_values["first"],
 		Surname: validated_values["surname"],
@@ -50,6 +50,7 @@ func event(eventId string) Page {
 			"EventGrades":    generateForm2(eventSettingsClassGrades(event.Id, event.Grades)),
 			"ListShooters": event.Shooters,
 			"EventId": eventId,
+			"QrBarcode": "<img src=" + qrBarcode("I love you so much!") + " alt=barcode/>",
 		},
 	}
 }
@@ -57,7 +58,8 @@ func event(eventId string) Page {
 func shooterListInsert(w http.ResponseWriter, r *http.Request){
 	validated_values := check_form(event_add_shooterListForm("", []int{}).Inputs, r)
 	event_id := validated_values["event_id"]
-	redirecter(URL_event + event_id, w, r)
+	http.Redirect(w, r, URL_event + event_id, http.StatusSeeOther)
+
 	var new_shooter EventShooter
 	new_shooter.Grade, _ = strconv.Atoi(validated_values["grade"])
 	if validated_values["age"] != "" {

@@ -60,4 +60,4 @@
 122 KB (125,760 bytes) Go only - Not completed rewriting Page objects and gzip & http headers
 
 2 Feb 2015
-119 KB (122,019 bytes) Go only
+118 KB (120,965 bytes)

@@ -80,7 +80,6 @@ func home()Page{
 			"ArchiveLink": URL_archive,
 			"Menu":     home_menu("/", HOME_MENU_ITEMS),
 			"FormNewEvent": generateForm2(home_form_new_event(clubs, "", "", "", "", true)),
-			"Barcode2": "<img src=" + qrBarcode("I love you so much!") + " alt=barcode/>",
 		},
 		v8Url: VURL_home,
 	}
@@ -182,10 +181,10 @@ func eventInsert(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		InsertDoc(TBLevent, newEvent)
 		//redirect user to event settings
-		redirecter(URL_eventSettings+newEvent.Id, w, r)
+		http.Redirect(w, r, URL_eventSettings+newEvent.Id, http.StatusSeeOther)
 	}else {
 		//TODO go to previous referer page (home or organisers both have the form)
-		//redirecter(URL_organisers, w, r)
+		//http.Redirect(w, r, URL_organisers, http.StatusSeeOther)
 	}
 }
 
