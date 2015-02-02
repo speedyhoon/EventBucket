@@ -47,14 +47,14 @@ func NewGzipper(h http.Handler, w http.ResponseWriter, r *http.Request){
 }
 
 func Get(url string, runner func()Page){
-	http.Handle(url, serveHtml(func(w http.ResponseWriter, r *http.Request) {templatorNew(runner(), w, r)}))
+	http.Handle(url, serveHtml(func(w http.ResponseWriter, r *http.Request) {templator(runner(), w, r)}))
 }
 func GetRedirectPermanent(url string, runner func()Page){
 	Get(url, runner)
 	http.Handle(url + "/", http.RedirectHandler(url, http.StatusMovedPermanently))
 }
 func GetParameters(url string, runner func(string)Page) {
-	h := func(w http.ResponseWriter, r *http.Request) {templatorNew(runner(getIdFromUrl(r, url)), w, r)}
+	h := func(w http.ResponseWriter, r *http.Request) {templator(runner(getIdFromUrl(r, url)), w, r)}
 	http.Handle(url, serveHtml(h))
 }
 func Post(url string, runner http.HandlerFunc){
@@ -76,7 +76,7 @@ func httpHeaders(w http.ResponseWriter, set_headers []string) {
 //		DIR_WEBP:   [2]string{"Content-Type", "image/webp"},
 		DIR_SVG:    [2]string{"Content-Type", "image/svg+xml"},
 	}
-	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self';")
+	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:;")
 	for _, lookup := range set_headers {
 		if lookup != "nocache" {
 			w.Header().Set(headers[lookup][0], headers[lookup][1])
