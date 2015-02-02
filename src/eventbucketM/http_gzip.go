@@ -57,8 +57,15 @@ func GetParameters(url string, runner func(string)Page) {
 	h := func(w http.ResponseWriter, r *http.Request) {templator(runner(getIdFromUrl(r, url)), w, r)}
 	http.Handle(url, serveHtml(h))
 }
+//TODO Post - Post to endpoint. If valid return to X page, else return to previous page with form filled out and wrong values highlighted with error message
 func Post(url string, runner http.HandlerFunc){
 	http.HandleFunc(url, serveHtml(runner))
+}
+func PostVia(runThisFirst func(http.ResponseWriter, *http.Request), path string) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		runThisFirst(w, r)
+		http.Redirect(w, r, path, http.StatusSeeOther) //303 mandating the change of request type to GET
+	}
 }
 
 func httpHeaders(w http.ResponseWriter, set_headers []string) {
@@ -95,25 +102,6 @@ type gzipResponseWriter struct {
 
 func (w gzipResponseWriter) Write(b []byte) (int, error) {
 	return w.Writer.Write(b)
-}
-
-/*func redirectPermanent(path string) func(http.ResponseWriter, *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, path, http.StatusMovedPermanently) //Search engine Optimisation
-	}
-}
-
-func redirectVia(runThisFirst func(http.ResponseWriter, *http.Request), path string) func(http.ResponseWriter, *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		runThisFirst(w, r)
-		http.Redirect(w, r, path, http.StatusSeeOther) //303 mandating the change of request type to GET
-	}
-}*/
-
-func redirecter(path string, w http.ResponseWriter, r *http.Request) {
-	//	return func(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, path, http.StatusSeeOther)
-	//	}
 }
 
 func getIdFromUrl(r *http.Request, page_url string) string {

@@ -10,14 +10,14 @@ func rangeInsert(w http.ResponseWriter, r *http.Request) {
 	validated_values := check_form(eventSettings_add_rangeForm("").Inputs, r)
 	range_agg_insert(validated_values, false)
 	event_id := validated_values["event_id"]
-	redirecter(URL_eventSettings+event_id, w, r)
+	http.Redirect(w, r, URL_eventSettings+event_id, http.StatusSeeOther)
 }
 
 func aggInsert(w http.ResponseWriter, r *http.Request) {
 	validated_values := check_form(eventSettings_add_aggForm("", []Option{}).Inputs, r)
 	range_agg_insert(validated_values, true)
 	event_id := validated_values["event_id"]
-	redirecter(URL_eventSettings+event_id, w, r)
+	http.Redirect(w, r, URL_eventSettings+event_id, http.StatusSeeOther)
 }
 func range_agg_insert(validated_values map[string]string, isAgg bool) {
 	var new_range Range
@@ -64,7 +64,7 @@ func rangeUpdate2(w http.ResponseWriter, r *http.Request) {
 		update["$unset"].(M)[Dot("R",rangeId,"l")] = false
 	}
 	event_update_range_data(eventId, update)
-	redirecter(URL_eventSettings+eventId, w, r)
+	http.Redirect(w, r, URL_eventSettings+eventId, http.StatusSeeOther)
 }
 func eventSettings_update_range(eventId, rangeId string) Form {
 	return Form{
@@ -186,7 +186,7 @@ func eventSettings_add_rangeForm(event_id string) Form {
 func updateSortScoreBoard(w http.ResponseWriter, r *http.Request) {
 	validated_values := check_form(eventSettings_sort_scoreboard("", "", make([]Range,0)).Inputs, r)
 	event_id := validated_values["event_id"]
-	redirecter(URL_scoreboard+event_id, w, r)
+	http.Redirect(w, r, URL_scoreboard+event_id, http.StatusSeeOther)
 	event_update_sort_scoreboard(event_id, validated_values["sort"])
 }
 
@@ -259,7 +259,7 @@ func eventSettings_add_aggForm(event_id string, event_ranges []Option) Form {
 func updateEventGrades(w http.ResponseWriter, r *http.Request) {
 	validated_values := check_form(eventSettingsClassGrades("", []int{}).Inputs, r)
 	event_id := validated_values["event_id"]
-	redirecter(URL_event+event_id, w, r)
+	http.Redirect(w, r, URL_event+event_id, http.StatusSeeOther)
 	event_upsert_data(event_id, M{schemaGRADES: validated_values["grades"]})
 }
 
@@ -321,7 +321,7 @@ func updateIsPrizeMeet(w http.ResponseWriter, r *http.Request) {
 	if "on" ==validated_values["prizemeet"]{
 		prizemeet = true
 	}
-	redirecter(URL_eventSettings+event_id, w, r)
+	http.Redirect(w, r, URL_eventSettings+event_id, http.StatusSeeOther)
 	event_upsert_data(event_id, M{"p": prizemeet})
 }
 

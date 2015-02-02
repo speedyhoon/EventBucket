@@ -132,7 +132,7 @@ func updateTotalScores(w http.ResponseWriter, r *http.Request){
 			}
 			go eventTotalScoreUpdate(event_id, rangeId, shooterIds, new_score)
 		}
-		redirecter(fmt.Sprintf("%v%v", URL_totalScores+event_id+"/", rangeId), w, r)
+		http.Redirect(w, r, fmt.Sprintf("%v%v", URL_totalScores+event_id+"/", rangeId), http.StatusSeeOther)
 	}
 }
 */

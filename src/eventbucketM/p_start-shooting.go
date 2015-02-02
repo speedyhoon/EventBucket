@@ -1,5 +1,5 @@
 package main
-/*
+
 import (
 	"fmt"
 	"net/http"
@@ -8,15 +8,13 @@ import (
 )
 
 func startShooting(w http.ResponseWriter, r *http.Request) {
-	data := get_id_from_url(r, URL_startShooting)
-//	templator(TEMPLATE_ADMIN, "start-shooting", startShooting_Data(data, false), w)
-	templatorNew(startShooting_Data(data, false), r, w)
+//	data := getIdFromUrl(r, URL_startShooting)
+//	templator(startShooting_Data(data, false), r, w)
 }
 
 func startShootingAll(w http.ResponseWriter, r *http.Request) {
-	data := get_id_from_url(r, URL_startShootingAll)
-//	templator(TEMPLATE_ADMIN, "start-shooting", startShooting_Data(data, true), w)
-	templatorNew(startShooting_Data(data, true), r, w)
+//	data := getIdFromUrl(r, URL_startShootingAll)
+//	templator(startShooting_Data(data, true), r, w)
 }
 func startShooting_Data(data string, showAll bool) Page {
 	arr := strings.Split(data, "/")
@@ -132,7 +130,6 @@ func startShooting_Data(data string, showAll bool) Page {
 			"longest_shots":      long_shots,
 			"class_shots_length": class_shots_length,
 			"ListShooters": shooter_list,
-			"Css":          "admin.css",
 			"Js":           "start-shooting.js",
 			"available_class_shots": available_class_shots,
 			"first_class_shots": available_class_shots[first_class_int],
@@ -143,7 +140,6 @@ func startShooting_Data(data string, showAll bool) Page {
 		},
 	}
 }
-
 
 func updateShotScores(w http.ResponseWriter, r *http.Request) {
 	validated_values, passed := valid8(startShooting_Form("", "", "", "").Inputs, r)
@@ -157,10 +153,11 @@ func updateShotScores(w http.ResponseWriter, r *http.Request) {
 			shots := validated_values["shots"].(string)
 
 			new_score := calc_total_centers(shots, grades()[event.Shooters[shooter_id].Grade].ClassId)
+			var temp Page
 			if new_score.Centers > 0 {
-				generator(w, fmt.Sprintf("%v.%v", new_score.Total, new_score.Centers), make(M))
+				generator(w, fmt.Sprintf("%v.%v", new_score.Total, new_score.Centers), temp)
 			}else{
-				generator(w, fmt.Sprintf("%v", new_score.Total), make(M))
+				generator(w, fmt.Sprintf("%v", new_score.Total), temp)
 			}
 			//Add any linked shooters to this update
 			shooterIds := []int{shooter_id}
@@ -179,9 +176,7 @@ func updateShotScores(w http.ResponseWriter, r *http.Request) {
 			if event.Shooters[shooter_id].LinkedId != nil {
 				updateBson[Dot(schemaSHOOTER, event.Shooters[shooter_id].LinkedId, rangeId)] = new_score
 			}
-
 //			eventTotalScoreUpdate(event_id, rangeId, shooterIds, new_score)
-
 //			updateSetter := make(M)
 //			for _, shooterId := range shooterIds{
 //				updateSetter[Dot(schemaSHOOTER, shooterId, rangeId)] = score
@@ -221,9 +216,9 @@ func calc_total_centers(shots string, class int) Score {
 			centers += relevant_settings[shot].Centers
 			countback1 = relevant_settings[shot].CountBack1+countback1
 			//		countback2 = relevant_settings[shot].CountBack2 + countback2
-		}*/
+		}
 /////////////////////////////		return Score{Total: total, Centers: centers, Shots: shots /*Xs: xs,*/, CountBack1: countback1 /*CountBack2: countback2*/}
-/*	}
+	}
 	return Score{}
 }
 
@@ -271,4 +266,3 @@ func startShooting_Form(event_id, range_id, shooter_id, shots string) Form {
 		},
 	}
 }
-*/
