@@ -138,10 +138,13 @@ func updateTotalScores(w http.ResponseWriter, r *http.Request){
 */
 func searchForAggs(ranges []Range, rangeId int)[]int{
 	var aggFound []int
+	var num int
+	var err error
 	for _, rangeObj := range ranges{
 		if len(rangeObj.Aggregate) > 0{
 			for _, thisRangeId := range rangeObj.Aggregate{
-				if strToInt2(thisRangeId) == rangeId{
+				num, err = strToInt(thisRangeId)
+				if err == nil && num == rangeId{
 					aggFound = append(aggFound, *rangeObj.Id)
 				}
 			}

@@ -22,7 +22,7 @@ func startShooting_Data(data string, showAll bool) Page {
 	range_id, err := strToInt(arr[1])
 	event, _ := getEvent(event_id)
 
-	if event.Ranges[range_id].Aggregate != "" || !err {
+	if event.Ranges[range_id].Aggregate != "" || err != nil {
 		return Page {
 			TemplateFile: "start-shooting",
 			Theme: TEMPLATE_ADMIN,
@@ -194,7 +194,7 @@ func updateShotScores(w http.ResponseWriter, r *http.Request) {
 //			return event
 			export(updateBson)
 		}else{
-			fmt.Println("BAD updateShotScores. Current Range is locked or is an aggreate range.")
+			warning("BAD updateShotScores. Current Range is locked or is an aggreate range.")
 		}
 	}
 }

@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	//	"os"
+	"os"
 	"bytes"
 	"io/ioutil"
-	//	"log"
+	"log"
 	"time"
 	"net/http"
 	"net/url"
@@ -14,40 +14,51 @@ import (
 	"math/rand"
 	"strconv"
 
-
-
 	"github.com/yvasiyarov/gorelic"
 )
-
-const (
-	dev_mode_DEBUG = false	//Send system metric data to NewRelic.com
-)
+const dev_mode_DEBUG = false	//Send system metric data to NewRelic.com
 var agent = gorelic.NewAgent()
 
-/*var (
-	Info		*log.Logger = log.New(os.Stdout, "INFO: ",    log.Ldate|log.Ltime|log.Lshortfile)
-	Warning	*log.Logger = log.New(os.Stderr, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
-)
-
+//TODO warning and info are reporting the troubled file names and line numbers wrong!
 func info(format string, a ...interface{}){
 	if !PRODUCTION {
-		Info.Printf(format, a...)
+		log.New(os.Stdout, "INFO:", log.Ltime|log.Lshortfile).Printf(format, a...)
 	}
 }
 func warning(format string, a ...interface{}){
 	if !PRODUCTION {
-		Warning.Printf(format, a...)
+		log.New(os.Stderr, "WARNING:", log.Ltime|log.Lshortfile).Printf(format, a...)
 	}
-}*/
+}
+
+func dump(input interface{}) {
+	info("%v", input)
+}
+func vardump(input interface{}) {
+	info("%+v", input) //map field names included
+}
+func export(input interface{}) {
+	info("%#v", input) //can copy and declare new variable with it. Most ouput available
+}
 
 func dev_mode_timeTrack(start time.Time, requestURI string) {
 	elapsed := time.Since(start)
-	fmt.Printf("\n%s took %s\n", requestURI, elapsed)
+//	fmt.Printf("\n%s took %s\n", requestURI, elapsed)
+	info("\n%s took %s\n", requestURI, elapsed)
 }
 
 func dev_mode_check_form(check bool, message string){
 	if !check{
-		fmt.Printf("\n%v\n", message)
+		warning("\n%v\n", message)
+	}
+}
+
+func dev_mode_NewRelicDebugging(){
+	if dev_mode_DEBUG{
+		agent.Verbose = true
+		agent.CollectHTTPStat = true
+		agent.NewrelicLicense = "abf730f5454a9a1e78af7a75bfe04565e9e0d3f1"
+		agent.Run()
 	}
 }
 
@@ -58,8 +69,7 @@ func dev_mode_loadHTM(page_name string, existing_minified_file []byte) []byte {
 	existing_len := len(existing_minified_file)
 	new_len := len(bytes)
 	if existing_len != new_len {
-		fmt.Printf("Page '%v' had %v bytes removed (%v percent), total: %v, from: %v", page_name, new_len-existing_len, (existing_len*100/new_len-100)*-1, existing_len, new_len)
-
+		warning("Page '%v' had %v bytes removed (%v percent), total: %v, from: %v", page_name, new_len-existing_len, (existing_len*100/new_len-100)*-1, existing_len, new_len)
 //		return bytes
 	}
 	ioutil.WriteFile(fmt.Sprintf(PATH_HTML_MINIFIED, page_name), bytes, 0777)
@@ -69,7 +79,7 @@ func dev_mode_loadHTM(page_name string, existing_minified_file []byte) []byte {
 
 func dev_mode_minifyHtml(page_name string, minify []byte) []byte {
 	if bytes.Contains(minify, []byte("ZgotmplZ")) {
-		fmt.Println("Template generation error: ZgotmplZ")
+		warning("Template generation error: ZgotmplZ")
 		return []byte("")
 	}
 
@@ -166,9 +176,8 @@ func dev_mode_random_data_startShooting(eventId, rangeId string){
 func dev_mode_random_data_totalScores(eventId, rangeId string){
 	event, _ := getEvent(eventId)
 	for shooter_id, _ := range event.Shooters {
-		rand.Seed(time.Now().UnixNano())
-		/*rand.Seed(90)
-		resp, _ := http.PostForm("http://localhost/updateTotalScores",
+		rand.Seed(time.Now().UnixNano())	//Use rand.Seed(90) with a constant number to make the same number
+		/*resp, _ := http.PostForm("http://localhost/updateTotalScores",
 		go http.PostForm("http://localhost/updateTotalScores",
 			url.Values{"first":      {randomdata.FirstName(randomdata.RandomGender)},
 			"score":			{fmt.Sprintf("%v.%v",rand.Intn(51),rand.Intn(11))},
@@ -177,11 +186,13 @@ func dev_mode_random_data_totalScores(eventId, rangeId string){
 			"event_id":		{event_id},
 		})
 		resp.Body.Close()*/
-		range_Id, _ := strToInt(rangeId)
-		eventTotalScoreUpdate(eventId, range_Id, []int{shooter_id}, Score{
-			Total: rand.Intn(51),
-			Centers: rand.Intn(11),
-		})
+		range_Id, err := strToInt(rangeId)
+		if err == nil {
+			eventTotalScoreUpdate(eventId, range_Id, []int{shooter_id}, Score{
+				Total: rand.Intn(51),
+				Centers: rand.Intn(11),
+			})
+		}
 	}
 }
 

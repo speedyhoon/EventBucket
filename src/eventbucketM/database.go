@@ -114,15 +114,13 @@ func getShooter(id int) Shooter {
 	return result
 }
 
-func getEvent(id string)(Event, bool){
+func getEvent(id string)(Event, error){
 	var result Event
 	if database_status {
 		err := conn.C(TBLevent).FindId(id).One(&result)
-		if err==nil{
-			return result, false
-		}
+		return result, err
 	}
-	return result, true
+	return result, errors.New("Unable to get event with id: '"+id+"'")
 }
 
 func getEvent20Shooters(id string)(Event, bool){
@@ -372,7 +370,7 @@ func event_sort_aggs_with_grade(event Event, range_id string, shooter_id int){
 						rank = 0
 						//					}
 						//						} else {
-						//							fmt.Println("exact")
+						//							info("exact")
 						//					shoot_off = true
 						//					shooter_list[index].Warning = 1
 						//					score_board_legend_on_off["ShootOff"] = true
@@ -403,7 +401,7 @@ func event_sort_aggs_with_grade(event Event, range_id string, shooter_id int){
 			var result Event
 			_, err := conn.C(TBLevent).FindId(event_id).Apply(change, &result)
 			if err != nil {
-				fmt.Println("unable to update shooter rank for range: ", rangeId, ", shooter id:", shooter.Id)
+				warning("unable to update shooter rank for range: ", rangeId, ", shooter id:", shooter.Id)
 			}
 		}
 	}

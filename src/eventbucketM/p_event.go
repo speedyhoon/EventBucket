@@ -65,9 +65,9 @@ func shooterListInsert(w http.ResponseWriter, r *http.Request){
 	if validated_values["age"] != "" {
 		new_shooter.AgeGroup = validated_values["age"]
 	}
-	var success bool
-	new_shooter.SID, success = strToInt(validated_values["sid"])
-	if success {
+	var err error
+	new_shooter.SID, err = strToInt(validated_values["sid"])
+	if err == nil {
 		temp_shooter := getShooterList(new_shooter.SID)
 		new_shooter.FirstName = temp_shooter.NickName
 		new_shooter.Surname = temp_shooter.Surname
