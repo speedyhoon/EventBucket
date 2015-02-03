@@ -32,7 +32,7 @@ func check_form(options []Inputs, r *http.Request)(map[string]string){
 					new_values[option.Name] = strings.TrimSpace(array[0])
 				}
 			}else {
-				fmt.Printf("options[%v] is REQUIRED OR is not in array", option)
+				Warning.Printf("options[%v] is REQUIRED OR is not in array", option)
 //				warning("options[%v] is REQUIRED OR is not in array", option)
 			}
 		}
@@ -85,7 +85,7 @@ func valid8(options []Inputs, r *http.Request)(M,bool){
 					}
 				}
 			}else{
-				fmt.Printf("options[%v] is REQUIRED OR is not in array", option)
+				Warning.Printf("options[%v] is REQUIRED OR is not in array", option)
 			}
 		}
 	}
@@ -105,20 +105,20 @@ func valid8(options []Inputs, r *http.Request)(M,bool){
 			if err == nil{
 				new_values["event"] = event
 			}else {
-				fmt.Printf("event with id '%v' doesn't exist", value)
+				Warning.Printf("event with id '%v' doesn't exist", value)
 				return make(M), false
 			}
 		case "range_id":
 			tempInt = value.(int)
 			if tempInt < 0 || tempInt > len(event.Ranges) {
-				fmt.Printf("event with range id '%v' doesn't exist", value)
+				Warning.Printf("event with range id '%v' doesn't exist", value)
 				return make(M), false
 			}
 		case "shooter_id":
 			//TODO this might be better as a pointer to check that index is not null
 			tempInt = value.(int)
 			if tempInt < 0 || tempInt > len(event.Shooters){
-				fmt.Printf("event with shooter id '%v' doesn't exist", value)
+				Warning.Printf("event with shooter id '%v' doesn't exist", value)
 				return make(M), false
 			}
 		}

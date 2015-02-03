@@ -82,7 +82,9 @@ type Page struct{
 
 var (
 	VURL_home = regexp.MustCompile("^/$")
+	//TODO replace with correct regex to support full eventId's and rangeId's
 	VURL_event = regexp.MustCompile("^/event/([0-9]+)$")
+	VURL_eventShotsNSighters = regexp.MustCompile("^/eventShotsNSighters/([0-9A-Z]+)$")
 )
 
 type ClassSettings struct {

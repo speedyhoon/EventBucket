@@ -77,8 +77,6 @@ func generateForm2(form Form) string {
 			if input.Help != "" {
 				attributes += "title="+addQuotes(input.Help)
 			}
-
-
 			if input.Html == "select" {
 				element += "<select"+attributes+">"+options+"</select>"
 			}else if input.Html == "submit" {

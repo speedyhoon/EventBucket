@@ -17,39 +17,34 @@ import (
 	"github.com/yvasiyarov/gorelic"
 )
 const dev_mode_DEBUG = false	//Send system metric data to NewRelic.com
-var agent = gorelic.NewAgent()
-
-//TODO warning and info are reporting the troubled file names and line numbers wrong!
-func info(format string, a ...interface{}){
-	if !PRODUCTION {
-		log.New(os.Stdout, "INFO:", log.Ltime|log.Lshortfile).Printf(format, a...)
-	}
-}
-func warning(format string, a ...interface{}){
-	if !PRODUCTION {
-		log.New(os.Stderr, "WARNING:", log.Ltime|log.Lshortfile).Printf(format, a...)
-	}
-}
+var (
+	agent = gorelic.NewAgent()
+	//Use io.Writer >>> ioutil.Discard to disable logging any output
+	Timimgs = log.New(ioutil.Discard, "TIMINGS: ", log.Ltime|log.Lshortfile)
+	Trace   = log.New(os.Stdout,      "TRACE:   ", log.Ltime|log.Lshortfile)
+	Info    = log.New(os.Stdout,      "INFO:    ", log.Ltime|log.Lshortfile)
+	Warning = log.New(os.Stderr,      "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
+	Error   = log.New(os.Stderr,      "ERROR:   ", log.Ldate|log.Ltime|log.Lshortfile)
+)
 
 func dump(input interface{}) {
-	info("%v", input)
+	Trace.Printf("%v", input)
 }
 func vardump(input interface{}) {
-	info("%+v", input) //map field names included
+	Trace.Printf("%+v", input) //map field names included
 }
 func export(input interface{}) {
-	info("%#v", input) //can copy and declare new variable with it. Most ouput available
+	Trace.Printf("%#v", input) //can copy and declare new variable with it. Most ouput available
 }
 
 func dev_mode_timeTrack(start time.Time, requestURI string) {
 	elapsed := time.Since(start)
-//	fmt.Printf("\n%s took %s\n", requestURI, elapsed)
-	info("\n%s took %s\n", requestURI, elapsed)
+	Timimgs.Printf("%s took %s", requestURI, elapsed)
 }
 
 func dev_mode_check_form(check bool, message string){
 	if !check{
-		warning("\n%v\n", message)
+		Warning.Println(message)
 	}
 }
 
@@ -64,22 +59,23 @@ func dev_mode_NewRelicDebugging(){
 
 func dev_mode_loadHTM(page_name string, existing_minified_file []byte) []byte {
 	bytes, err := ioutil.ReadFile(fmt.Sprintf(PATH_HTML_SOURCE, page_name))
-	checkErr(err)
-	bytes = dev_mode_minifyHtml(page_name, bytes)
-	existing_len := len(existing_minified_file)
-	new_len := len(bytes)
-	if existing_len != new_len {
-		warning("Page '%v' had %v bytes removed (%v percent), total: %v, from: %v", page_name, new_len-existing_len, (existing_len*100/new_len-100)*-1, existing_len, new_len)
-//		return bytes
+	if err == nil{
+		bytes = dev_mode_minifyHtml(page_name, bytes)
+		existing_len := len(existing_minified_file)
+		new_len := len(bytes)
+		if existing_len != new_len {
+			Warning.Printf("Page '%v' had %v bytes removed (%v percent), total: %v, from: %v", page_name, new_len-existing_len, (existing_len*100/new_len-100)*-1, existing_len, new_len)
+		}
+	}else{
+		ioutil.WriteFile(fmt.Sprintf(PATH_HTML_SOURCE, page_name), bytes, 0777)
 	}
 	ioutil.WriteFile(fmt.Sprintf(PATH_HTML_MINIFIED, page_name), bytes, 0777)
 	return bytes
-	//	return existing_minified_file
 }
 
 func dev_mode_minifyHtml(page_name string, minify []byte) []byte {
 	if bytes.Contains(minify, []byte("ZgotmplZ")) {
-		warning("Template generation error: ZgotmplZ")
+		Warning.Println("Template generation error: ZgotmplZ")
 		return []byte("")
 	}
 
@@ -108,17 +104,13 @@ func dev_mode_minifyHtml(page_name string, minify []byte) []byte {
 	for _, search := range remove_chars {
 		minify = bytes.Replace(minify, []byte(search), []byte(""), -1)
 	}
-
-//	backup := minify
-//	for !bytes.Equal(minify, backup) {
-		for search, replace := range replace_chars {
-			length := len(minify)
-			minify = bytes.Replace(minify, []byte(search), []byte(replace), -1)
-			if length != len(minify) {
-				fmt.Printf("A dodgy character (%v) was found in the source! Please replace with (%v).", search, replace)
-			}
+	for search, replace := range replace_chars {
+		length := len(minify)
+		minify = bytes.Replace(minify, []byte(search), []byte(replace), -1)
+		if length != len(minify) {
+			Warning.Printf("A dodgy character (%v) was found in the source! Please replace with (%v).", search, replace)
 		}
-//	}
+	}
 	//TODO why is the string not being replaced here, even though it is 100% running?
 	return bytes.Replace(minify, []byte("~~~"), []byte(" "), -1)
 }
@@ -129,7 +121,6 @@ func dev_mode_random_data(w http.ResponseWriter, r *http.Request) {
 	shooterQty := 0
 	totalScores := false
 	startShooting := false
-//	var event Event
 	var properties []string
 //	random_grades := []string{/*"a","b","c",*/"d", "e", "f", "g", "h", "i", "j"}
 	attributes := strings.Split(strings.Replace(r.RequestURI, "/random-data/", "", -1), "&")
@@ -147,7 +138,6 @@ func dev_mode_random_data(w http.ResponseWriter, r *http.Request) {
 			shooterQty, _ = strconv.Atoi(properties[1])
 		}
 	}
-
 	if shooterQty > 0{
 		go dev_mode_random_data_shooterQty(shooterQty, eventId)
 	}

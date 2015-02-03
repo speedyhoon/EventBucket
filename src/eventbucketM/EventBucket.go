@@ -28,7 +28,7 @@ const (
 	DIR_PNG  = "/p/"
 	DIR_SVG  = "/v/"
 //	DIR_WEBP = "/w/"
-	FAVICON = "a"
+	FAVICON = "/p/a" //TODO this should be the hashed version filename
 
 //GET
 	URL_home           	= "/"
@@ -70,7 +70,7 @@ const (
 	URL_club_mound_update    = "/clubMoundUpdate/"
 	URL_club_mound_insert    = "/clubMoundInsert/"
 	URL_updateShooterList    = "/updateShooterList"
-	URL_eventShotsNSighters  = "/eventShotsNSighters"
+	URL_eventShotsNSighters  = "/eventShotsNSighters/"
 	//	URL_rangeReport          = "/rangeReport/"
 	URL_randomData           = "/random-data/"
 )
@@ -93,6 +93,7 @@ func main() {
 	GetParameters(URL_event, event)
 	GetParameters(URL_eventSettings, eventSettings)
 	GetParameters(URL_scoreboard, scoreboard)
+	GetParameters(URL_eventShotsNSighters, eventShotsNSighters)
 //	GetParameters(URL_startShooting, startShooting)
 //	GetParameters(URL_startShootingAll, startShootingAll)
 //	GetParameters(URL_totalScores, totalScores)
@@ -117,14 +118,13 @@ func main() {
 //	Post(URL_updateEventName, updateEventName)
 	Post(URL_updateEventGrades, updateEventGrades)
 	Post(URL_updateIsPrizeMeet, updateIsPrizeMeet)
-	GetParameters(URL_eventShotsNSighters, eventShotsNSighters)
 	Post(URL_randomData, dev_mode_random_data)
 //	Post(URL_champInsert, PostVia(champInsert, URL_organisers))
 //	Post(URL_clubMoundInsert, clubMoundInsert)
 	Get(URL_home, home)
 	url := "http://localhost"
 	if exec.Command(`rundll32.exe`, "url.dll,FileProtocolHandler", url).Start() != nil{
-		warning("Unable to open a web browser for "+url)
+		Warning.Printf("Unable to open a web browser for "+url)
 	}
-	warning("ListenAndServe: %v", http.ListenAndServe(":80", nil))
+	Warning.Println("ListenAndServe: %v", http.ListenAndServe(":80", nil))
 }

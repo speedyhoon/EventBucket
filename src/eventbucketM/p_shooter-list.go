@@ -26,18 +26,18 @@ func updateShooterList2()int{
 	max_pages := 0
 	for page_count := 1; page_count <= max_pages; page_count += 1 {
 
-//		fmt.Printf("page: %v\n", page_count)
+//		Trace.Printf("page: %v\n", page_count)
 		response, err := http.Get(fmt.Sprintf("%v%v", url, page_count))
 		defer response.Body.Close()
 		if err != nil {
 			//TODO change to the error framework with a helpfull error message
-			warning("ERROR: http.Get", err)
+			Warning.Printf("ERROR: http.Get", err)
 			return 0
 		}
 
 		doc, err := html.Parse(response.Body)
 		if err != nil {
-			fmt.Printf("%+v\n", err)
+			Error.Printf("%+v\n", err)
 		}
 
 		var i int = 0
@@ -95,7 +95,7 @@ func updateShooterList2()int{
 		}
 		find_rows(doc)
 	}
-	info("Finished copying from website.")
+	Info.Println("Finished copying from website.")
 
 	return copyNewEntries()
 }
@@ -110,7 +110,7 @@ func copyNewEntries()int{
 			counter += 1
 		}
 	}
-	info("Finished inserting new shooters.")
+	Info.Println("Finished inserting new shooters.")
 	return counter
 }
 

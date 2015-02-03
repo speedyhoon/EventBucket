@@ -27,6 +27,7 @@ func templator(viewController Page, w http.ResponseWriter, r *http.Request) {
 	viewController.Data["DirPng"]		= DIR_PNG
 	viewController.Data["DirSvg"]		= DIR_SVG
 //	viewController.Data["DirWebp"]	= DIR_WEBP
+	viewController.Data["Favicon"]	= FAVICON
 	viewController.Data["Title"] = viewController.Title
 	viewController.Data["CurrentYear"] = time.Now().Year()
 	generator(w, string(source), viewController)

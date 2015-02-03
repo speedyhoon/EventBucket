@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"time"
 	"sort"
-//	"fmt"
 	"strings"
 )
 
@@ -52,7 +51,7 @@ func home()Page{
 					calendar_event.Month = date_obj.Month()
 					calendar_event.Year = date_obj.Year()
 //				}else {
-//					fmt.Printf("Event %v doesn't have a valid date", event.Name)
+//					Warning.Printf("Event %v doesn't have a valid date", event.Name)
 				}
 //				if currentTime.After(date_obj){
 //					closed_events = append([]HomeCalendar{calendar_event}, closed_events...)
@@ -61,7 +60,7 @@ func home()Page{
 //				}
 //			}else{
 //				draftEvents = append(draftEvents, calendar_event)
-//				fmt.Printf("Event %v doesn't have a date", event.Name)
+//				Warning.Printf("Event %v doesn't have a date", event.Name)
 			}
 			openEvents = append(openEvents, calendar_event)
 		}
