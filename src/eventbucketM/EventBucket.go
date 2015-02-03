@@ -2,13 +2,12 @@ package main
 
 import (
 	"net/http"
-	"fmt"
 	"os/exec"
 )
 
 const (
 	VERSION = 0.99
-//	PRODUCTION = false //False = output dev warnings, E.g. Template errors
+	PRODUCTION = false //False = output dev warnings, E.g. Template errors
 	//TEST_MODE = false //display links to add n shooters or fillout all scores for a given range
 	//Known issue - turning off minify breaks the startshooting page. moving to the next sibling in a table row return the textnode of whitespace instead of the next <td> tag
 //	MINIFY     = true  //turn on minify html
@@ -77,12 +76,7 @@ const (
 )
 
 func main() {
-	if dev_mode_DEBUG{
-		agent.Verbose = true
-		agent.CollectHTTPStat = true
-		agent.NewrelicLicense = "abf730f5454a9a1e78af7a75bfe04565e9e0d3f1"
-		agent.Run()
-	}
+	dev_mode_NewRelicDebugging()
 	go DB()
 	serveDir(DIR_JS)
 	serveDir(DIR_CSS)
@@ -103,7 +97,6 @@ func main() {
 //	GetParameters(URL_startShootingAll, startShootingAll)
 //	GetParameters(URL_totalScores, totalScores)
 //	GetParameters(URL_totalScoresAll, totalScoresAll)
-
 //	GetParameters(URL_club, club)
 //	GetParameters(URL_club_settings, club_settings)
 //	GetParameters(URL_rangeReport, range_report)
@@ -124,15 +117,14 @@ func main() {
 //	Post(URL_updateEventName, updateEventName)
 	Post(URL_updateEventGrades, updateEventGrades)
 	Post(URL_updateIsPrizeMeet, updateIsPrizeMeet)
-	Post(URL_eventShotsNSighters, eventShotsNSighters)
+	GetParameters(URL_eventShotsNSighters, eventShotsNSighters)
 	Post(URL_randomData, dev_mode_random_data)
 //	Post(URL_champInsert, PostVia(champInsert, URL_organisers))
 //	Post(URL_clubMoundInsert, clubMoundInsert)
-
 	Get(URL_home, home)
 	url := "http://localhost"
 	if exec.Command(`rundll32.exe`, "url.dll,FileProtocolHandler", url).Start() != nil{
-		fmt.Println("Unable to open a web browser for "+url)
+		warning("Unable to open a web browser for "+url)
 	}
-	fmt.Printf("ListenAndServe: %v", http.ListenAndServe(":80", nil))
+	warning("ListenAndServe: %v", http.ListenAndServe(":80", nil))
 }

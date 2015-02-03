@@ -31,7 +31,7 @@ func updateShooterList2()int{
 		defer response.Body.Close()
 		if err != nil {
 			//TODO change to the error framework with a helpfull error message
-			fmt.Println("ERROR: http.Get", err)
+			warning("ERROR: http.Get", err)
 			return 0
 		}
 
@@ -95,7 +95,7 @@ func updateShooterList2()int{
 		}
 		find_rows(doc)
 	}
-	fmt.Println("Finished copying from website.")
+	info("Finished copying from website.")
 
 	return copyNewEntries()
 }
@@ -110,7 +110,7 @@ func copyNewEntries()int{
 			counter += 1
 		}
 	}
-	fmt.Println("Finished inserting new shooters.")
+	info("Finished inserting new shooters.")
 	return counter
 }
 

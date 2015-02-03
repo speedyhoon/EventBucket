@@ -9,7 +9,6 @@ import (
 	"github.com/boombuler/barcode"
 	"os"
 	"image/png"
-//	"io"
 	"io/ioutil"
 	"encoding/base64"
 )
@@ -17,17 +16,8 @@ import (
 //research http://net.tutsplus.com/tutorials/client-side-security-best-practices/
 func checkErr(err error) {
 	if err != nil {
-		dump(err)
+		warning("%v", err)
 	}
-}
-func dump(input interface{}) {
-	fmt.Printf("\n%v\n", input)
-}
-//func vardump(input interface{}) {
-//	fmt.Printf("%+v\n", input) //map field names included
-//}
-func export(input interface{}) {
-	fmt.Printf("\n%#v\n\n", input) //can copy and declare new variable with it. Most ouput available
 }
 
 func exists(dict M, key string) string {
@@ -37,41 +27,15 @@ func exists(dict M, key string) string {
 	return ""
 }
 
-/*func echo(input interface{}) string {
-	return fmt.Sprintf("%v", input)
-}*/
-func strToInt(input string)(int, bool){
-	output, err := strconv.Atoi(input)
-	if err != nil {
-		return -1, false
-	}
-	return output, true
+func strToInt(input interface{})(int, error){
+	return strconv.Atoi(fmt.Sprintf("%v", input))
 }
-func strToInt2(input interface{})int{
-	output, _ := strconv.Atoi(fmt.Sprintf("%v", input))
-	return output
-}
-/*func strToInt64(input string) int64 {
-	output, err := strconv.ParseInt(input, 10, 64)
-	checkErr(err)
-	return output
-}*/
 
 func addQuotes(input string) string {
-	if strings.Contains(input, " ") { //}|| input == "/" {	// strings.Contains(input, "/") {
+	if strings.Contains(input, " "){ //}|| input == "/" {	// strings.Contains(input, "/") {
 		return "\"" + input + "\""
 	}
 	return input
-}
-func addQuotesEquals(input string) string {
-	if input != "" {
-		if strings.Contains(input, " ") {
-			return "=\"" + input + "\""
-		}
-		return "=" + input
-	}
-	fmt.Println("addQuotesEquals had an empty parameter!")
-	return ""
 }
 
 // Ordinal gives you the input number in a rank/ordinal format.
@@ -106,19 +70,21 @@ func stringInSlice(a string, list []string) bool {
 }
 
 func qrBarcode(value string)string{
-	f, _ := os.Create("temp_barcode.png")
+	f, err := os.Create("temp_barcode.png")
+	checkErr(err)
 	defer f.Close()
-	qrcode, err := qr.Encode(value,  qr.L, qr.Auto)
+	var qrCode barcode.Barcode
+	qrCode, err = qr.Encode(value,  qr.L, qr.Auto)
 	if err == nil {
-		qrcode, err = barcode.Scale(qrcode, 100, 100)
+		qrCode, err = barcode.Scale(qrCode, 100, 100)
 		if err == nil {
-			png.Encode(f, qrcode)
+			png.Encode(f, qrCode)
 			data, err := ioutil.ReadFile("temp_barcode.png")
 			if err == nil {
 				return "data:image/png;base64," + base64.StdEncoding.EncodeToString(data)
 			}
 		}
 	}
-	fmt.Println(err)
+	checkErr(err)
 	return ""
 }

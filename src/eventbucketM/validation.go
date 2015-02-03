@@ -101,7 +101,8 @@ func valid8(options []Inputs, r *http.Request)(M,bool){
 	for name, value := range new_values {
 		switch name{
 		case "event_id":
-			if event, ok = getEvent(fmt.Sprintf("%v", value)); ok {
+			event, err = getEvent(fmt.Sprintf("%v", value))
+			if err == nil{
 				new_values["event"] = event
 			}else {
 				fmt.Printf("event with id '%v' doesn't exist", value)

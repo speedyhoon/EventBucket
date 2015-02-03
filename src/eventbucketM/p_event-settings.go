@@ -296,21 +296,38 @@ func eventSettingsClassGrades(eventId string, grades []int) Form {
 	}
 }
 
-func eventShotsNSighters(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-	form := r.Form
-	if event_id, ok := form["event_id"]; ok && len(event_id) > 0{
-		fmt.Println("event_id=",event_id)
+//func eventShotsNSighters(w http.ResponseWriter, r *http.Request) {
+func eventShotsNSighters(eventId string)Page{
+	//TODO Display a list of ranges and shooters scores as shots and total scores, ordered in descending order
+//	r.ParseForm()
+//	form := r.Form
+	fmt.Println("eventid = %v",eventId)
+	event, err := getEvent(eventId)
+	if err == nil{
+		for _, eventRange := range event.Ranges{
+			info("event Range: %v", eventRange.Id)
+			for _, shooter := range event.Shooters{
+				//TODO check if shooters has this range
+				info("shooter: %v", shooter.Id)
+			}
+		}
+	}
+/*	if event_id, ok := form["event_id"]; ok && len(event_id) > 0{
+		info("event_id=",event_id)
 		if shots, ok := form["shots"]; ok {
-			fmt.Println("shots...")
+			info("shots...")
 			for range_id, range_data := range shots {
 				for class_id, shot_value := range range_data {
-					fmt.Println("range=",range_id," class=",class_id," value=",shot_value)
+					info("range=",range_id," class=",class_id," value=",shot_value)
 				}
 			}
 		}else{
-			fmt.Println("shots not found")
+			info("shots not found")
 		}
+	}*/
+	return Page{
+		Theme: TEMPLATE_EMPTY,
+		Title: "eventShotsNSighters",
 	}
 }
 

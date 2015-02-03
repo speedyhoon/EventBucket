@@ -147,7 +147,7 @@ func draw_options(input Inputs, name string)string{
 			dev_mode_check_form(!(input.Placeholder != "" && input.Html != "datalist"), "shouldn't set a placeholder when options are already selected")
 		}
 		if option.Value != "" {
-			output += " value" + addQuotesEquals(option.Value)
+			output += " value=" + addQuotes(option.Value)
 		}else {
 			dev_mode_check_form(false, "option values shouldn't be empty")
 		}
@@ -156,7 +156,7 @@ func draw_options(input Inputs, name string)string{
 	}
 	if input.Html == "datalist"{
 		output = "<datalist id=" + name + ">"+output+"</datalist>"
-		dev_mode_check_form(false,"make sure datalist id='"+name+"' is unique!")
+		//dev_mode_check_form(false,"make sure datalist id='"+name+"' is unique!")
 	}else if input.Placeholder != ""{
 		output += "<option selected value disabled>"+input.Placeholder+"</option>"
 	}
