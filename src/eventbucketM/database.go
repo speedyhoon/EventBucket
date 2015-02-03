@@ -40,6 +40,7 @@ func DB() {
 	session.SetMode(mgo.Eventual, false)//false = the consistency guarantees won't be reset
 	database_status = true
 	conn = session.DB("local")
+	//TODO defer colsing the session isn't working
 //	defer session.Close()
 }
 

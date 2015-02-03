@@ -1,4 +1,4 @@
-<h1>{{.Title}}</h1>
+<h1>{{.Title}} - {{.EventName}}</h1>
 {{HTM .Menu}}
 
 {{if .Valid}}
@@ -29,7 +29,7 @@
 				<td><select id=grade name=grade required>
 					<option selected value disabled></option>
 					{{HTM .GradeOptions}}
-				</select><input type=button class="r bs" tabindex=-1 onclick="var d=document.getElementById('gradeSettings');d.hidden=(!d.hidden)"></td>
+				</select><input type=button class="r bs" tabindex=-1 onclick="var d=document.getElementById('gradeSettings');d.hidden=(!d.hidden)" title="Edit the available classes &amp; grades for this event."></td>
 			</tr>
 			<tr>
 				<td><label for=age>Age Group:</label></td>

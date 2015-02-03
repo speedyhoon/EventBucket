@@ -46,14 +46,18 @@ func Gzip(h http.Handler, w http.ResponseWriter, r *http.Request){
 	h.ServeHTTP(w, r)
 }
 
-func GetRedirectPermanent(url string, runner func()Page){
-	//Setup url as a base path. e.g. if url = "foobar" then "http://localhost/foobar" is available
+func Get(url string, runner func()Page){
+	//Setup url as a subdirectory path. e.g. if url = "foobar" then "http://localhost/foobar" is available
 	http.Handle(url, serveHtml(func(w http.ResponseWriter, r *http.Request) {templator(runner(), w, r)}))
-	//Setup redirect back to path this is set above when url parameters are not wanted/needed.
-	//e.g. "http://localhost/foobar/fdsa" will redirect to "http://localhost/foobar"
+}
+func GetRedirectPermanent(url string, runner func()Page){
+	Get(url, runner)
+	//Setup redirect back to subdirectory "url". Needed when url parameters are not wanted/needed.
+	//e.g. if url = "foobar" then "http://localhost/foobar/fdsa" will redirect to "http://localhost/foobar"
 	http.Handle(url + "/", http.RedirectHandler(url, http.StatusMovedPermanently))
 }
 func GetParameters(url string, runner func(string)Page) {
+	//TODO add a way to get the event id, club id and range id from the url
 	h := func(w http.ResponseWriter, r *http.Request) {templator(runner(getIdFromUrl(r, url)), w, r)}
 	http.Handle(url, serveHtml(h))
 }
@@ -76,7 +80,7 @@ func PostVia(runThisFirst func(http.ResponseWriter, *http.Request), url string) 
 func httpHeaders(w http.ResponseWriter, set_headers []string) {
 	headers := map[string][2]string{
 		//Expiry date is in 1 year, 0 months & 0 days
-		"expire": [2]string{"Expires", time.Now().UTC().AddDate(1, 0, 0).Format(time.RFC1123)}, //TODO it should return GMT time I think
+		"expire": [2]string{"Expires", time.Now().UTC().AddDate(1, 0, 0).Format(time.RFC1123)}, //TODO it should return GMT time I think?
 		"cache":    [2]string{"Vary", "Accept-Encoding"},
 		"gzip":     [2]string{"Content-Encoding", "gzip"},
 		"html":     [2]string{"Content-Type", "text/html; charset=utf-8"},

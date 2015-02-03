@@ -140,6 +140,7 @@ func eventSettings(event_id string) Page {
 	return Page {
 		TemplateFile: "eventSettings",
 		Theme: TEMPLATE_ADMIN,
+		Title: "Event Settings",
 		Data: M{
 			"Title":          "Event Settings",
 			"EventName":      event.Name,
