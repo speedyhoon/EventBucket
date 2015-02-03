@@ -10,9 +10,6 @@ stop users accessing agg ranges in total scores and startShooting
 
 
 10L two stroke oil
-Maple Bonsi @ Mitre 10
-Large green watering can
-fit bit scales
 the hobbit dvd series
 http://www.fantasylingerie.com.au/
 
@@ -37,7 +34,6 @@ http://www.clubx.com.au
 
 INSTALLER::
 	Setup icon
-	
 	test the installer on windows XP
 	test that you can uninstally everything
 	test that you can install over the top of an old folder!
@@ -50,17 +46,17 @@ EVENTBUCKET::
 		add some links to cc lamens terms and the offical licence
 		move home licence to licence page
 		change footer licence logo to simpler svg one from google images
-	
+
 	add a page how to use EventBucket via multiple people at once.
 		setting up a network with two devices (ad-hoc)
 		setting up a network with multiple devices
 			use a wifi access point - or a home wifi router will do just fine.
-	
+
 	running a prizemeeting
 
 	add CC logo to the about page
 
-	
+
 START SHOOTING
 	shooter scores come up wrong??????
 	instead of saving shooter variables is a javascript file with an unique hash name. possibly use an ajax request instead. request POST for the settings of this event/range to change. respond with the new settings. then front end saves those settings in possibly web storage or the most browser compatible way. the local storage may become out of date quicker?- not sure on this.
@@ -70,13 +66,14 @@ scoreboard
 	some how sort the aggregate scores when identical by the last range that was shot. At the moment the scores when identical are flipping because of random orders
 
 event settings
+	classes for event are not working
 	aggs can add up other aggs
 
-	
+
 event page
 	add a form to change a shooters details - name, club, change class/grade, age group
-	
-	
+
+
 annoying things
 	auto save ranges and aggregates via ajax or websocket silently.
 	add agg range without any ranges should still display as an aggreate range
@@ -86,8 +83,13 @@ annoying things
 
 
 Additional Features:
+forms
+	Add generic button in set position for help and description. Display it by default for the first 90 days or so. Take the date from the mongo database as a global bool - show help by default = on or off.
+	auto focus back on the edited previous field when pressing [Enter] ---- use ajax update instead
+	Add red error message when a save failed -- ajax
+	Add green message when form saved correctly --- generic ajax handler of some kind listening to database update didn't fail!
 total scores
-	to generate scores for 358 shooters /random-data/totalScores=1 took 1h54m57.7925213s 
+	to generate scores for 358 shooters /random-data/totalScores=1 took 1h54m57.7925213s
 Installer:
 	change eb.exe to run in minimized mode so it doesn't appear or show the logs
 	add eb.exe to the taskbar notifications
@@ -183,12 +185,12 @@ code
 	separate html from data - try to cache html for ever and send AJAX/Websockets for additional data.
 	cache all AJAX/Websocket requests in local storage if the response flag is set to cache
 		each page would have a single request with several tables that needed data like event-settings has many bits of data.
-	
+
 
 DONE::::::
 Shooter entry:
 	search from nraa database
-	add nraa database 
+	add nraa database
 event-entry
 	hook up grades and settings to event entry
 totalscores
@@ -264,7 +266,7 @@ The application should output optimised HTML that can't be minified any further.
 2. find all occurrences of the rules in the css files
 3. copy the used rules into a separate css file
 4. rename the rules to as short as possible
-5. replace all the html files with the shorter rules 
+5. replace all the html files with the shorter rules
 
 6.	is it possible to make all elements custom html elements so they use less characters? i.e.
 		<div>
@@ -274,7 +276,7 @@ The application should output optimised HTML that can't be minified any further.
 				</div>
 			</div>
 		</div>
-	would become 
+	would become
 		<c>
 			<c>
 				<c>
@@ -293,11 +295,11 @@ The application should output optimised HTML that can't be minified any further.
 		</c>
 	would become
 		<c>foobar</c>
-	
-	
-	
+
+
+
 listen to HTML folder
-	
+
 	raise warning when found:
 		Any issues listed at https://www.npmjs.org/package/html-minifier
 		empty elements - think of a way to replace the empty elements via JS with the elements needed
@@ -305,7 +307,7 @@ listen to HTML folder
 		script tags in child templates
 		double spaces
 		default property values
-	
+
 	validate HTML5
 	minify with a tool
 	validate HTML5
@@ -332,7 +334,7 @@ Images
 
 
 
-	
+
 0
 1
 2
@@ -360,6 +362,6 @@ VVVVVVVVVV 50 10
 
 49 9
 
-48 
+48
 
 score needs to be at least a multiple of five to have a center.

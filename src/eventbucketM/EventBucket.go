@@ -102,9 +102,8 @@ func main() {
 //	GetParameters(URL_club_settings, club_settings)
 //	GetParameters(URL_rangeReport, range_report)
 	Post(URL_eventInsert, eventInsert)
-	//Search for a shooter by first, surname & club
-	Post(URL_queryShooterList, queryShooterList)
-//	Post(URL_updateShooterList, PostVia(updateShooterList, URL_organisers))
+	Post(URL_queryShooterList, queryShooterList)	//Search for a shooter by first, surname & club
+	Post(URL_updateShooterList, PostVia(updateShooterList, URL_organisers))
 	Post(URL_clubInsert, PostVia(clubInsert, URL_organisers))
 	Post(URL_updateRange, rangeUpdate2)
 //	Post(URL_dateUpdate, dateUpdate)

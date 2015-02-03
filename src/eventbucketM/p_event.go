@@ -38,8 +38,9 @@ func event(eventId string) Page {
 	return Page {
 		TemplateFile: "event",
 		Theme: TEMPLATE_ADMIN,
+		Title: "Event",
 		Data: M{
-			"Title": event.Name,
+			"EventName": event.Name,
 			"Menu": event_menu(eventId, event.Ranges, URL_event, event.IsPrizeMeet),
 			"Valid": true,
 			"NewShooterEntry": URL_shooterInsert,
