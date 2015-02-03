@@ -19,7 +19,7 @@ func serveDir(contentType string){
 				return
 			}
 			httpHeaders(w, []string{"expire", "cache", contentType})
-			NewGzipper(http.FileServer(http.Dir(DIR_ROOT)), w, r)
+			Gzip(http.FileServer(http.Dir(DIR_ROOT)), w, r)
 		})))
 }
 
@@ -28,11 +28,11 @@ func serveHtml(h http.HandlerFunc) http.HandlerFunc{
 	return http.HandlerFunc(agent.WrapHTTPHandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer dev_mode_timeTrack(time.Now(), r.RequestURI)
 		httpHeaders(w, []string{"html", "nocache"})
-		NewGzipper(h, w, r)
+		Gzip(h, w, r)
 	}))
 }
 
-func NewGzipper(h http.Handler, w http.ResponseWriter, r *http.Request){
+func Gzip(h http.Handler, w http.ResponseWriter, r *http.Request){
 	//Return a gzip compressed response if appropriate
 	if strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
 		w.Header().Set("Content-Encoding", "gzip")
@@ -46,11 +46,11 @@ func NewGzipper(h http.Handler, w http.ResponseWriter, r *http.Request){
 	h.ServeHTTP(w, r)
 }
 
-func Get(url string, runner func()Page){
-	http.Handle(url, serveHtml(func(w http.ResponseWriter, r *http.Request) {templator(runner(), w, r)}))
-}
 func GetRedirectPermanent(url string, runner func()Page){
-	Get(url, runner)
+	//Setup url as a base path. e.g. if url = "foobar" then "http://localhost/foobar" is available
+	http.Handle(url, serveHtml(func(w http.ResponseWriter, r *http.Request) {templator(runner(), w, r)}))
+	//Setup redirect back to path this is set above when url parameters are not wanted/needed.
+	//e.g. "http://localhost/foobar/fdsa" will redirect to "http://localhost/foobar"
 	http.Handle(url + "/", http.RedirectHandler(url, http.StatusMovedPermanently))
 }
 func GetParameters(url string, runner func(string)Page) {
@@ -58,13 +58,18 @@ func GetParameters(url string, runner func(string)Page) {
 	http.Handle(url, serveHtml(h))
 }
 //TODO Post - Post to endpoint. If valid return to X page, else return to previous page with form filled out and wrong values highlighted with error message
+//TODO Add ajax detection to so ajax requests are not redirected back to the referrer page.
 func Post(url string, runner http.HandlerFunc){
 	http.HandleFunc(url, serveHtml(runner))
 }
-func PostVia(runThisFirst func(http.ResponseWriter, *http.Request), path string) func(http.ResponseWriter, *http.Request) {
+func PostVia(runThisFirst func(http.ResponseWriter, *http.Request), url string) func(http.ResponseWriter, *http.Request) {
+	//Always redirect after a successful Post to "url". Otherwise redirect back to referrer page.
+	//When Ajax is not in use this stops the server responding to Post requests and causes the user to request page "url"
+	//This stops the browser from displaying the Post url in the address bar
+	//TODO redirect to referrer page on Post failure
 	return func(w http.ResponseWriter, r *http.Request) {
 		runThisFirst(w, r)
-		http.Redirect(w, r, path, http.StatusSeeOther) //303 mandating the change of request type to GET
+		http.Redirect(w, r, url, http.StatusSeeOther) //303 mandating the change of request type to GET
 	}
 }
 
@@ -83,7 +88,8 @@ func httpHeaders(w http.ResponseWriter, set_headers []string) {
 //		DIR_WEBP:   [2]string{"Content-Type", "image/webp"},
 		DIR_SVG:    [2]string{"Content-Type", "image/svg+xml"},
 	}
-	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:;")
+	//TODO re-enable security polocy
+//	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:;")
 	for _, lookup := range set_headers {
 		if lookup != "nocache" {
 			w.Header().Set(headers[lookup][0], headers[lookup][1])

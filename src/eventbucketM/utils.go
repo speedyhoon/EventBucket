@@ -16,7 +16,7 @@ import (
 //research http://net.tutsplus.com/tutorials/client-side-security-best-practices/
 func checkErr(err error) {
 	if err != nil {
-		warning("%v", err)
+		Warning.Println(err)
 	}
 }
 

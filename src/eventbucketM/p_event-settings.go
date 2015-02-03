@@ -296,38 +296,28 @@ func eventSettingsClassGrades(eventId string, grades []int) Form {
 	}
 }
 
-//func eventShotsNSighters(w http.ResponseWriter, r *http.Request) {
 func eventShotsNSighters(eventId string)Page{
 	//TODO Display a list of ranges and shooters scores as shots and total scores, ordered in descending order
-//	r.ParseForm()
-//	form := r.Form
-	fmt.Println("eventid = %v",eventId)
+	Info.Printf("eventid = %v",eventId)
 	event, err := getEvent(eventId)
 	if err == nil{
+		export(event)
 		for _, eventRange := range event.Ranges{
-			info("event Range: %v", eventRange.Id)
+			Info.Printf("event Range: %v", eventRange.Id)
 			for _, shooter := range event.Shooters{
 				//TODO check if shooters has this range
-				info("shooter: %v", shooter.Id)
+				Info.Printf("shooter: %v", shooter.Id)
 			}
 		}
 	}
-/*	if event_id, ok := form["event_id"]; ok && len(event_id) > 0{
-		info("event_id=",event_id)
-		if shots, ok := form["shots"]; ok {
-			info("shots...")
-			for range_id, range_data := range shots {
-				for class_id, shot_value := range range_data {
-					info("range=",range_id," class=",class_id," value=",shot_value)
-				}
-			}
-		}else{
-			info("shots not found")
-		}
-	}*/
 	return Page{
 		Theme: TEMPLATE_EMPTY,
 		Title: "eventShotsNSighters",
+		TemplateFile: "eventShotsNSighters",
+		Data: M{
+			"EventName": event.Name,
+		},
+		v8Url: VURL_eventShotsNSighters,
 	}
 }
 

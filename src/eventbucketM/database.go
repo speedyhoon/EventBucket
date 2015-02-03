@@ -34,14 +34,13 @@ func DB() {
 	session, err := mgo.Dial("localhost:38888")
 	if err != nil {
 		//TODO it would be better to output the mongodb connection error
-		fmt.Printf("The database service is not available.")
+		Warning.Println("The database service is not available.")
 		return
 	}
-	//defer session.Close()
 	session.SetMode(mgo.Eventual, false)//false = the consistency guarantees won't be reset
-//	db_connection := session.DB("eb")
 	database_status = true
 	conn = session.DB("local")
+//	defer session.Close()
 }
 
 func getCollection(collection_name string) []M {
@@ -116,7 +115,9 @@ func getShooter(id int) Shooter {
 
 func getEvent(id string)(Event, error){
 	var result Event
-	if database_status {
+	//TODO is it possible to remove database_status and just use conn != nil?
+	if conn != nil {
+//	if database_status {
 		err := conn.C(TBLevent).FindId(id).One(&result)
 		return result, err
 	}
@@ -401,7 +402,7 @@ func event_sort_aggs_with_grade(event Event, range_id string, shooter_id int){
 			var result Event
 			_, err := conn.C(TBLevent).FindId(event_id).Apply(change, &result)
 			if err != nil {
-				warning("unable to update shooter rank for range: ", rangeId, ", shooter id:", shooter.Id)
+				Warning.Printf("unable to update shooter rank for range: ", rangeId, ", shooter id:", shooter.Id)
 			}
 		}
 	}
@@ -438,49 +439,16 @@ func event_upsert_data(event_id string, data M) {
 func nraa_upsert_shooter(shooter NRAA_Shooter) {
 	_, err := conn.C("N").UpsertId(shooter.SID, &shooter)
 	checkErr(err)
-	fmt.Printf("inserted: %v\n", shooter)
+	Info.Printf("inserted: %v", shooter)
 }
 func Upsert_Doc(collection string, id interface{}, document interface{}) {
 	_, err := conn.C(collection).UpsertId(id, document)
 	checkErr(err)
-	fmt.Printf("inserted id: %v into %v\n", id, collection)
+	Info.Printf("inserted id: %v into %v", id, collection)
 }
 
-//func searchShooters(criteria Shooter)[]Shooter{
 func searchShooters(query M) []Shooter {
-	//	var query M
-	/*	query := make(M, 0)
-		if criteria.Surname != "" {
-	//		query["s"] = M{"$regex": bson.RegEx{fmt.Sprintf(`^%v`, criteria.Surname), "i"}}
-			query["s"] = criteria.Surname
-		}
-	//		query["s"] = M{"$regex": bson.RegEx{fmt.Sprintf(`/^%v/i`, criteria.Surname), ""}}
-		if criteria.FirstName != ""{
-	//		query["f"] = M{"$regex": bson.RegEx{fmt.Sprintf(`/^%v/i`, criteria.FirstName), ""}}
-			query["f"] = criteria.FirstName
-		}
-		if criteria.Club != ""{
-	//		query["c"] = M{"$regex": bson.RegEx{fmt.Sprintf(`/^%v/i`, criteria.Club), ""}}
-			query["c"] = criteria.Club
-		}
-	*/
 	var result []Shooter
-
-	//	integer, err := conn.C(TBLshooter).Find(bson.M{"s": bson.M{"$regex": bson.RegEx{`//Webb//`, ""}}}).Count()
-	//	         er2 := conn.C(TBLshooter).Find(bson.M{"s": bson.M{"$regex": bson.RegEx{`Webb`, ""}}}).One(&result)
-	//												 .Find(bson.M{"nm":bson.M{"$regex": bson.RegEx{`Andy.*`, ""}}}).One(&person)
-
-	//	integer, err := conn.C(TBLshooter).Find(bson.M{"s": `\Webb\`}).Count()
-	//	integer, err := conn.C(TBLshooter).Find(bson.M{"s": bson.M{"$regex": bson.RegEx{`Webb`, ""}}}).Count()
-	//	err := conn.C(TBLshooter).Find(query).All(&result)
-	//	                               M{"s": M{"$regex": "^Webb", "$options": "i"}, "f":M{"$regex": "^C",       "$options": "i"}}
-	//	err := conn.C(TBLshooter).Find(M{"s": M{"$regex": `^Webb`, "$options": "i"}, "f":M{"$regex": `^cAmErOn`, "$options": "i"}}).All(&result)
-	//	err := conn.C(TBLshooter).Find(query).All(&result)
-	//	dump("\n\n\n\n fffffffffffffffffff:")
-	//	export(query)
-	//	dump("\n fffffffffffffffffff <<<\n\n\n")
-	err := conn.C(TBLshooter).Find(query).All(&result)
-	checkErr(err)
+	checkErr(conn.C(TBLshooter).Find(query).All(&result))
 	return result
-	//	err = c.Find(bson.M{"path": bson.M{"$regex": bson.RegEx{`^\\[^\\]*\\$`, ""}}}).All(&nodeList)
 }

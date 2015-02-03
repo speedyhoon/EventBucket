@@ -194,7 +194,7 @@ func updateShotScores(w http.ResponseWriter, r *http.Request) {
 //			return event
 			export(updateBson)
 		}else{
-			warning("BAD updateShotScores. Current Range is locked or is an aggreate range.")
+			Warning.Println("BAD updateShotScores. Current Range is locked or is an aggreate range.")
 		}
 	}
 }

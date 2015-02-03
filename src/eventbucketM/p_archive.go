@@ -2,7 +2,6 @@ package main
 
 import (
 	"time"
-	//	"fmt"
 	"strings"
 )
 
@@ -17,16 +16,10 @@ func archive()Page{
 	sort_by_name := func(c1, c2 *Event) bool {
 		return strings.ToLower(c1.Name) < strings.ToLower(c2.Name)
 	}
-
-	//TODO make custom select
+	//TODO make custom mongodb query to get a more flexible list of events?
 	events := getEvents()
 	OrderedByEvent(sort_by_date, sort_by_time, sort_by_name).Sort(events)
-
-		closedEvents := []HomeCalendar{}
-//	openEvents := []HomeCalendar{}
-	//	draftEvents := []HomeCalendar{}
-	//	currentTime := time.Now()
-
+	closedEvents := []HomeCalendar{}
 	for _, event := range events {
 		if event.Closed{
 			var list_of_ranges []string
@@ -41,7 +34,6 @@ func archive()Page{
 				Time:   event.Time,
 				Ranges: strings.Join(list_of_ranges, ", "),
 			}
-
 			if event.Date != "" {
 				date_obj, err := time.Parse("2006-01-02", event.Date)
 				if err == nil {
@@ -49,32 +41,18 @@ func archive()Page{
 					calendar_event.Date = ordinal(date_obj.Day())
 					calendar_event.Month = date_obj.Month()
 					calendar_event.Year = date_obj.Year()
-					//				}else {
-					//					fmt.Printf("Event %v doesn't have a valid date", event.Name)
 				}
-				//				if currentTime.After(date_obj){
-				//					closed_events = append([]HomeCalendar{calendar_event}, closed_events...)
-				//				}else{
-
-				//				}
-				//			}else{
-				//				draftEvents = append(draftEvents, calendar_event)
-				//				fmt.Printf("Event %v doesn't have a date", event.Name)
 			}
 			closedEvents = append(closedEvents, calendar_event)
 		}
 	}
-
 	return Page {
 		TemplateFile: "archive",
 		Theme: TEMPLATE_HOME,
 		Data: M{
 			"ClosedEvents":   closedEvents,
-			//		"FutureEvents":   openEvents,
-			//		"DraftEvents":   draftEvents,
 			"PageName": "Calendar",
 			"Menu":     home_menu(URL_archive, HOME_MENU_ITEMS),
-			//		"FormNewEvent": generateForm2(home_form_new_event(getClubs(), "","","","",true)),
 		},
 	}
 }
