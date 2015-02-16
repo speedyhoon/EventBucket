@@ -54,17 +54,18 @@ func getCollection(collection_name string) []M {
 
 func getClubs() []Club {
 	var result []Club
-	if database_status {
+	if conn != nil {
 		checkErr(conn.C(TBLclub).Find(nil).All(&result))
 	}
 	return result
 }
-func getClub(id string) Club {
+func getClub(id string)(Club, error){
 	var result Club
 	if database_status {
-		conn.C(TBLclub).FindId(id).One(&result)
+		err := conn.C(TBLclub).FindId(id).One(&result)
+		return result, err
 	}
-	return result
+	return result, errors.New("Unable to get club with id: '"+id+"'")
 }
 
 func getClub_by_name(clubName string)(Club, bool){

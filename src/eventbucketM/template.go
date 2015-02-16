@@ -20,6 +20,7 @@ func templator(viewController Page, w http.ResponseWriter, r *http.Request) {
 	}
 	//Search in Theme html file & replace "^^BODY^^" with TemplateFile
 	source := bytes.Replace(loadHTM(viewController.Theme), []byte("^^BODY^^"), loadHTM(viewController.TemplateFile), -1)
+	source = bytes.Replace(source, []byte("^^NetworkAdaptor^^"), loadHTM("NetworkAdaptor"), -1)
 	viewController.Data["DirCss"]		= DIR_CSS
 //	viewController.Data["DirGif"]		= DIR_GIF
 	viewController.Data["DirJpeg"]	= DIR_JPEG
@@ -30,6 +31,7 @@ func templator(viewController Page, w http.ResponseWriter, r *http.Request) {
 	viewController.Data["Favicon"]	= FAVICON
 	viewController.Data["Title"] = viewController.Title
 	viewController.Data["CurrentYear"] = time.Now().Year()
+	viewController.Data["PRODUCTION"] = PRODUCTION
 	generator(w, string(source), viewController)
 }
 
@@ -238,12 +240,16 @@ var HOME_MENU_ITEMS = []Menu{
 		Link: URL_archive,
 	},
 	Menu{
-		Name: "Organisers",
-		Link: URL_organisers,
+		Name: "Clubs",
+		Link: URL_clubs,
 	},
 	Menu{
 		Name: "About",
 		Link: URL_about,
+	},
+	Menu{
+		Name: "Organisers",
+		Link: URL_organisers,
 	},
 }
 

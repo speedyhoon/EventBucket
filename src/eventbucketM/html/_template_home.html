@@ -2,7 +2,7 @@
 <html>
 <head>
 	<link rel=stylesheet href={{.DirCss}}home.css>
-	<link rel=icon type=image/png href=a.png>
+	<link rel=icon type=image/png href={{.Favicon}}>
 	<title>EventBucket{{if .Title}} - {{.Title}}{{end}}</title>
 </head>
 <body>
@@ -19,6 +19,6 @@
 		^^BODY^^
 		<p id=b>Copyright &copy; 2011-{{.CurrentYear}} EventBucket<a href=licence class=r>Licence</a></p>
 	</div>
-	<script src=/j/new_relic.js></script>
+	{{if .PRODUCTION}}<script src=/j/new_relic.js></script>{{end}}
 </body>
 </html>

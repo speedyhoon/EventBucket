@@ -24,6 +24,19 @@ func organisers() Page {
 	}
 }
 
+func clubs() Page {
+	return Page {
+		TemplateFile: "clubs",
+		Theme: TEMPLATE_HOME,
+		Data: M{
+			"Title":        "Clubs",
+			"Clubs":        generateForm2(organisers_clubForm()),
+			"ClubList":     getClubs(),
+			"Menu":     	 home_menu(URL_clubs, HOME_MENU_ITEMS),
+		},
+	}
+}
+
 func organisers_clubForm() Form {
 	//TODO add validation to
 	return Form{
@@ -43,49 +56,6 @@ func organisers_clubForm() Form {
 		},
 	}
 }
-
-/*func organisers_eventForm(clubs []Club) Form {
-//	club_name := "club"
-	club := Inputs{
-		Name: "club",
-		Label:    "Host Club",
-		Required: true,
-	}
-	if len(clubs) > 0 {
-		club.Html = "select"
-		club.Options = getClubSelectionBox(clubs)
-//		club.Placeholder = "Select Club
-//		club.Html = "select"
-//		club.SelectValues = getClubSelectionBox(clubs)
-		if len(clubs) > 1 {
-			club.Placeholder = "Select Club"
-		}
-	} else {
-		club.Name = "club_insert"
-		club.Html = "text"
-		club.Label = "Host Club"
-		club.Placeholder = "Club Name"
-	}
-	return Form{
-		Action: URL_eventInsert,
-		Title:  "Create Event",
-		Inputs: []Inputs{
-			{
-				Name: "name",
-				Html:     "text",
-				Label:    "Event Name",
-				Required: true,
-			},
-
-			club,
-
-			{
-				Html:  "submit",
-				Value: "Add Event",
-			},
-		},
-	}
-}*/
 
 func organisers_update_shooter_list(last_updated string) Form {
 	if last_updated == "" {

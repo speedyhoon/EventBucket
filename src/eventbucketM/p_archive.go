@@ -26,11 +26,12 @@ func archive()Page{
 			for _, rangeObj := range event.Ranges{
 				list_of_ranges = append(list_of_ranges, rangeObj.Name)
 			}
+			club, _ := getClub(event.Club)
 			calendar_event := HomeCalendar{
 				Id:     event.Id,
 				Name:   event.Name,
 				ClubId: event.Club,
-				Club:   getClub(event.Club).Name,
+				Club:   club.Name,
 				Time:   event.Time,
 				Ranges: strings.Join(list_of_ranges, ", "),
 			}

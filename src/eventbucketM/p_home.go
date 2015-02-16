@@ -5,6 +5,9 @@ import (
 	"time"
 	"sort"
 	"strings"
+	"os"
+	"net"
+	"fmt"
 )
 
 func home()Page{
@@ -18,31 +21,24 @@ func home()Page{
 	sort_by_name := func(c1, c2 *Event) bool {
 		return strings.ToLower(c1.Name) < strings.ToLower(c2.Name)
 	}
-
-	//TODO make custom select
-	events := getEvents()
+	events := getEvents()	//TODO make custom select
 	OrderedByEvent(sort_by_date, sort_by_time, sort_by_name).Sort(events)
-
-//	closed_events := []HomeCalendar{}
 	openEvents := []HomeCalendar{}
-//	draftEvents := []HomeCalendar{}
-//	currentTime := time.Now()
-
 	for _, event := range events {
 		if !event.Closed{
 			var list_of_ranges []string
 			for _, rangeObj := range event.Ranges{
 				list_of_ranges = append(list_of_ranges, rangeObj.Name)
 			}
+			club, _ := getClub(event.Club)
 			calendar_event := HomeCalendar{
 				Id:     event.Id,
 				Name:   event.Name,
 				ClubId: event.Club,
-				Club:   getClub(event.Club).Name,
+				Club:   club.Name,
 				Time:   event.Time,
 				Ranges: strings.Join(list_of_ranges, ", "),
 			}
-
 			if event.Date != "" {
 				date_obj, err := time.Parse("2006-01-02", event.Date)
 				if err == nil {
@@ -50,21 +46,13 @@ func home()Page{
 					calendar_event.Date = ordinal(date_obj.Day())
 					calendar_event.Month = date_obj.Month()
 					calendar_event.Year = date_obj.Year()
-//				}else {
-//					Warning.Printf("Event %v doesn't have a valid date", event.Name)
 				}
-//				if currentTime.After(date_obj){
-//					closed_events = append([]HomeCalendar{calendar_event}, closed_events...)
-//				}else{
-
-//				}
-//			}else{
-//				draftEvents = append(draftEvents, calendar_event)
-//				Warning.Printf("Event %v doesn't have a date", event.Name)
 			}
 			openEvents = append(openEvents, calendar_event)
 		}
 	}
+
+	hostname, ipAddresses := HostnameIpAddresses()
 
 	//TODO change getClubs to simpler DB lookup getClubNames
 	clubs := getClubs()
@@ -72,16 +60,33 @@ func home()Page{
 		TemplateFile: "home",
 		Theme: TEMPLATE_HOME,
 		Data: M{
-			//		"ClosedEvents":   closed_events,
 			"FutureEvents":   openEvents,
-			//		"DraftEvents":   draftEvents,
 			"PageName": "Calendar",
 			"ArchiveLink": URL_archive,
 			"Menu":     home_menu("/", HOME_MENU_ITEMS),
 			"FormNewEvent": generateForm2(home_form_new_event(clubs, "", "", "", "", true)),
+			"Hostname": hostname,
+			"IpAddresses": ipAddresses,
 		},
 		v8Url: VURL_home,
 	}
+}
+
+func HostnameIpAddresses()(string, []string){
+	hostname, _ := os.Hostname()
+	var ipAddress []string
+	interfaces, err := net.Interfaces()
+	if err == nil {
+		for _, i := range interfaces {
+			addrs, err2 := i.Addrs()
+			if err2 == nil {
+				for _, addr := range addrs {
+					ipAddress = append(ipAddress, fmt.Sprintf("%v", addr))
+				}
+			}
+		}
+	}
+	return hostname, ipAddress
 }
 
 func home_form_new_event(clubs []Club, name, club, date, eventTime string, newEvent bool) Form {
