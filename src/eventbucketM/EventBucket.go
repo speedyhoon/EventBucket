@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	VERSION = 0.99
+	VERSION = 0.57
 	PRODUCTION = false //False = output dev warnings, E.g. Template errors
 	//TEST_MODE = false //display links to add n shooters or fillout all scores for a given range
 	//Known issue - turning off minify breaks the startshooting page. moving to the next sibling in a table row return the textnode of whitespace instead of the next <td> tag
@@ -39,6 +39,8 @@ const (
 	URL_organisers       = "/organisers"
 	URL_event            = "/event/"							//event Id special type characters only allowed
 	//	URL_events           = "/events/"
+	URL_clubs            = "/clubs/"
+	URL_club             = "/club/"
 //GET with PARAMETERS
 	URL_eventSettings    = "/eventSettings/"				//event id
 	URL_scoreboard       = "/scoreboard/"					//event id/range_id
@@ -83,14 +85,18 @@ func main() {
 	serveDir(DIR_PNG)
 	serveDir(DIR_JPEG)
 	serveDir(DIR_SVG)
+	//TODO remove these two directories
+	serveDir("/logos/")
+	serveDir("/html/")
 	//TODO remove all custom functions for each set of pages. Just make it overall easier & more flexible to setup new & change existing pages
 	GetRedirectPermanent(URL_about, about)
 	GetRedirectPermanent(URL_archive, archive)
 	GetRedirectPermanent(URL_licence, licence)
 	GetRedirectPermanent(URL_organisers, organisers)
-//	GetRedirectPermanent(URL_clubs, clubs)
+	GetRedirectPermanent(URL_clubs, clubs)
 //	GetRedirectPermanent(URL_events, events)
 	GetParameters(URL_event, event)
+	GetParameters(URL_club, club)
 	GetParameters(URL_eventSettings, eventSettings)
 	GetParameters(URL_scoreboard, scoreboard)
 	GetParameters(URL_eventShotsNSighters, eventShotsNSighters)
@@ -121,7 +127,7 @@ func main() {
 //	Post(URL_champInsert, PostVia(champInsert, URL_organisers))
 //	Post(URL_clubMoundInsert, clubMoundInsert)
 	Get(URL_home, home)
-	url := "http://localhost"
+	url := "http://localhost"+URL_about
 	if exec.Command(`rundll32.exe`, "url.dll,FileProtocolHandler", url).Start() != nil{
 		Warning.Printf("Unable to open a web browser for "+url)
 	}

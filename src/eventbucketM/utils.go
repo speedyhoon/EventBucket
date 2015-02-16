@@ -69,19 +69,19 @@ func stringInSlice(a string, list []string) bool {
 	return false
 }
 
-func qrBarcode(value string)string{
+func qrBarcode(width, height int, value string)string{
 	f, err := os.Create("temp_barcode.png")
 	checkErr(err)
 	defer f.Close()
 	var qrCode barcode.Barcode
 	qrCode, err = qr.Encode(value,  qr.L, qr.Auto)
 	if err == nil {
-		qrCode, err = barcode.Scale(qrCode, 100, 100)
+		qrCode, err = barcode.Scale(qrCode, width, height)
 		if err == nil {
 			png.Encode(f, qrCode)
 			data, err := ioutil.ReadFile("temp_barcode.png")
 			if err == nil {
-				return "data:image/png;base64," + base64.StdEncoding.EncodeToString(data)
+				return fmt.Sprintf("src=\"data:image/png;base64,%v\" width=%v height=%v", base64.StdEncoding.EncodeToString(data), width, height)
 			}
 		}
 	}

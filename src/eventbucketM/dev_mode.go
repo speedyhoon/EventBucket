@@ -64,7 +64,12 @@ func dev_mode_loadHTM(page_name string, existing_minified_file []byte) []byte {
 		existing_len := len(existing_minified_file)
 		new_len := len(bytes)
 		if existing_len != new_len {
-			Warning.Printf("Page '%v' had %v bytes removed (%v percent), total: %v, from: %v", page_name, new_len-existing_len, (existing_len*100/new_len-100)*-1, existing_len, new_len)
+//			Warning.Printf("Page '%v' had %v bytes removed (%v percent), total: %v, from: %v", page_name, existing_len-new_len, (existing_len*100/new_len-100)*-1, new_len, existing_len)
+			Info.Printf("Page '%v' had %v bytes removed (%v percent), total: %v, from: %v", page_name, existing_len-new_len, existing_len*100/new_len-100, new_len, existing_len)
+		}
+		Info.Printf("sizes==", new_len, existing_len)
+		if new_len > existing_len {
+			Error.Println("How did this page get bigger?")
 		}
 	}else{
 		ioutil.WriteFile(fmt.Sprintf(PATH_HTML_SOURCE, page_name), bytes, 0777)

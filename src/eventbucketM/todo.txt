@@ -1,7 +1,10 @@
 TODO::
-Most Important
+
+BUGS::
 the last few shots are removed from start shooting
 calculating agg scores is slow
+
+FEATURES::
 event able to change class settings - number of shots
 re order ranges
 stop users accessing agg ranges in total scores and startShooting
@@ -28,14 +31,9 @@ http://www.clubx.com.au
 
 
 
-
-
-
-
 INSTALLER::
 	Setup icon
-	test the installer on windows XP
-	test that you can uninstally everything
+	test that you can uninstall everything
 	test that you can install over the top of an old folder!
 	test that installer doesn't make a duplicate eb service!
 
@@ -54,7 +52,6 @@ EVENTBUCKET::
 
 	running a prizemeeting
 
-	add CC logo to the about page
 
 
 START SHOOTING
@@ -68,7 +65,6 @@ scoreboard
 event settings
 	classes for event are not working
 	aggs can add up other aggs
-
 
 event page
 	add a form to change a shooters details - name, club, change class/grade, age group
@@ -144,7 +140,7 @@ all templates
 	tidy up html templates and remove variables for globals and replace with $.SortRange http://stackoverflow.com/questions/16734503/access-out-of-loop-value-inside-golang-templates-loop
 	set a formatting rule for variable names
 all forms
-	on submit redirect to form location id on form with #my_form_name to <fieldset><h2>Heading</h2><form id=my_form_name action=... etc
+	on submit redirect to form location id on form with #my_form_name to <fieldset id=my_form_name><h2>Heading</h2><form action=... etc
 validation
 	if no grade specified. set to the first one in the list. e.g. Target A or F CLass B
 event show
@@ -186,8 +182,9 @@ code
 	cache all AJAX/Websocket requests in local storage if the response flag is set to cache
 		each page would have a single request with several tables that needed data like event-settings has many bits of data.
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 DONE::::::
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Shooter entry:
 	search from nraa database
 	add nraa database
@@ -226,6 +223,7 @@ Installer:
 	auto start a browser when starting EB!
 about
 	add about page with the version number
+	add CC logo to the about page
 home page
 	add ranges to event list
 	finish calendar with current events
@@ -237,6 +235,8 @@ all forms
 	trim white space from text fields
 
 
+WONT FIX
+	test the installer on windows XP - is no longer supported
 
 
 
@@ -256,6 +256,7 @@ JS
 SASS
 	listen to SASS folder
 	validate/lint SASS
+	add small svg & images as base64
 	compile into css files
 	minify css with CSSO
 	save to /root/c/ without file extension
@@ -285,7 +286,7 @@ The application should output optimised HTML that can't be minified any further.
 			</c>
 		</c>
 
-7. scan for and raise a warning for elements that have only one child. i.e.
+7a. scan for and raise a warning for elements that have only one child. i.e.
 		<c>
 			<c>
 				<c>
@@ -293,7 +294,7 @@ The application should output optimised HTML that can't be minified any further.
 				</c>
 			</c>
 		</c>
-	would become
+7b.	would become
 		<c>foobar</c>
 
 

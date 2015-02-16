@@ -8,6 +8,6 @@
 <body>
 	^^BODY^^
 	{{if .Js}}<script src={{.DirJs}}{{.Js}}></script>{{end}}
-	<script src=/j/new_relic.js></script>
+	{{if .PRODUCTION}}<script src=/j/new_relic.js></script>{{end}}
 </body>
 </html>
