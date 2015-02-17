@@ -327,8 +327,22 @@ Images
 
 
 
+MULTIPLE DEV iGO ENVIRONMENTS
+---------------------------------------
+Install the default Go package or zip		- if on shared server only one person needs to update it for everyone
+Copy github packages used
+on save convert iGo to Go
+setup intillij with go plugin				- how to share editor settings?
+share inspection settings
+auto build html, sass, js
 
 
+running the code locally=>>
+Create a new git repo for the developer environment
+Install the default Go package or zip
+Copy github packages used
+write batch file to convert iGo to Go on save
+commit environment so other developers can checkout a new copy and develop quickly
 
 
 
