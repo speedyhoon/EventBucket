@@ -11,6 +11,7 @@ func about()Page {
 			"Menu":     home_menu(URL_about, HOME_MENU_ITEMS),
 			"Hostname": hostname,
 			"IpAddresses": ipAddresses,
+			"BuildDate": BUILDDATE,
 		},
 	}
 }

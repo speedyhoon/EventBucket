@@ -5,6 +5,9 @@ import "regexp"
 //truman Cell -- air purifier
 //TODO: eventually replace these settings with ones that are set for each club and sometimes overridden by a clubs event settings
 const (
+	/*IMPORT EXTERNAL SETTINGS HERE*/
+	VERSION = 0.58
+	BUILDDATE = "Compiled on February 17, 2015  by Cam Webb"
 	//Scoreboard
 	SCOREBOARD_SHOW_WARNING_FOR_ZERO_SCORES    = true
 	SCOREBOARD_IGNORE_POSITION_FOR_ZERO_SCORES = false

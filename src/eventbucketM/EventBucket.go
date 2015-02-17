@@ -6,7 +6,6 @@ import (
 )
 
 const (
-	VERSION = 0.57
 	PRODUCTION = false //False = output dev warnings, E.g. Template errors
 	//TEST_MODE = false //display links to add n shooters or fillout all scores for a given range
 	//Known issue - turning off minify breaks the startshooting page. moving to the next sibling in a table row return the textnode of whitespace instead of the next <td> tag
