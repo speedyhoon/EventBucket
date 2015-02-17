@@ -1,0 +1,12 @@
+<h2>{{.Title}}</h2>
+{{with.Clubs}}
+	{{HTM .}}
+{{end}}
+
+{{Fieldset "Clubs"}}
+	{{with.ClubList}}
+		{{range.}}
+			<p><a href=/club/{{.Id}}>{{.Name}}</a></p>
+		{{end}}
+	{{end}}
+{{EndFieldset}}
