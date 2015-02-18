@@ -2,7 +2,7 @@ package main
 
 import (
 	"net/http"
-	"os/exec"
+//	"os/exec"
 )
 
 const (
@@ -32,17 +32,17 @@ const (
 //GET
 	URL_home           	= "/"
 	URL_about           	= "/about"
+	URL_club             = "/club"
 	URL_licence         	= "/licence"
-	//	URL_licence_summary 	= "/licence-summary"
+	//URL_licence_summary	= "/licence-summary"
 	URL_archive			  	= "/archive"
 	URL_organisers       = "/organisers"
 	URL_event            = "/event/"							//event Id special type characters only allowed
-	//	URL_events           = "/events/"
-	URL_clubs            = "/clubs/"
-	URL_club             = "/club/"
 //GET with PARAMETERS
-	URL_eventSettings    = "/eventSettings/"				//event id
-	URL_scoreboard       = "/scoreboard/"					//event id/range_id
+	URL_clubs                = "/clubs/"
+	//URL_events               = "/events/"
+	URL_eventSettings        = "/eventSettings/"			//event id
+	URL_scoreboard           = "/scoreboard/"				//event id/range_id
 	URL_totalScores          = "/totalScores/"			//event id/range_id
 	URL_totalScoresAll       = "/totalScoresAll/"		//event id/range_id
 	URL_startShooting        = "/startShooting/"			//event id/range_id
@@ -126,9 +126,10 @@ func main() {
 //	Post(URL_champInsert, PostVia(champInsert, URL_organisers))
 //	Post(URL_clubMoundInsert, clubMoundInsert)
 	Get(URL_home, home)
-	url := "http://localhost"+URL_about
-	if exec.Command(`rundll32.exe`, "url.dll,FileProtocolHandler", url).Start() != nil{
-		Warning.Printf("Unable to open a web browser for "+url)
-	}
+//	url := "http://localhost"+URL_about
+//	if exec.Command(`rundll32.exe`, "url.dll,FileProtocolHandler", url).Start() != nil{
+//		Warning.Printf("Unable to open a web browser for "+url)
+//	}
+	Info.Println("ready to go")
 	Warning.Println("ListenAndServe: %v", http.ListenAndServe(":80", nil))
 }

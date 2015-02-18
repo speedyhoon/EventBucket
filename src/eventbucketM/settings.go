@@ -1,17 +1,19 @@
 package main
 
 import "regexp"
-
-//truman Cell -- air purifier
-//TODO: eventually replace these settings with ones that are set for each club and sometimes overridden by a clubs event settings
 const (
-	/*IMPORT EXTERNAL SETTINGS HERE*/
 	VERSION = 0.58
 	BUILDDATE = "Compiled on February 17, 2015  by Cam Webb"
+	ID_CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!*()_-."
+	ID_CHARSET_REGEX = `\w~!\*\(\)\-\.`
+
 	//Scoreboard
 	SCOREBOARD_SHOW_WARNING_FOR_ZERO_SCORES    = true
 	SCOREBOARD_IGNORE_POSITION_FOR_ZERO_SCORES = false
 
+
+	//truman Cell -- air purifier
+	//TODO: eventually replace these settings with ones that are set for each club and sometimes overridden by a clubs event settings
 /*	nullShots                     = "-" //record shots
 	showMaxNumShooters            = 20
 	showInitialShots              = 3 //the number of shots to show when a shooter is initially selected
@@ -84,10 +86,12 @@ type Page struct{
 }
 
 var (
-	VURL_home = regexp.MustCompile("^/$")
-	//TODO replace with correct regex to support full eventId's and rangeId's
-	VURL_event = regexp.MustCompile("^/event/([0-9]+)$")
-	VURL_eventShotsNSighters = regexp.MustCompile("^/eventShotsNSighters/([0-9A-Z]+)$")
+	VURL_home                = regexp.MustCompile("^/$")
+	VURL_event               = regexp.MustCompile("^"+URL_event+"(["+ID_CHARSET_REGEX+"]+)$")
+	VURL_eventShotsNSighters = regexp.MustCompile("^"+URL_eventShotsNSighters+"(["+ID_CHARSET_REGEX+"]+)$")
+	VURL_club                = regexp.MustCompile("^"+URL_club+"(["+ID_CHARSET_REGEX+"]+)$")
+	VURL_eventSettings       = regexp.MustCompile("^"+URL_eventSettings+"(["+ID_CHARSET_REGEX+"]+)$")
+	VURL_scoreboard          = regexp.MustCompile("^"+URL_scoreboard+"(["+ID_CHARSET_REGEX+"]+)$")
 )
 
 type ClassSettings struct {
