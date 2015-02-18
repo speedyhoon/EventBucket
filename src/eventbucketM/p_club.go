@@ -19,7 +19,9 @@ func club(clubId string) Page {
 		Title: club.Name,
 		Data: M{
 			"Menu": home_menu(URL_club, HOME_MENU_ITEMS),
-			"ClubId": clubId,
+			//TODO insert form to edit club mounds
+			//TODO insert form to edit club map
+			//TODO integrate with club settings page so it is simpler to use!
 		},
 	}
 }

@@ -245,6 +245,17 @@ Server add redirects to root folders. So /c/ would go to the home page or 404 no
 
 
 BUILD SYSTEM
+GO
+	try & write source code with iGo
+	remove from PRODUCTION
+		Trace
+		Info
+		dev_mode_ functions & variables
+		http gzip time elapsed function
+	should I replace these lines to make it easier?
+		"checkErr(...)" with "if ... != nil { Warning.Println(...) }"
+		complex statement "checkErr(...)" with "err := ... if err != nil { Warning.Println(err) }"
+
 JS
 	listen to JS folder
 	JSLint
@@ -262,6 +273,12 @@ SASS
 	save to /root/c/ without file extension
 
 HTML
+	Possibly use Go HAML implementation
+	convert the templates to normal html file
+	replace inner templates with their source files
+	replace global template variables with variables from the build bot - like {{.BuildVersion}}=0.12.1202  {{.CurrentYear}}=2015 {{.DirCss}}=/c/ {{.DirJpeg}}=/j/
+	replace file names with their newly built filename hashes - like {{.Favicon}}=c
+
 The application should output optimised HTML that can't be minified any further.
 1. search for id and classes in html to form a list of used rules site wide
 2. find all occurrences of the rules in the css files
