@@ -275,7 +275,7 @@ SASS
 HTML
 	Possibly use Go HAML implementation
 	convert the templates to normal html file
-	replace inner templates with their source files
+	replace inner templates with their source files - like {{.NetworkAdaptor}}
 	replace global template variables with variables from the build bot - like {{.BuildVersion}}=0.12.1202  {{.CurrentYear}}=2015 {{.DirCss}}=/c/ {{.DirJpeg}}=/j/
 	replace file names with their newly built filename hashes - like {{.Favicon}}=c
 

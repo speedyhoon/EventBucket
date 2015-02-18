@@ -88,8 +88,6 @@ func qrBarcode(width, height int, value string)string{
 			}
 		}
 	}
-	if err != nil {
-		Warning.Println(err)
-	}
+	Warning.Println(err)
 	return ""
 }

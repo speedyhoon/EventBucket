@@ -79,7 +79,7 @@ func PostVia(runThisFirst func(http.ResponseWriter, *http.Request), url string) 
 
 func httpHeaders(w http.ResponseWriter, set_headers []string) {
 	//TODO Only set CSP when not in debug mode
-	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:;")
+	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:")
 	headers := map[string][2]string{
 		"expire":  [2]string{"Expires", time.Now().UTC().AddDate(1, 0, 0).Format(time.RFC1123)}, //TODO should it return GMT time?  //Expiry date is in 1 year, 0 months & 0 days in the future
 		"cache":   [2]string{"Vary", "Accept-Encoding"},
