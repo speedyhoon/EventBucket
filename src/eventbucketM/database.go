@@ -160,7 +160,7 @@ func id_suffix(id int) (string, error) {
 		return "", errors.New(fmt.Sprintf("Invalid id number supplied. Id \"%v\" is out of range", id))
 	}
 	id = id - 1
-	charset := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!*()_-."
+	charset := ID_CHARSET
 	charset_length := 70
 	temp := ""
 	for id >= charset_length {
