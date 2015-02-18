@@ -27,7 +27,7 @@ func serveHtml(h http.HandlerFunc) http.HandlerFunc{
 //PROD	return func(w http.ResponseWriter, r *http.Request) {
 	return http.HandlerFunc(agent.WrapHTTPHandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer dev_mode_timeTrack(time.Now(), r.RequestURI)
-		httpHeaders(w, []string{"html", "nocache1", "nocache2", "nocache3"})
+		httpHeaders(w, []string{"html", "noCache", "expireNow", "pragma"})
 		Gzip(h, w, r)
 	}))
 }
@@ -78,16 +78,17 @@ func PostVia(runThisFirst func(http.ResponseWriter, *http.Request), url string) 
 }
 
 func httpHeaders(w http.ResponseWriter, set_headers []string) {
+	//TODO Only set CSP when not in debug mode
+	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:;")
 	headers := map[string][2]string{
-		//Expiry date is in 1 year, 0 months & 0 days
-		"expire":  [2]string{"Expires", time.Now().UTC().AddDate(1, 0, 0).Format(time.RFC1123)}, //TODO it should return GMT time I think?
+		"expire":  [2]string{"Expires", time.Now().UTC().AddDate(1, 0, 0).Format(time.RFC1123)}, //TODO should it return GMT time?  //Expiry date is in 1 year, 0 months & 0 days in the future
 		"cache":   [2]string{"Vary", "Accept-Encoding"},
 		"public":  [2]string{"Cache-Control", "public"},
 		"gzip":    [2]string{"Content-Encoding", "gzip"},
 		"html":    [2]string{"Content-Type", "text/html; charset=utf-8"},
-		"nocache1":[2]string{"Cache-Control", "no-cache, no-store, must-revalidate"},
-		"nocache2":[2]string{"Expires", "0"},
-		"nocache3":[2]string{"Pragma", "no-cache"},
+		"noCache": [2]string{"Cache-Control", "no-cache, no-store, must-revalidate"},
+		"expireNow":[2]string{"Expires", "0"},
+		"pragma":  [2]string{"Pragma", "no-cache"},
 		DIR_CSS:   [2]string{"Content-Type", "text/css; charset=utf-8"},
 		DIR_JS:    [2]string{"Content-Type", "text/javascript"},
 		DIR_PNG:   [2]string{"Content-Type", "image/png"},
@@ -96,44 +97,10 @@ func httpHeaders(w http.ResponseWriter, set_headers []string) {
 //		DIR_WEBP:  [2]string{"Content-Type", "image/webp"},
 		DIR_SVG:   [2]string{"Content-Type", "image/svg+xml"},
 	}
-	//TODO re-enable security polocy
-//	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:;")
 	for _, lookup := range set_headers {
-//		if lookup != "nocache" {
 		w.Header().Set(headers[lookup][0], headers[lookup][1])
-		/*}else{
-			w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
-			w.Header().Set("Expires", "0")
-			w.Header().Set("Pragma", "no-cache")
-		}*/
 	}
 }
-
-/*func httpHeaders(w http.ResponseWriter, headers []string) {
-	headerSettings := map[string]map[string]string{
-		//Expiry date is in 1 year, 0 months & 0 days
-		"expire": map[string]string{"Expires": time.Now().UTC().AddDate(1, 0, 0).Format(time.RFC1123)}, //TODO it should return GMT time I think?
-		"cache":  map[string]string{"Vary": "Accept-Encoding"},
-		"nocache":map[string]string{"Cache-Control": "no-cache, no-store, must-revalidate", "Expires": "0", "Pragma": "no-cache"},
-		"gzip":   map[string]string{"Content-Encoding": "gzip"},
-		"html":   map[string]string{"Content-Type": "text/html; charset=utf-8"},
-		DIR_CSS:  map[string]string{"Content-Type": "text/css; charset=utf-8", "Cache-Control": "public"},
-		DIR_JS:   map[string]string{"Content-Type": "text/javascript", "Cache-Control": "public"},
-		DIR_PNG:  map[string]string{"Content-Type": "image/png", "Cache-Control": "public"},
-		DIR_JPEG: map[string]string{"Content-Type": "image/jpeg", "Cache-Control": "public"},
-//		DIR_GIF:  map[string]string{"Content-Type": "image/gif", "Cache-Control": "public"},
-//		DIR_WEBP: map[string]string{"Content-Type": "image/webp", "Cache-Control": "public"},
-		DIR_SVG:  map[string]string{"Content-Type": "image/svg+xml", "Cache-Control": "public"},
-		"logos":  map[string]string{},
-	}
-	//TODO re-enable security polocy
-//	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:;")
-	for _, lookup := range headers {
-		for field, value := range headerSettings[lookup] {
-			w.Header().Set(field, value)
-		}
-	}
-}*/
 
 type gzipResponseWriter struct {
 	io.Writer

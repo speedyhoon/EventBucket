@@ -20,7 +20,6 @@ const dev_mode_DEBUG = false	//Send system metric data to NewRelic.com
 var (
 	agent = gorelic.NewAgent()
 	//Use io.Writer >>> ioutil.Discard to disable logging any output
-	Timimgs = log.New(ioutil.Discard, "TIMINGS: ", log.Ltime|log.Lshortfile)
 	Trace   = log.New(os.Stdout,      "TRACE:   ", log.Ltime|log.Lshortfile)
 	Info    = log.New(os.Stdout,      "INFO:    ", log.Ltime|log.Lshortfile)
 	Warning = log.New(os.Stderr,      "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
@@ -38,8 +37,7 @@ func export(input interface{}) {
 }
 
 func dev_mode_timeTrack(start time.Time, requestURI string) {
-	elapsed := time.Since(start)
-	Timimgs.Printf("%s took %s", requestURI, elapsed)
+	Trace.Printf("%s took %s", requestURI, time.Since(start))
 }
 
 func dev_mode_check_form(check bool, message string){
@@ -76,20 +74,19 @@ func dev_mode_loadHTM(page_name string, existing_minified_file []byte) []byte {
 	return bytes
 }
 
-func dev_mode_minifyHtml(page_name string, minify []byte) []byte {
+func dev_mode_minifyHtml(pageName string, minify []byte) []byte {
 	if bytes.Contains(minify, []byte("ZgotmplZ")) {
 		Warning.Println("Template generation error: ZgotmplZ")
 		return []byte("")
 	}
-
-	remove_chars := []string{
+	removeChars := []string{
 		"	", //Tab
 		"\n", //new line
 		"\r", //carriage return
 	}
 	//TODO remove spaces between block elements like: </div> <div> but keep between inline elements like </span> <span>
 	//TODO use improved regex for better searching & replacement
-	replace_chars := map[string]string{
+	replaceChars := map[string]string{
 		"  ":            " ", //double spaces
 		"type=text":     "",
 		"type=\"text\"": "",
@@ -104,14 +101,14 @@ func dev_mode_minifyHtml(page_name string, minify []byte) []byte {
 		"</br>":         "<br>",
 		"<br />":        "<br>",
 	}
-	for _, search := range remove_chars {
+	for _, search := range removeChars {
 		minify = bytes.Replace(minify, []byte(search), []byte(""), -1)
 	}
-	for search, replace := range replace_chars {
+	for search, replace := range replaceChars {
 		length := len(minify)
 		minify = bytes.Replace(minify, []byte(search), []byte(replace), -1)
 		if length != len(minify) {
-			Warning.Printf("A dodgy character (%v) was found in the source! Please replace with (%v).", search, replace)
+			Warning.Printf("A dodgy character (%v) was found in '%v'! Please replace with (%v).", search, pageName, replace)
 		}
 	}
 	//TODO why is the string not being replaced here, even though it is 100% running?

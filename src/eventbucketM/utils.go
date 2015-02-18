@@ -15,6 +15,7 @@ import (
 
 //research http://net.tutsplus.com/tutorials/client-side-security-best-practices/
 func checkErr(err error) {
+	//TODO make build tool replace this function call with the actual if statement
 	if err != nil {
 		Warning.Println(err)
 	}
@@ -71,7 +72,9 @@ func stringInSlice(a string, list []string) bool {
 
 func qrBarcode(width, height int, value string)string{
 	f, err := os.Create("temp_barcode.png")
-	checkErr(err)
+	if err != nil {
+		Warning.Println(err)
+	}
 	defer f.Close()
 	var qrCode barcode.Barcode
 	qrCode, err = qr.Encode(value,  qr.L, qr.Auto)
@@ -85,6 +88,8 @@ func qrBarcode(width, height int, value string)string{
 			}
 		}
 	}
-	checkErr(err)
+	if err != nil {
+		Warning.Println(err)
+	}
 	return ""
 }

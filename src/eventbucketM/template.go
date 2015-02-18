@@ -21,17 +21,17 @@ func templator(viewController Page, w http.ResponseWriter, r *http.Request) {
 	//Search in Theme html file & replace "^^BODY^^" with TemplateFile
 	source := bytes.Replace(loadHTM(viewController.Theme), []byte("^^BODY^^"), loadHTM(viewController.TemplateFile), -1)
 	source = bytes.Replace(source, []byte("^^NetworkAdaptor^^"), loadHTM("NetworkAdaptor"), -1)
-	viewController.Data["DirCss"]		= DIR_CSS
-//	viewController.Data["DirGif"]		= DIR_GIF
-	viewController.Data["DirJpeg"]	= DIR_JPEG
-	viewController.Data["DirJs"]		= DIR_JS
-	viewController.Data["DirPng"]		= DIR_PNG
-	viewController.Data["DirSvg"]		= DIR_SVG
-//	viewController.Data["DirWebp"]	= DIR_WEBP
-	viewController.Data["Favicon"]	= FAVICON
+	viewController.Data["DirCss"]		= DIR_CSS	//TODO remove & replace with folder name via build script directly into the html files
+//	viewController.Data["DirGif"]		= DIR_GIF	//TODO remove & replace with folder name via build script directly into the html files
+	viewController.Data["DirJpeg"]	= DIR_JPEG	//TODO remove & replace with folder name via build script directly into the html files
+	viewController.Data["DirJs"]		= DIR_JS		//TODO remove & replace with folder name via build script directly into the html files
+	viewController.Data["DirPng"]		= DIR_PNG	//TODO remove & replace with folder name via build script directly into the html files
+	viewController.Data["DirSvg"]		= DIR_SVG	//TODO remove & replace with folder name via build script directly into the html files
+//	viewController.Data["DirWebp"]	= DIR_WEBP	//TODO remove & replace with folder name via build script directly into the html files
+	viewController.Data["Favicon"]	= "/p/a"		//TODO remove & replace with hashed filename via build script directly into the html files
 	viewController.Data["Title"] = viewController.Title
-	viewController.Data["CurrentYear"] = time.Now().Year()
-	viewController.Data["PRODUCTION"] = PRODUCTION
+	viewController.Data["CurrentYear"] = time.Now().Year()	//TODO remove & replace with current year via build script directly into the html files
+	viewController.Data["PRODUCTION"] = PRODUCTION	//TODO replace with the PRODUCTION html template via build script directly into the html files
 	generator(w, string(source), viewController)
 }
 
@@ -39,7 +39,9 @@ func loadHTM(pageName string) []byte {
 	//TODO add all html sources to []byte constant in a new go file
 	pageName = strings.Replace(pageName, "/", "", -1)
 	bytes, err := ioutil.ReadFile(fmt.Sprintf(PATH_HTML_MINIFIED, pageName))
-	checkErr(err)		//TODO create .html and .htm files if it doesn't exist
+	if err != nil {
+		Warning.Println(err)
+	}
 	return dev_mode_loadHTM(pageName, bytes)
 }
 
@@ -112,7 +114,10 @@ func generator(w http.ResponseWriter, fillin string, viewController Page) {
 		},
 	})
 	t := template.Must(my_html.Parse(fillin))
-	checkErr(t.Execute(w, viewController.Data))
+	err := t.Execute(w, viewController.Data)
+	if err != nil {
+		Warning.Println(err)
+	}
 }
 
 type Menu struct {
