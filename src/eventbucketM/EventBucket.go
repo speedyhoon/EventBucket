@@ -6,29 +6,6 @@ import (
 )
 
 const (
-	PRODUCTION = false //False = output dev warnings, E.g. Template errors
-	//TEST_MODE = false //display links to add n shooters or fillout all scores for a given range
-	//Known issue - turning off minify breaks the startshooting page. moving to the next sibling in a table row return the textnode of whitespace instead of the next <td> tag
-//	MINIFY     = true  //turn on minify html
-	//HTML Templates:
-	//location "folder path/%v(filename).extension"
-	PATH_HTML_MINIFIED = "htm/%v.htm"
-	PATH_HTML_SOURCE   = "html/%v.html"
-	//Main template html files
-	TEMPLATE_HOME  = "_template_home"
-	TEMPLATE_ADMIN = "_template_admin"
-	TEMPLATE_EMPTY = "_template_empty"
-	//folder structure
-	DIR_ROOT = "./root/"
-	DIR_CSS  = "/c/"
-	DIR_JPEG = "/e/"
-//	DIR_GIF  = "/g/"
-	DIR_JS   = "/j/"
-	DIR_PNG  = "/p/"
-	DIR_SVG  = "/v/"
-//	DIR_WEBP = "/w/"
-	FAVICON = "/p/a" //TODO this should be the hashed version filename
-
 //GET
 	URL_home           	= "/"
 	URL_about           	= "/about"

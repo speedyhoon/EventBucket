@@ -5,25 +5,24 @@
 		<div>
 			<time>
 				{{if .Day}}
-				{{.Day}}
+					{{.Day}}
 				{{else}}&nbsp;{{end}}<br>
 				{{if .Date}}
-				<b>{{.Date}}</b>
+					<b>{{.Date}}</b>
 				{{else}}&nbsp;{{end}}
 				{{if .Month}}
-				{{.Month}}
+					{{.Month}}
 				{{else}}&nbsp;{{end}}~~~
 				{{if .Year}}
-				{{.Year}}
+					{{.Year}}
 				{{else}}&nbsp;{{end}}
 			</time>
 			<p>
 				{{if.Id}}
-				<a href=/event/{{.Id}}>{{.Name}}</a>~~~
-				{{if .Time}}
-				starts at {{.Time}}
-				{{end}}
-				{{/* if event is in the future <a href=/event/{{.Id}}>Edit</a>*/}}
+					<a href=/event/{{.Id}}>{{.Name}}</a>~~~
+					{{if .Time}}
+						starts at {{.Time}}
+					{{end}}
 				{{end}}
 			</p>
 			{{if.Club}}
