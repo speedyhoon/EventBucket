@@ -55,16 +55,16 @@ func dev_mode_NewRelicDebugging(){
 	}
 }
 
-func dev_mode_loadHTM(page_name string, existing_minified_file []byte) []byte {
+func dev_mode_loadHTM(page_name string) []byte {
 	bytes, err := ioutil.ReadFile(fmt.Sprintf(PATH_HTML_SOURCE, page_name))
 	if err == nil{
+		existingLength := len(bytes)
 		bytes = dev_mode_minifyHtml(page_name, bytes)
-		existing_len := len(existing_minified_file)
-		new_len := len(bytes)
-		if existing_len != new_len {
-			Trace.Printf("Page '%v' had %v bytes removed (%v percent), from: %v, to: %v", page_name, existing_len-new_len, 100-new_len*100/existing_len, existing_len, new_len)
+		newLength := len(bytes)
+		if existingLength != newLength {
+			Trace.Printf("Page '%v' had %v bytes removed (%v percent), from: %v, to: %v", page_name, existingLength-newLength, 100-newLength*100/existingLength, existingLength, newLength)
 		}
-		if new_len > existing_len {
+		if newLength > existingLength {
 			Error.Println("How did this page get bigger?")
 		}
 	}else{

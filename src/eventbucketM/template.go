@@ -19,8 +19,8 @@ func templator(viewController Page, w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	//Search in Theme html file & replace "^^BODY^^" with TemplateFile
-	source := bytes.Replace(loadHTM(viewController.Theme), []byte("^^BODY^^"), loadHTM(viewController.TemplateFile), -1)
-	source = bytes.Replace(source, []byte("^^NetworkAdaptor^^"), loadHTM("NetworkAdaptor"), -1)
+	source := bytes.Replace(dev_mode_loadHTM(viewController.Theme), []byte("^^BODY^^"), dev_mode_loadHTM(viewController.TemplateFile), -1)
+	source = bytes.Replace(source, []byte("^^NetworkAdaptor^^"), dev_mode_loadHTM("NetworkAdaptor"), -1)
 	viewController.Data["DirCss"]		= DIR_CSS	//TODO remove & replace with folder name via build script directly into the html files
 //	viewController.Data["DirGif"]		= DIR_GIF	//TODO remove & replace with folder name via build script directly into the html files
 	viewController.Data["DirJpeg"]	= DIR_JPEG	//TODO remove & replace with folder name via build script directly into the html files
@@ -36,13 +36,15 @@ func templator(viewController Page, w http.ResponseWriter, r *http.Request) {
 }
 
 func loadHTM(pageName string) []byte {
-	//TODO add all html sources to []byte constant in a new go file
+	//TODO add all html sources to []byte constant in a new go file?
 	pageName = strings.Replace(pageName, "/", "", -1)
 	bytes, err := ioutil.ReadFile(fmt.Sprintf(PATH_HTML_MINIFIED, pageName))
 	if err != nil {
 		Warning.Println(err)
+		//TODO improve error handling for compressed htm files that are not found
+		//return []bytes, err
 	}
-	return dev_mode_loadHTM(pageName, bytes)
+	return bytes
 }
 
 func generator(w http.ResponseWriter, fillin string, viewController Page) {
