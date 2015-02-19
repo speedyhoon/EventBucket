@@ -123,7 +123,9 @@ type Fdsa struct{
 func queryShooterList(w http.ResponseWriter, r *http.Request) {
 	var t Fdsa
 	err := json.NewDecoder(r.Body).Decode(&t)
-	checkErr(err)
+	if err != nil {
+		Warning.Println(err)
+	}
 	query := make(M, 0)
 	if t.Surname != "" {
 		query["s"] = M{"$regex": fmt.Sprintf(`^%v`, t.Surname), "$options": "i"}
