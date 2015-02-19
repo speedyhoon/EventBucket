@@ -8,30 +8,6 @@ import (
 	"time"
 )
 
-func serveDir(contentType string){
-	http.Handle(contentType,
-//PROD		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		http.HandlerFunc(agent.WrapHTTPHandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			defer dev_mode_timeTrack(time.Now(), r.RequestURI)
-			//If url is a directory return a 404 to prevent displaying a directory listing
-			if strings.HasSuffix(r.URL.Path, "/") {
-				http.NotFound(w, r)
-				return
-			}
-			httpHeaders(w, []string{"expire", "cache", contentType, "public"})
-			Gzip(http.FileServer(http.Dir(DIR_ROOT)), w, r)
-		})))
-}
-
-func serveHtml(h http.HandlerFunc) http.HandlerFunc{
-//PROD	return func(w http.ResponseWriter, r *http.Request) {
-	return http.HandlerFunc(agent.WrapHTTPHandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		defer dev_mode_timeTrack(time.Now(), r.RequestURI)
-		httpHeaders(w, []string{"html", "noCache", "expireNow", "pragma"})
-		Gzip(h, w, r)
-	}))
-}
-
 func Gzip(h http.Handler, w http.ResponseWriter, r *http.Request){
 	//Return a gzip compressed response if appropriate
 	if strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {

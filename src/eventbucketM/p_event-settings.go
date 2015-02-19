@@ -299,17 +299,20 @@ func eventSettingsClassGrades(eventId string, grades []int) Form {
 
 func eventShotsNSighters(eventId string)Page{
 	//TODO Display a list of ranges and shooters scores as shots and total scores, ordered in descending order
-	Info.Printf("eventid = %v",eventId)
+	//Info.Printf("eventid = %v",eventId)
 	event, err := getEvent(eventId)
 	if err == nil{
-		export(event)
+		//TODO shooters scores not displayed for each range etc.
+		Warning.Println("shooters scores not displayed for each range etc.")
+		/*
+		//export(event)
 		for _, eventRange := range event.Ranges{
-			Info.Printf("event Range: %v", eventRange.Id)
+			//Info.Printf("event Range: %v", eventRange.Id)
 			for _, shooter := range event.Shooters{
 				//TODO check if shooters has this range
-				Info.Printf("shooter: %v", shooter.Id)
+				//Info.Printf("shooter: %v", shooter.Id)
 			}
-		}
+		}*/
 	}
 	return Page{
 		Theme: TEMPLATE_EMPTY,

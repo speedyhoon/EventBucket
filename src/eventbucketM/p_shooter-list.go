@@ -95,7 +95,7 @@ func updateShooterList2()int{
 		}
 		find_rows(doc)
 	}
-	Info.Println("Finished copying from website.")
+	//Info.Println("Finished copying from website.")
 
 	return copyNewEntries()
 }
@@ -110,7 +110,7 @@ func copyNewEntries()int{
 			counter += 1
 		}
 	}
-	Info.Println("Finished inserting new shooters.")
+	//Info.Println("Finished inserting new shooters.")
 	return counter
 }
 
