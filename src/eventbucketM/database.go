@@ -47,7 +47,10 @@ func DB() {
 func getCollection(collection_name string) []M {
 	var result []M
 	if database_status {
-		checkErr(conn.C(collection_name).Find(nil).All(&result))
+		err := conn.C(collection_name).Find(nil).All(&result)
+		if err != nil {
+			Warning.Println(err)
+		}
 	}
 	return result
 }
@@ -55,7 +58,10 @@ func getCollection(collection_name string) []M {
 func getClubs() []Club {
 	var result []Club
 	if conn != nil {
-		checkErr(conn.C(TBLclub).Find(nil).All(&result))
+		err := conn.C(TBLclub).Find(nil).All(&result)
+		if err != nil {
+			Warning.Println(err)
+		}
 	}
 	return result
 }
@@ -147,7 +153,7 @@ func getNextId(collection_name string)(string, error){
 		}
 		_, err := conn.C(TBLAutoInc).FindId(collection_name).Apply(change, &result)
 		if err != nil {
-			checkErr(err)
+			Warning.Println(err)
 			return "", errors.New(fmt.Sprintf("Unable to generate the next ID: %v", err))
 		}
 		return id_suffix(result[schemaCounter].(int))
@@ -171,11 +177,17 @@ func id_suffix(id int) (string, error) {
 }
 
 func InsertDoc(collection_name string, data interface{}) {
-	checkErr(conn.C(collection_name).Insert(data))
+	err := conn.C(collection_name).Insert(data)
+	if err != nil {
+		Warning.Println(err)
+	}
 }
 
 func UpdateDoc_by_id(collection_name, doc_id string, data interface{}) {
-	checkErr(conn.C(collection_name).UpdateId(doc_id, data))
+	err := conn.C(collection_name).UpdateId(doc_id, data)
+	if err != nil {
+		Warning.Println(err)
+	}
 }
 
 //Used for database schema translation dot notation
@@ -296,7 +308,9 @@ func eventTotalScoreUpdate(eventId string, rangeId int, shooterIds []int, score 
 	var event Event
 	_, err := conn.C(TBLevent).FindId(eventId).Apply(change, &event)
 	//TODO better error handling would be nice
-	checkErr(err)
+	if err != nil {
+		Warning.Println(err)
+	}
 	return event
 }
 
@@ -440,17 +454,24 @@ func event_upsert_data(event_id string, data M) {
 
 func nraa_upsert_shooter(shooter NRAA_Shooter) {
 	_, err := conn.C("N").UpsertId(shooter.SID, &shooter)
-	checkErr(err)
+	if err != nil {
+		Warning.Println(err)
+	}
 	Info.Printf("inserted: %v", shooter)
 }
 func Upsert_Doc(collection string, id interface{}, document interface{}) {
 	_, err := conn.C(collection).UpsertId(id, document)
-	checkErr(err)
+	if err != nil {
+		Warning.Println(err)
+	}
 	Info.Printf("inserted id: %v into %v", id, collection)
 }
 
 func searchShooters(query M) []Shooter {
 	var result []Shooter
-	checkErr(conn.C(TBLshooter).Find(query).All(&result))
+	err := conn.C(TBLshooter).Find(query).All(&result)
+	if err != nil {
+		Warning.Println(err)
+	}
 	return result
 }

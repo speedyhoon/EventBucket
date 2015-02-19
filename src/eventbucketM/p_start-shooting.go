@@ -190,7 +190,9 @@ func updateShotScores(w http.ResponseWriter, r *http.Request) {
 			var event Event
 			_, err := conn.C(TBLevent).FindId(eventId).Apply(change, &event)
 			//TODO better error handling would be nice
-			checkErr(err)
+			if err != nil {
+				Warning.Println(err)
+			}
 //			return event
 			export(updateBson)
 		}else{
