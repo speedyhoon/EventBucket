@@ -1,3 +1,5 @@
+// +build dev
+
 package main
 
 import (
@@ -16,15 +18,35 @@ import (
 
 	"github.com/yvasiyarov/gorelic"
 )
-const dev_mode_DEBUG = false	//Send system metric data to NewRelic.com
 var (
 	agent = gorelic.NewAgent()
 	//Use io.Writer >>> ioutil.Discard to disable logging any output
-	Trace   = log.New(os.Stdout,      "TRACE:   ", log.Ltime|log.Lshortfile)
-	Info    = log.New(os.Stdout,      "INFO:    ", log.Ltime|log.Lshortfile)
-	Warning = log.New(os.Stderr,      "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
-	Error   = log.New(os.Stderr,      "ERROR:   ", log.Ldate|log.Ltime|log.Lshortfile)
+	Trace   = log.New(os.Stdout, "TRACE:   ", log.Ltime|log.Lshortfile)
+	Info    = log.New(os.Stdout, "INFO:    ", log.Ltime|log.Lshortfile)
+	Warning = log.New(os.Stderr, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
 )
+
+func serveDir(contentType string){
+	http.Handle(contentType,
+		http.HandlerFunc(agent.WrapHTTPHandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			defer dev_mode_timeTrack(time.Now(), r.RequestURI)
+			//If url is a directory return a 404 to prevent displaying a directory listing
+			if strings.HasSuffix(r.URL.Path, "/") {
+				http.NotFound(w, r)
+				return
+			}
+			httpHeaders(w, []string{"expire", "cache", contentType, "public"})
+			Gzip(http.FileServer(http.Dir(DIR_ROOT)), w, r)
+		})))
+}
+
+func serveHtml(h http.HandlerFunc) http.HandlerFunc{
+	return http.HandlerFunc(agent.WrapHTTPHandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		defer dev_mode_timeTrack(time.Now(), r.RequestURI)
+		httpHeaders(w, []string{"html", "noCache", "expireNow", "pragma"})
+		Gzip(h, w, r)
+	}))
+}
 
 func dump(input interface{}) {
 	Trace.Printf("%v", input)
@@ -46,16 +68,7 @@ func dev_mode_check_form(check bool, message string){
 	}
 }
 
-func dev_mode_NewRelicDebugging(){
-	if dev_mode_DEBUG{
-		agent.Verbose = true
-		agent.CollectHTTPStat = true
-		agent.NewrelicLicense = "abf730f5454a9a1e78af7a75bfe04565e9e0d3f1"
-		agent.Run()
-	}
-}
-
-func dev_mode_loadHTM(page_name string) []byte {
+func loadHTM(page_name string) []byte {
 	bytes, err := ioutil.ReadFile(fmt.Sprintf(PATH_HTML_SOURCE, page_name))
 	if err == nil{
 		existingLength := len(bytes)
@@ -226,4 +239,22 @@ func randomShooterScores(shooterGrade int)string{
 		score += string(shooterClass.Buttons[rand.Intn(availableShots)])
 	}
 	return score
+}
+
+func exists(dict M, key string) string {
+	if val, ok := dict[key]; ok {
+		return fmt.Sprintf("%v", val)
+	}
+	return ""
+}
+
+func main(){
+	agent.Verbose = true
+	agent.CollectHTTPStat = true
+	agent.NewrelicLicense = "abf730f5454a9a1e78af7a75bfe04565e9e0d3f1"
+	agent.Run()
+	start()
+	Post(URL_randomData, dev_mode_random_data)
+	Info.Println("ready to go")
+	Warning.Println("ListenAndServe: %v", http.ListenAndServe(":81", nil))
 }

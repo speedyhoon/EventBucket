@@ -81,7 +81,7 @@ func valid8(options []Inputs, r *http.Request)(M,bool){
 						passedV8tion = append(passedV8tion, true)
 					}else{
 						passedV8tion = append(passedV8tion, false)
-						dump("string failed")
+//						dump("string failed")
 					}
 				}
 			}else{
@@ -92,7 +92,7 @@ func valid8(options []Inputs, r *http.Request)(M,bool){
 
 	if !testAllTrue(passedV8tion) {
 		//TODO output all these error messages to screen at once. A form might have several invalid fields at the same time
-		dump("validation was not good")
+//		dump("validation was not good")
 		return make(M), false
 	}
 

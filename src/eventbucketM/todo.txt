@@ -130,6 +130,10 @@ home page
 
 
 
+//TODO add all html sources to []byte constant in a new go file?
+
+
+
 Un-important optimisations or features:
 scoreboard:
 	put the next class onto a new page in print preview
@@ -176,6 +180,7 @@ OPTIMISATION POTENTIAL:
 scoreboard
 	remove styles from triangle sort by svg and put them in the css fill:red;stroke:#000;
 code
+	find a way to output a trace of previous code to stdout so checkErr can be put back in and output the error from the previous executed line - this would improve code re-usability (DRY)
 	remove html folder from install package
 	move htm folder into core source code -- could this be an automatic thing?
 	separate html from data - try to cache html for ever and send AJAX/Websockets for additional data.
@@ -397,3 +402,5 @@ VVVVVVVVVV 50 10
 48
 
 score needs to be at least a multiple of five to have a center.
+
+

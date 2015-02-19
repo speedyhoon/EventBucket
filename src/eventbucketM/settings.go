@@ -1,9 +1,14 @@
 package main
 
-import "regexp"
+import (
+	"regexp"
+	"os"
+	"log"
+)
+
 const (
 //Global program settings
-	PRODUCTION = false //False = output dev warnings, E.g. Template errors
+	NEWRELIC = false //False = output dev warnings, E.g. Template errors
 	//TEST_MODE = false //display links to add n shooters or fillout all scores for a given range
 	//Known issue - turning off minify breaks the startshooting page. moving to the next sibling in a table row return the textnode of whitespace instead of the next <td> tag
 	//	MINIFY     = true  //turn on minify html
@@ -15,8 +20,8 @@ const (
 	TEMPLATE_HOME  = "_template_home"
 	TEMPLATE_ADMIN = "_template_admin"
 	TEMPLATE_EMPTY = "_template_empty"
-	VERSION = 0.58
-	BUILDDATE = "Compiled on February 17, 2015  by Cam Webb"
+	VERSION = "0.58"
+	BUILDDATE = "February 19, 2015"
 	ID_CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!*()_-."
 	ID_CHARSET_REGEX = `\w~!\*\(\)\-\.`
 //Folder structure
@@ -28,6 +33,58 @@ const (
 	DIR_PNG  = "/p/"
 	DIR_SVG  = "/v/"
 	//	DIR_WEBP = "/w/"
+
+//GET
+	URL_home           	= "/"
+	URL_about           	= "/about"
+	URL_club             = "/club"
+	URL_licence         	= "/licence"
+	//URL_licence_summary	= "/licence-summary"
+	URL_archive			  	= "/archive"
+	URL_organisers       = "/organisers"
+	URL_event            = "/event/"							//event Id special type characters only allowed
+//GET with PARAMETERS
+	URL_clubs                = "/clubs/"
+	//URL_events               = "/events/"
+	URL_eventSettings        = "/eventSettings/"			//event id
+	URL_scoreboard           = "/scoreboard/"				//event id/range_id
+	URL_totalScores          = "/totalScores/"			//event id/range_id
+	URL_totalScoresAll       = "/totalScoresAll/"		//event id/range_id
+	URL_startShooting        = "/startShooting/"			//event id/range_id
+	URL_startShootingAll     = "/startShootingAll/"		//event id/range_id
+	URL_queryShooterList 	 = "/queryShooterList"
+//POST
+	URL_clubInsert           = "/clubInsert"
+	//	URL_champInsert          = "/champInsert"
+	URL_eventInsert          = "/eventInsert"
+	//	URL_eventInsert2         = "/eventInsert2"
+	URL_eventRangeInsert     = "/rangeInsert"
+	URL_eventAggInsert       = "/aggInsert"
+	URL_shooterInsert        = "/shooterInsert"
+	URL_shooterListInsert    = "/shooterListInsert"
+	URL_updateSortScoreBoard = "/updateSortScoreBoard"
+	URL_updateTotalScores    = "/updateTotalScores"
+	URL_updateShotScores     = "/updateShotScores"
+	URL_updateEventGrades    = "/updateEventGrades"
+	URL_updateEventName      = "/updateEventName/"
+	URL_updateRange          = "/updateRange"
+	URL_updateIsPrizeMeet    = "/updateIsPrizeMeet"
+	//	URL_dateUpdate           = "/dateUpdate/"
+	//	URL_club                 = "/club/"
+	//	URL_clubs                = "/clubs/"
+	//	URL_club_settings        = "/clubSettings/"
+	URL_club_mound_update    = "/clubMoundUpdate/"
+	URL_club_mound_insert    = "/clubMoundInsert/"
+	URL_updateShooterList    = "/updateShooterList"
+	URL_eventShotsNSighters  = "/eventShotsNSighters/"
+	//	URL_rangeReport          = "/rangeReport/"
+	URL_randomData           = "/random-data/"
+
+
+
+
+
+
 
 	//Scoreboard
 	SCOREBOARD_SHOW_WARNING_FOR_ZERO_SCORES    = true
@@ -114,6 +171,8 @@ var (
 	VURL_club                = regexp.MustCompile("^"+URL_club+"(["+ID_CHARSET_REGEX+"]+)$")
 	VURL_eventSettings       = regexp.MustCompile("^"+URL_eventSettings+"(["+ID_CHARSET_REGEX+"]+)$")
 	VURL_scoreboard          = regexp.MustCompile("^"+URL_scoreboard+"(["+ID_CHARSET_REGEX+"]+)$")
+
+	Error   = log.New(os.Stderr,      "ERROR:   ", log.Ldate|log.Ltime|log.Lshortfile)
 )
 
 type ClassSettings struct {
