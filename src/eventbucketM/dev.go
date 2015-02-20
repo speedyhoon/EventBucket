@@ -18,6 +18,9 @@ import (
 
 	"github.com/yvasiyarov/gorelic"
 )
+
+const NEWRELIC = false //Send logging data to New Relic
+
 var (
 	agent = gorelic.NewAgent()
 	//Use io.Writer >>> ioutil.Discard to disable logging any output
@@ -249,10 +252,12 @@ func exists(dict M, key string) string {
 }
 
 func main(){
-	agent.Verbose = true
-	agent.CollectHTTPStat = true
-	agent.NewrelicLicense = "abf730f5454a9a1e78af7a75bfe04565e9e0d3f1"
-	agent.Run()
+	if NEWRELIC {
+		agent.Verbose = true
+		agent.CollectHTTPStat = true
+		agent.NewrelicLicense = "abf730f5454a9a1e78af7a75bfe04565e9e0d3f1"
+		agent.Run()
+	}
 	start()
 	Post(URL_randomData, dev_mode_random_data)
 	Info.Println("ready to go")
