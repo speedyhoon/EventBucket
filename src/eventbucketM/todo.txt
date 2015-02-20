@@ -1,5 +1,5 @@
 TODO::
-add createive commons logo to licence screen
+add creative commons logo to licence screen
 link to CC report for open software?
 
 BUGS::
@@ -43,7 +43,7 @@ EVENTBUCKET::
 	add a licence page
 		copy licence lamens terms from CC
 		view full licence page?
-		add some links to cc lamens terms and the offical licence
+		add some links to cc lamens terms and the official licence
 		move home licence to licence page
 		change footer licence logo to simpler svg one from google images
 
@@ -52,7 +52,7 @@ EVENTBUCKET::
 		setting up a network with multiple devices
 			use a wifi access point - or a home wifi router will do just fine.
 
-	running a prizemeeting
+	running a prize meeting
 
 
 
@@ -74,7 +74,7 @@ event page
 
 annoying things
 	auto save ranges and aggregates via ajax or websocket silently.
-	add agg range without any ranges should still display as an aggreate range
+	add agg range without any ranges should still display as an aggregate range
 	change the order of the ranges and aggregates
 	shooters scores that are zero should appear on the scoreboard. but no shots fired shot not display zero.  possibly use *pointers in structs to get around default values for int = 0 and string = "" and bool = false. this way bool = nil, sting = nil and int = nil
 	don't allow shooter entry with invalid class/grades
@@ -90,7 +90,7 @@ total scores
 	to generate scores for 358 shooters /random-data/totalScores=1 took 1h54m57.7925213s
 Installer:
 	change eb.exe to run in minimized mode so it doesn't appear or show the logs
-	add eb.exe to the taskbar notifications
+	add eb.exe to the task bar notifications
 	maybe add uninstall old version?
 about page
 	technologies?
@@ -166,7 +166,7 @@ Event Ranges
 		string ( use initials)  so locked && hidden && finished = "LHF"
 	change event grades from a string to a struct so that each grade can have their own shots quantity and sighters quantity set uniquely
 http
-	make a custom http.HandleFunc for each controller instead of the current setup http.ResponseWritter
+	make a custom http.HandleFunc for each controller instead of the current setup http.ResponseWriter
 		have one function per page listed in main()
 		controller should know what it's own url is
 		the controller should know what kind of page it is to automatically add menus and select templates.
