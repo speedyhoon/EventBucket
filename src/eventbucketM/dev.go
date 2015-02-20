@@ -208,7 +208,6 @@ func dev_mode_random_data_shooterQty(shooterQty int, eventId string){
 	for counter <= shooterQty {
 		//make some requests for x number of shooters
 		counter += 1
-
 		event_shooter_insert(eventId, EventShooter{
 			FirstName: randomdata.FirstName(randomdata.RandomGender),
 			Surname: randomdata.LastName(),
@@ -216,7 +215,6 @@ func dev_mode_random_data_shooterQty(shooterQty int, eventId string){
 			AgeGroup: "N",
 			Grade: rand.Intn(8),
 		})
-
 		/*resp, _ = http.PostForm("http://localhost/shooterInsert",
 			url.Values{"first":      {randomdata.FirstName(randomdata.RandomGender)},
 			"surname":   {randomdata.LastName()},
@@ -242,13 +240,6 @@ func randomShooterScores(shooterGrade int)string{
 		score += string(shooterClass.Buttons[rand.Intn(availableShots)])
 	}
 	return score
-}
-
-func exists(dict M, key string) string {
-	if val, ok := dict[key]; ok {
-		return fmt.Sprintf("%v", val)
-	}
-	return ""
 }
 
 func main(){

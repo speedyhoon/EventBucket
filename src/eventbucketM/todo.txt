@@ -403,4 +403,15 @@ VVVVVVVVVV 50 10
 
 score needs to be at least a multiple of five to have a center.
 
-
+GOLANG OPTIMISER - Test if these list help to improve Go performance in some way
+	Check functions are used
+	shorten function names
+	shorten variable names
+	shorten constant names
+	minify (strip tab characters)
+	merge all code into one file
+	compress .exe using goupx  https://github.com/pwaller/goupx
+	replace commonly used strings with a shorter constant name
+	inline functions if used only once
+	remove Info & Trace loggin
+   strip comments - I don't think would have any effect
