@@ -70,3 +70,10 @@
 
 19 Feb 2015
 119 KB (122,697 bytes) Go only
+11,567 KB Prod installer
+12,301 KB Dev installer
+
+20 Feb 2915
+119 KB (122,006 bytes) Go only
+111 KB (114,122 bytes) Prod only
+117 KB (120,430 bytes) Dev only

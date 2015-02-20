@@ -1,4 +1,6 @@
 TODO::
+add createive commons logo to licence screen
+link to CC report for open software?
 
 BUGS::
 the last few shots are removed from start shooting
