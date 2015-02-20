@@ -154,7 +154,7 @@ func getIdFromUrl(r *http.Request, page_url string) string {
 
 type Page struct{
 	TemplateFile, Title string
-	Theme string	//TODO change type to struct enum to select between "TEMPLATE_HOME", "TEMPLATE_ADMIN" & "TEMPLATE_EMPTY"
+	Theme string
 	Data M
 	v8Url *regexp.Regexp
 }
