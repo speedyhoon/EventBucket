@@ -21,7 +21,6 @@
 			<table><tr><th>Name</th></tr>
 				{{with.ClubList}}
 					{{range.}}
-						{{/*<tr><td><a href=/club/{{.Id}}>{{.Name}}</a></td></tr>*/}}
 						<tr><td>{{.Name}}</td></tr>
 					{{end}}
 				{{end}}
@@ -29,11 +28,3 @@
 		{{EndFieldset}}
 	{{end}}
 {{end}}
-
-{{/*
-{{if.Championship}}
-	{{HTM .Championship}}
-{{end}}
-
-{{HTM .ShooterList}}
-*/}}

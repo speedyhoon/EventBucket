@@ -77,7 +77,7 @@ func qrBarcode(width, height int, value string)string{
 			png.Encode(f, qrCode)
 			data, err := ioutil.ReadFile("temp_barcode.png")
 			if err == nil {
-				return fmt.Sprintf("src=\"data:image/png;base64,%v\" width=%v height=%v", base64.StdEncoding.EncodeToString(data), width, height)
+				return fmt.Sprintf("<img src=\"data:image/png;base64,%v\" width=%v height=%v alt=%v/>", base64.StdEncoding.EncodeToString(data), width, height, value)
 			}
 		}
 	}
