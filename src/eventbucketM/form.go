@@ -8,7 +8,9 @@ import (
 func generateForm2(form Form) string {
 	var output string
 	var formElements []string
-	if database_status == true {
+	if conn == nil {
+		formElements = []string{"<p>Unable to connect to the EventBucket database.</p>"}
+	}else {
 		var attributes, element, options string
 		for _, input := range form.Inputs {
 			element = ""
@@ -98,8 +100,6 @@ func generateForm2(form Form) string {
 			}
 			formElements = append(formElements, output)
 		}
-	}else {
-		formElements = []string{"<p>Unable to connect to the EventBucket database</p>"}
 	}
 	output = strings.Join(formElements, " ")
 	if form.Title != "" {

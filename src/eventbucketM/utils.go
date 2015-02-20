@@ -13,12 +13,12 @@ import (
 	"encoding/base64"
 )
 
-/*func exists(dict M, key string) string {
+func exists(dict M, key string) string {
 	if val, ok := dict[key]; ok {
 		return fmt.Sprintf("%v", val)
 	}
 	return ""
-}*/
+}
 
 func strToInt(input interface{})(int, error){
 	return strconv.Atoi(fmt.Sprintf("%v", input))
@@ -26,7 +26,7 @@ func strToInt(input interface{})(int, error){
 
 //research http://net.tutsplus.com/tutorials/client-side-security-best-practices/
 func addQuotes(input string) string {
-	if strings.Contains(input, " "){ //}|| input == "/" {	// strings.Contains(input, "/") {
+	if strings.Contains(input, " "){
 		return "\"" + input + "\""
 	}
 	return input

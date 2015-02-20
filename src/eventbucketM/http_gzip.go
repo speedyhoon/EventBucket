@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
+	"regexp"
 )
 
 func start() {
@@ -57,6 +58,15 @@ func start() {
 
 	Get(URL_home, home)
 }
+
+var (
+	VURL_home                = regexp.MustCompile("^/$")
+	VURL_event               = regexp.MustCompile("^" + URL_event + "([" + ID_CHARSET_REGEX + "]+)$")
+	VURL_eventShotsNSighters = regexp.MustCompile("^" + URL_eventShotsNSighters + "([" + ID_CHARSET_REGEX + "]+)$")
+	VURL_club                = regexp.MustCompile("^" + URL_club + "([" + ID_CHARSET_REGEX + "]+)$")
+	VURL_eventSettings       = regexp.MustCompile("^" + URL_eventSettings + "([" + ID_CHARSET_REGEX + "]+)$")
+	VURL_scoreboard          = regexp.MustCompile("^" + URL_scoreboard + "([" + ID_CHARSET_REGEX + "]+)$")
+)
 
 func Gzip(h http.Handler, w http.ResponseWriter, r *http.Request){
 	//Return a gzip compressed response if appropriate
@@ -140,4 +150,11 @@ func getIdFromUrl(r *http.Request, page_url string) string {
 	//TODO add validation checking for id using regex pattens
 	//TODO add a http layer function between p_page functions and main.go so that the event_id or club_id can be validated and the p_page functions don't have to interact with http at all
 	return r.URL.Path[len(page_url):]
+}
+
+type Page struct{
+	TemplateFile, Title string
+	Theme string	//TODO change type to struct enum to select between "TEMPLATE_HOME", "TEMPLATE_ADMIN" & "TEMPLATE_EMPTY"
+	Data M
+	v8Url *regexp.Regexp
 }
