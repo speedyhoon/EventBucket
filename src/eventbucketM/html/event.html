@@ -54,7 +54,8 @@
 {{end}}
 
 {{Fieldset "Entry List"}}
-	{{if .ListShooters}}
+	{{/*if .ListShooters*/}}
+	{{with .ListShooters}}
 		<table>
 			<tr>
 				<th>Id</th>
@@ -62,10 +63,10 @@
 				<th>Club</th>
 				<th>Class &amp; Grade</th>
 			</tr>
-			{{range $shooterId, $shooter := .ListShooters}}
+			{{/*range $shooterId, $shooter := .ListShooters*/}}
+			{{range $shooterId, $shooter := .}}
 				{{if eq false $shooter.Hidden}}
 					<tr>
-						<!--<td>{{$shooterId}}</td>-->
 						<td>{{.Id}}</td>
 						<td>{{.FirstName}} {{.Surname}}</td>
 						<td>{{.Club}}</td>
@@ -78,4 +79,5 @@
 		No shooters entered
 	{{end}}
 {{EndFieldset}}
-<br><br><br><img {{HTMattr .QrBarcode}} alt=barcode/>
+
+{{HTMattr .QrBarcode}}

@@ -2,34 +2,32 @@
 {{with .ClosedEvents}}
 	<div class=events>
 		{{range .}}
-		<div>
-			<time>
-				{{if .Day}}
-					{{.Day}}
-				{{else}}&nbsp;{{end}}<br>
-				{{if .Date}}
-					<b>{{.Date}}</b>
-				{{else}}&nbsp;{{end}}
-				{{if .Month}}
-					{{.Month}}
-				{{else}}&nbsp;{{end}}~~~
-				{{if .Year}}
-					{{.Year}}
-				{{else}}&nbsp;{{end}}
-			</time>
-			<p>
-				{{if.Id}}
-					<a href=/event/{{.Id}}>{{.Name}}</a>~~~
-					{{if .Time}}
-						starts at {{.Time}}
+			<div>
+				<time>
+					{{if .Day}}
+						{{.Day}}
+					{{else}}&nbsp;{{end}}<br>
+					{{if .Date}}
+						<b>{{.Date}}</b>
+					{{else}}&nbsp;{{end}}
+					{{if .Month}}
+						{{.Month}}
+					{{else}}&nbsp;{{end}}~~~
+					{{if .Year}}
+						{{.Year}}
+					{{else}}&nbsp;{{end}}
+				</time>
+				<p>
+					{{if.Id}}
+						<a href=/event/{{.Id}}>{{.Name}}</a>~~~
+						{{if .Time}}
+							starts at {{.Time}}
+						{{end}}
 					{{end}}
-				{{end}}
-			</p>
-			{{if.Club}}
-			<a href=/club/{{.ClubId}}>{{.Club}}</a><br>
-			{{end}}
-			{{with.Ranges}}{{.}}{{end}}
-		</div>
+				</p>
+				{{if.Club}}<a href=/club/{{.ClubId}}>{{.Club}}</a><br>{{end}}
+				{{with.Ranges}}{{.}}{{end}}
+			</div>
 		{{end}}
 	</div>
 {{else}}
