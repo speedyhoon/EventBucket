@@ -1,7 +1,6 @@
 package main
 
 import (
-	"regexp"
 	"os"
 	"log"
 )
@@ -143,23 +142,7 @@ const (
 */
 )
 
-type Page struct{
-	TemplateFile, Title string
-	Theme string	//TODO change type to struct enum to select between "TEMPLATE_HOME", "TEMPLATE_ADMIN" & "TEMPLATE_EMPTY"
-	Data M
-	v8Url *regexp.Regexp
-}
-
-var (
-	VURL_home                = regexp.MustCompile("^/$")
-	VURL_event               = regexp.MustCompile("^"+URL_event+"(["+ID_CHARSET_REGEX+"]+)$")
-	VURL_eventShotsNSighters = regexp.MustCompile("^"+URL_eventShotsNSighters+"(["+ID_CHARSET_REGEX+"]+)$")
-	VURL_club                = regexp.MustCompile("^"+URL_club+"(["+ID_CHARSET_REGEX+"]+)$")
-	VURL_eventSettings       = regexp.MustCompile("^"+URL_eventSettings+"(["+ID_CHARSET_REGEX+"]+)$")
-	VURL_scoreboard          = regexp.MustCompile("^"+URL_scoreboard+"(["+ID_CHARSET_REGEX+"]+)$")
-
-	Error   = log.New(os.Stderr,      "ERROR:   ", log.Ldate|log.Ltime|log.Lshortfile)
-)
+var Error = log.New(os.Stderr, "ERROR:  ", log.Ldate|log.Ltime|log.Lshortfile)
 
 type ClassSettings struct {
 	Name                  string

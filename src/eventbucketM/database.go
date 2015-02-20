@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"mgo"
 	"strings"
-	//	"os"
-		"mgo/bson"
 	"errors"
 )
 
@@ -24,29 +22,24 @@ const (
 	TBLshooterList = "n"
 )
 
-var (
-	conn                *mgo.Database
-	database_status     = false
-)
+var conn *mgo.Database
 
 func DB() {
-	database_status = false
 	session, err := mgo.Dial("localhost:38888")
 	if err != nil {
 		//TODO it would be better to output the mongodb connection error
-		Warning.Println("The database service is not available.")
+		Error.Println("The database service is not available.", err)
 		return
 	}
 	session.SetMode(mgo.Eventual, false)//false = the consistency guarantees won't be reset
-	database_status = true
 	conn = session.DB("local")
-	//TODO defer colsing the session isn't working
+	//TODO defer closing the session isn't working
 //	defer session.Close()
 }
 
 func getCollection(collection_name string) []M {
 	var result []M
-	if database_status {
+	if conn != nil {
 		err := conn.C(collection_name).Find(nil).All(&result)
 		if err != nil {
 			Warning.Println(err)
@@ -67,7 +60,7 @@ func getClubs() []Club {
 }
 func getClub(id string)(Club, error){
 	var result Club
-	if database_status {
+	if conn != nil {
 		err := conn.C(TBLclub).FindId(id).One(&result)
 		return result, err
 	}
@@ -76,7 +69,7 @@ func getClub(id string)(Club, error){
 
 func getClub_by_name(clubName string)(Club, bool){
 	var result Club
-	if database_status {
+	if conn != nil {
 		//remove double spaces
 		clubName = strings.Join(strings.Fields(clubName), " ")
 		if clubName != "" {
@@ -91,7 +84,7 @@ func getClub_by_name(clubName string)(Club, bool){
 
 func getEvents() []Event {
 	var result []Event
-	if database_status {
+	if conn != nil {
 		conn.C(TBLevent).Find(nil).All(&result)
 	}
 	return result
@@ -99,7 +92,7 @@ func getEvents() []Event {
 
 func getShooterLists() []NRAA_Shooter {
 	var result []NRAA_Shooter
-	if database_status {
+	if conn != nil {
 		conn.C(TBLshooterList).Find(nil).All(&result)
 	}
 	return result
@@ -107,7 +100,7 @@ func getShooterLists() []NRAA_Shooter {
 
 func getShooterList(id int) Shooter {
 	var result Shooter
-	if database_status {
+	if conn != nil {
 		conn.C(TBLshooterList).FindId(id).One(&result)
 	}
 	return result
@@ -115,7 +108,7 @@ func getShooterList(id int) Shooter {
 
 func getShooter(id int) Shooter {
 	var result Shooter
-	if database_status {
+	if conn != nil {
 		conn.C(TBLshooter).FindId(id).One(&result)
 	}
 	return result
@@ -123,9 +116,7 @@ func getShooter(id int) Shooter {
 
 func getEvent(id string)(Event, error){
 	var result Event
-	//TODO is it possible to remove database_status and just use conn != nil?
 	if conn != nil {
-//	if database_status {
 		err := conn.C(TBLevent).FindId(id).One(&result)
 		return result, err
 	}
@@ -134,8 +125,10 @@ func getEvent(id string)(Event, error){
 
 func getEvent20Shooters(id string)(Event, bool){
 	var result Event
-	if database_status {
-		err := conn.C(TBLevent).FindId(id).Select(bson.M{"S": bson.M{"$slice": -20 }}).One(&result)
+	if conn != nil {
+		//TODO is it possible to replace bson.M with M?
+//		err := conn.C(TBLevent).FindId(id).Select(bson.M{"S": bson.M{"$slice": -20 }}).One(&result)
+		err := conn.C(TBLevent).FindId(id).Select(M{"S": M{"$slice": -20 }}).One(&result)
 		if err==nil{
 			return result, false
 		}
@@ -145,7 +138,7 @@ func getEvent20Shooters(id string)(Event, bool){
 
 func getNextId(collection_name string)(string, error){
 	var result M
-	if database_status {
+	if conn != nil {
 		change := mgo.Change{
 			Update:    M{"$inc": M{schemaCounter: 1}},
 			Upsert:    true,
