@@ -21,7 +21,6 @@ func templator(viewController Page, w http.ResponseWriter, r *http.Request) {
 	source := bytes.Replace(loadHTM(viewController.Theme), []byte("^^BODY^^"), loadHTM(viewController.TemplateFile), -1)
 	source = bytes.Replace(source, []byte("^^NetworkAdaptor^^"), loadHTM("NetworkAdaptor"), -1)
 	viewController.Data["DirCss"]		= DIR_CSS	//TODO remove & replace with folder name via build script directly into the html files
-//	viewController.Data["DirGif"]		= DIR_GIF	//TODO remove & replace with folder name via build script directly into the html files
 	viewController.Data["DirJpeg"]	= DIR_JPEG	//TODO remove & replace with folder name via build script directly into the html files
 	viewController.Data["DirJs"]		= DIR_JS		//TODO remove & replace with folder name via build script directly into the html files
 	viewController.Data["DirPng"]		= DIR_PNG	//TODO remove & replace with folder name via build script directly into the html files
