@@ -15,16 +15,14 @@ func start() {
 	serveDir(DIR_PNG)
 	serveDir(DIR_JPEG)
 	serveDir(DIR_SVG)
-	//TODO remove these two directories
-	serveDir("/logos/")
-	serveDir("/html/")
-	//TODO remove all custom functions for each set of pages. Just make it overall easier & more flexible to setup new & change existing pages
+
 	GetRedirectPermanent(URL_about, about)
 	GetRedirectPermanent(URL_archive, archive)
 	GetRedirectPermanent(URL_licence, licence)
 	GetRedirectPermanent(URL_organisers, organisers)
 	GetRedirectPermanent(URL_clubs, clubs)
 	//	GetRedirectPermanent(URL_events, events)
+
 	GetParameters(URL_event, event)
 	GetParameters(URL_club, club)
 	GetParameters(URL_eventSettings, eventSettings)
@@ -37,6 +35,7 @@ func start() {
 	//	GetParameters(URL_club, club)
 	//	GetParameters(URL_club_settings, club_settings)
 	//	GetParameters(URL_rangeReport, range_report)
+
 	Post(URL_eventInsert, eventInsert)
 	Post(URL_queryShooterList, queryShooterList)	//Search for a shooter by first, surname & club
 	Post(URL_updateShooterList, PostVia(updateShooterList, URL_organisers))
@@ -55,6 +54,7 @@ func start() {
 	Post(URL_updateIsPrizeMeet, updateIsPrizeMeet)
 	//	Post(URL_champInsert, PostVia(champInsert, URL_organisers))
 	//	Post(URL_clubMoundInsert, clubMoundInsert)
+
 	Get(URL_home, home)
 }
 
