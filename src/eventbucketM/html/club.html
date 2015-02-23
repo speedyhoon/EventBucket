@@ -2,10 +2,10 @@
 <h3>Mounds</h3>
 {{if.ListMounds}}
 	<table>
-		{{range $key, $value := .ListMounds}}
+		{{range .ListMounds}}
 			<tr>
 				<td>
-					{{$value.Distance}} {{$value.Unit}}
+					{{HTM .}}
 				</td>
 			</tr>
 		{{end}}
@@ -13,11 +13,13 @@
 {{else}}
 	<p>No Mounds Listed</p>
 {{end}}
+{{HTM .MoundForm}}
 
 <h3>Map</h3>
 {{if (.Latitude) and (.Longitude)}}
 	<p>{{.Latitude}}</p>
 	<p>{{.Longitude}}</p>
 {{else}}
-	<p>Club grounds not listed</p>
+	<p>Club location not listed</p>
 {{end}}
+{{HTM .MapForm}}

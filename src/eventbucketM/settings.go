@@ -29,14 +29,14 @@ const (
 //GET
 	URL_home           	= "/"
 	URL_about           	= "/about"
-	URL_club             = "/club"
+	URL_clubs            = "/clubs"
 	URL_licence         	= "/licence"
 	//URL_licence_summary	= "/licence-summary"
 	URL_archive			  	= "/archive"
 	URL_organisers       = "/organisers"
 	URL_event            = "/event/"							//event Id special type characters only allowed
 //GET with PARAMETERS
-	URL_clubs                = "/clubs/"
+	URL_club                 = "/club/"
 	//URL_events               = "/events/"
 	URL_eventSettings        = "/eventSettings/"			//event id
 	URL_scoreboard           = "/scoreboard/"				//event id/range_id
@@ -66,7 +66,8 @@ const (
 	//	URL_clubs                = "/clubs/"
 	//	URL_club_settings        = "/clubSettings/"
 	URL_club_mound_update    = "/clubMoundUpdate/"
-	URL_club_mound_insert    = "/clubMoundInsert/"
+	URL_clubMoundInsert      = "/clubMoundInsert/"
+	URL_clubMapUpsert        = "/clubMapUpsert/"
 	URL_updateShooterList    = "/updateShooterList"
 	URL_eventShotsNSighters  = "/eventShotsNSighters/"
 	//	URL_rangeReport          = "/rangeReport/"

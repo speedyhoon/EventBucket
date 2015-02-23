@@ -15,7 +15,7 @@ import (
 	"go-randomdata-master"
 	"math/rand"
 	"strconv"
-
+//	"github.com/yosssi/ace"
 	"github.com/yvasiyarov/gorelic"
 )
 
@@ -78,7 +78,7 @@ func loadHTM(page_name string) []byte {
 		bytes = dev_mode_minifyHtml(page_name, bytes)
 		newLength := len(bytes)
 		if existingLength != newLength {
-			Trace.Printf("Page '%v' had %v bytes removed (%v percent), from: %v, to: %v", page_name, existingLength-newLength, 100-newLength*100/existingLength, existingLength, newLength)
+			//Trace.Printf("Page '%v' had %v bytes removed (%v percent), from: %v, to: %v", page_name, existingLength-newLength, 100-newLength*100/existingLength, existingLength, newLength)
 		}
 		if newLength > existingLength {
 			Error.Println("How did this page get bigger?")

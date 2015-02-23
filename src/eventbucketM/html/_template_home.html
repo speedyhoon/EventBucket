@@ -10,14 +10,8 @@
 		<h1><a href=/>EventBucket</a></h1>
 		<span>Making scoring easier for rifle clubs!</span>
 		{{HTM .Menu}}
-{{/*		<ul id=menu>
-			{{range $link, $href := .Menu}}
-			<li><a href={{$href}}>{{$link}}</a></li>
-			{{end}}
-		</ul>*/}}
-{{/*	^^ERROR^^*/}}
 		^^BODY^^
-		<p id=b>Copyright &copy; 2011-{{.CurrentYear}} EventBucket<a href=licence class=r>Licence</a></p>
+		<p id=b>Copyright &copy; 2011-{{.CurrentYear}} EventBucket<a href=licence class=r title="View licence"><img src=/p/80x15.png alt=Licence height=15 width=80></a></p>
 	</div>
 	{{if .NewRelic}}<script src=/j/new_relic.js></script>{{end}}
 </body>
