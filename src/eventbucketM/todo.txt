@@ -1,37 +1,13 @@
 TODO::
-add creative commons logo to licence screen
-link to CC report for open software?
 
 BUGS::
-the last few shots are removed from start shooting
-calculating agg scores is slow
+	the last few shots are removed from start shooting
+	calculating agg scores is slow
 
 FEATURES::
-event able to change class settings - number of shots
-re order ranges
-stop users accessing agg ranges in total scores and startShooting
-
-
-
-
-10L two stroke oil
-the hobbit dvd series
-http://www.fantasylingerie.com.au/
-
-Valentines Day
-Condoms
-http://we-vibe.com/we-vibe-4-plus
-With Android App
-
-Club X, Ballarat
-31 Armstrong St North, Across from Garden City
-Ballarat, VIC, 3350
-Australia
-Phone: 03 5332 8299
-Protected email address
-http://www.clubx.com.au
-
-
+	event able to change class settings - number of shots
+	re order ranges
+	stop users accessing agg ranges in total scores and startShooting
 
 INSTALLER::
 	Setup icon
@@ -40,13 +16,11 @@ INSTALLER::
 	test that installer doesn't make a duplicate eb service!
 
 EVENTBUCKET::
-	add a licence page
-		copy licence lamens terms from CC
-		view full licence page?
-		add some links to cc lamens terms and the official licence
-		move home licence to licence page
-		change footer licence logo to simpler svg one from google images
+licence summary page
+	copy licence lamens terms from CC
+	change footer licence logo to simpler svg one from google images
 
+DOCUMENTATION::
 	add a page how to use EventBucket via multiple people at once.
 		setting up a network with two devices (ad-hoc)
 		setting up a network with multiple devices
@@ -127,9 +101,8 @@ Shooter entry:
 	when changing a shooters class/grade also update the aggregates for the old class/grade and the new class/grade
 event page
 	if the event id doesn't match anything - doesn't exist display a create event page
-home page
-	archive events
-
+404 Missing page
+	connect page
 
 
 //TODO add all html sources to []byte constant in a new go file?
@@ -240,7 +213,16 @@ database
 	rename collections to one letter
 all forms
 	trim white space from text fields
+home page
+	Link to archive events
+licence page
+	add creative commons logo to licence screen
+	view full licence page
+	move home licence to licence page
+	add some links to cc lamens terms and the official licence
 
+ACE IMPROVEMENTS
+	change golang template actions to allow "{.}" instead of "{{.}}"
 
 WONT FIX
 	test the installer on windows XP - is no longer supported
@@ -415,5 +397,35 @@ GOLANG OPTIMISER - Test if these list help to improve Go performance in some way
 	compress .exe using goupx  https://github.com/pwaller/goupx
 	replace commonly used strings with a shorter constant name
 	inline functions if used only once
-	remove Info & Trace loggin
+	remove Info & Trace logging
    strip comments - I don't think would have any effect
+
+
+ACE IMPROVEMENTS
+	remove double quotes from element attributes if characters are permitted
+	add a mode to remove all newline characters
+
+RESOURCE MANAGEMENT
+	use one html resource for all css and JS. (Gulp.js concatenates the files together)
+	css folder not needed
+	js folder not needed
+	join images together in a sprite,
+	Or use a multi-layered svg? It might have better compression using gzip?
+
+
+10L two stroke oil
+the hobbit dvd series
+http://www.fantasylingerie.com.au/
+
+Valentines Day
+Condoms
+http://we-vibe.com/we-vibe-4-plus
+With Android App
+
+Club X, Ballarat
+31 Armstrong St North, Across from Garden City
+Ballarat, VIC, 3350
+Australia
+Phone: 03 5332 8299
+Protected email address
+http://www.clubx.com.au

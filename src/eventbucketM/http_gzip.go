@@ -33,8 +33,6 @@ func start() {
 	//	GetParameters(URL_startShootingAll, startShootingAll)
 	//	GetParameters(URL_totalScores, totalScores)
 	//	GetParameters(URL_totalScoresAll, totalScoresAll)
-	//	GetParameters(URL_club, club)
-	//	GetParameters(URL_club_settings, club_settings)
 	//	GetParameters(URL_rangeReport, range_report)
 
 	Post(URL_eventInsert, eventInsert)
@@ -54,7 +52,9 @@ func start() {
 	Post(URL_updateEventGrades, updateEventGrades)
 	Post(URL_updateIsPrizeMeet, updateIsPrizeMeet)
 	//	Post(URL_champInsert, PostVia(champInsert, URL_organisers))
-	//	Post(URL_clubMoundInsert, clubMoundInsert)
+	//Club insert/update
+	Post(URL_clubMoundInsert, clubMoundInsert)
+	Post(URL_clubMapUpsert, clubMapUpsert)
 
 	Get(URL_home, home)
 }

@@ -36,11 +36,11 @@ type Club struct {
 	Id        string           `bson:"_id"`
 	Name      string           `bson:"n"`
 	LongName  string           `bson:"l,omitempty"`
-	Mounds    map[string]Mound `bson:"M,omitempty"`
+	Mounds    []Mound          `bson:"M,omitempty"`
 	Latitude  string           `bson:"t,omitempty"`
 	Longitude string           `bson:"g,omitempty"`
 	Url       string           `bson:"u,omitempty"`
-	AutoInc   AutoInc          `bson:"U"`
+	AutoInc   AutoInc          `bson:"U,omitempty"`
 }
 
 type Range struct {
@@ -137,6 +137,7 @@ type Team struct {
 }
 
 type Mound struct {
+	Id       int    `bson:"i"`
 	Distance int    `bson:"d"`
 	Unit     string `bson:"u"`
 	Name     string `bson:"n,omitempty"`

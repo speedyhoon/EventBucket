@@ -17,24 +17,26 @@ func templator(viewController Page, w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	//Search in Theme html file & replace "^^BODY^^" with TemplateFile
-	source := bytes.Replace(loadHTM(viewController.Theme), []byte("^^BODY^^"), loadHTM(viewController.TemplateFile), -1)
-	source = bytes.Replace(source, []byte("^^NetworkAdaptor^^"), loadHTM("NetworkAdaptor"), -1)
+
 	viewController.Data["DirCss"]		= DIR_CSS	//TODO remove & replace with folder name via build script directly into the html files
 	viewController.Data["DirJpeg"]	= DIR_JPEG	//TODO remove & replace with folder name via build script directly into the html files
 	viewController.Data["DirJs"]		= DIR_JS		//TODO remove & replace with folder name via build script directly into the html files
 	viewController.Data["DirPng"]		= DIR_PNG	//TODO remove & replace with folder name via build script directly into the html files
 	viewController.Data["DirSvg"]		= DIR_SVG	//TODO remove & replace with folder name via build script directly into the html files
-//	viewController.Data["DirWebp"]	= DIR_WEBP	//TODO remove & replace with folder name via build script directly into the html files
+	//	viewController.Data["DirWebp"]= DIR_WEBP	//TODO remove & replace with folder name via build script directly into the html files
 	viewController.Data["Favicon"]	= "/p/a"		//TODO remove & replace with hashed filename via build script directly into the html files
 	viewController.Data["Title"] = viewController.Title
 	viewController.Data["CurrentYear"] = time.Now().Year()	//TODO remove & replace with current year via build script directly into the html files
 	viewController.Data["NewRelic"] = NEWRELIC	//TODO replace with the NEWRELIC html template via build script directly into the html files
+
+	//Search in Theme html file & replace "^^BODY^^" with TemplateFile
+	source := bytes.Replace(loadHTM(viewController.Theme), []byte("^^BODY^^"), loadHTM(viewController.TemplateFile), -1)
+	source = bytes.Replace(source, []byte("^^NetworkAdaptor^^"), loadHTM("NetworkAdaptor"), -1)
 	generator(w, string(source), viewController)
 }
 
 func generator(w http.ResponseWriter, fillin string, viewController Page) {
-	my_html := template.New(viewController.TemplateFile).Funcs(template.FuncMap{
+	my_html := template.New(viewController.TemplateFile+"Template").Funcs(template.FuncMap{
 		"HTM": func(x string) template.HTML {
 			return template.HTML(x)
 		},

@@ -39,12 +39,12 @@ func generateForm2(form Form) string {
 				attributes += " placeholder="+addQuotes(input.Placeholder)
 				dev_mode_check_form(input.Html == "text" || input.Html == "number" || input.Html == "range" || input.Html == "datalist", "placeholders are only allowed on text, datalist, number and ranges")
 			}
-			if input.Min != "" {
-				attributes += fmt.Sprintf(" min=%v", input.Min)
+			if input.Min != nil {
+				attributes += fmt.Sprintf(" min=%v", *input.Min)
 				dev_mode_check_form(input.Html == "number" || input.Html == "range", "min is only allowed on type  number and range")
 			}
-			if input.Max != "" {
-				attributes += fmt.Sprintf(" max=%v", input.Max)
+			if input.Max != nil {
+				attributes += fmt.Sprintf(" max=%v", *input.Max)
 				dev_mode_check_form(input.Html == "number" || input.Html == "range", "max is only allowed on type  number and range")
 			}
 			if input.Step != 0 {
@@ -93,7 +93,11 @@ func generateForm2(form Form) string {
 				element += "<input"+attributes+">"+options
 			}
 			if input.Label != "" {
-				output += "<label>"+input.Label+": "+element+"</label>"
+				var errorClass string
+				if input.Error != ""{
+					errorClass = " class=error"
+				}
+				output += "<label"+errorClass+">"+input.Label+": "+element+" "+input.Error+"</label>"
 				dev_mode_check_form(input.Html != "submit" || input.Html != "button", "submits and buttons shouldn't have lables")
 			}else {
 				output += element
@@ -116,14 +120,16 @@ type Form struct {
 	Inputs []Inputs
 }
 type Inputs struct {
-	Name, Html, Label, Help, Value, Pattern, Placeholder, Min, Max, AutoComplete string	//AutoComplete values can be: "off" or "on"
+	Name, Html, Label, Help, Value, Pattern, Placeholder, AutoComplete string	//AutoComplete values can be: "off" or "on"
 	Checked, MultiSelect, Required bool
+	Min, Max *int
 	Size    int
 	Options []Option
 	Step    float64
 	VarType string		//the type of variable to return
 	VarMaxLen int		//the length of variable to return
 	VarMinLen int		//the length of variable to return
+	Error string
 }
 type Option struct {
 	Value    string `json:"v,omitempty"`
