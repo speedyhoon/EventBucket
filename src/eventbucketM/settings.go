@@ -26,53 +26,6 @@ const (
 	DIR_SVG  = "/v/"
 	//	DIR_WEBP = "/w/"
 
-//GET
-	URL_home           	= "/"
-	URL_about           	= "/about"
-	URL_clubs            = "/clubs"
-	URL_licence         	= "/licence"
-	//URL_licence_summary	= "/licence-summary"
-	URL_archive			  	= "/archive"
-	URL_organisers       = "/organisers"
-	URL_event            = "/event/"							//event Id special type characters only allowed
-//GET with PARAMETERS
-	URL_club                 = "/club/"
-	//URL_events               = "/events/"
-	URL_eventSettings        = "/eventSettings/"			//event id
-	URL_scoreboard           = "/scoreboard/"				//event id/range_id
-	URL_totalScores          = "/totalScores/"			//event id/range_id
-	URL_totalScoresAll       = "/totalScoresAll/"		//event id/range_id
-	URL_startShooting        = "/startShooting/"			//event id/range_id
-	URL_startShootingAll     = "/startShootingAll/"		//event id/range_id
-	URL_queryShooterList 	 = "/queryShooterList"
-//POST
-	URL_clubInsert           = "/clubInsert"
-	//	URL_champInsert          = "/champInsert"
-	URL_eventInsert          = "/eventInsert"
-	//	URL_eventInsert2         = "/eventInsert2"
-	URL_eventRangeInsert     = "/rangeInsert"
-	URL_eventAggInsert       = "/aggInsert"
-	URL_shooterInsert        = "/shooterInsert"
-	URL_shooterListInsert    = "/shooterListInsert"
-	URL_updateSortScoreBoard = "/updateSortScoreBoard"
-	URL_updateTotalScores    = "/updateTotalScores"
-	URL_updateShotScores     = "/updateShotScores"
-	URL_updateEventGrades    = "/updateEventGrades"
-	URL_updateEventName      = "/updateEventName/"
-	URL_updateRange          = "/updateRange"
-	URL_updateIsPrizeMeet    = "/updateIsPrizeMeet"
-	//	URL_dateUpdate           = "/dateUpdate/"
-	//	URL_club                 = "/club/"
-	//	URL_clubs                = "/clubs/"
-	//	URL_club_settings        = "/clubSettings/"
-	URL_club_mound_update    = "/clubMoundUpdate/"
-	URL_clubMoundInsert      = "/clubMoundInsert/"
-	URL_clubMapUpsert        = "/clubMapUpsert/"
-	URL_updateShooterList    = "/updateShooterList"
-	URL_eventShotsNSighters  = "/eventShotsNSighters/"
-	//	URL_rangeReport          = "/rangeReport/"
-	URL_randomData           = "/random-data/"
-
 	//Scoreboard
 	SCOREBOARD_SHOW_WARNING_FOR_ZERO_SCORES    = true
 	SCOREBOARD_IGNORE_POSITION_FOR_ZERO_SCORES = false
@@ -143,7 +96,14 @@ const (
 */
 )
 
-var Error = log.New(os.Stderr, "ERROR:  ", log.Ldate|log.Ltime|log.Lshortfile)
+var (
+	Error = log.New(os.Stderr, "ERROR:  ", log.Ldate|log.Ltime|log.Lshortfile)
+	//TODO move the below to a constant if possible
+	LATITUDE_MIN = -90
+	LATITUDE_MAX = 90
+	LONGITUDE_MIN = -180
+	LONGITUDE_MAX = 180
+)
 
 type ClassSettings struct {
 	Name                  string

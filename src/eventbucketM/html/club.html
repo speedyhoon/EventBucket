@@ -1,25 +1,34 @@
 <h2>{{.Title}}</h2>
+
+{{HTM .Details}}
+
 <h3>Mounds</h3>
-{{if.ListMounds}}
-	<table>
-		{{range .ListMounds}}
-			<tr>
-				<td>
-					{{HTM .}}
-				</td>
-			</tr>
-		{{end}}
-	</table>
-{{else}}
-	<p>No Mounds Listed</p>
-{{end}}
 {{HTM .MoundForm}}
+
+{{HTM .TableMounds}}
 
 <h3>Map</h3>
 {{if (.Latitude) and (.Longitude)}}
-	<p>{{.Latitude}}</p>
-	<p>{{.Longitude}}</p>
+	<div id=gmap_canvas></div>
 {{else}}
 	<p>Club location not listed</p>
 {{end}}
-{{HTM .MapForm}}
+
+<script type=text/javascript src=/j/google_maps_api.js></script>
+<script>
+	google.maps.event.addDomListener(window, 'load', function(){
+		var location = new google.maps.LatLng({{JS .Latitude}}, {{JS .Longitude}}),
+		map = new google.maps.Map(
+		document.getElementById("gmap_canvas"),
+		{
+			zoom:14, center:location,
+			mapTypeId:google.maps.MapTypeId.HYBRID
+		}
+		),
+		marker = new google.maps.Marker({map:map, position:location}),
+		infowindow = new google.maps.InfoWindow({content:"<b>Rifle Club</b><br>Main Road<br>Ballarat"});
+		google.maps.event.addListener(marker, "click", function(){
+			infowindow.open(map, marker);
+		});
+	});
+</script>

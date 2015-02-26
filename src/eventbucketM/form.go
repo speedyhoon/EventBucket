@@ -5,6 +5,10 @@ import (
 	"strings"
 )
 
+func makeFormElements(){
+
+}
+
 func generateForm2(form Form) string {
 	var output string
 	var formElements []string
@@ -12,9 +16,13 @@ func generateForm2(form Form) string {
 		formElements = []string{"<p>Unable to connect to the EventBucket database.</p>"}
 	}else {
 		var attributes, element, options string
+		formAttr := ""
+		if form.Type != "" && form.Id != ""{
+			formAttr = " form="+addQuotes(form.Id)
+		}
 		for _, input := range form.Inputs {
 			element = ""
-			attributes = ""
+			attributes = formAttr
 			options = ""
 			output = ""
 			dev_mode_check_form(input.Html != "submit" || input.Html != "number" || input.Html != "text" || input.Html != "range" || input.Html != "datalist" || input.Html != "select" || input.Html != "date" || input.Html != "hidden", "don't use element "+input.Html)
@@ -76,9 +84,6 @@ func generateForm2(form Form) string {
 			if len(input.Options) > 0 {
 				options = draw_options(input, input.Name)
 			}
-			if input.Help != "" {
-				attributes += "title="+addQuotes(input.Help)
-			}
 			if input.Html == "select" {
 				element += "<select"+attributes+">"+options+"</select>"
 			}else if input.Html == "submit" {
@@ -90,9 +95,11 @@ func generateForm2(form Form) string {
 				if input.Html != "text" {
 					attributes += " type="+input.Html
 				}
-				element += "<input"+attributes+">"+options
+				if input.Html != "" {
+					element += "<input"+attributes+">"+options
+				}
 			}
-			if input.Label != "" {
+			if input.Label != "" && form.Type != "table" {
 				var errorClass string
 				if input.Error != ""{
 					errorClass = " class=error"
@@ -102,9 +109,22 @@ func generateForm2(form Form) string {
 			}else {
 				output += element
 			}
+			if input.Snippet != ""{
+				output += " "+input.Snippet
+			}
+			if input.Help != ""{
+				output += "<abbr class=help title=\"" + input.Help + "\">?</abbr>"
+			}
 			formElements = append(formElements, output)
 		}
 	}
+	if form.Type == "table"{
+		formElements[0] = fmt.Sprintf("<form action=%v method=post>%v</form>", addQuotes(form.Action), formElements[0])
+		output = "<tr><td>"+strings.Join(formElements, "</td><td>") + "</td></tr>"
+		return output
+	}
+
+
 	output = strings.Join(formElements, " ")
 	if form.Title != "" {
 		output = field_set(form.Title) + output + "</fieldset>"
@@ -118,6 +138,9 @@ type Form struct {
 	Action string
 	Title  string
 	Inputs []Inputs
+	Help string
+	Type string  // empty string "" = normal form, "table" = data table
+	Id string
 }
 type Inputs struct {
 	Name, Html, Label, Help, Value, Pattern, Placeholder, AutoComplete string	//AutoComplete values can be: "off" or "on"
@@ -130,6 +153,7 @@ type Inputs struct {
 	VarMaxLen int		//the length of variable to return
 	VarMinLen int		//the length of variable to return
 	Error string
+	Snippet string
 }
 type Option struct {
 	Value    string `json:"v,omitempty"`

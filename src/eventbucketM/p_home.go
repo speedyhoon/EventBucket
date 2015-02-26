@@ -131,6 +131,8 @@ func home_form_new_event(clubs []Club, name, club, date, eventTime string, newEv
 				Html: "datalist",
 				Label: "Host Club",
 				Placeholder: "Club Name",
+				//TODO previous club names appear from browser cahce when they are not available
+				//TODO auto set the club name to X if there is only one available
 				Options: club_list,
 				Required: true,
 //				AutoComplete: "off",
