@@ -40,6 +40,9 @@ type Club struct {
 	Latitude  string           `bson:"t,omitempty"`
 	Longitude string           `bson:"g,omitempty"`
 	Url       string           `bson:"u,omitempty"`
+	Address		string `bson:"a,omitempty"`
+	Town			string `bson:"w,omitempty"`
+	PostCode		string `bson:"p,omitempty"`
 	AutoInc   AutoInc          `bson:"U,omitempty"`
 }
 

@@ -9,6 +9,52 @@ import (
 	"regexp"
 )
 
+const (
+//GET
+	URL_home           	= "/"
+	URL_about           	= "/about"
+	URL_clubs            = "/clubs"
+	URL_licence         	= "/licence"
+	//URL_licence_summary	= "/licence-summary"
+	URL_archive			  	= "/archive"
+	URL_organisers       = "/organisers"
+	URL_event            = "/event/"							//event Id special type characters only allowed
+//GET with PARAMETERS
+	URL_club                 = "/club/"
+	//URL_events               = "/events/"
+	URL_eventSettings        = "/eventSettings/"			//event id
+	URL_scoreboard           = "/scoreboard/"				//event id/range_id
+	URL_totalScores          = "/totalScores/"			//event id/range_id
+	URL_totalScoresAll       = "/totalScoresAll/"		//event id/range_id
+	URL_startShooting        = "/startShooting/"			//event id/range_id
+	URL_startShootingAll     = "/startShootingAll/"		//event id/range_id
+	URL_queryShooterList 	 = "/queryShooterList"
+//POST
+	URL_clubInsert           = "/clubInsert"
+	//	URL_champInsert          = "/champInsert"
+	URL_eventInsert          = "/eventInsert"
+	//	URL_eventInsert2         = "/eventInsert2"
+	URL_eventRangeInsert     = "/rangeInsert"
+	URL_eventAggInsert       = "/aggInsert"
+	URL_shooterInsert        = "/shooterInsert"
+	URL_shooterListInsert    = "/shooterListInsert"
+	URL_updateSortScoreBoard = "/updateSortScoreBoard"
+	URL_updateTotalScores    = "/updateTotalScores"
+	URL_updateShotScores     = "/updateShotScores"
+	URL_updateEventGrades    = "/updateEventGrades"
+	URL_updateEventName      = "/updateEventName/"
+	URL_updateRange          = "/updateRange"
+	URL_updateIsPrizeMeet    = "/updateIsPrizeMeet"
+	//	URL_dateUpdate           = "/dateUpdate/"
+	URL_club_mound_update    = "/clubMoundUpdate/"
+	URL_clubMoundInsert      = "/clubMoundInsert/"
+	URL_clubDetailsUpsert      = "/clubDetailsUpsert/"
+	URL_updateShooterList    = "/updateShooterList"
+	URL_eventShotsNSighters  = "/eventShotsNSighters/"
+	//	URL_rangeReport          = "/rangeReport/"
+	URL_randomData           = "/random-data/"
+)
+
 func start() {
 	go DB()
 	serveDir(DIR_JS)
@@ -54,7 +100,7 @@ func start() {
 	//	Post(URL_champInsert, PostVia(champInsert, URL_organisers))
 	//Club insert/update
 	Post(URL_clubMoundInsert, clubMoundInsert)
-	Post(URL_clubMapUpsert, clubMapUpsert)
+	Post(URL_clubDetailsUpsert, clubDetailsUpsert)
 
 	Get(URL_home, home)
 }
