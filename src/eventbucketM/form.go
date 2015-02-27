@@ -63,6 +63,9 @@ func generateForm2(form Form) string {
 				attributes += " checked"
 				dev_mode_check_form(input.Html == "radio" || input.Html == "checkbox", "checked is only valid on radio buttons and checkboxes")
 			}
+			if input.Autofocus == "on" {
+				attributes += " autofocus"
+			}
 			if input.Size > 0 {
 				attributes += fmt.Sprintf(" size=%d", input.Size)
 				dev_mode_check_form(input.Html == "select", "size is only allowed on select tags")
@@ -154,6 +157,7 @@ type Inputs struct {
 	VarMinLen int		//the length of variable to return
 	Error string
 	Snippet string
+	Autofocus string
 }
 type Option struct {
 	Value    string `json:"v,omitempty"`

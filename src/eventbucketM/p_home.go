@@ -125,6 +125,7 @@ func home_form_new_event(clubs []Club, name, club, date, eventTime string, newEv
 				Required: true,
 //				AutoComplete: "off",
 				Value: name,
+				Autofocus: "on",
 			},
 			{
 				Name: "club",
@@ -169,7 +170,8 @@ func eventInsert(w http.ResponseWriter, r *http.Request) {
 	if ok {
 		newEvent.Club = club.Id
 	}else{
-		newEvent.Club = insert_new_club(validated_values["club"])
+		clubId, _ := insertClub(validated_values["club"])
+		newEvent.Club = clubId
 	}
 
 	if validated_values["date"] != ""{

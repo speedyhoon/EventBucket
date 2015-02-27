@@ -103,6 +103,29 @@ var (
 	LATITUDE_MAX = 90
 	LONGITUDE_MIN = -180
 	LONGITUDE_MAX = 180
+
+	HOME_MENU_ITEMS = []Menu{
+		Menu{
+			Name: "Home",
+			Link: "/",
+		},
+		Menu{
+			Name: "Archive",
+			Link: URL_archive,
+		},
+		Menu{
+			Name: "Clubs",
+			Link: URL_clubs,
+		},
+		Menu{
+			Name: "About",
+			Link: URL_about,
+		},
+		Menu{
+			Name: "Shooters",
+			Link: URL_shooters,
+		},
+	}
 )
 
 type ClassSettings struct {
