@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"fmt"
 	"strings"
+	"errors"
 )
 
 func club(clubId string) Page {
@@ -241,4 +242,65 @@ func clubDetailsUpsert(w http.ResponseWriter, r *http.Request) {
 	club.Latitude = validatedValues["latitude"]
 	club.Longitude = validatedValues["longitude"]
 	UpdateDoc_by_id(TBLclub, club.Id, club)
+}
+
+func clubs() Page {
+	return Page {
+		TemplateFile: "clubs",
+		Theme: TEMPLATE_HOME,
+		Data: M{
+			"Title":        "Clubs",
+			"Clubs":        generateForm2(organisers_clubForm()),
+			"ClubList":     getClubs(),
+			"Menu":     	 home_menu(URL_clubs, HOME_MENU_ITEMS),
+		},
+	}
+}
+
+func organisers_clubForm() Form {
+	//TODO add validation to
+	return Form{
+		Action: URL_clubInsert,
+		Title:  "New Club",
+		Inputs: []Inputs{
+			{
+				Name: "name",
+				Html:     "text",
+				Label:    "Club Name",
+				Required: true,
+				Autofocus: "on",
+			},
+			{
+				Html:  "submit",
+				Value: "Add Club",
+			},
+		},
+	}
+}
+
+func getClubSelectionBox(club_list []Club) []Option {
+	var drop_down []Option
+	for _, club := range club_list {
+		drop_down = append(drop_down, Option{Display: club.Name, Value:club.Id})
+	}
+	return drop_down
+}
+
+func clubInsert(w http.ResponseWriter, r *http.Request) {
+	validated_values := check_form(organisers_clubForm().Inputs, r)
+	insertClub(validated_values["name"])
+}
+
+func insertClub(clubName string)( string, error) {
+	nextId, err := getNextId(TBLclub)
+	if err == nil {
+		newClub := Club{
+			Name: clubName,
+			Id: nextId,
+		}
+		newClub.AutoInc.Mound = 1
+		InsertDoc(TBLclub, newClub)
+		return newClub.Id, nil
+	}
+	return "", errors.New("Unable to generate club id")
 }

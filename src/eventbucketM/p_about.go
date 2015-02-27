@@ -12,6 +12,7 @@ func about()Page {
 			"Hostname": hostname,
 			"IpAddresses": ipAddresses,
 			"BuildDate": BUILDDATE,
+			"IconHeight": 30,
 		},
 	}
 }

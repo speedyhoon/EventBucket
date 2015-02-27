@@ -52,6 +52,7 @@ func event(eventId string) Page {
 			"ListShooters": event.Shooters,
 			"EventId": eventId,
 			"QrBarcode": qrBarcode(80, 80, "I love you so much!"),
+			"DMBarcode": dataMatrixBarcode(80, 80, "I love you so much!"),
 		},
 	}
 }

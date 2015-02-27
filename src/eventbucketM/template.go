@@ -142,10 +142,10 @@ var EventMenuItems = []Menu{
 		Link:   URL_startShooting,
 		Ranges: true,
 	},
-//	Menu{
-//		Name: "Close Menu",
-//		Link: "#",
-//	},
+	/*Menu{
+		Name: "Close Menu",
+		Link: "#",
+	},*/
 }
 
 func event_menu(event_id string, event_ranges []Range, page_url string, isPrizeMeet bool) string {
@@ -223,29 +223,6 @@ func scoreboard_menu(event_id string, event_ranges []Range, page_url string, isP
 	menu += "<li><a id=scoreSettings href=#scoreboard_settings onclick=\"var d=document.getElementById('scoreboard_settings');d.style.display=(d.style.display?'':'block')\">&nbsp;</a></li>"
 	menu += "</ul>"
 	return menu
-}
-
-var HOME_MENU_ITEMS = []Menu{
-	Menu{
-		Name: "Home",
-		Link: "/",
-	},
-	Menu{
-		Name: "Archive",
-		Link: URL_archive,
-	},
-	Menu{
-		Name: "Clubs",
-		Link: URL_clubs,
-	},
-	Menu{
-		Name: "About",
-		Link: URL_about,
-	},
-	Menu{
-		Name: "Organisers",
-		Link: URL_organisers,
-	},
 }
 
 func standard_menu(menu_items []Menu) string {
