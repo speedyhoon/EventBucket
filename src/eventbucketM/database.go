@@ -5,6 +5,8 @@ import (
 	"mgo"
 	"strings"
 	"errors"
+	"os"
+	"os/exec"
 )
 
 const (
@@ -23,6 +25,37 @@ const (
 )
 
 var conn *mgo.Database
+
+func startDatabase(){
+	databasePath := os.Getenv("SystemDrive")+`/ProgramData/EventBucket`
+	exists := dirExists(databasePath)
+	if exists {
+		cmd := exec.Command("ebd", "--dbpath", databasePath, "--port", "38888", "--nohttpinterface", "--noscripting", "--smallfiles", "--nssize", "1", "--noauth", "--slowms", "3", "--cpu", "--profile", "2", "--objcheck", "--notablescan")
+		//TODO output mongodb errors/logs to stdOut
+		/*stdout, err := cmd.StdoutPipe()
+		if err != nil {
+			Error.Println(err)
+		}
+		stderr, err := cmd.StderrPipe()
+		if err != nil {
+			Error.Println(err)
+		}
+		err = cmd.Start()*/
+		cmd.Start()
+		/*if err != nil {
+			dump("exporting!")
+			dump(stdout)
+			dump(stderr)
+			return
+		}
+		fmt.Println("Result: Err")
+		dump(stderr)
+		fmt.Println("Result: stdn out")
+		dump(stdout)*/
+		//TODO is a new goroutine really needed for DB call?
+		go DB()
+	}
+}
 
 func DB() {
 	session, err := mgo.Dial("localhost:38888")
