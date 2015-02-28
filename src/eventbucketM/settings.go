@@ -25,6 +25,9 @@ const (
 	DIR_PNG  = "/p/"
 	DIR_SVG  = "/v/"
 	//	DIR_WEBP = "/w/"
+	//Barcodes
+	QRCODE = "qr"
+	DATAMATRIX = "dm"
 
 	//Scoreboard
 	SCOREBOARD_SHOW_WARNING_FOR_ZERO_SCORES    = true
@@ -104,24 +107,22 @@ var (
 	LONGITUDE_MIN = -180
 	LONGITUDE_MAX = 180
 
+	BARCODE_TYPE = QRCODE
+
 	HOME_MENU_ITEMS = []Menu{
-		Menu{
+		{
 			Name: "Home",
-			Link: "/",
-		},
-		Menu{
+			Link: URL_home,
+		},{
 			Name: "Archive",
 			Link: URL_archive,
-		},
-		Menu{
+		},{
 			Name: "Clubs",
 			Link: URL_clubs,
-		},
-		Menu{
+		},{
 			Name: "About",
 			Link: URL_about,
-		},
-		Menu{
+		},{
 			Name: "Shooters",
 			Link: URL_shooters,
 		},
