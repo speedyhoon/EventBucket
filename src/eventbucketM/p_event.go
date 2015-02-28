@@ -150,16 +150,14 @@ func event_add_shooterListForm(eventId string, grades []int) Form {
 				Label: "Age Group",
 				Options: AGE_GROUPS2(),
 				Required: true,
-			},
-			{
+			},{
 				Name: "grade",
 				Html:      "select",
 				Label: "Class & Grade",
 				Placeholder: "Class & Grade",
 				Required: true,
 				Options: eventGradeOptions(grades),
-			},
-			{
+			},{
 				Name: "sid",
 				Html:      "select",
 //				Label: "Class & Grade",
