@@ -51,8 +51,8 @@ func event(eventId string) Page {
 			"EventGrades":    generateForm2(eventSettingsClassGrades(event.Id, event.Grades)),
 			"ListShooters": event.Shooters,
 			"EventId": eventId,
-			"QrBarcode": qrBarcode(80, 80, "I love you so much!"),
-			"DMBarcode": dataMatrixBarcode(80, 80, "I love you so much!"),
+			"QrBarcode": imgBarcode(80, 80, QRCODE, "I love you so much!"),
+			"DMBarcode": imgBarcode(80, 80, DATAMATRIX, "I love you so much!"),
 		},
 	}
 }
@@ -88,41 +88,32 @@ func event_add_shooterForm(eventId string, grades []int) Form {
 				Html:      "text",
 				Label:   "First Name",
 				Required: true,
-			},
-			{
+			},{
 				Name: "surname",
 				Html:      "text",
 				Label:   "Surname",
 				Required: true,
-			},
-			{
+			},{
 				Name: "club",
 				Html:      "text",
 				//TODO change club to a data-list
 				//SelectValues:   getClubSelectBox(eventsCollection),
 				Label:   "Club",
 				Required: true,
-			},
-			{
+			},{
 				Name: "age",
 				Html:      "select",
 				Label: "Age Group",
 				Options: AGE_GROUPS2(),
 				Required: true,
-			},
-			{
+			},{
 				Name: "grade",
 				Html:      "select",
 				Label: "Class & Grade",
 				Placeholder: "Class & Grade",
 				Required: true,
 				Options: eventGradeOptions(grades),
-			},
-//			"submit":Inputs{
-//				Html:      "submit",
-//				Value:   "Add Shooter",
-//			},
-			{
+			},{
 				Name: "event_id",
 				Html: "hidden",
 				Value: eventId,
