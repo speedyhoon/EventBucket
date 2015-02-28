@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-
 	"github.com/boombuler/barcode/qr"
+	"github.com/boombuler/barcode/datamatrix"
 	"github.com/boombuler/barcode"
 	"os"
 	"image/png"
-	"io/ioutil"
+	"bytes"
 	"encoding/base64"
+	"errors"
 )
 
 func exists(dict M, key string) string {
@@ -63,24 +64,35 @@ func stringInSlice(a string, list []string) bool {
 	return false
 }
 
-func qrBarcode(width, height int, value string)string{
-	f, err := os.Create("temp_barcode.png")
-	if err != nil {
-		Warning.Println(err)
+func imgBarcode(width, height int, barcodeType, value string)string{
+	var data barcode.Barcode
+	var err error
+	switch(barcodeType){
+	case QRCODE: data, err = qr.Encode(value,  qr.L, qr.Auto); break
+	case DATAMATRIX: data, err = datamatrix.Encode(value); break
+	default: err = errors.New("barcode type "+barcodeType+" is not implemented!"); break
 	}
-	defer f.Close()
-	var qrCode barcode.Barcode
-	qrCode, err = qr.Encode(value,  qr.L, qr.Auto)
 	if err == nil {
-		qrCode, err = barcode.Scale(qrCode, width, height)
+		data, err = barcode.Scale(data, width, height)
 		if err == nil {
-			png.Encode(f, qrCode)
-			data, err := ioutil.ReadFile("temp_barcode.png")
+			var buf bytes.Buffer
+			err = png.Encode(&buf, data)
 			if err == nil {
-				return fmt.Sprintf("<img src=\"data:image/png;base64,%v\" width=%v height=%v alt=%v/>", base64.StdEncoding.EncodeToString(data), width, height, value)
+				return fmt.Sprintf("<img src=\"data:image/png;base64,%v\" width=%v height=%v alt=%v/>", base64.StdEncoding.EncodeToString(buf.Bytes()), width, height, value)
 			}
 		}
 	}
-	Warning.Println(err)
+	Error.Println(err)
 	return ""
+}
+
+// dirExists returns a bool whether the given directory exists or not
+func dirExists(path string) bool {
+	info, err := os.Stat(path)
+	if err == nil && info.IsDir(){
+		return true
+	}
+	if os.IsNotExist(err) { return false }
+	Error.Printf("folder does not exist: %v", err)
+	return false
 }
