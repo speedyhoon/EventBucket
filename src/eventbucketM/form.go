@@ -13,7 +13,7 @@ func generateForm2(form Form) string {
 	var output string
 	var formElements []string
 	if conn == nil {
-		formElements = []string{"<p>Unable to connect to the EventBucket database.</p>"}
+		formElements = []string{"<p class=error>Unable to connect to the EventBucket database.</p>"}
 	}else {
 		var attributes, element, options string
 		formAttr := ""
