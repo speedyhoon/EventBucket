@@ -1,13 +1,13 @@
 package main
 
 import (
-	"net/http"
-	"strings"
 	"fmt"
+	"net/http"
 	"strconv"
+	"strings"
 )
 
-func check_form(options []Inputs, r *http.Request)(map[string]string){
+func check_form(options []Inputs, r *http.Request) map[string]string {
 	//TODO add a struct parameter to this function (like Club, Event, etc) so that it can assign the values to the struct rather than return new_values
 	//TODO when the form doesn't meet the requirements send user back to certain page and display an error message
 	//TODO the base template should be able to handle error messages to it and display them accordingly.
@@ -16,31 +16,31 @@ func check_form(options []Inputs, r *http.Request)(map[string]string){
 	r.ParseForm()
 	form := r.Form
 	new_values := make(map[string]string)
-//	for option := range options {
+	//	for option := range options {
 	for _, option := range options {
-//		if options[option].Html != "submit" {
+		//		if options[option].Html != "submit" {
 		if option.Html != "submit" {
-//			array, ok := form[option]
+			//			array, ok := form[option]
 			array, ok := form[option.Name]
-//			if ok && ((options[option].Required && array[0] != "") || !options[option].Required) {
+			//			if ok && ((options[option].Required && array[0] != "") || !options[option].Required) {
 			if ok && ((option.Required && array[0] != "") || !option.Required) {
-				if len(array) > 1{
-//					new_values[option] = strings.Join(array, ",")
+				if len(array) > 1 {
+					//					new_values[option] = strings.Join(array, ",")
 					new_values[option.Name] = strings.Join(array, ",")
-				}else{
-//					new_values[option] = strings.TrimSpace(array[0])
+				} else {
+					//					new_values[option] = strings.TrimSpace(array[0])
 					new_values[option.Name] = strings.TrimSpace(array[0])
 				}
-			}else {
+			} else {
 				Warning.Printf("options[%v] is REQUIRED OR is not in array", option)
-//				warning("options[%v] is REQUIRED OR is not in array", option)
+				//				warning("options[%v] is REQUIRED OR is not in array", option)
 			}
 		}
 	}
 	return new_values
 }
 
-func valid8(options []Inputs, r *http.Request)(M,bool){
+func valid8(options []Inputs, r *http.Request) (M, bool) {
 	//TODO add a struct parameter to this function (like Club, Event, etc) so that it can assign the values to the struct rather than return new_values
 	//TODO when the form doesn't meet the requirements send user back to certain page and display an error message
 	//TODO the base template should be able to handle error messages to it and display them accordingly.
@@ -60,18 +60,18 @@ func valid8(options []Inputs, r *http.Request)(M,bool){
 			passedV8tion = append(passedV8tion, false)
 			formArray, ok = form[option.Name]
 			if ok && (!option.Required || (option.Required && len(formArray) > 0)) {
-				if len(formArray) > 1{
-//					new_values[option.Name] = strings.Join(array, ",")
-				}else{
+				if len(formArray) > 1 {
+					//					new_values[option.Name] = strings.Join(array, ",")
+				} else {
 					value = strings.TrimSpace(formArray[0])
 				}
-				switch option.VarType{
+				switch option.VarType {
 				case "int":
 					valueInt, err = strconv.Atoi(value)
-					if err == nil{
+					if err == nil {
 						new_values[option.Name] = valueInt
 						passedV8tion = append(passedV8tion, true)
-					}else{
+					} else {
 						passedV8tion = append(passedV8tion, false)
 					}
 				case "string":
@@ -79,12 +79,12 @@ func valid8(options []Inputs, r *http.Request)(M,bool){
 					if valueInt >= option.VarMinLen && valueInt <= option.VarMinLen {
 						new_values[option.Name] = value
 						passedV8tion = append(passedV8tion, true)
-					}else{
+					} else {
 						passedV8tion = append(passedV8tion, false)
-//						dump("string failed")
+						//						dump("string failed")
 					}
 				}
-			}else{
+			} else {
 				Warning.Printf("options[%v] is REQUIRED OR is not in array", option)
 			}
 		}
@@ -99,12 +99,12 @@ func valid8(options []Inputs, r *http.Request)(M,bool){
 	var event Event
 	var tempInt int
 	for name, value := range new_values {
-		switch name{
+		switch name {
 		case "event_id":
 			event, err = getEvent(fmt.Sprintf("%v", value))
-			if err == nil{
+			if err == nil {
 				new_values["event"] = event
-			}else {
+			} else {
 				Warning.Printf("event with id '%v' doesn't exist", value)
 				return make(M), false
 			}
@@ -117,7 +117,7 @@ func valid8(options []Inputs, r *http.Request)(M,bool){
 		case "shooter_id":
 			//TODO this might be better as a pointer to check that index is not null
 			tempInt = value.(int)
-			if tempInt < 0 || tempInt > len(event.Shooters){
+			if tempInt < 0 || tempInt > len(event.Shooters) {
 				Warning.Printf("event with shooter id '%v' doesn't exist", value)
 				return make(M), false
 			}
@@ -126,14 +126,14 @@ func valid8(options []Inputs, r *http.Request)(M,bool){
 	return new_values, true
 }
 
-func testAllTrue(array []bool)bool{
-	if len(array) > 0{
-		for _, test := range array{
-			if test == false{
+func testAllTrue(array []bool) bool {
+	if len(array) > 0 {
+		for _, test := range array {
+			if test == false {
 				return false
 			}
 		}
-	}else{
+	} else {
 		return false
 	}
 	return true

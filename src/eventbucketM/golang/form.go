@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func makeFormElements(){
+func makeFormElements() {
 
 }
 
@@ -14,11 +14,11 @@ func generateForm2(form Form) string {
 	var formElements []string
 	if conn == nil {
 		formElements = []string{"<p class=error>Unable to connect to the EventBucket database.</p>"}
-	}else {
+	} else {
 		var attributes, element, options string
 		formAttr := ""
-		if form.Type != "" && form.Id != ""{
-			formAttr = " form="+addQuotes(form.Id)
+		if form.Type != "" && form.Id != "" {
+			formAttr = " form=" + addQuotes(form.Id)
 		}
 		for _, input := range form.Inputs {
 			element = ""
@@ -29,14 +29,14 @@ func generateForm2(form Form) string {
 
 			if input.Html != "submit" {
 				if input.Name != "" {
-					attributes += " name="+input.Name
+					attributes += " name=" + input.Name
 					dev_mode_check_form(input.Name == addQuotes(input.Name), "names can't have spaces")
 				}
 				if input.Value != "" {
-					attributes += " value="+addQuotes(input.Value)
+					attributes += " value=" + addQuotes(input.Value)
 					dev_mode_check_form(input.Html != "select", "select boxes shouldn't have a value attribute")
 				}
-			}else {
+			} else {
 				dev_mode_check_form(input.Value != "", "submits should have a value")
 			}
 			if input.Required {
@@ -44,7 +44,7 @@ func generateForm2(form Form) string {
 				dev_mode_check_form(input.Html == "number" || input.Html == "text" || input.Html == "range" || input.Html == "datalist" || input.Html == "date" || input.Html == "select" || input.Html == "tel", "this element shouldn't have required, type="+input.Html)
 			}
 			if input.Placeholder != "" && input.Html != "select" {
-				attributes += " placeholder="+addQuotes(input.Placeholder)
+				attributes += " placeholder=" + addQuotes(input.Placeholder)
 				dev_mode_check_form(input.Html == "text" || input.Html == "number" || input.Html == "range" || input.Html == "datalist", "placeholders are only allowed on text, datalist, number and ranges")
 			}
 			if input.Min != nil {
@@ -72,7 +72,7 @@ func generateForm2(form Form) string {
 				dev_mode_check_form(input.Size >= 4, "size should be >= 4")
 			}
 			if input.AutoComplete != "" {
-				attributes += " autocomplete="+input.AutoComplete
+				attributes += " autocomplete=" + input.AutoComplete
 				dev_mode_check_form(input.Html == "datalist", "autocomplete is only allowed on datalist tags")
 			}
 
@@ -88,50 +88,49 @@ func generateForm2(form Form) string {
 				options = draw_options(input, input.Name)
 			}
 			if input.Html == "select" {
-				element += "<select"+attributes+">"+options+"</select>"
-			}else if input.Html == "submit" {
-				output += "<button"+attributes+">"+input.Value+"</button>"
-			}else {
+				element += "<select" + attributes + ">" + options + "</select>"
+			} else if input.Html == "submit" {
+				output += "<button" + attributes + ">" + input.Value + "</button>"
+			} else {
 				if input.Html == "datalist" && options != "" {
-					attributes += " type=datalist id="+input.Name
+					attributes += " type=datalist id=" + input.Name
 				}
 				if input.Html != "text" {
-					attributes += " type="+input.Html
+					attributes += " type=" + input.Html
 				}
 				if input.Html != "" {
-					element += "<input"+attributes+">"+options
+					element += "<input" + attributes + ">" + options
 				}
 			}
 			if input.Label != "" && form.Type != "table" {
 				var errorClass string
-				if input.Error != ""{
+				if input.Error != "" {
 					errorClass = " class=error"
 				}
-				output += "<label"+errorClass+">"+input.Label+": "+element+" "+input.Error+"</label>"
+				output += "<label" + errorClass + ">" + input.Label + ": " + element + " " + input.Error + "</label>"
 				dev_mode_check_form(input.Html != "submit" || input.Html != "button", "submits and buttons shouldn't have lables")
-			}else {
+			} else {
 				output += element
 			}
-			if input.Snippet != ""{
-				output += " "+input.Snippet
+			if input.Snippet != "" {
+				output += " " + input.Snippet
 			}
-			if input.Help != ""{
+			if input.Help != "" {
 				output += "<abbr class=help title=\"" + input.Help + "\">?</abbr>"
 			}
 			formElements = append(formElements, output)
 		}
 	}
-	if form.Type == "table"{
+	if form.Type == "table" {
 		formElements[0] = fmt.Sprintf("<form action=%v method=post>%v</form>", addQuotes(form.Action), formElements[0])
-		output = "<tr><td>"+strings.Join(formElements, "</td><td>") + "</td></tr>"
+		output = "<tr><td>" + strings.Join(formElements, "</td><td>") + "</td></tr>"
 		return output
 	}
-
 
 	output = strings.Join(formElements, " ")
 	if form.Title != "" {
 		output = field_set(form.Title) + output + "</fieldset>"
-	}else {
+	} else {
 		dev_mode_check_form(false, "all forms should have a title")
 	}
 	return fmt.Sprintf("<form action=%v method=post>%v</form>", addQuotes(form.Action), output)
@@ -141,23 +140,23 @@ type Form struct {
 	Action string
 	Title  string
 	Inputs []Inputs
-	Help string
-	Type string  // empty string "" = normal form, "table" = data table
-	Id string
+	Help   string
+	Type   string // empty string "" = normal form, "table" = data table
+	Id     string
 }
 type Inputs struct {
-	Name, Html, Label, Help, Value, Pattern, Placeholder, AutoComplete string	//AutoComplete values can be: "off" or "on"
-	Checked, MultiSelect, Required bool
-	Min, Max *int
-	Size    int
-	Options []Option
-	Step    float64
-	VarType string		//the type of variable to return
-	VarMaxLen int		//the length of variable to return
-	VarMinLen int		//the length of variable to return
-	Error string
-	Snippet string
-	Autofocus string
+	Name, Html, Label, Help, Value, Pattern, Placeholder, AutoComplete string //AutoComplete values can be: "off" or "on"
+	Checked, MultiSelect, Required                                     bool
+	Min, Max                                                           *int
+	Size                                                               int
+	Options                                                            []Option
+	Step                                                               float64
+	VarType                                                            string //the type of variable to return
+	VarMaxLen                                                          int    //the length of variable to return
+	VarMinLen                                                          int    //the length of variable to return
+	Error                                                              string
+	Snippet                                                            string
+	Autofocus                                                          string
 }
 type Option struct {
 	Value    string `json:"v,omitempty"`
@@ -165,7 +164,7 @@ type Option struct {
 	Selected bool   `json:"s,omitempty"`
 }
 
-func draw_options(input Inputs, name string)string{
+func draw_options(input Inputs, name string) string {
 	dev_mode_check_form(len(input.Options) > 0, "select should have at least one option to select from for element='"+name+"' type='"+input.Html+"'")
 	if input.Required {
 		dev_mode_check_form(len(input.Options) > 0, "select shouldn't be required with no available options to select")
@@ -180,17 +179,17 @@ func draw_options(input Inputs, name string)string{
 		}
 		if option.Value != "" {
 			output += " value=" + addQuotes(option.Value)
-		}else {
+		} else {
 			dev_mode_check_form(false, "option values shouldn't be empty")
 		}
 		output += ">" + option.Display + "</option>"
-		dev_mode_check_form(!(option.Display==""&&option.Value==""&&option.Selected==false), "option must have display text")
+		dev_mode_check_form(!(option.Display == "" && option.Value == "" && option.Selected == false), "option must have display text")
 	}
-	if input.Html == "datalist"{
-		output = "<datalist id=" + name + ">"+output+"</datalist>"
+	if input.Html == "datalist" {
+		output = "<datalist id=" + name + ">" + output + "</datalist>"
 		//dev_mode_check_form(false,"make sure datalist id='"+name+"' is unique!")
-	}else if input.Placeholder != ""{
-		output += "<option selected value disabled>"+input.Placeholder+"</option>"
+	} else if input.Placeholder != "" {
+		output += "<option selected value disabled>" + input.Placeholder + "</option>"
 	}
 	return output
 }

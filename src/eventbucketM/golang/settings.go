@@ -1,23 +1,22 @@
 package main
 
 import (
-	"os"
 	"log"
+	"os"
 )
 
 const (
-//Global program settings
-	VERSION = "^^VersionNumber^^"
-	BUILDDATE = "^^BuildDate^^"
+	//Global program settings
+	VERSION            = "^^VersionNumber^^"
+	BUILDDATE          = "^^BuildDate^^"
 	PATH_HTML_MINIFIED = "h/%v.htm"
 	//Main template html files
-	TEMPLATE_HOME  = "_template_home"
-	TEMPLATE_ADMIN = "_template_admin"
-	TEMPLATE_EMPTY = "_template_empty"
-	ID_CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!*()_-."
+	TEMPLATE_HOME    = "_template_home"
+	TEMPLATE_ADMIN   = "_template_admin"
+	TEMPLATE_EMPTY   = "_template_empty"
+	ID_CHARSET       = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!*()_-."
 	ID_CHARSET_REGEX = `\w~!\*\(\)\-\.`
-//Folder structure
-	DIR_ROOT = ""
+	//Folder structure
 	DIR_CSS  = "/c/"
 	DIR_JPEG = "/e/"
 	DIR_JS   = "/j/"
@@ -25,7 +24,7 @@ const (
 	DIR_SVG  = "/v/"
 	//	DIR_WEBP = "/w/"
 	//Barcodes
-	QRCODE = "qr"
+	QRCODE     = "qr"
 	DATAMATRIX = "dm"
 
 	//Scoreboard
@@ -101,8 +100,8 @@ const (
 var (
 	Error = log.New(os.Stderr, "ERROR:  ", log.Ldate|log.Ltime|log.Lshortfile)
 	//TODO move the below to a constant if possible
-	LATITUDE_MIN = -90
-	LATITUDE_MAX = 90
+	LATITUDE_MIN  = -90
+	LATITUDE_MAX  = 90
 	LONGITUDE_MIN = -180
 	LONGITUDE_MAX = 180
 
@@ -112,16 +111,16 @@ var (
 		{
 			Name: "Home",
 			Link: URL_home,
-		},{
+		}, {
 			Name: "Archive",
 			Link: URL_archive,
-		},{
+		}, {
 			Name: "Clubs",
 			Link: URL_clubs,
-		},{
+		}, {
 			Name: "About",
 			Link: URL_about,
-		},{
+		}, {
 			Name: "Shooters",
 			Link: URL_shooters,
 		},
@@ -166,7 +165,7 @@ func ShotsToValue(shot string) string {
 
 var (
 	DEFAULT_CLASS_SETTINGS = []ClassSettings{
-		ClassSettings{
+		{
 			Name:         "target",
 			Display:      "Target",
 			DisplayValue: 0,
@@ -174,22 +173,22 @@ var (
 			SightersQty:  2,
 			ShotsQty:     10,
 			ValidShots: map[string]Score{
-				"-": Score{Total: 0, Centers: 0, CountBack1: "0"},
-				"0": Score{Total: 0, Centers: 0, CountBack1: "0"},
-				"1": Score{Total: 1, Centers: 0, CountBack1: "1"},
-				"2": Score{Total: 2, Centers: 0, CountBack1: "2"},
-				"3": Score{Total: 3, Centers: 0, CountBack1: "3"},
-				"4": Score{Total: 4, Centers: 0, CountBack1: "4"},
-				"5": Score{Total: 5, Centers: 0, CountBack1: "5"},
-				"V": Score{Total: 5, Centers: 1, CountBack1: "6"},
-				"6": Score{Total: 5, Centers: 1, CountBack1: "6"},
-				"X": Score{Total: 5, Centers: 1, CountBack1: "6"},
+				"-": {Total: 0, Centers: 0, CountBack1: "0"},
+				"0": {Total: 0, Centers: 0, CountBack1: "0"},
+				"1": {Total: 1, Centers: 0, CountBack1: "1"},
+				"2": {Total: 2, Centers: 0, CountBack1: "2"},
+				"3": {Total: 3, Centers: 0, CountBack1: "3"},
+				"4": {Total: 4, Centers: 0, CountBack1: "4"},
+				"5": {Total: 5, Centers: 0, CountBack1: "5"},
+				"V": {Total: 5, Centers: 1, CountBack1: "6"},
+				"6": {Total: 5, Centers: 1, CountBack1: "6"},
+				"X": {Total: 5, Centers: 1, CountBack1: "6"},
 			},
 			ValidSighters: []string{")", "!", "@", "#", "$", "%", "v", "^", "x"},
 			GradeQty:      3,
 			Grades:        []int{0, 1, 2},
 		},
-		ClassSettings{
+		{
 			Name:         "fclass",
 			Display:      "F Class",
 			DisplayValue: 1,
@@ -197,22 +196,22 @@ var (
 			SightersQty:  2,
 			ShotsQty:     10,
 			ValidShots: map[string]Score{
-				"-": Score{Total: 0, Centers: 0, CountBack1: "0"},
-				"0": Score{Total: 0, Centers: 0, CountBack1: "0"},
-				"1": Score{Total: 1, Centers: 0, CountBack1: "1"},
-				"2": Score{Total: 2, Centers: 0, CountBack1: "2"},
-				"3": Score{Total: 3, Centers: 0, CountBack1: "3"},
-				"4": Score{Total: 4, Centers: 0, CountBack1: "4"},
-				"5": Score{Total: 5, Centers: 0, CountBack1: "5"},
-				"V": Score{Total: 5, Centers: 0, CountBack1: "6"},
-				"6": Score{Total: 6, Centers: 0, CountBack1: "6"},
-				"X": Score{Total: 6, Centers: 1, CountBack1: "7"},
+				"-": {Total: 0, Centers: 0, CountBack1: "0"},
+				"0": {Total: 0, Centers: 0, CountBack1: "0"},
+				"1": {Total: 1, Centers: 0, CountBack1: "1"},
+				"2": {Total: 2, Centers: 0, CountBack1: "2"},
+				"3": {Total: 3, Centers: 0, CountBack1: "3"},
+				"4": {Total: 4, Centers: 0, CountBack1: "4"},
+				"5": {Total: 5, Centers: 0, CountBack1: "5"},
+				"V": {Total: 5, Centers: 0, CountBack1: "6"},
+				"6": {Total: 6, Centers: 0, CountBack1: "6"},
+				"X": {Total: 6, Centers: 1, CountBack1: "7"},
 			},
 			ValidSighters: []string{")", "!", "@", "#", "$", "%", "v", "^", "x"},
 			GradeQty:      4,
 			Grades:        []int{3, 4, 5, 6, 9},
 		},
-		ClassSettings{
+		{
 			Name:         "match",
 			Display:      "Match",
 			DisplayValue: 2,
@@ -220,16 +219,16 @@ var (
 			SightersQty:  2,
 			ShotsQty:     15,
 			ValidShots: map[string]Score{
-				"-": Score{Total: 0, Centers: 0, CountBack1: "0"},
-				"0": Score{Total: 0, Centers: 0, CountBack1: "0"},
-				"1": Score{Total: 1, Centers: 0, CountBack1: "1"},
-				"2": Score{Total: 2, Centers: 0, CountBack1: "2"},
-				"3": Score{Total: 3, Centers: 0, CountBack1: "3"},
-				"4": Score{Total: 4, Centers: 0, CountBack1: "4"},
-				"5": Score{Total: 5, Centers: 0, CountBack1: "5"},
-				"V": Score{Total: 5, Centers: 1, CountBack1: "6"},
-				"6": Score{Total: 5, Centers: 1, CountBack1: "6"},
-				"X": Score{Total: 5, Centers: 1, CountBack1: "6"},
+				"-": {Total: 0, Centers: 0, CountBack1: "0"},
+				"0": {Total: 0, Centers: 0, CountBack1: "0"},
+				"1": {Total: 1, Centers: 0, CountBack1: "1"},
+				"2": {Total: 2, Centers: 0, CountBack1: "2"},
+				"3": {Total: 3, Centers: 0, CountBack1: "3"},
+				"4": {Total: 4, Centers: 0, CountBack1: "4"},
+				"5": {Total: 5, Centers: 0, CountBack1: "5"},
+				"V": {Total: 5, Centers: 1, CountBack1: "6"},
+				"6": {Total: 5, Centers: 1, CountBack1: "6"},
+				"X": {Total: 5, Centers: 1, CountBack1: "6"},
 			},
 			ValidSighters: []string{")", "!", "@", "#", "$", "%", "v", "^", "x"},
 			GradeQty:      2,
@@ -251,66 +250,68 @@ var (
 	}
 )
 
-type Grade struct{
+type Grade struct {
 	Name, LongName, ClassName string
-	ClassId int
-	Settings ClassSettings
+	ClassId                   int
+	Settings                  ClassSettings
 }
-func gradeList()[]int{
-	return []int{0,1,2,3,4,5,6,7,8,9}
+
+func gradeList() []int {
+	return []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
 }
-func grades()[]Grade{
+func grades() []Grade {
 	return []Grade{
-		0: Grade{Settings: DEFAULT_CLASS_SETTINGS[0], ClassId: 0,Name:"A", ClassName:"Target", LongName: "Target A"},
-		1: Grade{Settings: DEFAULT_CLASS_SETTINGS[0], ClassId: 0,Name:"B", ClassName:"Target", LongName: "Target B"},
-		2: Grade{Settings: DEFAULT_CLASS_SETTINGS[0], ClassId: 0,Name:"C", ClassName:"Target", LongName: "Target C"},
-		3: Grade{Settings: DEFAULT_CLASS_SETTINGS[1], ClassId: 1,Name:"FA", ClassName:"F Class", LongName: "F Class A"},
-		4: Grade{Settings: DEFAULT_CLASS_SETTINGS[1], ClassId: 1,Name:"FB", ClassName:"F Class", LongName: "F Class B"},
-		5: Grade{Settings: DEFAULT_CLASS_SETTINGS[1], ClassId: 1,Name:"F Open", ClassName:"F Class", LongName: "F Class Open"},
-		6: Grade{Settings: DEFAULT_CLASS_SETTINGS[1], ClassId: 1,Name:"F/TR", ClassName:"F Class", LongName: "F/TR"},
-		7: Grade{Settings: DEFAULT_CLASS_SETTINGS[2], ClassId: 2,Name:"Open", ClassName:"Match", LongName: "Match Open"},
-		8: Grade{Settings: DEFAULT_CLASS_SETTINGS[2], ClassId: 2,Name:"Reserve", ClassName:"Match", LongName: "Match Reserve"},
-		9: Grade{Settings: DEFAULT_CLASS_SETTINGS[1], ClassId: 1,Name:"Rifle", ClassName:"303", LongName: "303 Rifle"},
+		0: {Settings: DEFAULT_CLASS_SETTINGS[0], ClassId: 0, Name: "A", ClassName: "Target", LongName: "Target A"},
+		1: {Settings: DEFAULT_CLASS_SETTINGS[0], ClassId: 0, Name: "B", ClassName: "Target", LongName: "Target B"},
+		2: {Settings: DEFAULT_CLASS_SETTINGS[0], ClassId: 0, Name: "C", ClassName: "Target", LongName: "Target C"},
+		3: {Settings: DEFAULT_CLASS_SETTINGS[1], ClassId: 1, Name: "FA", ClassName: "F Class", LongName: "F Class A"},
+		4: {Settings: DEFAULT_CLASS_SETTINGS[1], ClassId: 1, Name: "FB", ClassName: "F Class", LongName: "F Class B"},
+		5: {Settings: DEFAULT_CLASS_SETTINGS[1], ClassId: 1, Name: "F Open", ClassName: "F Class", LongName: "F Class Open"},
+		6: {Settings: DEFAULT_CLASS_SETTINGS[1], ClassId: 1, Name: "F/TR", ClassName: "F Class", LongName: "F/TR"},
+		7: {Settings: DEFAULT_CLASS_SETTINGS[2], ClassId: 2, Name: "Open", ClassName: "Match", LongName: "Match Open"},
+		8: {Settings: DEFAULT_CLASS_SETTINGS[2], ClassId: 2, Name: "Reserve", ClassName: "Match", LongName: "Match Reserve"},
+		9: {Settings: DEFAULT_CLASS_SETTINGS[1], ClassId: 1, Name: "Rifle", ClassName: "303", LongName: "303 Rifle"},
 	}
 }
 
-func AGE_GROUPS2() []Option{
+func AGE_GROUPS2() []Option {
 	return []Option{
-		0: Option{
+		0: {
 			Display:  "None",
-			Value: "N",
+			Value:    "N",
 			Selected: true,
 		},
-		1: Option{
+		1: {
 			Display: "Junior (U21)",
 			Value:   "U21",
 		},
-		2: Option{
+		2: {
 			Display: "Junior (U25)",
 			Value:   "U25",
 		},
-		3: Option{
+		3: {
 			Display: "Veteran",
 			Value:   "V",
 		},
-		4: Option{
+		4: {
 			Display: "Super Veteran",
 			Value:   "SV",
 		},
 	}
 }
 
-type Legend struct{
+type Legend struct {
 	cssClass, name string
 }
-func scoreBoardLegend()[7]Legend{
+
+func scoreBoardLegend() [7]Legend {
 	return [7]Legend{
-		Legend{cssClass:"ST", name:"First"},
-		Legend{cssClass:"ND", name:"Second"},
-		Legend{cssClass:"TH", name:"Third"},
-		Legend{cssClass:"w4", name:"Highest Possible Score"},
-		Legend{cssClass:"w1", name:"Shoot Off"},
-		Legend{cssClass:"w3", name:"Incomplete Score"},
-		Legend{cssClass:"w2", name:"No Score"},
+		{cssClass: "ST", name: "First"},
+		{cssClass: "ND", name: "Second"},
+		{cssClass: "TH", name: "Third"},
+		{cssClass: "w4", name: "Highest Possible Score"},
+		{cssClass: "w1", name: "Shoot Off"},
+		{cssClass: "w3", name: "Incomplete Score"},
+		{cssClass: "w2", name: "No Score"},
 	}
 }

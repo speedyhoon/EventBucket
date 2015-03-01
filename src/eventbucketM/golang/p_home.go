@@ -1,16 +1,16 @@
 package main
 
 import (
+	"fmt"
+	"net"
 	"net/http"
-	"time"
+	"os"
 	"sort"
 	"strings"
-	"os"
-	"net"
-	"fmt"
+	"time"
 )
 
-func home()Page{
+func home() Page {
 	//Sort the list of shooters by grade only
 	sort_by_date := func(c1, c2 *Event) bool {
 		return c1.Date < c2.Date
@@ -21,13 +21,13 @@ func home()Page{
 	sort_by_name := func(c1, c2 *Event) bool {
 		return strings.ToLower(c1.Name) < strings.ToLower(c2.Name)
 	}
-	events := getEvents()	//TODO make custom select
+	events := getEvents() //TODO make custom select
 	OrderedByEvent(sort_by_date, sort_by_time, sort_by_name).Sort(events)
 	openEvents := []HomeCalendar{}
 	for _, event := range events {
-		if !event.Closed{
+		if !event.Closed {
 			var list_of_ranges []string
-			for _, rangeObj := range event.Ranges{
+			for _, rangeObj := range event.Ranges {
 				list_of_ranges = append(list_of_ranges, rangeObj.Name)
 			}
 			club, _ := getClub(event.Club)
@@ -56,23 +56,23 @@ func home()Page{
 
 	//TODO change getClubs to simpler DB lookup getClubNames
 	clubs := getClubs()
-	return Page {
+	return Page{
 		TemplateFile: "home",
-		Theme: TEMPLATE_HOME,
+		Theme:        TEMPLATE_HOME,
 		Data: M{
-			"FutureEvents":   openEvents,
-			"PageName": "Calendar",
-			"ArchiveLink": URL_archive,
-			"Menu":     home_menu("/", HOME_MENU_ITEMS),
+			"FutureEvents": openEvents,
+			"PageName":     "Calendar",
+			"ArchiveLink":  URL_archive,
+			"Menu":         home_menu("/", HOME_MENU_ITEMS),
 			"FormNewEvent": generateForm2(home_form_new_event(clubs, "", "", "", "", true)),
-			"Hostname": hostname,
-			"IpAddresses": ipAddresses,
+			"Hostname":     hostname,
+			"IpAddresses":  ipAddresses,
 		},
 		v8Url: VURL_home,
 	}
 }
 
-func HostnameIpAddresses()(string, []string){
+func HostnameIpAddresses() (string, []string) {
 	hostname, _ := os.Hostname()
 	var ipAddress []string
 	interfaces, err := net.Interfaces()
@@ -109,7 +109,7 @@ func home_form_new_event(clubs []Club, name, club, date, eventTime string, newEv
 			clubName = club_data.Name
 		}
 		club_list = append(club_list, Option{
-			Value: club_data.Id,
+			Value:   club_data.Id,
 			Display: club_data.Name,
 		})
 	}
@@ -119,35 +119,35 @@ func home_form_new_event(clubs []Club, name, club, date, eventTime string, newEv
 		Title:  title,
 		Inputs: []Inputs{
 			{
-				Name: "name",
+				Name:     "name",
 				Html:     "text",
 				Label:    "Event Name",
 				Required: true,
-//				AutoComplete: "off",
-				Value: name,
+				//				AutoComplete: "off",
+				Value:     name,
 				Autofocus: "on",
 			},
 			{
-				Name: "club",
-				Html: "datalist",
-				Label: "Host Club",
+				Name:        "club",
+				Html:        "datalist",
+				Label:       "Host Club",
 				Placeholder: "Club Name",
 				//TODO previous club names appear from browser cahce when they are not available
 				//TODO auto set the club name to X if there is only one available
-				Options: club_list,
+				Options:  club_list,
 				Required: true,
-//				AutoComplete: "off",
+				//				AutoComplete: "off",
 				Value: clubName,
 			},
 			{
-				Name: "date",
+				Name:     "date",
 				Html:     "date",
 				Label:    "Date",
 				Required: true,
 				Value:    date,
 			},
 			{
-				Name: "time",
+				Name:  "time",
 				Html:  "time",
 				Label: "Time",
 				Value: eventTime,
@@ -162,23 +162,23 @@ func home_form_new_event(clubs []Club, name, club, date, eventTime string, newEv
 
 func eventInsert(w http.ResponseWriter, r *http.Request) {
 	var clubs []Club
-	validated_values := check_form(home_form_new_event(clubs,"","","","",true).Inputs, r)
+	validated_values := check_form(home_form_new_event(clubs, "", "", "", "", true).Inputs, r)
 	newEvent := Event{
 		Name: validated_values["name"],
 	}
 	club, ok := getClub_by_name(validated_values["club"])
 	if ok {
 		newEvent.Club = club.Id
-	}else{
+	} else {
 		clubId, _ := insertClub(validated_values["club"])
 		newEvent.Club = clubId
 	}
 
-	if validated_values["date"] != ""{
+	if validated_values["date"] != "" {
 		newEvent.Date = validated_values["date"]
 	}
 
-	if validated_values["time"] != ""{
+	if validated_values["time"] != "" {
 		newEvent.Time = validated_values["time"]
 	}
 
@@ -190,7 +190,7 @@ func eventInsert(w http.ResponseWriter, r *http.Request) {
 		InsertDoc(TBLevent, newEvent)
 		//redirect user to event settings
 		http.Redirect(w, r, URL_eventSettings+newEvent.Id, http.StatusSeeOther)
-	}else {
+	} else {
 		//TODO go to previous referer page (home or organisers both have the form)
 		//http.Redirect(w, r, URL_organisers, http.StatusSeeOther)
 	}

@@ -1,17 +1,15 @@
-/*package main
+package main
 
-import (
-//	"net/http"
-)
+import ()
 
 func championships() Page {
-	return Page {
+	return Page{
 		TemplateFile: "championships",
-		Theme: TEMPLATE_HOME,
+		Theme:        TEMPLATE_HOME,
 		Data: M{
 			"Title":        "Championships",
 			"Championship": generateForm2(organisers_champForm()),
-			"Menu":     home_menu(URL_championships, HOME_MENU_ITEMS),
+			"Menu":         home_menu(URL_championships, HOME_MENU_ITEMS),
 		},
 	}
 }
@@ -22,7 +20,7 @@ func organisers_champForm() Form {
 		Title:  "Create Championship",
 		Inputs: []Inputs{
 			{
-				Name: "name",
+				Name:     "name",
 				Html:     "text",
 				Label:    "Championship Name",
 				Required: true,
@@ -33,4 +31,4 @@ func organisers_champForm() Form {
 			},
 		},
 	}
-}*/
+}

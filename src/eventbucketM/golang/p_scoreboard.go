@@ -16,7 +16,7 @@ func scoreboard(url string) Page {
 		sortByRange = event.SortScoreboard
 	} else if len(event.Ranges) >= 1 {
 		for event_range := range event.Ranges {
-			sortByRange = fmt.Sprintf("%v",event_range)
+			sortByRange = fmt.Sprintf("%v", event_range)
 			break
 		}
 	}
@@ -45,21 +45,19 @@ func scoreboard(url string) Page {
 	for shooter_id, shooterList := range event.Shooters {
 		shooterList.Id = shooter_id
 		for range_id, score := range shooterList.Scores {
-			//			vardump(score)
-			//			export(score)
-//			score.Position = 0
+			//vardump(score)
+			//export(score)
+			//score.Position = 0
 			shooterList.Scores[range_id] = score
-			//			dump("\n\n\n")
 		}
 		shooter_list = append(shooter_list, shooterList)
-		//		vardump(shooterList)
 	}
 	if sortByRange != "" {
 		OrderedBy(grade, total, centa, cb).Sort(shooter_list)
 	}
 
 	previous_grade := -1
-	previous_class := ""		//TODO change to an integer for faster comparisons
+	previous_class := "" //TODO change to an integer for faster comparisons
 	position := 0
 	should_be_position := 0
 	shoot_off := false
@@ -132,24 +130,24 @@ func scoreboard(url string) Page {
 	}
 
 	outputer := M{
-		"Title":        "Scoreboard",
-		"EventId":      arr[0],
-		"EventName":    event.Name,
-		"ListShooters": shooter_list,
-		"ListRanges":   event.Ranges,
-		"Css":          "scoreboard.css",
-		"Legend":       render_legend(score_board_legend_on_off),
-		"menu":         scoreboard_menu(event_id, event.Ranges, URL_scoreboard, event.IsPrizeMeet),
+		"Title":          "Scoreboard",
+		"EventId":        arr[0],
+		"EventName":      event.Name,
+		"ListShooters":   shooter_list,
+		"ListRanges":     event.Ranges,
+		"Css":            "scoreboard.css",
+		"Legend":         render_legend(score_board_legend_on_off),
+		"menu":           scoreboard_menu(event_id, event.Ranges, URL_scoreboard, event.IsPrizeMeet),
 		"SortScoreboard": "",
 	}
-	if len(event.Ranges) >= 1{
+	if len(event.Ranges) >= 1 {
 		outputer["SortByRange"], _ = strToInt(sortByRange)
-		outputer["SortScoreboard"]= generateForm2(eventSettings_sort_scoreboard(event_id, event.SortScoreboard, event.Ranges))
+		outputer["SortScoreboard"] = generateForm2(eventSettings_sort_scoreboard(event_id, event.SortScoreboard, event.Ranges))
 	}
-	return Page {
+	return Page{
 		TemplateFile: "scoreboard",
-		Theme: TEMPLATE_EMPTY,
-		Data: outputer,
+		Theme:        TEMPLATE_EMPTY,
+		Data:         outputer,
 	}
 }
 

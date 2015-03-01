@@ -1,18 +1,18 @@
 package main
 
-func about()Page {
+func about() Page {
 	hostname, ipAddresses := HostnameIpAddresses()
-	return Page {
+	return Page{
 		TemplateFile: "about",
-		Title: "About",
-		Theme: TEMPLATE_HOME,
+		Title:        "About",
+		Theme:        TEMPLATE_HOME,
 		Data: M{
-			"Version":  VERSION,
-			"Menu":     home_menu(URL_about, HOME_MENU_ITEMS),
-			"Hostname": hostname,
+			"Version":     VERSION,
+			"Menu":        home_menu(URL_about, HOME_MENU_ITEMS),
+			"Hostname":    hostname,
 			"IpAddresses": ipAddresses,
-			"BuildDate": BUILDDATE,
-			"IconHeight": 30,
+			"BuildDate":   BUILDDATE,
+			"IconHeight":  30,
 		},
 	}
 }

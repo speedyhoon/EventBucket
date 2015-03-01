@@ -1,17 +1,17 @@
 package main
 
 import (
-	"fmt"
-	"strconv"
-	"strings"
-	"github.com/boombuler/barcode/qr"
-	"github.com/boombuler/barcode/datamatrix"
-	"github.com/boombuler/barcode"
-	"os"
-	"image/png"
 	"bytes"
 	"encoding/base64"
 	"errors"
+	"fmt"
+	"github.com/boombuler/barcode"
+	"github.com/boombuler/barcode/datamatrix"
+	"github.com/boombuler/barcode/qr"
+	"image/png"
+	"os"
+	"strconv"
+	"strings"
 )
 
 func exists(dict M, key string) string {
@@ -21,13 +21,13 @@ func exists(dict M, key string) string {
 	return ""
 }
 
-func strToInt(input interface{})(int, error){
+func strToInt(input interface{}) (int, error) {
 	return strconv.Atoi(fmt.Sprintf("%v", input))
 }
 
 //research http://net.tutsplus.com/tutorials/client-side-security-best-practices/
 func addQuotes(input string) string {
-	if strings.Contains(input, " "){
+	if strings.Contains(input, " ") {
 		return "\"" + input + "\""
 	}
 	return input
@@ -64,13 +64,19 @@ func stringInSlice(a string, list []string) bool {
 	return false
 }
 
-func imgBarcode(width, height int, barcodeType, value string)string{
+func imgBarcode(width, height int, barcodeType, value string) string {
 	var data barcode.Barcode
 	var err error
-	switch(barcodeType){
-	case QRCODE: data, err = qr.Encode(value,  qr.L, qr.Auto); break
-	case DATAMATRIX: data, err = datamatrix.Encode(value); break
-	default: err = errors.New("barcode type "+barcodeType+" is not implemented!"); break
+	switch barcodeType {
+	case QRCODE:
+		data, err = qr.Encode(value, qr.L, qr.Auto)
+		break
+	case DATAMATRIX:
+		data, err = datamatrix.Encode(value)
+		break
+	default:
+		err = errors.New("barcode type " + barcodeType + " is not implemented!")
+		break
 	}
 	if err == nil {
 		data, err = barcode.Scale(data, width, height)
@@ -89,10 +95,11 @@ func imgBarcode(width, height int, barcodeType, value string)string{
 // dirExists returns a bool whether the given directory exists or not
 func dirExists(path string) bool {
 	info, err := os.Stat(path)
-	if err == nil && info.IsDir(){
+	if err == nil && info.IsDir() {
 		return true
 	}
-	if os.IsNotExist(err) { return false }
-	Error.Printf("folder does not exist: %v", err)
+	if !os.IsNotExist(err) {
+		Error.Printf("folder does not exist: %v", err)
+	}
 	return false
 }
