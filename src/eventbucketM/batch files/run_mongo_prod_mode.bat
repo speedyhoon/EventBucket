@@ -1,1 +1,0 @@
-mongod.exe --dbpath ./prod_mode --port 36219 --nohttpinterface --smallfiles --nssize 1
