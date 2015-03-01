@@ -1,11 +1,11 @@
 package main
 
 import (
-	"time"
 	"strings"
+	"time"
 )
 
-func archive()Page{
+func archive() Page {
 	//Sort the list of shooters by grade only
 	sort_by_date := func(c1, c2 *Event) bool {
 		return c1.Date > c2.Date
@@ -21,9 +21,9 @@ func archive()Page{
 	OrderedByEvent(sort_by_date, sort_by_time, sort_by_name).Sort(events)
 	closedEvents := []HomeCalendar{}
 	for _, event := range events {
-		if event.Closed{
+		if event.Closed {
 			var list_of_ranges []string
-			for _, rangeObj := range event.Ranges{
+			for _, rangeObj := range event.Ranges {
 				list_of_ranges = append(list_of_ranges, rangeObj.Name)
 			}
 			club, _ := getClub(event.Club)
@@ -47,13 +47,13 @@ func archive()Page{
 			closedEvents = append(closedEvents, calendar_event)
 		}
 	}
-	return Page {
+	return Page{
 		TemplateFile: "archive",
-		Theme: TEMPLATE_HOME,
+		Theme:        TEMPLATE_HOME,
 		Data: M{
-			"ClosedEvents":   closedEvents,
-			"PageName": "Calendar",
-			"Menu":     home_menu(URL_archive, HOME_MENU_ITEMS),
+			"ClosedEvents": closedEvents,
+			"PageName":     "Calendar",
+			"Menu":         home_menu(URL_archive, HOME_MENU_ITEMS),
 		},
 	}
 }

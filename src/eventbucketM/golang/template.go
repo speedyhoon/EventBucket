@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"time"
 	"strings"
+	"time"
 )
 
 func templator(viewController Page, w http.ResponseWriter, r *http.Request) {
@@ -18,16 +18,16 @@ func templator(viewController Page, w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	viewController.Data["DirCss"]		= DIR_CSS	//TODO remove & replace with folder name via build script directly into the html files
-	viewController.Data["DirJpeg"]	= DIR_JPEG	//TODO remove & replace with folder name via build script directly into the html files
-	viewController.Data["DirJs"]		= DIR_JS		//TODO remove & replace with folder name via build script directly into the html files
-	viewController.Data["DirPng"]		= DIR_PNG	//TODO remove & replace with folder name via build script directly into the html files
-	viewController.Data["DirSvg"]		= DIR_SVG	//TODO remove & replace with folder name via build script directly into the html files
+	viewController.Data["DirCss"] = DIR_CSS   //TODO remove & replace with folder name via build script directly into the html files
+	viewController.Data["DirJpeg"] = DIR_JPEG //TODO remove & replace with folder name via build script directly into the html files
+	viewController.Data["DirJs"] = DIR_JS     //TODO remove & replace with folder name via build script directly into the html files
+	viewController.Data["DirPng"] = DIR_PNG   //TODO remove & replace with folder name via build script directly into the html files
+	viewController.Data["DirSvg"] = DIR_SVG   //TODO remove & replace with folder name via build script directly into the html files
 	//	viewController.Data["DirWebp"]= DIR_WEBP	//TODO remove & replace with folder name via build script directly into the html files
-	viewController.Data["Favicon"]	= "/p/a"		//TODO remove & replace with hashed filename via build script directly into the html files
+	viewController.Data["Favicon"] = "/p/a" //TODO remove & replace with hashed filename via build script directly into the html files
 	viewController.Data["Title"] = viewController.Title
-	viewController.Data["CurrentYear"] = time.Now().Year()	//TODO remove & replace with current year via build script directly into the html files
-	viewController.Data["NewRelic"] = NEWRELIC	//TODO replace with the NEWRELIC html template via build script directly into the html files
+	viewController.Data["CurrentYear"] = time.Now().Year() //TODO remove & replace with current year via build script directly into the html files
+	viewController.Data["NewRelic"] = NEWRELIC             //TODO replace with the NEWRELIC html template via build script directly into the html files
 
 	//Search in Theme html file & replace "^^BODY^^" with TemplateFile
 	source := bytes.Replace(loadHTM(viewController.Theme), []byte("^^BODY^^"), loadHTM(viewController.TemplateFile), -1)
@@ -36,7 +36,7 @@ func templator(viewController Page, w http.ResponseWriter, r *http.Request) {
 }
 
 func generator(w http.ResponseWriter, fillin string, viewController Page) {
-	my_html := template.New(viewController.TemplateFile+"Template").Funcs(template.FuncMap{
+	my_html := template.New(viewController.TemplateFile + "Template").Funcs(template.FuncMap{
 		"HTM": func(x string) template.HTML {
 			return template.HTML(x)
 		},
@@ -78,7 +78,7 @@ func generator(w http.ResponseWriter, fillin string, viewController Page) {
 		},
 		"DisplayShot": func(shot_index int, score Score) string {
 			if len(score.Shots) > shot_index {
-//				return fmt.Sprintf("%s", ShotsToValue(string(score.Shots[shot_index])))
+				//				return fmt.Sprintf("%s", ShotsToValue(string(score.Shots[shot_index])))
 				return ShotsToValue(string(score.Shots[shot_index]))
 			}
 			return ""
@@ -97,7 +97,7 @@ func generator(w http.ResponseWriter, fillin string, viewController Page) {
 			return fmt.Sprintf("%v", input)
 		},
 		"POSITION": func(position int) template.HTMLAttr {
-			if position > 0{
+			if position > 0 {
 				return template.HTMLAttr(fmt.Sprintf(" class=p%v", position))
 			}
 			return template.HTMLAttr("")
@@ -116,28 +116,28 @@ type Menu struct {
 }
 
 var EventMenuItems = []Menu{
-	Menu{
+	{
 		Name: "Home",
 		Link: "/",
 	},
-	Menu{
+	{
 		Name: "Event",
 		Link: URL_event,
 	},
-	Menu{
+	{
 		Name: "Event Settings",
 		Link: URL_eventSettings,
 	},
-	Menu{
+	{
 		Name: "Scoreboard",
 		Link: URL_scoreboard,
 	},
-	Menu{
+	{
 		Name:   "Total Scores",
 		Link:   URL_totalScores,
 		Ranges: true,
 	},
-	Menu{
+	{
 		Name:   "Start Shooting",
 		Link:   URL_startShooting,
 		Ranges: true,
@@ -152,16 +152,16 @@ func event_menu(event_id string, event_ranges []Range, page_url string, isPrizeM
 	menu := "<ul>"
 	selected := ""
 	for _, menu_item := range EventMenuItems {
-		if menu_item.Link == page_url{
+		if menu_item.Link == page_url {
 			selected = " class=v"
 		}
 
 		if menu_item.Ranges {
 			class := "m"
-			if menu_item.Link == page_url{
+			if menu_item.Link == page_url {
 				class = `"v m"`
 			}
-			if (isPrizeMeet && menu_item.Link != URL_totalScores) || !isPrizeMeet{
+			if (isPrizeMeet && menu_item.Link != URL_totalScores) || !isPrizeMeet {
 				//The a tag is needed for my ipad
 				menu += fmt.Sprintf("<li class=%v><a href=#>%v</a><ul>", class, menu_item.Name)
 				for range_id, range_item := range event_ranges {
@@ -172,9 +172,9 @@ func event_menu(event_id string, event_ranges []Range, page_url string, isPrizeM
 				menu += "</ul></li>"
 			}
 		} else {
-			if menu_item.Link == "/"{
+			if menu_item.Link == "/" {
 				menu += fmt.Sprintf("<li%v><a href=%v>%v</a></li>", selected, addQuotes(menu_item.Link), menu_item.Name)
-			}else if menu_item.Link[len(menu_item.Link)-1:] == "/" {
+			} else if menu_item.Link[len(menu_item.Link)-1:] == "/" {
 				menu += fmt.Sprintf("<li%v><a href=%v%v>%v</a></li>", selected, addQuotes(menu_item.Link), event_id, menu_item.Name)
 			} else {
 				menu += fmt.Sprintf("<li%v><a href=%v>%v</a></li>", selected, addQuotes(menu_item.Link), menu_item.Name)
@@ -190,16 +190,16 @@ func scoreboard_menu(event_id string, event_ranges []Range, page_url string, isP
 	menu := "<ul>"
 	selected := ""
 	for _, menu_item := range EventMenuItems {
-		if menu_item.Link == page_url{
+		if menu_item.Link == page_url {
 			selected = " class=v"
 		}
 
 		if menu_item.Ranges {
 			class := "m"
-			if menu_item.Link == page_url{
+			if menu_item.Link == page_url {
 				class = `"v m"`
 			}
-			if (isPrizeMeet && menu_item.Link != URL_totalScores) || !isPrizeMeet{
+			if (isPrizeMeet && menu_item.Link != URL_totalScores) || !isPrizeMeet {
 				//The a tag is needed for my ipad
 				menu += fmt.Sprintf("<li class=%v><a href=#>%v</a><ul>", class, menu_item.Name)
 				for range_id, range_item := range event_ranges {
@@ -210,9 +210,9 @@ func scoreboard_menu(event_id string, event_ranges []Range, page_url string, isP
 				menu += "</ul></li>"
 			}
 		} else {
-			if menu_item.Link == "/"{
+			if menu_item.Link == "/" {
 				menu += fmt.Sprintf("<li%v><a href=%v>%v</a></li>", selected, addQuotes(menu_item.Link), menu_item.Name)
-			}else if menu_item.Link[len(menu_item.Link)-1:] == "/" {
+			} else if menu_item.Link[len(menu_item.Link)-1:] == "/" {
 				menu += fmt.Sprintf("<li%v><a href=%v%v>%v</a></li>", selected, addQuotes(menu_item.Link), event_id, menu_item.Name)
 			} else {
 				menu += fmt.Sprintf("<li%v><a href=%v>%v</a></li>", selected, addQuotes(menu_item.Link), menu_item.Name)
@@ -239,7 +239,7 @@ func home_menu(page string, menu_items []Menu) string {
 	for _, menu_item := range menu_items {
 		if page != menu_item.Link {
 			menu += fmt.Sprintf("<li><a href=%v>%v</a></li>", addQuotes(menu_item.Link), menu_item.Name)
-		}else{
+		} else {
 			menu += fmt.Sprintf("<li class=v><a href=%v>%v</a></li>", addQuotes(menu_item.Link), menu_item.Name)
 		}
 	}

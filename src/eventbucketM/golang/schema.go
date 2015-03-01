@@ -7,59 +7,59 @@ type M map[string]interface{}
 lowercase letters MUST be used for struct properties
 Uppercase letters MUST be used for a sub struct*/
 type Event struct {
-	Id   string 									`bson:"_id"`
-	Club string 									`bson:"c"`
-	Name string 									`bson:"n"`
+	Id   string `bson:"_id"`
+	Club string `bson:"c"`
+	Name string `bson:"n"`
 	//	Datetime string							`bson:"d,omitempty"`		No browser currently supports date time, so settling for separate fields that google chrome allows
-	Date           string                  `bson:"d,omitempty"`
-	Time           string                  `bson:"t,omitempty"`
-	Grades         []int                   `bson:"g,omitempty"`
-	SortScoreboard string                  `bson:"o,omitempty"`
-	IsPrizeMeet    bool                    `bson:"p,omitempty"`
-	Closed		   bool                    `bson:"l,omitempty"`
-	Ranges         []Range     			   `bson:"R,omitempty"`
-	Shooters       []EventShooter 			`bson:"S,omitempty"`
-//	TeamCat        map[string]TeamCat      `bson:"A,omitempty"`
-//	Teams          map[string]Team         `bson:"T,omitempty"`
-	AutoInc        AutoInc                 `bson:"U"`
+	Date           string         `bson:"t,`
+	Time           string         `bson:"t,omitempty"`
+	Grades         []int          `bson:"^^schemaGRADES^^,omitempty"`
+	SortScoreboard string         `bson:"o,omitempty"`
+	IsPrizeMeet    bool           `bson:"p,omitempty"`
+	Closed         bool           `bson:"l,omitempty"`
+	Ranges         []Range        `bson:"^^schemaRANGE^^,omitempty"`
+	Shooters       []EventShooter `bson:"^^schemaSHOOTER^^,omitempty"`
+	//	TeamCat        map[string]TeamCat      `bson:"A,omitempty"`
+	//	Teams          map[string]Team         `bson:"T,omitempty"`
+	AutoInc AutoInc `bson:"U"`
 }
 
 type AutoInc struct {
 	Mound   int `bson:"M,omitempty"`
 	Event   int `bson:"E,omitempty"`
 	Club    int `bson:"C,omitempty"`
-	Range   int `bson:"R,omitempty"`
-	Shooter int `bson:"S,omitempty"`
+	Range   int `bson:"^^schemaRANGE^^,omitempty"`
+	Shooter int `bson:"^^schemaSHOOTER^^,omitempty"`
 }
 
 type Club struct {
-	Id        string           `bson:"_id"`
-	Name      string           `bson:"n"`
-	LongName  string           `bson:"l,omitempty"`
-	Mounds    []Mound          `bson:"M,omitempty"`
-	Latitude  string           `bson:"t,omitempty"`
-	Longitude string           `bson:"g,omitempty"`
-	Url       string           `bson:"u,omitempty"`
-	Address		string `bson:"a,omitempty"`
-	Town			string `bson:"w,omitempty"`
-	PostCode		string `bson:"p,omitempty"`
-	AutoInc   AutoInc          `bson:"U,omitempty"`
+	Id        string  `bson:"_id"`
+	Name      string  `bson:"n"`
+	LongName  string  `bson:"l,omitempty"`
+	Mounds    []Mound `bson:"M,omitempty"`
+	Latitude  string  `bson:"t,omitempty"`
+	Longitude string  `bson:"g,omitempty"`
+	Url       string  `bson:"u,omitempty"`
+	Address   string  `bson:"a,omitempty"`
+	Town      string  `bson:"w,omitempty"`
+	PostCode  string  `bson:"p,omitempty"`
+	AutoInc   AutoInc `bson:"^^schemaAutoInc^^,omitempty"`
 }
 
 type Range struct {
-	Name       string `bson:"n"`
-	Aggregate  string `bson:"a,omitempty"`
-	ScoreBoard bool   `bson:"s,omitempty"`
-	Locked     bool   `bson:"l,omitempty"`
-	Hidden     bool   `bson:"h,omitempty"`
-	Order      int    `bson:"o,omitempty"`
-	Status     int    `bson:"t,omitempty"`	//ENUM change to 1 when the first shooter has recorded their first shot change to 2 when the range is finished. http://stackoverflow.com/questions/14426366/what-is-an-idiomatic-way-of-representing-enums-in-golang
-	Class      map[string]RangeProperty `bson:"omitempty,inline"`	//TODO possibly change it to optional grades per range in future
-	Id			*int	`bson:"i,omitempty"`
+	Name       string                   `bson:"n"`
+	Aggregate  string                   `bson:"a,omitempty"`
+	ScoreBoard bool                     `bson:"s,omitempty"`
+	Locked     bool                     `bson:"l,omitempty"`
+	Hidden     bool                     `bson:"h,omitempty"`
+	Order      int                      `bson:"^^schemaSORT^^,omitempty"`
+	Status     int                      `bson:"t,omitempty"`      //ENUM change to 1 when the first shooter has recorded their first shot change to 2 when the range is finished. http://stackoverflow.com/questions/14426366/what-is-an-idiomatic-way-of-representing-enums-in-golang
+	Class      map[string]RangeProperty `bson:"omitempty,inline"` //TODO possibly change it to optional grades per range in future
+	Id         *int                     `bson:"i,omitempty"`
 }
 type RangeProperty struct {
-	ShotsQty			int	`bson:"s,omitempty"`
-	SightersQty		int	`bson:"i,omitempty"`
+	ShotsQty    int `bson:"s,omitempty"`
+	SightersQty int `bson:"i,omitempty"`
 }
 
 type Score struct {
@@ -85,15 +85,15 @@ type NRAA_Shooter struct {
 }
 
 type EventShooter struct {
-	FirstName string           `bson:"f"`	//TODO change these to point to shooters in the other shooter tables
+	FirstName string           `bson:"f"` //TODO change these to point to shooters in the other shooter tables
 	Surname   string           `bson:"s"`
 	Club      string           `bson:"b"` //TODO should possibly change to "C"??
 	Grade     int              `bson:"g"`
 	Hidden    bool             `bson:"h,omitempty"`
 	AgeGroup  string           `bson:"a,omitempty"`
 	Scores    map[string]Score `bson:"omitempty,inline"` //S is not used!
-	LinkedId  *int				`bson:"l,omitempty"`	//For duplicating shooters that are in different classes with the same score
-	SID int `bson:"d,omitempty"`
+	LinkedId  *int             `bson:"l,omitempty"`      //For duplicating shooters that are in different classes with the same score
+	SID       int              `bson:"d,omitempty"`
 	//SCOREBOARD
 	Id       int    `bson:"i,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
 	Position string `bson:"x,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
@@ -119,14 +119,14 @@ type Shooter struct {
 	NickName  string `bson:"n,omitempty"`
 	Club      string `bson:"c,omitempty"`
 	//Skill map[string]Skill	//Grading set by the VRA for each class
-	Address   string `bson:"a,omitempty"`
-	Email     string `bson:"e,omitempty"`
+	Address string `bson:"a,omitempty"`
+	Email   string `bson:"e,omitempty"`
 	//Shooter details 0=not modified, 1=updated, 2=merged, 3=deleted
-	Status    int    `bson:"t,omitempty"`
+	Status int `bson:"t,omitempty"`
 	//If shooter details are merged with another existing shooter then this is the other NRAA_SID it was merged with
 	//When merging set one record to merged, the other to deleted.
 	//Both records must set MergedSID to the other corresponding shooter SID
-	MergedSID int    `bson:"m,omitempty"`
+	MergedSID int `bson:"m,omitempty"`
 }
 
 type TeamCat struct {

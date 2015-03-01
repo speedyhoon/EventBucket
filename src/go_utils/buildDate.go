@@ -8,16 +8,13 @@ import (
 	"path/filepath"
 	"os"
 )
-
-/*
-	loop through all files & sub directories and replace the search variables with the actual values
-*/
+//loop through all files & sub directories and replace the search variables with the actual values
 
 const (
 	ROOT_DIR = "../eventbucketM/"
 	COPY_TO_DIR = ROOT_DIR +"!/"
 
-	BD_ARGS = `--dbpath \""+databasePath+"\" --port 38888 --nssize 1 --smallfiles`
+	BD_ARGS = `--dbpath", databasePath, "--port", "38888", "--nssize", "1", "--smallfiles", "--noscripting", `
 )
 
 var (
@@ -25,18 +22,22 @@ var (
 	DEV = "true"
 	ReplaceChars = map[string]interface{}{
 		"VersionNumber": 58,		//TODO get the Git tag from the last commit
+		"DIR_ROOT": "",
 		"BuildDate": time.Now().Format("January 2, 2006"),
-
+		"schemaSHOOTER": "S",
+		"schemaAutoInc": "U",
+		"schemaRANGE": "R",
+		"schemaSORT": "o",
+		"schemaGRADES": "g",
 	}
 	DevMode = map[string]interface{}{
-		"DbArgs": BD_ARGS + " --noauth --slowms 3 --cpu --profile 2 --objcheck --notablescan --rest",
+		"DbArgs": BD_ARGS + `"--noauth", "--slowms", "3", "--cpu", "--profile", "2", "--objcheck", "--notablescan", "--rest`,
 	}
 	ProdMode = map[string]interface{}{
-		"DbArgs": BD_ARGS + " --nohttpinterface --noscripting",
+		"DbArgs": BD_ARGS + `"--nohttpinterface`,
 	}
 )
 //TODO eventually move these settings to a json or yaml file.
-
 
 func main(){
 	joinSettings()
@@ -60,13 +61,11 @@ func walkPath(path string, f os.FileInfo, err error) error {
 	if err != nil{
 		return err
 	}
-	fmt.Printf("%v %s with %d bytes\n", f.IsDir(), path, f.Size())
 	if !f.IsDir() {
 		source, _ := ioutil.ReadFile(path)
 		if err == nil{
 			for search, replace := range ReplaceChars {
 				source = bytes.Replace(source, []byte("^^"+search+"^^"), []byte(fmt.Sprintf("%v",replace)), -1)
-				fmt.Printf("%v: %v\n", search, replace)
 			}
 		}
 		if CURRENT_DIR == "golang"{
@@ -74,7 +73,6 @@ func walkPath(path string, f os.FileInfo, err error) error {
 		}
 	}else{
 		CURRENT_DIR = f.Name()
-		fmt.Printf("\n%v FOLDER IsDir\n", f.Name())
 	}
 	return nil
 }

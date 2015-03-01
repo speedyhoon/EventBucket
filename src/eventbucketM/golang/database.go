@@ -1,33 +1,33 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"mgo"
-	"strings"
-	"errors"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 const (
 	TBLAutoInc     = "A"
-		schemaCounter  = "n"
+	schemaCounter  = "n"
 	TBLclub        = "C"
 	TBLevent       = "E"
-		schemaSHOOTER  = "S"
-		schemaAutoInc  = "U"
-		schemaRANGE    = "R"
-		schemaSORT     = "o"
-		schemaGRADES   = "g"
-	//TBLchamp       = "c" //Championship
+	schemaSHOOTER  = "^^schemaSHOOTER^^"
+	schemaAutoInc  = "^^schemaAutoInc^^"
+	schemaRANGE    = "^^schemaRANGE^^"
+	schemaSORT     = "^^schemaSORT^^"
+	schemaGRADES   = "^^schemaGRADES^^"
+	TBLchamp       = "H"
 	TBLshooter     = "S"
 	TBLshooterList = "n"
 )
 
 var conn *mgo.Database
 
-func startDatabase(){
-	databasePath := os.Getenv("SystemDrive")+`/ProgramData/EventBucket`
+func startDatabase() {
+	databasePath := os.Getenv("SystemDrive") + `/ProgramData/EventBucket`
 	exists := dirExists(databasePath)
 	if exists {
 		cmd := exec.Command("ebd", "^^DbArgs^^")
@@ -64,10 +64,10 @@ func DB() {
 		Error.Println("The database service is not available.", err)
 		return
 	}
-	session.SetMode(mgo.Eventual, false)//false = the consistency guarantees won't be reset
+	session.SetMode(mgo.Eventual, false) //false = the consistency guarantees won't be reset
 	conn = session.DB("local")
 	//TODO defer closing the session isn't working
-//	defer session.Close()
+	//defer session.Close()
 }
 
 func getCollection(collection_name string) []M {
@@ -91,23 +91,24 @@ func getClubs() []Club {
 	}
 	return result
 }
-func getClub(id string)(Club, error){
+
+func getClub(id string) (Club, error) {
 	var result Club
 	if conn != nil {
 		err := conn.C(TBLclub).FindId(id).One(&result)
 		return result, err
 	}
-	return result, errors.New("Unable to get club with id: '"+id+"'")
+	return result, errors.New("Unable to get club with id: '" + id + "'")
 }
 
-func getClub_by_name(clubName string)(Club, bool){
+func getClub_by_name(clubName string) (Club, bool) {
 	var result Club
 	if conn != nil {
 		//remove double spaces
 		clubName = strings.Join(strings.Fields(clubName), " ")
 		if clubName != "" {
 			err := conn.C(TBLclub).Find(M{"n": M{"$regex": fmt.Sprintf(`^%v$`, clubName), "$options": "i"}}).One(&result)
-			if err==nil {
+			if err == nil {
 				return result, true
 			}
 		}
@@ -147,29 +148,29 @@ func getShooter(id int) Shooter {
 	return result
 }
 
-func getEvent(id string)(Event, error){
+func getEvent(id string) (Event, error) {
 	var result Event
 	if conn != nil {
 		err := conn.C(TBLevent).FindId(id).One(&result)
 		return result, err
 	}
-	return result, errors.New("Unable to get event with id: '"+id+"'")
+	return result, errors.New("Unable to get event with id: '" + id + "'")
 }
 
-func getEvent20Shooters(id string)(Event, bool){
+func getEvent20Shooters(id string) (Event, bool) {
 	var result Event
 	if conn != nil {
 		//TODO is it possible to replace bson.M with M?
-//		err := conn.C(TBLevent).FindId(id).Select(bson.M{"S": bson.M{"$slice": -20 }}).One(&result)
-		err := conn.C(TBLevent).FindId(id).Select(M{"S": M{"$slice": -20 }}).One(&result)
-		if err==nil{
+		//err := conn.C(TBLevent).FindId(id).Select(bson.M{"S": bson.M{"$slice": -20 }}).One(&result)
+		err := conn.C(TBLevent).FindId(id).Select(M{"S": M{"$slice": -20}}).One(&result)
+		if err == nil {
 			return result, false
 		}
 	}
 	return result, true
 }
 
-func getNextId(collection_name string)(string, error){
+func getNextId(collection_name string) (string, error) {
 	var result M
 	if conn != nil {
 		change := mgo.Change{
@@ -228,7 +229,7 @@ func Dot(elem ...interface{}) string {
 func DB_event_add_range(event_id string, new_range Range) (int, Event) {
 	change := mgo.Change{
 		Update: M{
-			"$push":M{schemaRANGE: new_range},
+			"$push": M{schemaRANGE: new_range},
 		},
 		Upsert:    true,
 		ReturnNew: true,
@@ -236,7 +237,7 @@ func DB_event_add_range(event_id string, new_range Range) (int, Event) {
 	returned := Event{}
 	conn.C(TBLevent).FindId(event_id).Apply(change, &returned)
 	for range_id, range_data := range returned.Ranges {
-		if range_data.Name==new_range.Name&&range_data.Aggregate==new_range.Aggregate&&range_data.ScoreBoard==new_range.ScoreBoard&&range_data.Locked==new_range.Locked&&range_data.Hidden==new_range.Hidden{
+		if range_data.Name == new_range.Name && range_data.Aggregate == new_range.Aggregate && range_data.ScoreBoard == new_range.ScoreBoard && range_data.Locked == new_range.Locked && range_data.Hidden == new_range.Hidden {
 			//TODO this if check seems really hacky!!!
 			return range_id, returned
 		}
@@ -244,13 +245,12 @@ func DB_event_add_range(event_id string, new_range Range) (int, Event) {
 	return -1, returned
 }
 
-
 func event_shooter_insert(eventId string, shooter EventShooter) {
 	insert := M{
 		schemaSHOOTER: []EventShooter{shooter},
 	}
 	increment := 1
-	if shooter.Grade == 8{
+	if shooter.Grade == 8 {
 		increment = 2
 		duplicateShooter := shooter
 		duplicateShooter.Grade = 7
@@ -264,36 +264,35 @@ func event_shooter_insert(eventId string, shooter EventShooter) {
 				Dot(schemaAutoInc, schemaSHOOTER): increment,
 			},
 		},
-		Upsert: true,
+		Upsert:    true,
 		ReturnNew: true,
 	}
 	var event Event
 	conn.C(TBLevent).FindId(eventId).Apply(change, &event)
 
-	if increment == 2{
+	if increment == 2 {
 		change = mgo.Change{
 			Update: M{
 				"$set": M{
-					Dot(schemaSHOOTER, event.AutoInc.Shooter-2, "i"): event.AutoInc.Shooter-2,
-					Dot(schemaSHOOTER, event.AutoInc.Shooter-2, "l"): event.AutoInc.Shooter-1,
-					Dot(schemaSHOOTER, event.AutoInc.Shooter-1, "i"): event.AutoInc.Shooter-1,
-					Dot(schemaSHOOTER, event.AutoInc.Shooter-1, "l"): event.AutoInc.Shooter-2,
+					Dot(schemaSHOOTER, event.AutoInc.Shooter-2, "i"): event.AutoInc.Shooter - 2,
+					Dot(schemaSHOOTER, event.AutoInc.Shooter-2, "l"): event.AutoInc.Shooter - 1,
+					Dot(schemaSHOOTER, event.AutoInc.Shooter-1, "i"): event.AutoInc.Shooter - 1,
+					Dot(schemaSHOOTER, event.AutoInc.Shooter-1, "l"): event.AutoInc.Shooter - 2,
 				},
 			},
 		}
-	}else{
+	} else {
 		change = mgo.Change{
 			Update: M{
 				"$set": M{
-					Dot(schemaSHOOTER, event.AutoInc.Shooter-1, "i"): event.AutoInc.Shooter-1,
+					Dot(schemaSHOOTER, event.AutoInc.Shooter-1, "i"): event.AutoInc.Shooter - 1,
 				},
 			},
 		}
 	}
 
 	conn.C(TBLevent).FindId(eventId).Apply(change, &event)
-/*
-	event, _ := getEvent(event_id)
+	/*event, _ := getEvent(event_id)
 	increment := 1
 	insert := M{
 		Dot(schemaSHOOTER, event.AutoInc.Shooter): shooter,
@@ -307,7 +306,7 @@ func event_shooter_insert(eventId string, shooter EventShooter) {
 		duplicate := shooter
 		duplicate.Grade = 7 //Match Open
 		duplicate.Hidden = true
-//		duplicate.LinkedId = fmt.Sprintf("%v", event.AutoInc.Shooter)	//TODO remove when not needed!
+	//	duplicate.LinkedId = fmt.Sprintf("%v", event.AutoInc.Shooter)	//TODO remove when not needed!
 		insert[fmt.Sprintf("%v", Dot(schemaSHOOTER, event.AutoInc.Shooter + 1))] = duplicate
 	}
 	change := mgo.Change{
@@ -316,13 +315,12 @@ func event_shooter_insert(eventId string, shooter EventShooter) {
 			"$inc": M{Dot(schemaAutoInc, schemaSHOOTER): increment},
 		},
 	}
-	conn.C(TBLevent).FindId(event_id).Apply(change, make(M))
-	*/
+	conn.C(TBLevent).FindId(event_id).Apply(change, make(M))*/
 }
 
-func eventTotalScoreUpdate(eventId string, rangeId int, shooterIds []int, score Score)Event{
+func eventTotalScoreUpdate(eventId string, rangeId int, shooterIds []int, score Score) Event {
 	updateSetter := make(M)
-	for _, shooterId := range shooterIds{
+	for _, shooterId := range shooterIds {
 		updateSetter[Dot(schemaSHOOTER, shooterId, rangeId)] = score
 	}
 	change := mgo.Change{
@@ -340,8 +338,7 @@ func eventTotalScoreUpdate(eventId string, rangeId int, shooterIds []int, score 
 	return event
 }
 
-
-func event_sort_aggs_with_grade(event Event, range_id string, shooter_id int){
+func event_sort_aggs_with_grade(event Event, range_id string, shooter_id int) {
 	event_id := event.Id
 	ranges_to_redo := search_for_aggs(event_id, range_id)
 	//TODO this seems quite inefficent
@@ -399,7 +396,7 @@ func event_sort_aggs_with_grade(event Event, range_id string, shooter_id int){
 			var next_shooter_score Score
 
 			if index-1 >= 0 {
-				next_shooter := shooter_list[index - 1]
+				next_shooter := shooter_list[index-1]
 				next_shooter_score = next_shooter.Scores[rangeId]
 
 				//compare the shooters scores
@@ -417,18 +414,17 @@ func event_sort_aggs_with_grade(event Event, range_id string, shooter_id int){
 						//					shoot_off = true
 						//					shooter_list[index].Warning = 1
 						//					score_board_legend_on_off["ShootOff"] = true
-
 					}
 				} else {
 					//Shooters have a different score
 					if this_shooter_score.Total != 0 {
 						//increase rank by 1
 						rank = next_ordinal
-					}else{
+					} else {
 						rank = 0
 					}
 				}
-			}else {
+			} else {
 				//The very first shooter without a previous shooter assigned
 				//increase rank by 1
 				rank = next_ordinal
@@ -437,7 +433,7 @@ func event_sort_aggs_with_grade(event Event, range_id string, shooter_id int){
 			//update the database
 			//TODO change this to only update once. not every loop iteration
 			change := mgo.Change{
-				Update: M{                                          //position
+				Update: M{ //position
 					"$set": M{Dot(schemaSHOOTER, shooter.Id, rangeId, "p"): rank},
 				},
 			}
@@ -483,14 +479,14 @@ func nraa_upsert_shooter(shooter NRAA_Shooter) {
 	if err != nil {
 		Warning.Println(err)
 	}
-//	Info.Printf("inserted: %v", shooter)
+	//Info.Printf("inserted: %v", shooter)
 }
 func Upsert_Doc(collection string, id interface{}, document interface{}) {
 	_, err := conn.C(collection).UpsertId(id, document)
 	if err != nil {
 		Warning.Println(err)
 	}
-//	Info.Printf("inserted id: %v into %v", id, collection)
+	//Info.Printf("inserted id: %v into %v", id, collection)
 }
 
 func searchShooters(query M) []Shooter {

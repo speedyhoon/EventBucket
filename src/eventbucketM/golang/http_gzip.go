@@ -4,35 +4,35 @@ import (
 	"compress/gzip"
 	"io"
 	"net/http"
+	"regexp"
 	"strings"
 	"time"
-	"regexp"
 )
 
 const (
-//GET
-	URL_home           	= "/"
-	URL_about           	= "/about"
-	URL_clubs            = "/clubs"
-	URL_licence         	= "/licence"
+	//GET
+	URL_home    = "/"
+	URL_about   = "/about"
+	URL_clubs   = "/clubs"
+	URL_licence = "/licence"
 	//URL_licence_summary	= "/licence-summary"
-	URL_archive			  	= "/archive"
-	URL_shooters       = "/shooters"
-	URL_event            = "/event/"							//event Id special type characters only allowed
-//GET with PARAMETERS
-	URL_club                 = "/club/"
+	URL_archive  = "/archive"
+	URL_shooters = "/shooters"
+	URL_event    = "/event/" //event Id special type characters only allowed
+	//GET with PARAMETERS
+	URL_club = "/club/"
 	//URL_events               = "/events/"
-	URL_eventSettings        = "/eventSettings/"			//event id
-	URL_scoreboard           = "/scoreboard/"				//event id/range_id
-	URL_totalScores          = "/totalScores/"			//event id/range_id
-	URL_totalScoresAll       = "/totalScoresAll/"		//event id/range_id
-	URL_startShooting        = "/startShooting/"			//event id/range_id
-	URL_startShootingAll     = "/startShootingAll/"		//event id/range_id
-	URL_queryShooterList 	 = "/queryShooterList"
-//POST
-	URL_clubInsert           = "/clubInsert"
+	URL_eventSettings    = "/eventSettings/"    //event id
+	URL_scoreboard       = "/scoreboard/"       //event id/range_id
+	URL_totalScores      = "/totalScores/"      //event id/range_id
+	URL_totalScoresAll   = "/totalScoresAll/"   //event id/range_id
+	URL_startShooting    = "/startShooting/"    //event id/range_id
+	URL_startShootingAll = "/startShootingAll/" //event id/range_id
+	URL_queryShooterList = "/queryShooterList"
+	//POST
+	URL_clubInsert = "/clubInsert"
 	//	URL_champInsert          = "/champInsert"
-	URL_eventInsert          = "/eventInsert"
+	URL_eventInsert = "/eventInsert"
 	//	URL_eventInsert2         = "/eventInsert2"
 	URL_eventRangeInsert     = "/rangeInsert"
 	URL_eventAggInsert       = "/aggInsert"
@@ -46,13 +46,13 @@ const (
 	URL_updateRange          = "/updateRange"
 	URL_updateIsPrizeMeet    = "/updateIsPrizeMeet"
 	//	URL_dateUpdate           = "/dateUpdate/"
-	URL_club_mound_update    = "/clubMoundUpdate/"
-	URL_clubMoundInsert      = "/clubMoundInsert/"
-	URL_clubDetailsUpsert      = "/clubDetailsUpsert/"
-	URL_updateShooterList    = "/updateShooterList"
-	URL_eventShotsNSighters  = "/eventShotsNSighters/"
+	URL_club_mound_update   = "/clubMoundUpdate/"
+	URL_clubMoundInsert     = "/clubMoundInsert/"
+	URL_clubDetailsUpsert   = "/clubDetailsUpsert/"
+	URL_updateShooterList   = "/updateShooterList"
+	URL_eventShotsNSighters = "/eventShotsNSighters/"
 	//	URL_rangeReport          = "/rangeReport/"
-	URL_randomData           = "/random-data/"
+	URL_randomData = "/random-data/"
 )
 
 func start() {
@@ -82,9 +82,9 @@ func start() {
 	//	GetParameters(URL_rangeReport, range_report)
 
 	Post(URL_eventInsert, eventInsert)
-	Post(URL_queryShooterList, queryShooterList)	//Search for a shooter by first, surname & club
+	Post(URL_queryShooterList, queryShooterList) //Search for a shooter by first, surname & club
 	Post(URL_updateShooterList, PostVia(updateShooterList, URL_shooters))
-	Post(URL_clubInsert, PostVia(clubInsert, URL_clubs))	//TODO redirect to actual club created
+	Post(URL_clubInsert, PostVia(clubInsert, URL_clubs)) //TODO redirect to actual club created
 	Post(URL_updateRange, rangeUpdate2)
 	//	Post(URL_dateUpdate, dateUpdate)
 	Post(URL_eventRangeInsert, rangeInsert)
@@ -114,7 +114,7 @@ var (
 	VURL_scoreboard          = regexp.MustCompile("^" + URL_scoreboard + "([" + ID_CHARSET_REGEX + "]+)$")
 )
 
-func Gzip(h http.Handler, w http.ResponseWriter, r *http.Request){
+func Gzip(h http.Handler, w http.ResponseWriter, r *http.Request) {
 	//Return a gzip compressed response if appropriate
 	if strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
 		w.Header().Set("Content-Encoding", "gzip")
@@ -128,24 +128,25 @@ func Gzip(h http.Handler, w http.ResponseWriter, r *http.Request){
 	h.ServeHTTP(w, r)
 }
 
-func Get(url string, runner func()Page){
+func Get(url string, runner func() Page) {
 	//Setup url as a subdirectory path. e.g. if url = "foobar" then "http://localhost/foobar" is available
-	http.Handle(url, serveHtml(func(w http.ResponseWriter, r *http.Request) {templator(runner(), w, r)}))
+	http.Handle(url, serveHtml(func(w http.ResponseWriter, r *http.Request) { templator(runner(), w, r) }))
 }
-func GetRedirectPermanent(url string, runner func()Page){
+func GetRedirectPermanent(url string, runner func() Page) {
 	Get(url, runner)
 	//Setup redirect back to subdirectory "url". Needed when url parameters are not wanted/needed.
 	//e.g. if url = "foobar" then "http://localhost/foobar/fdsa" will redirect to "http://localhost/foobar"
-	http.Handle(url + "/", http.RedirectHandler(url, http.StatusMovedPermanently))
+	http.Handle(url+"/", http.RedirectHandler(url, http.StatusMovedPermanently))
 }
-func GetParameters(url string, runner func(string)Page) {
+func GetParameters(url string, runner func(string) Page) {
 	//TODO add a way to get the event id, club id and range id from the url
-	h := func(w http.ResponseWriter, r *http.Request) {templator(runner(getIdFromUrl(r, url)), w, r)}
+	h := func(w http.ResponseWriter, r *http.Request) { templator(runner(getIdFromUrl(r, url)), w, r) }
 	http.Handle(url, serveHtml(h))
 }
+
 //TODO Post - Post to endpoint. If valid return to X page, else return to previous page with form filled out and wrong values highlighted with error message
 //TODO Add ajax detection to so ajax requests are not redirected back to the referrer page.
-func Post(url string, runner http.HandlerFunc){
+func Post(url string, runner http.HandlerFunc) {
 	http.HandleFunc(url, serveHtml(runner))
 }
 func PostVia(runThisFirst func(http.ResponseWriter, *http.Request), url string) func(http.ResponseWriter, *http.Request) {
@@ -163,20 +164,20 @@ func httpHeaders(w http.ResponseWriter, set_headers []string) {
 	//TODO Only set CSP when not in debug mode
 	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:")
 	headers := map[string][2]string{
-		"expire":  [2]string{"Expires", time.Now().UTC().AddDate(1, 0, 0).Format(time.RFC1123)}, //TODO should it return GMT time?  //Expiry date is in 1 year, 0 months & 0 days in the future
-		"cache":   [2]string{"Vary", "Accept-Encoding"},
-		"public":  [2]string{"Cache-Control", "public"},
-		"gzip":    [2]string{"Content-Encoding", "gzip"},
-		"html":    [2]string{"Content-Type", "text/html; charset=utf-8"},
-		"noCache": [2]string{"Cache-Control", "no-cache, no-store, must-revalidate"},
-		"expireNow":[2]string{"Expires", "0"},
-		"pragma":  [2]string{"Pragma", "no-cache"},
-		DIR_CSS:   [2]string{"Content-Type", "text/css; charset=utf-8"},
-		DIR_JS:    [2]string{"Content-Type", "text/javascript"},
-		DIR_PNG:   [2]string{"Content-Type", "image/png"},
-		DIR_JPEG:  [2]string{"Content-Type", "image/jpeg"},
-//		DIR_WEBP:  [2]string{"Content-Type", "image/webp"},
-		DIR_SVG:   [2]string{"Content-Type", "image/svg+xml"},
+		"expire":    {"Expires", time.Now().UTC().AddDate(1, 0, 0).Format(time.RFC1123)}, //TODO should it return GMT time?  //Expiry date is in 1 year, 0 months & 0 days in the future
+		"cache":     {"Vary", "Accept-Encoding"},
+		"public":    {"Cache-Control", "public"},
+		"gzip":      {"Content-Encoding", "gzip"},
+		"html":      {"Content-Type", "text/html; charset=utf-8"},
+		"noCache":   {"Cache-Control", "no-cache, no-store, must-revalidate"},
+		"expireNow": {"Expires", "0"},
+		"pragma":    {"Pragma", "no-cache"},
+		DIR_CSS:     {"Content-Type", "text/css; charset=utf-8"},
+		DIR_JS:      {"Content-Type", "text/javascript"},
+		DIR_PNG:     {"Content-Type", "image/png"},
+		DIR_JPEG:    {"Content-Type", "image/jpeg"},
+		//		DIR_WEBP:  [2]string{"Content-Type", "image/webp"},
+		DIR_SVG: {"Content-Type", "image/svg+xml"},
 	}
 	for _, lookup := range set_headers {
 		w.Header().Set(headers[lookup][0], headers[lookup][1])
@@ -198,9 +199,9 @@ func getIdFromUrl(r *http.Request, page_url string) string {
 	return r.URL.Path[len(page_url):]
 }
 
-type Page struct{
+type Page struct {
 	TemplateFile, Title string
-	Theme string
-	Data M
-	v8Url *regexp.Regexp
+	Theme               string
+	Data                M
+	v8Url               *regexp.Regexp
 }

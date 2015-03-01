@@ -1,22 +1,22 @@
 package main
 
 import (
-	"net/http"
-	"fmt"
 	"code.google.com/p/go.net/html"
-	"strings"
-	"strconv"
 	"encoding/json"
+	"fmt"
+	"net/http"
+	"strconv"
+	"strings"
 )
 
 func shooters() Page {
-	return Page {
+	return Page{
 		TemplateFile: "shooters",
-		Theme: TEMPLATE_HOME,
+		Theme:        TEMPLATE_HOME,
 		Data: M{
-			"Title":        "Shooters",
-			"Menu":     home_menu(URL_shooters, HOME_MENU_ITEMS),
-			"ShooterList":  generateForm2(organisers_update_shooter_list("")),
+			"Title":       "Shooters",
+			"Menu":        home_menu(URL_shooters, HOME_MENU_ITEMS),
+			"ShooterList": generateForm2(organisers_update_shooter_list("")),
 		},
 	}
 }
@@ -30,9 +30,9 @@ func organisers_update_shooter_list(last_updated string) Form {
 		Title:  "Update Shooter List",
 		Inputs: []Inputs{
 			{
-				Html:  "submit",
-				Label: "Last updated: " + last_updated,
-				Value: "Update",
+				Html:      "submit",
+				Label:     "Last updated: " + last_updated,
+				Value:     "Update",
 				Autofocus: "on",
 			},
 		},
@@ -42,21 +42,21 @@ func organisers_update_shooter_list(last_updated string) Form {
 func updateShooterList(w http.ResponseWriter, r *http.Request) {
 	go updateShooterList2()
 }
-func updateShooterList2()int{
+func updateShooterList2() int {
 	/* TODO:
-		ckeck if there is another page
+	ckeck if there is another page
 
-		get a shooters grades
-		translate a shooters grades
-		save a shooters grades
+	get a shooters grades
+	translate a shooters grades
+	save a shooters grades
 	*/
 
 	url := "http://www.nraa.com.au/nraa-shooter-list/?_p="
-//	max_pages := 514
+	//	max_pages := 514
 	max_pages := 0
 	for page_count := 1; page_count <= max_pages; page_count += 1 {
 
-//		Trace.Printf("page: %v\n", page_count)
+		//		Trace.Printf("page: %v\n", page_count)
 		response, err := http.Get(fmt.Sprintf("%v%v", url, page_count))
 		defer response.Body.Close()
 		if err != nil {
@@ -130,12 +130,12 @@ func updateShooterList2()int{
 	return copyNewEntries()
 }
 
-func copyNewEntries()int{
+func copyNewEntries() int {
 	counter := 0
 	shooter_list := getShooterLists()
-	for _, n_shooter := range shooter_list{
+	for _, n_shooter := range shooter_list {
 		shooter := getShooterList(n_shooter.SID)
-		if shooter.SID!=0&&shooter.NRAA_Id!=0&&shooter.Surname!=""&&shooter.FirstName!=""&&shooter.NickName!=""&&shooter.Club!=""&&shooter.Address!=""&&shooter.Email!=""{
+		if shooter.SID != 0 && shooter.NRAA_Id != 0 && shooter.Surname != "" && shooter.FirstName != "" && shooter.NickName != "" && shooter.Club != "" && shooter.Address != "" && shooter.Email != "" {
 			Upsert_Doc("shooter", n_shooter.SID, n_shooter)
 			counter += 1
 		}
@@ -144,10 +144,10 @@ func copyNewEntries()int{
 	return counter
 }
 
-type Fdsa struct{
-	Surname string	`json:"surname"`
-	First string	`json:"first"`
-	Club string		`json:"club"`
+type Fdsa struct {
+	Surname string `json:"surname"`
+	First   string `json:"first"`
+	Club    string `json:"club"`
 }
 
 func queryShooterList(w http.ResponseWriter, r *http.Request) {
@@ -160,43 +160,43 @@ func queryShooterList(w http.ResponseWriter, r *http.Request) {
 	if t.Surname != "" {
 		query["s"] = M{"$regex": fmt.Sprintf(`^%v`, t.Surname), "$options": "i"}
 	}
-	if t.First != ""{
+	if t.First != "" {
 		query["f"] = M{"$regex": fmt.Sprintf(`^%v`, t.First), "$options": "i"}
 	}
-	if t.Club != ""{
+	if t.Club != "" {
 		query["c"] = M{"$regex": fmt.Sprintf(`^%v`, t.Club), "$options": "i"}
 	}
 
 	//Ignore Deleted shooters. Selects not modified, updated & merged shooters
-	query["$or"] = []M{{"t": nil}, {"t": M{"$lt": 3 } }}
+	query["$or"] = []M{{"t": nil}, {"t": M{"$lt": 3}}}
 	var option_list []Option
-	for _, shooter := range searchShooters(query){
+	for _, shooter := range searchShooters(query) {
 		option_list = append(option_list, Option{
-			Value: fmt.Sprintf("%v", shooter.SID),
+			Value:   fmt.Sprintf("%v", shooter.SID),
 			Display: fmt.Sprintf("%v %v, ~~ %v", shooter.FirstName, shooter.Surname, shooter.Club),
 		})
 	}
-	fmt.Fprint(w, draw_options(Inputs{Options:option_list}, ""))
+	fmt.Fprint(w, draw_options(Inputs{Options: option_list}, ""))
 }
 func event_query_shooterForm() Form {
 	return Form{
 		Action: URL_shooterInsert,
-		Title: "Add Shooters",
+		Title:  "Add Shooters",
 		Inputs: []Inputs{{
-			Name: "first",
-				Html:      "text",
-				Label:   "First Name",
-			},{
-				Name: "surname",
-				Html:      "text",
-				Label:   "Surname",
-			},{
-		Name: "club",
-				Html:      "text",
-				//TODO change club to a data-list
-				//SelectValues:   getClubSelectBox(eventsCollection),
-				Label:   "Club",
-			},
+			Name:  "first",
+			Html:  "text",
+			Label: "First Name",
+		}, {
+			Name:  "surname",
+			Html:  "text",
+			Label: "Surname",
+		}, {
+			Name: "club",
+			Html: "text",
+			//TODO change club to a data-list
+			//SelectValues:   getClubSelectBox(eventsCollection),
+			Label: "Club",
+		},
 		},
 	}
 }
