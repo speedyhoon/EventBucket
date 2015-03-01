@@ -1,0 +1,27 @@
+build flags for go build
+
+-race -v -x -tags 'main1'
+
+
+
+
+necessary
+
+
+
+
+ace template
+complile > html - save?
+minify > htm template
+
+
+
+
+
+
+request
+validation
+page object
+business logic
+database layer
+generic database crud
