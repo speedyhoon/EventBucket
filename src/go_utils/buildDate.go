@@ -14,8 +14,10 @@ import (
 */
 
 const (
-	BD_ARGS = "--dbpath databasePath --port 38888 --nssize 1 --smallfiles"
 	ROOT_DIR = "../eventbucketM/"
+	COPY_TO_DIR = ROOT_DIR +"!/"
+
+	BD_ARGS = `--dbpath \""+databasePath+"\" --port 38888 --nssize 1 --smallfiles`
 )
 
 var (
@@ -23,7 +25,7 @@ var (
 	DEV = "true"
 	ReplaceChars = map[string]interface{}{
 		"VersionNumber": 58,		//TODO get the Git tag from the last commit
-		"Date": time.Now().Format("January 2, 2006"),
+		"BuildDate": time.Now().Format("January 2, 2006"),
 
 	}
 	DevMode = map[string]interface{}{
@@ -31,7 +33,6 @@ var (
 	}
 	ProdMode = map[string]interface{}{
 		"DbArgs": BD_ARGS + " --nohttpinterface --noscripting",
-
 	}
 )
 //TODO eventually move these settings to a json or yaml file.
@@ -69,7 +70,7 @@ func walkPath(path string, f os.FileInfo, err error) error {
 			}
 		}
 		if CURRENT_DIR == "golang"{
-			ioutil.WriteFile(ROOT_DIR+f.Name(), source, 0777)
+			ioutil.WriteFile(COPY_TO_DIR+f.Name(), source, 0777)
 		}
 	}else{
 		CURRENT_DIR = f.Name()

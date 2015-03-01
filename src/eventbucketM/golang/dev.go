@@ -19,7 +19,10 @@ import (
 	"github.com/yvasiyarov/gorelic"
 )
 
-const NEWRELIC = false //Send logging data to New Relic
+const (
+	NEWRELIC = false //Send logging data to New Relic
+	PATH_HTML_SOURCE = "../html/%v.html"
+)
 
 var (
 	agent = gorelic.NewAgent()

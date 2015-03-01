@@ -7,10 +7,9 @@ import (
 
 const (
 //Global program settings
-	VERSION = ""
-	BUILDDATE = ""
-	PATH_HTML_MINIFIED = "htm/%v.htm"
-	PATH_HTML_SOURCE   = "html/%v.html"
+	VERSION = "^^VersionNumber^^"
+	BUILDDATE = "^^BuildDate^^"
+	PATH_HTML_MINIFIED = "h/%v.htm"
 	//Main template html files
 	TEMPLATE_HOME  = "_template_home"
 	TEMPLATE_ADMIN = "_template_admin"
@@ -18,7 +17,7 @@ const (
 	ID_CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!*()_-."
 	ID_CHARSET_REGEX = `\w~!\*\(\)\-\.`
 //Folder structure
-	DIR_ROOT = "./root/"
+	DIR_ROOT = ""
 	DIR_CSS  = "/c/"
 	DIR_JPEG = "/e/"
 	DIR_JS   = "/j/"
