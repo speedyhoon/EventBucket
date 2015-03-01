@@ -17,7 +17,7 @@ const (
 	URL_licence         	= "/licence"
 	//URL_licence_summary	= "/licence-summary"
 	URL_archive			  	= "/archive"
-	URL_organisers       = "/organisers"
+	URL_shooters       = "/shooters"
 	URL_event            = "/event/"							//event Id special type characters only allowed
 //GET with PARAMETERS
 	URL_club                 = "/club/"
@@ -56,7 +56,7 @@ const (
 )
 
 func start() {
-	go DB()
+	go startDatabase()
 	serveDir(DIR_JS)
 	serveDir(DIR_CSS)
 	serveDir(DIR_PNG)
@@ -66,7 +66,7 @@ func start() {
 	GetRedirectPermanent(URL_about, about)
 	GetRedirectPermanent(URL_archive, archive)
 	GetRedirectPermanent(URL_licence, licence)
-	GetRedirectPermanent(URL_organisers, organisers)
+	GetRedirectPermanent(URL_shooters, shooters)
 	GetRedirectPermanent(URL_clubs, clubs)
 	//	GetRedirectPermanent(URL_events, events)
 
@@ -83,8 +83,8 @@ func start() {
 
 	Post(URL_eventInsert, eventInsert)
 	Post(URL_queryShooterList, queryShooterList)	//Search for a shooter by first, surname & club
-	Post(URL_updateShooterList, PostVia(updateShooterList, URL_organisers))
-	Post(URL_clubInsert, PostVia(clubInsert, URL_organisers))
+	Post(URL_updateShooterList, PostVia(updateShooterList, URL_shooters))
+	Post(URL_clubInsert, PostVia(clubInsert, URL_clubs))	//TODO redirect to actual club created
 	Post(URL_updateRange, rangeUpdate2)
 	//	Post(URL_dateUpdate, dateUpdate)
 	Post(URL_eventRangeInsert, rangeInsert)
@@ -97,7 +97,7 @@ func start() {
 	//	Post(URL_updateEventName, updateEventName)
 	Post(URL_updateEventGrades, updateEventGrades)
 	Post(URL_updateIsPrizeMeet, updateIsPrizeMeet)
-	//	Post(URL_champInsert, PostVia(champInsert, URL_organisers))
+	//	Post(URL_champInsert, PostVia(champInsert, URL_championships))	//TODO redirect to actual club created
 	//Club insert/update
 	Post(URL_clubMoundInsert, clubMoundInsert)
 	Post(URL_clubDetailsUpsert, clubDetailsUpsert)

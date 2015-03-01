@@ -30,7 +30,7 @@ func startDatabase(){
 	databasePath := os.Getenv("SystemDrive")+`/ProgramData/EventBucket`
 	exists := dirExists(databasePath)
 	if exists {
-		cmd := exec.Command("ebd", "--dbpath", databasePath, "--port", "38888", "--nohttpinterface", "--noscripting", "--smallfiles", "--nssize", "1", "--noauth", "--slowms", "3", "--cpu", "--profile", "2", "--objcheck", "--notablescan")
+		cmd := exec.Command("ebd", "^^DbArgs^^")
 		//TODO output mongodb errors/logs to stdOut
 		/*stdout, err := cmd.StdoutPipe()
 		if err != nil {
