@@ -21,7 +21,8 @@ import (
 
 const (
 	NEWRELIC         = false //Send logging data to New Relic
-	PATH_HTML_SOURCE = "../html/%v.html"
+	PATH_HTML_SOURCE = "html/%v.html"
+	URL_randomData   = "/random-data/"
 )
 
 var (
@@ -134,7 +135,7 @@ func dev_mode_minifyHtml(pageName string, minify []byte) []byte {
 	return bytes.Replace(minify, []byte("~~~"), []byte(" "), -1)
 }
 
-func dev_mode_random_data(w http.ResponseWriter, r *http.Request) {
+func randomData(w http.ResponseWriter, r *http.Request) {
 	eventId := ""
 	rangeId := ""
 	shooterQty := 0
@@ -142,33 +143,39 @@ func dev_mode_random_data(w http.ResponseWriter, r *http.Request) {
 	startShooting := false
 	var properties []string
 	//	random_grades := []string{/*"a","b","c",*/"d", "e", "f", "g", "h", "i", "j"}
-	attributes := strings.Split(strings.Replace(r.RequestURI, "/random-data/", "", -1), "&")
-	for _, request := range attributes {
+	for _, request := range strings.Split(strings.Replace(r.RequestURI, "/random-data/", "", -1), "&") {
 		properties = strings.Split(request, "=")
-		if properties[0] == "event_id" || properties[0] == "eventId" {
+		switch properties[0] {
+		case "eventId":
 			eventId = properties[1]
-		} else if properties[0] == "range_id" || properties[0] == "rangeId" {
+			break
+		case "rangeId":
 			rangeId = properties[1]
-		} else if properties[0] == "totalScores" {
+			break
+		case "totalScores":
 			totalScores = true
-		} else if properties[0] == "startShooting" {
+			break
+		case "startShooting":
 			totalScores = true
-		} else if properties[0] == "shooterQty" {
+		case "shooterQty":
 			shooterQty, _ = strconv.Atoi(properties[1])
 		}
 	}
+	if eventId == "" {
+		Error.Printf("Need a valid event Id to proceed.")
+	}
 	if shooterQty > 0 {
-		go dev_mode_random_data_shooterQty(shooterQty, eventId)
+		go randomDataShooterQty(shooterQty, eventId)
 	}
 	if totalScores {
-		go dev_mode_random_data_totalScores(eventId, rangeId)
+		go randomDataTotalScores(eventId, rangeId)
 	}
 	if startShooting {
-		go dev_mode_random_data_startShooting(eventId, rangeId)
+		go randomDataStartShooting(eventId, rangeId)
 	}
 }
 
-func dev_mode_random_data_startShooting(eventId, rangeId string) {
+func randomDataStartShooting(eventId, rangeId string) {
 	event, _ := getEvent(eventId)
 	for shooterId, shooter := range event.Shooters {
 		http.PostForm("http://localhost/updateShotScores",
@@ -182,7 +189,7 @@ func dev_mode_random_data_startShooting(eventId, rangeId string) {
 	}
 }
 
-func dev_mode_random_data_totalScores(eventId, rangeId string) {
+func randomDataTotalScores(eventId, rangeId string) {
 	event, _ := getEvent(eventId)
 	for shooter_id := range event.Shooters {
 		rand.Seed(time.Now().UnixNano()) //Use rand.Seed(90) with a constant number to make the same number
@@ -205,12 +212,12 @@ func dev_mode_random_data_totalScores(eventId, rangeId string) {
 	}
 }
 
-func dev_mode_random_data_shooterQty(shooterQty int, eventId string) {
-	//	var resp *http.Response
+func randomDataShooterQty(shooterQty int, eventId string) {
 	counter := 0
-	for counter <= shooterQty {
+	for counter < shooterQty {
 		//make some requests for x number of shooters
 		counter += 1
+		Trace.Printf("inserting shooter :", counter)
 		event_shooter_insert(eventId, EventShooter{
 			FirstName: randomdata.FirstName(randomdata.RandomGender),
 			Surname:   randomdata.LastName(),
@@ -218,16 +225,6 @@ func dev_mode_random_data_shooterQty(shooterQty int, eventId string) {
 			AgeGroup:  "N",
 			Grade:     rand.Intn(8),
 		})
-		/*resp, _ = http.PostForm("http://localhost/shooterInsert",
-			url.Values{"first":      {randomdata.FirstName(randomdata.RandomGender)},
-			"surname":   {randomdata.LastName()},
-			"club":      {randomdata.State(randomdata.Large)},
-			"age":       {"N"},
-				//					"grade":     {random_grades[rand.Intn(len(random_grades)-1)]},
-			"grade":     {fmt.Sprintf("%v", rand.Intn(8))},
-			"event_id":  {eventId},
-		})
-		resp.Body.Close()*/
 	}
 }
 
@@ -253,7 +250,7 @@ func main() {
 		agent.Run()
 	}
 	start()
-	Post(URL_randomData, dev_mode_random_data)
+	Post(URL_randomData, randomData)
 	Info.Println("ready to go")
 	Warning.Println("ListenAndServe: %v", http.ListenAndServe(":81", nil))
 }

@@ -72,7 +72,11 @@
 			</tbody>
 		</table>
 	{{else}}
-		{{NOSHOOTERS}}
+ 		{{if .Aggregate}}
+			<p>This is an aggregate range</p>
+		{{else}}
+			{{NOSHOOTERS}}
+		{{end}}
 	{{end}}
 
 	<table hidden>

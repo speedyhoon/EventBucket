@@ -1,15 +1,15 @@
 <!doctype html>
 <html>
 <head>
-	<link rel=stylesheet href={{.DirCss}}admin.css>
-	<link rel=icon type=image/png href={{.Favicon}}>
+	<link rel=stylesheet href=^^DirCss^^admin.css>
+	<link rel=icon type=image/png href=^^Favicon^^>
 	<title>EventBucket{{if .Title}} - {{.Title}}{{end}}</title>
 </head>
 <body>
 	{{/*^^ERROR^^*/}}
 	^^BODY^^
-	<script src=/j/admin.js></script>
-	{{if .Js}}<script src=^^DIR_JS^^{{.Js}}></script>{{end}}
-	{{if .NewRelic}}<script src=/j/new_relic.js></script>{{end}}
+	<script src=^^DirJs^^admin.js></script>
+	{{if .Js}}<script src=^^DirJs^^{{.Js}}></script>{{end}}
+	^^NewRelic^^
 </body>
 </html>

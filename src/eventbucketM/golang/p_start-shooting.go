@@ -36,6 +36,7 @@ func startShooting_Data(data string, showAll bool) Page {
 				"target_heading_cells": "",
 				"fclass_heading_cells": "",
 				"match_heading_cells":  "",
+				"Aggregate":            true,
 			},
 		}
 	}
@@ -141,6 +142,7 @@ func startShooting_Data(data string, showAll bool) Page {
 			"target_heading_cells":  html_available_class_shots[0],
 			"fclass_heading_cells":  html_available_class_shots[1],
 			"match_heading_cells":   html_available_class_shots[2],
+			"Aggregate":             false,
 		},
 	}
 }
