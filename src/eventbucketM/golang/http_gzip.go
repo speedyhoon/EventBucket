@@ -30,8 +30,8 @@ const (
 	URL_startShootingAll = "/startShootingAll/" //event id/range_id
 	URL_queryShooterList = "/queryShooterList"
 	//POST
-	URL_clubInsert = "/clubInsert"
-	//	URL_champInsert          = "/champInsert"
+	URL_clubInsert  = "/clubInsert"
+	URL_champInsert = "/champInsert"
 	URL_eventInsert = "/eventInsert"
 	//	URL_eventInsert2         = "/eventInsert2"
 	URL_eventRangeInsert     = "/rangeInsert"
@@ -45,14 +45,14 @@ const (
 	URL_updateEventName      = "/updateEventName/"
 	URL_updateRange          = "/updateRange"
 	URL_updateIsPrizeMeet    = "/updateIsPrizeMeet"
-	//	URL_dateUpdate           = "/dateUpdate/"
-	URL_club_mound_update   = "/clubMoundUpdate/"
-	URL_clubMoundInsert     = "/clubMoundInsert/"
-	URL_clubDetailsUpsert   = "/clubDetailsUpsert/"
-	URL_updateShooterList   = "/updateShooterList"
-	URL_eventShotsNSighters = "/eventShotsNSighters/"
-	//	URL_rangeReport          = "/rangeReport/"
-	URL_randomData = "/random-data/"
+	URL_dateUpdate           = "/dateUpdate/"
+	URL_club_mound_update    = "/clubMoundUpdate/"
+	URL_clubMoundInsert      = "/clubMoundInsert/"
+	URL_clubDetailsUpsert    = "/clubDetailsUpsert/"
+	URL_updateShooterList    = "/updateShooterList"
+	URL_eventShotsNSighters  = "/eventShotsNSighters/"
+	URL_rangeReport          = "/rangeReport/"
+	URL_randomData           = "/random-data/"
 )
 
 func start() {
@@ -75,10 +75,10 @@ func start() {
 	GetParameters(URL_eventSettings, eventSettings)
 	GetParameters(URL_scoreboard, scoreboard)
 	GetParameters(URL_eventShotsNSighters, eventShotsNSighters)
-	//	GetParameters(URL_startShooting, startShooting)
-	//	GetParameters(URL_startShootingAll, startShootingAll)
-	//	GetParameters(URL_totalScores, totalScores)
-	//	GetParameters(URL_totalScoresAll, totalScoresAll)
+	GetParameters(URL_startShooting, startShooting)
+	GetParameters(URL_startShootingAll, startShootingAll)
+	GetParameters(URL_totalScores, totalScores)
+	GetParameters(URL_totalScoresAll, totalScoresAll)
 	//	GetParameters(URL_rangeReport, range_report)
 
 	Post(URL_eventInsert, eventInsert)

@@ -7,14 +7,18 @@ import (
 	"strings"
 )
 
-func startShooting(w http.ResponseWriter, r *http.Request) {
+func startShooting(data string) Page {
 	//	data := getIdFromUrl(r, URL_startShooting)
 	//	templator(startShooting_Data(data, false), r, w)
+	//	return startShooting_Data(getIdFromUrl(r, URL_startShooting), false)
+	return startShooting_Data(data, false)
 }
 
-func startShootingAll(w http.ResponseWriter, r *http.Request) {
+func startShootingAll(data string) Page {
 	//	data := getIdFromUrl(r, URL_startShootingAll)
 	//	templator(startShooting_Data(data, true), r, w)
+	//	return startShooting_Data(getIdFromUrl(r, URL_startShooting), true)
+	return startShooting_Data(data, true)
 }
 func startShooting_Data(data string, showAll bool) Page {
 	arr := strings.Split(data, "/")
