@@ -52,7 +52,6 @@ const (
 	URL_updateShooterList    = "/updateShooterList"
 	URL_eventShotsNSighters  = "/eventShotsNSighters/"
 	URL_rangeReport          = "/rangeReport/"
-	URL_randomData           = "/random-data/"
 )
 
 func start() {
@@ -162,7 +161,7 @@ func PostVia(runThisFirst func(http.ResponseWriter, *http.Request), url string) 
 
 func httpHeaders(w http.ResponseWriter, set_headers []string) {
 	//TODO Only set CSP when not in debug mode
-	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:")
+	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'") //TODO remove unsafe inline when start shooting gets its settings a different way
 	headers := map[string][2]string{
 		"expire":    {"Expires", time.Now().UTC().AddDate(1, 0, 0).Format(time.RFC1123)}, //TODO should it return GMT time?  //Expiry date is in 1 year, 0 months & 0 days in the future
 		"cache":     {"Vary", "Accept-Encoding"},

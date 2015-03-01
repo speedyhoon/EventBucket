@@ -17,12 +17,11 @@ const (
 	ID_CHARSET       = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!*()_-."
 	ID_CHARSET_REGEX = `\w~!\*\(\)\-\.`
 	//Folder structure
-	DIR_CSS  = "/c/"
-	DIR_JPEG = "/e/"
-	DIR_JS   = "/j/"
-	DIR_PNG  = "/p/"
-	DIR_SVG  = "/v/"
-	//	DIR_WEBP = "/w/"
+	DIR_CSS  = "^^DirCss^^"
+	DIR_JPEG = "^^DirJpeg^^"
+	DIR_JS   = "^^DirJs^^"
+	DIR_PNG  = "^^DirPng^^"
+	DIR_SVG  = "^^DirSvg^^"
 	//Barcodes
 	QRCODE     = "qr"
 	DATAMATRIX = "dm"
