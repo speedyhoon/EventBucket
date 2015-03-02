@@ -39,6 +39,7 @@ all templates
 	set a formatting rule for variable names
 all forms
 	on submit redirect to form location id on form with #my_form_name to <fieldset id=my_form_name><h2>Heading</h2><form action=... etc
+	decide if submit buttons should be on a new line or be next to the last element
 validation
 	if no grade specified. set to the first one in the list. e.g. Target A or F CLass B
 event show
@@ -91,3 +92,4 @@ Update
 General
 	Feature  set autofocus on every page that has a form
 	Feature  set autofocus to last form modified on post events
+	Research Use html imports, HTML templates and maybe JS code to load network adaptor. this would remove the need to use BuildBot to load NetworkAdaptor

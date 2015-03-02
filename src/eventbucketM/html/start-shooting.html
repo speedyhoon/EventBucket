@@ -40,7 +40,7 @@
 							<th>{{$shooter.Id}}</th>
 							<th>{{.Club}}</th>
 							<th>{{GRADE .Grade}}</th>
-							<th class=name>{{$shooter.FirstName}} {{$shooter.Surname}}</th>
+							<th class=name href=#{{$shooter.Id}}>{{$shooter.FirstName}} {{$shooter.Surname}}</th>
 							{{$range_scores := index .Scores $.strRangeId}}
 							{{$tempClass := CLASS .Grade}}
 							{{$shot_cells := index $classShots $tempClass}}

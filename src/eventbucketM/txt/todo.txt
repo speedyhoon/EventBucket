@@ -8,7 +8,7 @@ Start Shooting
 	Bug      calculating agg scores is slow
 	Security stop users accessing agg ranges in total scores and startShooting
 	Security Instead of saving shooter variables in a javascript file with an unique hash name. possibly use an ajax request instead. request POST for the settings of this event/range to change. respond with the new settings. then front end saves those settings in possibly web storage or the most browser compatible way. the local storage may become out of date quicker?- not sure on this.
-	Feature  Add links to shooters via their ids. <a href=#123>MyShooter Name</a>
+	Feature  when the url is changed use JS t highlight the navigated to row. maybe use: document.querySelector('[href="#30"]').parentNode.className
 	Feature  Connect barcode reader to use shooterId links in StartShooting page <a href=#123>MyShooter Name</a>
 	Research use event settings for ranges shots and sighters as base settings.
 
@@ -100,6 +100,7 @@ event-settings
 	strip white spaces on form inputs
 	remove total scores when in prize meeting mode
 Utilities
+	There is a weird [] characters in the main templates - removed []bytes not being converted to string
 	Server add redirects to root folders. So /c/ would go to the home page or 404 not found.
 	change qr barcode to datamatrix so I can user the barcode reader from work
 scoreboard:
@@ -114,6 +115,7 @@ START SHOOTING
 	footer colspan is too small when multiple classes are present
 	connect score entry to database upsert!! write new javascript send events
 	save the scores as the correct grade
+	Add links to shooters via their ids. <a href=#123>MyShooter Name</a>
 Installer:
 	licence in rtf format with bold headings
 	auto start a browser when starting EB!
@@ -126,12 +128,11 @@ home page
 	finish calendar with current events
 	name of day not displaying
 	upcoming events
+	Link to archive events
 database
 	rename collections to one letter
 all forms
 	trim white space from text fields
-home page
-	Link to archive events
 licence page
 	add creative commons logo to licence screen
 	view full licence page
