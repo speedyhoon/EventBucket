@@ -59,6 +59,14 @@ select
 .nbw
 	border-width: 0
 
+form
+	input
+		display: block
+
+	label
+		display: inline-block
+		margin: 0 1em 1em 0
+
 @media print
 	#grade_settings
 		display: none !important
@@ -102,9 +110,6 @@ select
 	.B,tr[data-selected="1"] .B
 		border-right: 2px solid #09f
 
-	tr:nth-child(odd)
-		background: #333
-
 	//#bu			//this styling isn't needed when the sighters selectbox isn't in
 	//	width: 90%
 	//	float: left
@@ -144,9 +149,6 @@ select
 		text-decoration: none
 		color: #ee0
 
-	//.k input
-	//	width: 50px
-
 	tr:not(#x) th:last-child
 		//Total fields (and heading) but no the footer with buttons
 		text-align: right
@@ -161,12 +163,8 @@ select
 
 
 
-
-
-
-
 	tr:nth-child(odd)
-		background: #ccc !important
+		background: #ccc
 
 	td
 		font-weight: bold

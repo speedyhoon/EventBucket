@@ -45,11 +45,10 @@ var (
 		"schemaRANGE": "R",
 		"schemaSORT": "o",
 		"schemaGRADES": "g",
-		"NetworkAdaptor": "true",		//TODO there has to be a better way to do this?
 	}
 	DevMode = map[string]interface{}{
 		"DbArgs": BD_ARGS + `"--noauth", "--slowms", "3", "--cpu", "--profile", "2", "--objcheck", "--notablescan", "--rest`,
-		"NewRelic": "true",		//TODO there has to be a better way to do this?
+		"NewRelic": "true",		//TODO there has to be a better way to do this? Maybe use Gulp.js instead?
 	}
 
 	ProdMode = map[string]interface{}{
@@ -59,16 +58,9 @@ var (
 //TODO eventually move these settings to a json or yaml file.
 
 func main(){
-	var err error
-	if exists(DevMode, "NewRelic") {
-		DevMode["NewRelic"], err = ioutil.ReadFile("html/newRelic.html")
-	}else{
-		ProdMode["NewRelic"] = ""
-	}
-	if exists(ReplaceChars, "NetworkAdaptor") {
-		ReplaceChars["NetworkAdaptor"], _ := ioutil.ReadFile("html/NetworkAdaptor.html")
-	}
 	joinSettings()
+	loadHtmlSnippets()
+	//TODO get the version number frim Git "C:\Program Files (x86)\Git\bin\git.exe" describe --tags
 	filepath.Walk(ROOT_DIR + "golang", walkPath)
 //	filepath.Walk(ROOT_DIR + "sass", walkPath)
 //	filepath.Walk(ROOT_DIR + "js", walkPath)
@@ -111,7 +103,27 @@ func walkPath(path string, f os.FileInfo, err error) error {
 	return nil
 }
 
-func exists(dict M, key string) string {
+func loadHtmlSnippets(){
+	//TODO remove this hacky code when multiple templates can be used easily with Ace!
+	var fileContents []byte
+	var err error
+
+	fileContents, err = ioutil.ReadFile(ROOT_DIR + "html/NetworkAdaptor.html")
+	ReplaceChars["NetworkAdaptor"] = string(fileContents[:])
+	if err != nil{
+		fmt.Println("Unable to load NetworkAdaptor html contents")
+	}
+
+	if exists(ReplaceChars, "NewRelic") != "" {
+		fileContents, err = ioutil.ReadFile(ROOT_DIR + "html/newRelic.html")
+		if err != nil{
+			fmt.Println("Unable to load NewRelic html contents")
+		}
+		ReplaceChars["NewRelic"] = string(fileContents[:])
+	}
+}
+
+func exists(dict map[string]interface{}, key string) string {
 	if val, ok := dict[key]; ok {
 		return fmt.Sprintf("%v", val)
 	}

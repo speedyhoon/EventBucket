@@ -22,7 +22,6 @@ func templator(viewController Page, w http.ResponseWriter, r *http.Request) {
 	viewController.Data["CurrentYear"] = time.Now().Year()
 	//Search in Theme html file & replace "^^BODY^^" with TemplateFile
 	source := bytes.Replace(loadHTM(viewController.Theme), []byte("^^BODY^^"), loadHTM(viewController.TemplateFile), -1)
-	source = bytes.Replace(source, []byte("^^NetworkAdaptor^^"), loadHTM("NetworkAdaptor"), -1)
 	generator(w, string(source), viewController)
 }
 
