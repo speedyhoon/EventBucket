@@ -63,7 +63,7 @@ func main(){
 	//TODO get the version number frim Git "C:\Program Files (x86)\Git\bin\git.exe" describe --tags
 	filepath.Walk(ROOT_DIR + "golang", walkPath)
 //	filepath.Walk(ROOT_DIR + "sass", walkPath)
-//	filepath.Walk(ROOT_DIR + "js", walkPath)
+	filepath.Walk(ROOT_DIR + "js", walkPath)
 	filepath.Walk(ROOT_DIR + "html", walkPath)
 }
 
@@ -84,23 +84,34 @@ func walkPath(path string, f os.FileInfo, err error) error {
 	if !f.IsDir() {
 		source, _ := ioutil.ReadFile(path)
 		if err == nil{
-			for search, replace := range ReplaceChars {
-				source = bytes.Replace(source, []byte("^^"+search+"^^"), []byte(fmt.Sprintf("%v",replace)), -1)
+			source = replaceContents(ReplaceChars, source)
+			switch CURRENT_DIR{
+			case "golang":
+				err = ioutil.WriteFile(COPY_TO_DIR+f.Name(), source, 0777)
+				break
+			case "js":
+				err = ioutil.WriteFile(COPY_TO_DIR+"j/"+f.Name(), source, 0777)
+				break
+			case "html":
+				err = ioutil.WriteFile(COPY_TO_DIR+"/h/"+strings.Replace(f.Name(), ".html", ".htm", -1), source, 0777)
+				err = ioutil.WriteFile(COPY_TO_DIR+"/html/"+f.Name(), source, 0777)
+				break
 			}
-		}
-		switch CURRENT_DIR{
-		case "golang":
-			ioutil.WriteFile(COPY_TO_DIR+f.Name(), source, 0777)
-			break
-		case "html":
-			ioutil.WriteFile(COPY_TO_DIR+"/h/"+strings.Replace(f.Name(), ".html", ".htm", -1), source, 0777)
-			ioutil.WriteFile(COPY_TO_DIR+"/html/"+f.Name(), source, 0777)
-			break
+			if err != nil{
+				fmt.Printf("ERROR: %v", err)
+			}
 		}
 	}else{
 		CURRENT_DIR = f.Name()
 	}
 	return nil
+}
+
+func replaceContents(replaceSearch map[string]interface{}, source []byte)[]byte{
+	for search, replace := range replaceSearch {
+		source = bytes.Replace(source, []byte("^^"+search+"^^"), []byte(fmt.Sprintf("%v",replace)), -1)
+	}
+	return source
 }
 
 func loadHtmlSnippets(){
@@ -109,7 +120,7 @@ func loadHtmlSnippets(){
 	var err error
 
 	fileContents, err = ioutil.ReadFile(ROOT_DIR + "html/NetworkAdaptor.html")
-	ReplaceChars["NetworkAdaptor"] = string(fileContents[:])
+	ReplaceChars["NetworkAdaptor"] = string(replaceContents(ReplaceChars, fileContents)[:])
 	if err != nil{
 		fmt.Println("Unable to load NetworkAdaptor html contents")
 	}
@@ -119,7 +130,7 @@ func loadHtmlSnippets(){
 		if err != nil{
 			fmt.Println("Unable to load NewRelic html contents")
 		}
-		ReplaceChars["NewRelic"] = string(fileContents[:])
+		ReplaceChars["NewRelic"] = string(replaceContents(ReplaceChars, fileContents)[:])
 	}
 }
 

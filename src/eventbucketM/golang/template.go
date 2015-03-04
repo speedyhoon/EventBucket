@@ -96,7 +96,7 @@ func generator(w http.ResponseWriter, fillin string, viewController Page) {
 	t := template.Must(my_html.Parse(fillin))
 	err := t.Execute(w, viewController.Data)
 	if err != nil {
-		Warning.Println(err)
+		Error.Println(err)
 	}
 }
 
@@ -109,33 +109,27 @@ var EventMenuItems = []Menu{
 	{
 		Name: "Home",
 		Link: "/",
-	},
-	{
+	}, {
 		Name: "Event",
 		Link: URL_event,
-	},
-	{
+	}, {
 		Name: "Event Settings",
 		Link: URL_eventSettings,
-	},
-	{
+	}, {
 		Name: "Scoreboard",
 		Link: URL_scoreboard,
-	},
-	{
+	}, {
 		Name:   "Total Scores",
 		Link:   URL_totalScores,
 		Ranges: true,
-	},
-	{
+	}, {
 		Name:   "Start Shooting",
 		Link:   URL_startShooting,
 		Ranges: true,
-	},
-	/*Menu{
+	}, {
 		Name: "Close Menu",
 		Link: "#",
-	},*/
+	},
 }
 
 func event_menu(event_id string, event_ranges []Range, page_url string, isPrizeMeet bool) string {
