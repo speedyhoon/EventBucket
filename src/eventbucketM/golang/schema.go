@@ -7,11 +7,10 @@ type M map[string]interface{}
 lowercase letters MUST be used for struct properties
 Uppercase letters MUST be used for a sub struct*/
 type Event struct {
-	Id   string `bson:"_id"`
-	Club string `bson:"c"`
-	Name string `bson:"n"`
-	//	Datetime string							`bson:"d,omitempty"`		No browser currently supports date time, so settling for separate fields that google chrome allows
-	Date           string         `bson:"t,`
+	Id             string         `bson:"_id"`
+	Club           string         `bson:"c"`
+	Name           string         `bson:"n"`
+	Date           string         `bson:"d,omitempty"`
 	Time           string         `bson:"t,omitempty"`
 	Grades         []int          `bson:"^^schemaGRADES^^,omitempty"`
 	SortScoreboard string         `bson:"o,omitempty"`
@@ -19,9 +18,10 @@ type Event struct {
 	Closed         bool           `bson:"l,omitempty"`
 	Ranges         []Range        `bson:"^^schemaRANGE^^,omitempty"`
 	Shooters       []EventShooter `bson:"^^schemaSHOOTER^^,omitempty"`
+	AutoInc        AutoInc        `bson:"U"`
 	//	TeamCat        map[string]TeamCat      `bson:"A,omitempty"`
 	//	Teams          map[string]Team         `bson:"T,omitempty"`
-	AutoInc AutoInc `bson:"U"`
+	//Datetime string				`bson:"d,omitempty"`		No browser currently supports date time, so settling for separate fields that google chrome allows
 }
 
 type AutoInc struct {

@@ -22,6 +22,8 @@ Event Settings
 	Bug      classes for event are not working
 	Bug      add agg range without any ranges should still display as an aggregate range
 	Bug      don't allow shooter entry with invalid class/grades
+
+	Bug      Save Event Details doesn't go back to the correct event page
 	Feature  change the order of the ranges and aggregates
 	Feature  aggs can add up other aggs
 	Feature  event able to change class settings - number of shots
@@ -53,6 +55,7 @@ General
 	Feature  Favicon and Setup icon
 	Feature  Add help docs into forms and table headings
 	Feature  Connect 404 Missing page
+	Security How to target the submit button to go onto a new line?
 
 Documentation
 	Feature  add a page how to use EventBucket via multiple people at once.

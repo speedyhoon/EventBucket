@@ -51,9 +51,7 @@ func home() Page {
 			openEvents = append(openEvents, calendar_event)
 		}
 	}
-
 	hostname, ipAddresses := HostnameIpAddresses()
-
 	//TODO change getClubs to simpler DB lookup getClubNames
 	clubs := getClubs()
 	return Page{
@@ -64,7 +62,7 @@ func home() Page {
 			"PageName":     "Calendar",
 			"ArchiveLink":  URL_archive,
 			"Menu":         home_menu("/", HOME_MENU_ITEMS),
-			"FormNewEvent": generateForm2(home_form_new_event(clubs, "", "", "", "", true)),
+			"FormNewEvent": generateForm2(home_form_new_event(clubs, (Event{}))),
 			"Hostname":     hostname,
 			"IpAddresses":  ipAddresses,
 		},
@@ -89,110 +87,124 @@ func HostnameIpAddresses() (string, []string) {
 	return hostname, ipAddress
 }
 
-func home_form_new_event(clubs []Club, name, club, date, eventTime string, newEvent bool) Form {
+func home_form_new_event(clubs []Club, event Event) Form {
 	title := "Event Details"
 	save := "Update Event"
-	action := URL_eventSettings
-	if newEvent {
+	if event.Id == "" {
 		title = "New Event"
 		save = "Save Event"
-		action = URL_eventInsert
-		date = time.Now().Format("2006-01-02")
-		eventTime = time.Now().Format("15:04")
+		event.Date = time.Now().Format("2006-01-02")
+		event.Time = time.Now().Format("15:04")
 	}
-
-	var clubName string
-
 	var club_list []Option
 	for _, club_data := range clubs {
-		if club != "" && club_data.Id == club {
-			clubName = club_data.Name
+		if event.Club != "" && club_data.Id == event.Club {
+			event.Club = club_data.Name
 		}
 		club_list = append(club_list, Option{
 			Value:   club_data.Id,
 			Display: club_data.Name,
 		})
 	}
+	Trace.Println(event)
+	inputs := []Inputs{
+		{
+			Name:     "name",
+			Html:     "text",
+			Label:    "Event Name",
+			Required: true,
+			//				AutoComplete: "off",
+			Value:     event.Name,
+			Autofocus: "on",
+		}, {
+			Name:        "club",
+			Html:        "datalist",
+			Label:       "Host Club",
+			Placeholder: "Club Name",
+			//TODO previous club names appear from browser cahce when they are not available
+			//TODO auto set the club name to X if there is only one available
+			Options:  club_list,
+			Required: true,
+			//				AutoComplete: "off",
+			Value: event.Club,
+		}, {
+			Name:     "date",
+			Html:     "date",
+			Label:    "Date",
+			Required: true,
+			Value:    event.Date,
+		}, {
+			Name:  "time",
+			Html:  "time",
+			Label: "Time",
+			Value: event.Time,
+		}, {
+			Html:  "submit",
+			Value: save,
+		},
+	}
+	if event.Id != "" {
+		inputs = append(inputs, Inputs{
+			Name:  "eventid",
+			Html:  "hidden",
+			Value: event.Id,
+		})
+	}
 
 	return Form{
-		Action: action,
+		Action: URL_eventInsert,
 		Title:  title,
-		Inputs: []Inputs{
-			{
-				Name:     "name",
-				Html:     "text",
-				Label:    "Event Name",
-				Required: true,
-				//				AutoComplete: "off",
-				Value:     name,
-				Autofocus: "on",
-			},
-			{
-				Name:        "club",
-				Html:        "datalist",
-				Label:       "Host Club",
-				Placeholder: "Club Name",
-				//TODO previous club names appear from browser cahce when they are not available
-				//TODO auto set the club name to X if there is only one available
-				Options:  club_list,
-				Required: true,
-				//				AutoComplete: "off",
-				Value: clubName,
-			},
-			{
-				Name:     "date",
-				Html:     "date",
-				Label:    "Date",
-				Required: true,
-				Value:    date,
-			},
-			{
-				Name:  "time",
-				Html:  "time",
-				Label: "Time",
-				Value: eventTime,
-			},
-			{
-				Html:  "submit",
-				Value: save,
-			},
-		},
+		Inputs: inputs,
 	}
 }
 
 func eventInsert(w http.ResponseWriter, r *http.Request) {
+	//TODO merge this database functionality into an upsert
 	var clubs []Club
-	validated_values := check_form(home_form_new_event(clubs, "", "", "", "", true).Inputs, r)
-	newEvent := Event{
-		Name: validated_values["name"],
-	}
-	club, ok := getClub_by_name(validated_values["club"])
-	if ok {
-		newEvent.Club = club.Id
+	emptyEvent := Event{Id: "1"}
+	validated_values := check_form(home_form_new_event(clubs, emptyEvent).Inputs, r)
+	//TODO one day change validated values to return the schema compatible data so it can be directly used add constants would by used more often to access the map items
+	eventId := validated_values["eventid"]
+	if eventId == "" {
+		newEvent := Event{
+			Name: validated_values["name"],
+		}
+		club, ok := getClub_by_name(validated_values["club"])
+		if ok {
+			newEvent.Club = club.Id
+		} else {
+			clubId, _ := insertClub(validated_values["club"])
+			newEvent.Club = clubId
+		}
+
+		if validated_values["date"] != "" {
+			newEvent.Date = validated_values["date"]
+		}
+
+		if validated_values["time"] != "" {
+			newEvent.Time = validated_values["time"]
+		}
+
+		//Add default ranges and aggregate ranges
+		var err error
+		newEvent.Id, err = getNextId(TBLevent)
+		newEvent.AutoInc.Range = 1
+		if err == nil {
+			InsertDoc(TBLevent, newEvent)
+			//redirect user to event settings
+			http.Redirect(w, r, URL_eventSettings+newEvent.Id, http.StatusSeeOther)
+		} else {
+			//TODO go to previous referer page (home or organisers both have the form)
+			//http.Redirect(w, r, URL_organisers, http.StatusSeeOther)
+		}
 	} else {
-		clubId, _ := insertClub(validated_values["club"])
-		newEvent.Club = clubId
-	}
-
-	if validated_values["date"] != "" {
-		newEvent.Date = validated_values["date"]
-	}
-
-	if validated_values["time"] != "" {
-		newEvent.Time = validated_values["time"]
-	}
-
-	//Add default ranges and aggregate ranges
-	var err error
-	newEvent.Id, err = getNextId(TBLevent)
-	newEvent.AutoInc.Range = 1
-	if err == nil {
-		InsertDoc(TBLevent, newEvent)
-		//redirect user to event settings
-		http.Redirect(w, r, URL_eventSettings+newEvent.Id, http.StatusSeeOther)
-	} else {
-		//TODO go to previous referer page (home or organisers both have the form)
-		//http.Redirect(w, r, URL_organisers, http.StatusSeeOther)
+		event_upsert_data(eventId, M{
+			"n": validated_values["name"],
+			"c": validated_values["club"],
+			"d": validated_values["date"],
+			"t": validated_values["time"],
+		})
+		http.Redirect(w, r, URL_eventSettings+eventId, http.StatusSeeOther)
 	}
 }
 

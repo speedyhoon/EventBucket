@@ -108,8 +108,8 @@ func eventSettings_update_range(eventId, rangeId string) Form {
 	}
 }
 
-func eventSettings(event_id string) Page {
-	event, _ := getEvent(event_id)
+func eventSettings(eventId string) Page {
+	event, _ := getEvent(eventId)
 	var event_ranges []Option
 	for range_id, item := range event.Ranges {
 		if item.Aggregate == "" {
@@ -135,8 +135,11 @@ func eventSettings(event_id string) Page {
 	}
 	var add_agg string
 	if len(event.Ranges) >= 2 {
-		add_agg = generateForm2(eventSettings_add_aggForm(event_id, event_ranges))
+		add_agg = generateForm2(eventSettings_add_aggForm(eventId, event_ranges))
 	}
+
+	Trace.Println(event)
+
 	return Page{
 		TemplateFile: "eventSettings",
 		Theme:        TEMPLATE_ADMIN,
@@ -144,23 +147,23 @@ func eventSettings(event_id string) Page {
 		Data: M{
 			"Title":          "Event Settings",
 			"EventName":      event.Name,
-			"Id":             event_id,
-			"AddRange":       generateForm2(eventSettings_add_rangeForm(event_id)),
+			"Id":             eventId,
+			"AddRange":       generateForm2(eventSettings_add_rangeForm(eventId)),
 			"AddAgg":         add_agg,
 			"ListRanges":     event.Ranges,
 			"ListGrades":     CLASSES,
-			"isPrizemeeting": generateForm2(eventSettings_isPrizeMeet(event_id, event.IsPrizeMeet)),
-			//		"AddDate":        generateForm2(eventSettings_add_dateForm(event_id, event.Date, event.Time)),
-			"menu":        event_menu(event_id, event.Ranges, URL_eventSettings, event.IsPrizeMeet),
+			"isPrizemeeting": generateForm2(eventSettings_isPrizeMeet(eventId, event.IsPrizeMeet)),
+			//		"AddDate":        generateForm2(eventSettings_add_dateForm(eventId, event.Date, event.Time)),
+			"menu":        eventMenu(eventId, event.Ranges, URL_eventSettings, event.IsPrizeMeet),
 			"EventGrades": generateForm2(eventSettingsClassGrades(event.Id, event.Grades)),
-			//		"ChangeName":     generateForm2(eventSettings_event_name(event.Name, event_id)),
+			//		"ChangeName":     generateForm2(eventSettings_event_name(event.Name, eventId)),
 			"AllEventGrades": DEFAULT_CLASS_SETTINGS,
-			"SortScoreboard": generateForm2(eventSettings_sort_scoreboard(event_id, event.SortScoreboard, event.Ranges)),
-			"FormNewEvent":   generateForm2(home_form_new_event(getClubs(), event.Name, event.Club, event.Date, event.Time, false)),
+			"SortScoreboard": generateForm2(eventSettings_sort_scoreboard(eventId, event.SortScoreboard, event.Ranges)),
+			"FormNewEvent":   generateForm2(home_form_new_event(getClubs(), event)),
 		},
 	}
 }
-func eventSettings_add_rangeForm(event_id string) Form {
+func eventSettings_add_rangeForm(eventId string) Form {
 	return Form{
 		Action: URL_eventRangeInsert,
 		Title:  "Add Range",
@@ -174,7 +177,7 @@ func eventSettings_add_rangeForm(event_id string) Form {
 			{
 				Name:  "event_id",
 				Html:  "hidden",
-				Value: event_id,
+				Value: eventId,
 			},
 			{
 				Html:  "submit",
@@ -191,7 +194,7 @@ func updateSortScoreBoard(w http.ResponseWriter, r *http.Request) {
 	event_update_sort_scoreboard(event_id, validated_values["sort"])
 }
 
-func eventSettings_sort_scoreboard(event_id string, existing_sort string, ranges []Range) Form {
+func eventSettings_sort_scoreboard(eventId string, existing_sort string, ranges []Range) Form {
 	var sort_by_ranges []Option
 	var sort_by bool
 	for index, Range := range ranges {
@@ -215,7 +218,7 @@ func eventSettings_sort_scoreboard(event_id string, existing_sort string, ranges
 			{
 				Name:  "event_id",
 				Html:  "hidden",
-				Value: event_id,
+				Value: eventId,
 			},
 			{
 				Html:  "submit",
@@ -225,7 +228,7 @@ func eventSettings_sort_scoreboard(event_id string, existing_sort string, ranges
 	}
 }
 
-func eventSettings_add_aggForm(event_id string, event_ranges []Option) Form {
+func eventSettings_add_aggForm(eventId string, event_ranges []Option) Form {
 	return Form{
 		Action: URL_eventAggInsert,
 		Title:  "Add Aggregate Range",
@@ -239,7 +242,7 @@ func eventSettings_add_aggForm(event_id string, event_ranges []Option) Form {
 			{
 				Name:  "event_id",
 				Html:  "hidden",
-				Value: event_id,
+				Value: eventId,
 			},
 			{
 				Name:        "agg",
@@ -259,9 +262,9 @@ func eventSettings_add_aggForm(event_id string, event_ranges []Option) Form {
 
 func updateEventGrades(w http.ResponseWriter, r *http.Request) {
 	validated_values := check_form(eventSettingsClassGrades("", []int{}).Inputs, r)
-	event_id := validated_values["event_id"]
-	http.Redirect(w, r, URL_event+event_id, http.StatusSeeOther)
-	event_upsert_data(event_id, M{schemaGRADES: validated_values["grades"]})
+	eventId := validated_values["event_id"]
+	http.Redirect(w, r, URL_event+eventId, http.StatusSeeOther)
+	event_upsert_data(eventId, M{schemaGRADES: validated_values["grades"]})
 }
 
 func slice_to_map_bool(input []string) map[string]bool {

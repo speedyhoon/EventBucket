@@ -32,7 +32,7 @@ func startShooting_Data(data string, showAll bool) Page {
 			Theme:        TEMPLATE_ADMIN,
 			Data: M{
 				"Title":                "Start Shooting",
-				"menu":                 event_menu(event_id, event.Ranges, URL_startShooting, event.IsPrizeMeet),
+				"menu":                 eventMenu(event_id, event.Ranges, URL_startShooting, event.IsPrizeMeet),
 				"target_heading_cells": "",
 				"fclass_heading_cells": "",
 				"match_heading_cells":  "",
@@ -128,7 +128,7 @@ func startShooting_Data(data string, showAll bool) Page {
 			"LinkToPage":         totalScores_link,
 			"RangeName":          event.Ranges[range_id].Name,
 			"class_shots":        class_shots,
-			"menu":               event_menu(event_id, event.Ranges, URL_startShooting, event.IsPrizeMeet),
+			"menu":               eventMenu(event_id, event.Ranges, URL_startShooting, event.IsPrizeMeet),
 			"strRangeId":         fmt.Sprintf("%v", range_id),
 			"RangeId":            range_id,
 			"first_class":        first_class,
