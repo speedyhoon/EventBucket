@@ -59,7 +59,7 @@ func totalScores_Data(data string, show_all bool) Page {
 				"EventId":    event_id,
 				"RangeName":  selected_range.Name,
 				"Message":    ERROR_ENTER_SCORES_IN_AGG,
-				"menu":       event_menu(event_id, event.Ranges, URL_totalScores, event.IsPrizeMeet),
+				"menu":       eventMenu(event_id, event.Ranges, URL_totalScores, event.IsPrizeMeet),
 			},
 		}
 	}
@@ -103,7 +103,7 @@ func totalScores_Data(data string, show_all bool) Page {
 			"ListRanges": event.Ranges,
 			//		"ListShooters": event.Shooters,
 			"ListShooters":    shooter_list,
-			"menu":            event_menu(event_id, event.Ranges, URL_totalScores, event.IsPrizeMeet),
+			"menu":            eventMenu(event_id, event.Ranges, URL_totalScores, event.IsPrizeMeet),
 			"FormTotalScores": shooters_forms,
 			"Js":              "total-scores.js",
 		},

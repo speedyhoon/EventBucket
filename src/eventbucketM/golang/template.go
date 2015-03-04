@@ -132,7 +132,7 @@ var EventMenuItems = []Menu{
 	},
 }
 
-func event_menu(event_id string, event_ranges []Range, page_url string, isPrizeMeet bool) string {
+func eventMenu(event_id string, event_ranges []Range, page_url string, isPrizeMeet bool) string {
 	menu := "<ul>"
 	selected := ""
 	for _, menu_item := range EventMenuItems {
@@ -141,13 +141,13 @@ func event_menu(event_id string, event_ranges []Range, page_url string, isPrizeM
 		}
 
 		if menu_item.Ranges {
-			class := "m"
-			if menu_item.Link == page_url {
-				class = `"v m"`
-			}
 			if (isPrizeMeet && menu_item.Link != URL_totalScores) || !isPrizeMeet {
 				//The a tag is needed for my ipad
-				menu += fmt.Sprintf("<li class=%v><a href=#>%v</a><ul>", class, menu_item.Name)
+				if menu_item.Link == page_url {
+					menu += fmt.Sprintf("<li class=v><a href=#>%v</a><ul>", menu_item.Name)
+				} else {
+					menu += fmt.Sprintf("<li><a href=#>%v</a><ul>", menu_item.Name)
+				}
 				for range_id, range_item := range event_ranges {
 					if len(range_item.Aggregate) == 0 && !range_item.Hidden {
 						menu += fmt.Sprintf("<li><a href=%v%v/%v>%v - %v</a></li>", menu_item.Link, event_id, range_id, range_id, range_item.Name)
@@ -166,45 +166,9 @@ func event_menu(event_id string, event_ranges []Range, page_url string, isPrizeM
 		}
 		selected = ""
 	}
-	menu += "</ul>"
-	return menu
-}
-
-func scoreboard_menu(event_id string, event_ranges []Range, page_url string, isPrizeMeet bool) string {
-	menu := "<ul>"
-	selected := ""
-	for _, menu_item := range EventMenuItems {
-		if menu_item.Link == page_url {
-			selected = " class=v"
-		}
-
-		if menu_item.Ranges {
-			class := "m"
-			if menu_item.Link == page_url {
-				class = `"v m"`
-			}
-			if (isPrizeMeet && menu_item.Link != URL_totalScores) || !isPrizeMeet {
-				//The a tag is needed for my ipad
-				menu += fmt.Sprintf("<li class=%v><a href=#>%v</a><ul>", class, menu_item.Name)
-				for range_id, range_item := range event_ranges {
-					if len(range_item.Aggregate) == 0 && !range_item.Hidden {
-						menu += fmt.Sprintf("<li><a href=%v%v/%v>%v - %v</a></li>", menu_item.Link, event_id, range_id, range_id, range_item.Name)
-					}
-				}
-				menu += "</ul></li>"
-			}
-		} else {
-			if menu_item.Link == "/" {
-				menu += fmt.Sprintf("<li%v><a href=%v>%v</a></li>", selected, addQuotes(menu_item.Link), menu_item.Name)
-			} else if menu_item.Link[len(menu_item.Link)-1:] == "/" {
-				menu += fmt.Sprintf("<li%v><a href=%v%v>%v</a></li>", selected, addQuotes(menu_item.Link), event_id, menu_item.Name)
-			} else {
-				menu += fmt.Sprintf("<li%v><a href=%v>%v</a></li>", selected, addQuotes(menu_item.Link), menu_item.Name)
-			}
-		}
-		selected = ""
+	if page_url == URL_scoreboard {
+		menu += "<li><a id=scoreSettings href=#scoreboard_settings onclick=\"var d=document.getElementById('scoreboard_settings');d.style.display=(d.style.display?'':'block')\">&nbsp;</a></li>"
 	}
-	menu += "<li><a id=scoreSettings href=#scoreboard_settings onclick=\"var d=document.getElementById('scoreboard_settings');d.style.display=(d.style.display?'':'block')\">&nbsp;</a></li>"
 	menu += "</ul>"
 	return menu
 }

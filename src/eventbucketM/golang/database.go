@@ -180,7 +180,7 @@ func getNextId(collection_name string) (string, error) {
 		}
 		_, err := conn.C(TBLAutoInc).FindId(collection_name).Apply(change, &result)
 		if err != nil {
-			Warning.Println(err)
+			Error.Println(err)
 			return "", errors.New(fmt.Sprintf("Unable to generate the next ID: %v", err))
 		}
 		return id_suffix(result[schemaCounter].(int))
@@ -206,14 +206,14 @@ func id_suffix(id int) (string, error) {
 func InsertDoc(collection_name string, data interface{}) {
 	err := conn.C(collection_name).Insert(data)
 	if err != nil {
-		Warning.Println(err)
+		Error.Println(err)
 	}
 }
 
 func UpdateDoc_by_id(collection_name, doc_id string, data interface{}) {
 	err := conn.C(collection_name).UpdateId(doc_id, data)
 	if err != nil {
-		Warning.Println(err)
+		Error.Println(err)
 	}
 }
 
@@ -454,24 +454,24 @@ func event_update_range_data(event_id string, update_data M) {
 	conn.C(TBLevent).FindId(event_id).Apply(change, make(M))
 }
 
-func event_update_sort_scoreboard(event_id, sort_by_range string) {
+func event_update_sort_scoreboard(eventId, sortByRange string) {
 	change := mgo.Change{
 		Upsert: true,
 		Update: M{
-			"$set": M{schemaSORT: sort_by_range},
+			"$set": M{schemaSORT: sortByRange},
 		},
 	}
-	conn.C(TBLevent).FindId(event_id).Apply(change, make(M))
+	conn.C(TBLevent).FindId(eventId).Apply(change, make(M))
 }
 
-func event_upsert_data(event_id string, data M) {
+func event_upsert_data(eventId string, data M) {
 	change := mgo.Change{
 		Upsert: true,
 		Update: M{
 			"$set": data,
 		},
 	}
-	conn.C(TBLevent).FindId(event_id).Apply(change, make(M))
+	conn.C(TBLevent).FindId(eventId).Apply(change, make(M))
 }
 
 func nraa_upsert_shooter(shooter NRAA_Shooter) {

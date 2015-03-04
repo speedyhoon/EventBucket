@@ -137,7 +137,7 @@ func scoreboard(url string) Page {
 		"ListRanges":     event.Ranges,
 		"Css":            "scoreboard.css",
 		"Legend":         render_legend(score_board_legend_on_off),
-		"menu":           scoreboard_menu(event_id, event.Ranges, URL_scoreboard, event.IsPrizeMeet),
+		"menu":           eventMenu(event_id, event.Ranges, URL_scoreboard, event.IsPrizeMeet),
 		"SortScoreboard": "",
 	}
 	if len(event.Ranges) >= 1 {

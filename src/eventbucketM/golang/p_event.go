@@ -42,7 +42,7 @@ func event(eventId string) Page {
 		Title:        "Event",
 		Data: M{
 			"EventName":       event.Name,
-			"Menu":            event_menu(eventId, event.Ranges, URL_event, event.IsPrizeMeet),
+			"Menu":            eventMenu(eventId, event.Ranges, URL_event, event.IsPrizeMeet),
 			"Valid":           true,
 			"NewShooterEntry": URL_shooterInsert,
 			"GradeOptions":    draw_options(Inputs{Options: eventGradeOptions(event.Grades)}, ""),
