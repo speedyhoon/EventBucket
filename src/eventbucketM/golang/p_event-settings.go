@@ -137,9 +137,6 @@ func eventSettings(eventId string) Page {
 	if len(event.Ranges) >= 2 {
 		add_agg = generateForm2(eventSettings_add_aggForm(eventId, event_ranges))
 	}
-
-	Trace.Println(event)
-
 	return Page{
 		TemplateFile: "eventSettings",
 		Theme:        TEMPLATE_ADMIN,
