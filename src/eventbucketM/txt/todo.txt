@@ -22,8 +22,6 @@ Event Settings
 	Bug      classes for event are not working
 	Bug      add agg range without any ranges should still display as an aggregate range
 	Bug      don't allow shooter entry with invalid class/grades
-
-	Bug      Save Event Details doesn't go back to the correct event page
 	Feature  change the order of the ranges and aggregates
 	Feature  aggs can add up other aggs
 	Feature  event able to change class settings - number of shots
@@ -132,6 +130,7 @@ home page
 	name of day not displaying
 	upcoming events
 	Link to archive events
+	Save Event Details doesn't go back to the correct event page
 database
 	rename collections to one letter
 all forms
