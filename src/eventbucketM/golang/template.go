@@ -17,7 +17,6 @@ func templator(viewController Page, w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-
 	viewController.Data["Title"] = viewController.Title
 	viewController.Data["CurrentYear"] = time.Now().Year()
 	//Search in Theme html file & replace "^^BODY^^" with TemplateFile
@@ -132,65 +131,55 @@ var EventMenuItems = []Menu{
 	},
 }
 
-func eventMenu(event_id string, event_ranges []Range, page_url string, isPrizeMeet bool) string {
+func eventMenu(eventId string, eventRanges []Range, pageUrl string, isPrizeMeet bool) string {
 	menu := "<ul>"
 	selected := ""
-	for _, menu_item := range EventMenuItems {
-		if menu_item.Link == page_url {
+	for _, menuItem := range EventMenuItems {
+		if menuItem.Link == pageUrl {
 			selected = " class=v"
 		}
-
-		if menu_item.Ranges {
-			if (isPrizeMeet && menu_item.Link != URL_totalScores) || !isPrizeMeet {
+		if menuItem.Ranges {
+			if (isPrizeMeet && menuItem.Link != URL_totalScores) || !isPrizeMeet {
 				//The a tag is needed for my ipad
-				if menu_item.Link == page_url {
-					menu += fmt.Sprintf("<li class=v><a href=#>%v</a><ul>", menu_item.Name)
-				} else {
-					menu += fmt.Sprintf("<li><a href=#>%v</a><ul>", menu_item.Name)
-				}
-				for range_id, range_item := range event_ranges {
-					if len(range_item.Aggregate) == 0 && !range_item.Hidden {
-						menu += fmt.Sprintf("<li><a href=%v%v/%v>%v - %v</a></li>", menu_item.Link, event_id, range_id, range_id, range_item.Name)
+				if len(eventRanges) >= 1 {
+					menu += fmt.Sprintf("<li%v><a href=#>%v</a><ul>", selected, menuItem.Name)
+					for rangeId, range_item := range eventRanges {
+						if len(range_item.Aggregate) == 0 && !range_item.Hidden {
+							menu += fmt.Sprintf("<li><a href=%v%v/%v>%v - %v</a></li>", menuItem.Link, eventId, rangeId, rangeId, range_item.Name)
+						}
 					}
+					menu += "</ul></li>"
 				}
-				menu += "</ul></li>"
+			}
+		} else if menuItem.Name == "Close Menu" {
+			//Don't show the close menu item when there are no ranges available
+			if len(eventRanges) >= 1 {
+				menu += fmt.Sprintf("<li%v><a href=%v>%v</a></li>", selected, addQuotes(menuItem.Link), menuItem.Name)
 			}
 		} else {
-			if menu_item.Link == "/" {
-				menu += fmt.Sprintf("<li%v><a href=%v>%v</a></li>", selected, addQuotes(menu_item.Link), menu_item.Name)
-			} else if menu_item.Link[len(menu_item.Link)-1:] == "/" {
-				menu += fmt.Sprintf("<li%v><a href=%v%v>%v</a></li>", selected, addQuotes(menu_item.Link), event_id, menu_item.Name)
+			if menuItem.Link[len(menuItem.Link)-1:] == "/" && menuItem.Link != "/" {
+				menu += fmt.Sprintf("<li%v><a href=%v>%v</a></li>", selected, addQuotes(menuItem.Link+eventId), menuItem.Name)
 			} else {
-				menu += fmt.Sprintf("<li%v><a href=%v>%v</a></li>", selected, addQuotes(menu_item.Link), menu_item.Name)
+				menu += fmt.Sprintf("<li%v><a href=%v>%v</a></li>", selected, addQuotes(menuItem.Link), menuItem.Name)
 			}
 		}
 		selected = ""
 	}
-	if page_url == URL_scoreboard {
+	if pageUrl == URL_scoreboard {
 		menu += "<li><a id=scoreSettings href=#scoreboard_settings onclick=\"var d=document.getElementById('scoreboard_settings');d.style.display=(d.style.display?'':'block')\">&nbsp;</a></li>"
 	}
-	menu += "</ul>"
-	return menu
+	return menu + "</ul>"
 }
 
-func standard_menu(menu_items []Menu) string {
-	menu := "<ul>"
-	for _, menu_item := range menu_items {
-		menu += fmt.Sprintf("<li><a href=%v>%v</a></li>", addQuotes(menu_item.Link), menu_item.Name)
-	}
-	menu += "</ul>"
-	return menu
-}
-
-func home_menu(page string, menu_items []Menu) string {
+func home_menu(page string, menuItems []Menu) string {
 	menu := "<ul id=menu>"
-	for _, menu_item := range menu_items {
-		if page != menu_item.Link {
-			menu += fmt.Sprintf("<li><a href=%v>%v</a></li>", addQuotes(menu_item.Link), menu_item.Name)
-		} else {
-			menu += fmt.Sprintf("<li class=v><a href=%v>%v</a></li>", addQuotes(menu_item.Link), menu_item.Name)
+	selected := ""
+	for _, menuItem := range menuItems {
+		if page != menuItem.Link {
+			selected = " class=v"
 		}
+		menu += fmt.Sprintf("<li%v><a href=%v>%v</a></li>", selected, addQuotes(menuItem.Link), menuItem.Name)
+		selected = ""
 	}
-	menu += "</ul>"
-	return menu
+	return menu + "</ul>"
 }

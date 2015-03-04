@@ -8,31 +8,25 @@ import (
 )
 
 func startShooting(data string) Page {
-	//	data := getIdFromUrl(r, URL_startShooting)
-	//	templator(startShooting_Data(data, false), r, w)
-	//	return startShooting_Data(getIdFromUrl(r, URL_startShooting), false)
 	return startShooting_Data(data, false)
 }
 
 func startShootingAll(data string) Page {
-	//	data := getIdFromUrl(r, URL_startShootingAll)
-	//	templator(startShooting_Data(data, true), r, w)
-	//	return startShooting_Data(getIdFromUrl(r, URL_startShooting), true)
 	return startShooting_Data(data, true)
 }
 func startShooting_Data(data string, showAll bool) Page {
 	arr := strings.Split(data, "/")
-	event_id := arr[0]
-	range_id, err := strToInt(arr[1])
-	event, _ := getEvent(event_id)
+	eventId := arr[0]
+	rangeId, err := strToInt(arr[1])
+	event, _ := getEvent(eventId)
 
-	if event.Ranges[range_id].Aggregate != "" || err != nil {
+	if event.Ranges[rangeId].Aggregate != "" || err != nil {
 		return Page{
 			TemplateFile: "start-shooting",
 			Theme:        TEMPLATE_ADMIN,
 			Data: M{
 				"Title":                "Start Shooting",
-				"menu":                 eventMenu(event_id, event.Ranges, URL_startShooting, event.IsPrizeMeet),
+				"menu":                 eventMenu(eventId, event.Ranges, URL_startShooting, event.IsPrizeMeet),
 				"target_heading_cells": "",
 				"fclass_heading_cells": "",
 				"match_heading_cells":  "",
@@ -47,7 +41,7 @@ func startShooting_Data(data string, showAll bool) Page {
 	var currentRangeClass RangeProperty
 	var longest_shots_for_current_range int
 	for index, classSetting := range DEFAULT_CLASS_SETTINGS {
-		currentRangeClass = event.Ranges[range_id].Class[fmt.Sprintf("%v", index)]
+		currentRangeClass = event.Ranges[rangeId].Class[fmt.Sprintf("%v", index)]
 		//If the range properties are set then use them to override the default shotsQty and sightersQty
 		if currentRangeClass.ShotsQty > 0 || currentRangeClass.SightersQty > 0 {
 			sightersQty = currentRangeClass.SightersQty
@@ -76,7 +70,7 @@ func startShooting_Data(data string, showAll bool) Page {
 	var shooter_list []EventShooter
 	allGrades := grades()
 	for shooter_id, shooter_data := range event.Shooters {
-		if showAll || (!showAll && ((event.IsPrizeMeet && len(shooter_data.Scores[fmt.Sprintf("%v", range_id)].Shots) <= 0) || (!event.IsPrizeMeet && shooter_data.Scores[fmt.Sprintf("%v", range_id)].Total <= 0))) {
+		if showAll || (!showAll && ((event.IsPrizeMeet && len(shooter_data.Scores[fmt.Sprintf("%v", rangeId)].Shots) <= 0) || (!event.IsPrizeMeet && shooter_data.Scores[fmt.Sprintf("%v", rangeId)].Total <= 0))) {
 			temp_grade = allGrades[shooter_data.Grade]
 			class_shots[temp_grade.ClassName] = available_class_shots[temp_grade.ClassId]
 			//TODO add ignore case here!!!!!!!!
@@ -114,9 +108,9 @@ func startShooting_Data(data string, showAll bool) Page {
 
 	var totalScores_link string
 	if showAll {
-		totalScores_link = fmt.Sprintf("<a href=%v/%v/%v>View Incompleted Shooters</a>", URL_startShooting, event_id, range_id)
+		totalScores_link = fmt.Sprintf("<a href=%v/%v/%v>View Incompleted Shooters</a>", URL_startShooting, eventId, rangeId)
 	} else {
-		totalScores_link = fmt.Sprintf("<a href=%v/%v/%v>View All Shooters</a>", URL_startShootingAll, event_id, range_id)
+		totalScores_link = fmt.Sprintf("<a href=%v/%v/%v>View All Shooters</a>", URL_startShootingAll, eventId, rangeId)
 	}
 
 	return Page{
@@ -124,13 +118,13 @@ func startShooting_Data(data string, showAll bool) Page {
 		Theme:        TEMPLATE_ADMIN,
 		Data: M{
 			"Title":              "Start Shooting",
-			"EventId":            event_id,
+			"EventId":            eventId,
 			"LinkToPage":         totalScores_link,
-			"RangeName":          event.Ranges[range_id].Name,
+			"RangeName":          event.Ranges[rangeId].Name,
 			"class_shots":        class_shots,
-			"menu":               eventMenu(event_id, event.Ranges, URL_startShooting, event.IsPrizeMeet),
-			"strRangeId":         fmt.Sprintf("%v", range_id),
-			"RangeId":            range_id,
+			"menu":               eventMenu(eventId, event.Ranges, URL_startShooting, event.IsPrizeMeet),
+			"strRangeId":         fmt.Sprintf("%v", rangeId),
+			"RangeId":            rangeId,
 			"first_class":        first_class,
 			"longest_shots":      long_shots,
 			"class_shots_length": class_shots_length,
@@ -182,7 +176,7 @@ func updateShotScores(w http.ResponseWriter, r *http.Request) {
 			if event.Shooters[shooter_id].LinkedId != nil {
 				updateBson[Dot(schemaSHOOTER, event.Shooters[shooter_id].LinkedId, rangeId)] = new_score
 			}
-			//			eventTotalScoreUpdate(event_id, rangeId, shooterIds, new_score)
+			//			eventTotalScoreUpdate(eventId, rangeId, shooterIds, new_score)
 			//			updateSetter := make(M)
 			//			for _, shooterId := range shooterIds{
 			//				updateSetter[Dot(schemaSHOOTER, shooterId, rangeId)] = score
@@ -230,14 +224,14 @@ func calc_total_centers(shots string, class int) Score {
 	return Score{}
 }
 
-func startShooting_Form(event_id, range_id, shooter_id, shots string) Form {
+func startShooting_Form(eventId, rangeId, shooterId, shots string) Form {
 	return Form{
 		Action: URL_updateTotalScores,
 		Inputs: []Inputs{
 			{
 				Name:      "event_id",
 				Html:      "hidden",
-				Value:     event_id,
+				Value:     eventId,
 				VarType:   "string",
 				VarMaxLen: 999,
 				VarMinLen: 1,
@@ -245,7 +239,7 @@ func startShooting_Form(event_id, range_id, shooter_id, shots string) Form {
 			{
 				Name:      "range_id",
 				Html:      "hidden",
-				Value:     range_id,
+				Value:     rangeId,
 				VarType:   "int",
 				VarMaxLen: 999, //TODO needs better parameters
 				VarMinLen: 0,
@@ -253,7 +247,7 @@ func startShooting_Form(event_id, range_id, shooter_id, shots string) Form {
 			{
 				Name:    "shooter_id",
 				Html:    "hidden",
-				Value:   shooter_id,
+				Value:   shooterId,
 				VarType: "int",
 			},
 			{

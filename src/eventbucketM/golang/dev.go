@@ -22,7 +22,7 @@ import (
 const (
 	NEWRELIC         = false //Send logging data to New Relic
 	PATH_HTML_SOURCE = "html/%v.html"
-	URL_randomData   = "/random-data/"
+	URL_randomData   = "/randomData/"
 )
 
 var (
@@ -143,7 +143,7 @@ func randomData(w http.ResponseWriter, r *http.Request) {
 	startShooting := false
 	var properties []string
 	//	random_grades := []string{/*"a","b","c",*/"d", "e", "f", "g", "h", "i", "j"}
-	for _, request := range strings.Split(strings.Replace(r.RequestURI, "/random-data/", "", -1), "&") {
+	for _, request := range strings.Split(strings.Replace(r.RequestURI, URL_randomData, "", -1), "&") {
 		properties = strings.Split(request, "=")
 		switch properties[0] {
 		case "eventId":
@@ -217,7 +217,7 @@ func randomDataShooterQty(shooterQty int, eventId string) {
 	for counter < shooterQty {
 		//make some requests for x number of shooters
 		counter += 1
-		Trace.Printf("inserting shooter :", counter)
+		Trace.Printf("inserting shooter :%v", counter)
 		event_shooter_insert(eventId, EventShooter{
 			FirstName: randomdata.FirstName(randomdata.RandomGender),
 			Surname:   randomdata.LastName(),

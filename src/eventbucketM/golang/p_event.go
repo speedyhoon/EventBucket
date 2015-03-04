@@ -30,8 +30,7 @@ func event(eventId string) Page {
 			Theme:        TEMPLATE_ADMIN,
 			Data: M{
 				"Title": "Event not found: " + eventId,
-				//			"Menu":  standard_menu(ORGANISERS_MENU_ITEMS),
-				"Menu":  standard_menu(HOME_MENU_ITEMS),
+				"Menu":  eventMenu("", []Range{}, "", false),
 				"Valid": false,
 			},
 		}
