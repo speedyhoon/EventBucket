@@ -52,8 +52,6 @@ func event(eventId string) Page {
 			"EventGrades":          generateForm2(eventSettingsClassGrades(event.Id, event.Grades)),
 			"ListShooters":         event.Shooters,
 			"EventId":              eventId,
-			"QrBarcode":            imgBarcode(80, 80, QRCODE, "I love you so much!"),
-			"DMBarcode":            imgBarcode(80, 80, DATAMATRIX, "I love you so much!"),
 		},
 	}
 }
