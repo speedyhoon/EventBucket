@@ -7,28 +7,24 @@ import (
 )
 
 func totalScores(data string) Page {
-	//	data := get_id_from_url(r, URL_totalScores)
-	//	templator(TEMPLATE_ADMIN, "total-scores", totalScores_Data(data, false), w)
-	//	templatorNew(totalScores_Data(data, false), r, w)
 	return totalScores_Data(data, false)
 }
 func totalScoresAll(data string) Page {
-	//	data := get_id_from_url(r, URL_totalScoresAll)
-	//	templator(TEMPLATE_ADMIN, "total-scores", totalScores_Data(data, true), w)
-	//	templatorNew(totalScores_Data(data, true), r, w)
 	return totalScores_Data(data, true)
 }
-func totalScores_Data(data string, show_all bool) Page {
+func totalScores_Data(data string, showAll bool) Page {
 	arr := strings.Split(data, "/")
 	eventId := arr[0]
-	rangeId, err := strToInt(arr[1])
-	rangeId := arr[1]
+	range_Id := arr[1]
+	rangeId, err := strToInt(range_Id)
 	event, eventMissing := getEvent(eventId)
+	currentRange := event.Ranges[rangeId]
 	ERROR_ENTER_SCORES_IN_AGG := "<p>This range is an aggregate. Can't enter scores!</p>"
-	if err != nil || eventMissing != nil || event.Ranges[rangeId].Locked || event.Ranges[rangeId].Aggregate != "" {
+	if err != nil || eventMissing != nil || currentRange.Locked || currentRange.Aggregate != "" {
 		return Page{
 			TemplateFile: "total-scores",
 			Theme:        TEMPLATE_ADMIN,
+			Title:        "Total Scores",
 			Data: M{
 				"Title":      "Total Scores",
 				"LinkToPage": "",
@@ -39,17 +35,14 @@ func totalScores_Data(data string, show_all bool) Page {
 			},
 		}
 	}
-
-	selected_range := event.Ranges[rangeId]
-
 	var totalScores_link string
-	if show_all {
+	if showAll {
 		totalScores_link = fmt.Sprintf("<a href=%v%v>View Incompleted Shooters</a>", URL_totalScores, data)
 	} else {
 		totalScores_link = fmt.Sprintf("<a href=%v%v>View All Shooters</a>", URL_totalScoresAll, data)
 	}
 
-	if len(selected_range.Aggregate) > 0 {
+	if len(currentRange.Aggregate) > 0 {
 		return Page{
 			TemplateFile: "total-scores",
 			Theme:        TEMPLATE_ADMIN,
@@ -57,7 +50,7 @@ func totalScores_Data(data string, show_all bool) Page {
 				"Title":      "Total Scores",
 				"LinkToPage": totalScores_link,
 				"EventId":    eventId,
-				"RangeName":  selected_range.Name,
+				"RangeName":  currentRange.Name,
 				"Message":    ERROR_ENTER_SCORES_IN_AGG,
 				"menu":       eventMenu(eventId, event.Ranges, URL_totalScores, event.IsPrizeMeet),
 			},
@@ -76,14 +69,14 @@ func totalScores_Data(data string, show_all bool) Page {
 	var shooters_forms []string
 	for shooterId, shooter_data := range event.Shooters {
 		var score string
-		if shooter_data.Scores[rangeId].Total > 0 {
-			score = fmt.Sprintf("%v", shooter_data.Scores[rangeId].Total)
+		if shooter_data.Scores[range_Id].Total > 0 {
+			score = fmt.Sprintf("%v", shooter_data.Scores[range_Id].Total)
 		}
-		if shooter_data.Scores[rangeId].Centers > 0 {
-			score += fmt.Sprintf(".%v", shooter_data.Scores[rangeId].Centers)
+		if shooter_data.Scores[range_Id].Centers > 0 {
+			score += fmt.Sprintf(".%v", shooter_data.Scores[range_Id].Centers)
 		}
-		if show_all || (!show_all && score == "") {
-			shooters_forms = append(shooters_forms, generateForm2(total_scores_Form(eventId, rangeId, shooterId, score)))
+		if showAll || (!showAll && score == "") {
+			shooters_forms = append(shooters_forms, generateForm2(total_scores_Form(eventId, range_Id, shooterId, score)))
 			shooter_data.Id = shooterId
 			shooter_list = append(shooter_list, shooter_data)
 		}
@@ -98,7 +91,7 @@ func totalScores_Data(data string, show_all bool) Page {
 			"Title":      "Total Scores",
 			"LinkToPage": totalScores_link,
 			"EventId":    eventId,
-			"RangeName":  selected_range.Name,
+			"RangeName":  currentRange.Name,
 			"RangeId":    rangeId,
 			"ListRanges": event.Ranges,
 			//		"ListShooters": event.Shooters,
@@ -203,8 +196,8 @@ func calculate_aggs(event Event, shooterId int, ranges []string) Event {
 		centers := 0
 		count_back1 := ""
 		rangeId := ""
-		for _, rangeId := range event.Ranges[agg_id].Aggregate {
-			rangeId = string(rangeId)
+		for _, range_Id := range event.Ranges[agg_id].Aggregate {
+			rangeId = string(range_Id)
 			total += event.Shooters[shooterId].Scores[rangeId].Total
 			centers += event.Shooters[shooterId].Scores[rangeId].Centers
 			count_back1 += event.Shooters[shooterId].Scores[rangeId].CountBack1
