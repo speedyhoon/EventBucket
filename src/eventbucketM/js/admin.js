@@ -2,9 +2,11 @@
 	'use strict';
 	var browserVersion = window.navigator.appVersion.match(/Chrome\/(\d+)\./), shooterEntryValues = {};
 	if(!browserVersion){
-		var note = document.createElement('div');
+		var note = document.createElement('a');
 		note.id = 'update';
-		note.innerHTML = '<a href=//google.com/chrome/browser/features.html#speed target=_blank>We highly recommend switching to Google Chrome</a>';
+		note.href= '//google.com/chrome/browser/features.html';
+		note.target = '_blank';
+		note.textContent = 'EventBucket works best with Google Chrome';
 		document.body.insertBefore(note, document.body.childNodes[0]);
 	}
 
@@ -26,7 +28,7 @@
 		}
 	}
 
-	var textboxes = document.getElementById('ShooterEntry'), max = textboxes.length, i,
+	var textboxes = document.getElementById('ShooterEntry'),
 		inputChange = function(inputElement){
 			return function(){
 				searchShooter(inputElement);
@@ -34,9 +36,12 @@
 		};
 
 
-
-	if(textboxes && max){
+	if(textboxes && textboxes.length){
+//	if(textboxes && max){
+		var i, max = textboxes.length;
 		for(i=0; i < max; i++){
+//		var i = textboxes.length;
+//		while(i--){
 			if(textboxes[i].type === 'text'){
 				shooterEntryValues[textboxes[i].name] = textboxes[i].value;
 				textboxes[i].onkeyup = inputChange(textboxes[i]);

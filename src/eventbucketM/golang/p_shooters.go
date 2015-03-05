@@ -45,23 +45,18 @@ func updateShooterList(w http.ResponseWriter, r *http.Request) {
 func updateShooterList2() int {
 	/* TODO:
 	ckeck if there is another page
-
 	get a shooters grades
 	translate a shooters grades
 	save a shooters grades
 	*/
-
 	url := "http://www.nraa.com.au/nraa-shooter-list/?_p="
 	//	max_pages := 514
 	max_pages := 0
 	for page_count := 1; page_count <= max_pages; page_count += 1 {
-
-		//		Trace.Printf("page: %v\n", page_count)
 		response, err := http.Get(fmt.Sprintf("%v%v", url, page_count))
 		defer response.Body.Close()
 		if err != nil {
-			//TODO change to the error framework with a helpfull error message
-			Warning.Printf("ERROR: http.Get", err)
+			Warning.Printf("ERROR: http.Get", err)	//TODO change to the error framework with a helpfull error message
 			return 0
 		}
 
@@ -69,7 +64,6 @@ func updateShooterList2() int {
 		if err != nil {
 			Error.Printf("%+v\n", err)
 		}
-
 		var i int = 0
 		var trim_space string
 		var shooter NRAA_Shooter
@@ -193,7 +187,7 @@ func event_query_shooterForm() Form {
 		}, {
 			Name: "club",
 			Html: "text",
-			//TODO change club to a data-list
+			//TODO change club to a select box. data-lists are too flexible!
 			//SelectValues:   getClubSelectBox(eventsCollection),
 			Label: "Club",
 		},

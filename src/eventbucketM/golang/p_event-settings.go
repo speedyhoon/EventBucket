@@ -173,13 +173,11 @@ func eventSettings_add_rangeForm(eventId string) Form {
 				Html:     "text",
 				Label:    "Range Name",
 				Required: true,
-			},
-			{
+			},{
 				Name:  "eventid",
 				Html:  "hidden",
 				Value: eventId,
-			},
-			{
+			},{
 				Html:  "submit",
 				Value: "Create Range",
 			},
@@ -214,13 +212,11 @@ func eventSettings_sort_scoreboard(eventId string, existing_sort string, ranges 
 				Label:    "Sort Scoreboard by Range",
 				Required: true,
 				Options:  sort_by_ranges,
-			},
-			{
+			},{
 				Name:  "eventid",
 				Html:  "hidden",
 				Value: eventId,
-			},
-			{
+			},{
 				Html:  "submit",
 				Value: "Save",
 			},
@@ -238,21 +234,18 @@ func eventSettings_add_aggForm(eventId string, eventRanges []Option) Form {
 				Html:     "text",
 				Label:    "Aggregate Name",
 				Required: true,
-			},
-			{
+			},{
 				Name:  "eventid",
 				Html:  "hidden",
 				Value: eventId,
-			},
-			{
+			},{
 				Name:        "agg",
 				Html:        "select",
 				MultiSelect: true,
 				Options:     eventRanges,
 				Label:       "Sum up ranges",
 				Required:    true,
-			},
-			{
+			},{
 				Html:  "submit",
 				Value: "Create Aggregate",
 			},
@@ -278,13 +271,11 @@ func eventSettingsClassGrades(eventId string, grades []int) Form {
 				//				Label:          "select Classes &amp; Grades in this event",
 				MultiSelect: true,
 				Options:     eventGradeOptions(grades),
-			},
-			{
+			},{
 				Name:  "eventid",
 				Html:  "hidden",
 				Value: eventId,
-			},
-			{
+			},{
 				Html:  "submit",
 				Value: "Save",
 			},
@@ -294,7 +285,6 @@ func eventSettingsClassGrades(eventId string, grades []int) Form {
 
 func eventShotsNSighters(eventId string) Page {
 	//TODO Display a list of ranges and shooters scores as shots and total scores, ordered in descending order
-	//Info.Printf("eventid = %v",eventId)
 	event, err := getEvent(eventId)
 	if err == nil {
 		//TODO shooters scores not displayed for each range etc.
@@ -339,13 +329,11 @@ func eventSettings_isPrizeMeet(eventId string, checked bool) Form {
 				Html:    "checkbox",
 				Label:   "Is this Event a Prize Meeting?",
 				Checked: checked,
-			},
-			{
+			},{
 				Name:  "eventid",
 				Html:  "hidden",
 				Value: eventId,
-			},
-			{
+			},{
 				Html:  "submit",
 				Value: "Save",
 			},
