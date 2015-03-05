@@ -478,14 +478,12 @@ func nraa_upsert_shooter(shooter NRAA_Shooter) {
 	if err != nil {
 		Warning.Println(err)
 	}
-	//Info.Printf("inserted: %v", shooter)
 }
 func Upsert_Doc(collection string, id interface{}, document interface{}) {
 	_, err := conn.C(collection).UpsertId(id, document)
 	if err != nil {
 		Warning.Println(err)
 	}
-	//Info.Printf("inserted id: %v into %v", id, collection)
 }
 
 func searchShooters(query M) []Shooter {
