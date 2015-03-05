@@ -226,7 +226,7 @@ func Dot(elem ...interface{}) string {
 	return strings.Join(dots, ".")
 }
 
-func DB_event_add_range(event_id string, new_range Range) (int, Event) {
+func DB_event_add_range(eventId string, new_range Range) (int, Event) {
 	change := mgo.Change{
 		Update: M{
 			"$push": M{schemaRANGE: new_range},
@@ -235,10 +235,10 @@ func DB_event_add_range(event_id string, new_range Range) (int, Event) {
 		ReturnNew: true,
 	}
 	returned := Event{}
-	conn.C(TBLevent).FindId(event_id).Apply(change, &returned)
+	conn.C(TBLevent).FindId(eventId).Apply(change, &returned)
 	for range_id, range_data := range returned.Ranges {
 		if range_data.Name == new_range.Name && range_data.Aggregate == new_range.Aggregate && range_data.ScoreBoard == new_range.ScoreBoard && range_data.Locked == new_range.Locked && range_data.Hidden == new_range.Hidden {
-			//TODO this if check seems really hacky!!!
+			//TODO this if check is really hacky!!!
 			return range_id, returned
 		}
 	}
@@ -292,7 +292,7 @@ func event_shooter_insert(eventId string, shooter EventShooter) {
 	}
 
 	conn.C(TBLevent).FindId(eventId).Apply(change, &event)
-	/*event, _ := getEvent(event_id)
+	/*event, _ := getEvent(eventId)
 	increment := 1
 	insert := M{
 		Dot(schemaSHOOTER, event.AutoInc.Shooter): shooter,
@@ -315,7 +315,7 @@ func event_shooter_insert(eventId string, shooter EventShooter) {
 			"$inc": M{Dot(schemaAutoInc, schemaSHOOTER): increment},
 		},
 	}
-	conn.C(TBLevent).FindId(event_id).Apply(change, make(M))*/
+	conn.C(TBLevent).FindId(eventId).Apply(change, make(M))*/
 }
 
 func eventTotalScoreUpdate(eventId string, rangeId int, shooterIds []int, score Score) Event {
@@ -339,8 +339,8 @@ func eventTotalScoreUpdate(eventId string, rangeId int, shooterIds []int, score 
 }
 
 func event_sort_aggs_with_grade(event Event, range_id string, shooter_id int) {
-	event_id := event.Id
-	ranges_to_redo := search_for_aggs(event_id, range_id)
+	eventId := event.Id
+	ranges_to_redo := search_for_aggs(eventId, range_id)
 	//TODO this seems quite inefficent
 	event = calculate_aggs(event, shooter_id, ranges_to_redo)
 	//Only worry about shooters in this shooters grade
@@ -438,7 +438,7 @@ func event_sort_aggs_with_grade(event Event, range_id string, shooter_id int) {
 				},
 			}
 			var result Event
-			_, err := conn.C(TBLevent).FindId(event_id).Apply(change, &result)
+			_, err := conn.C(TBLevent).FindId(eventId).Apply(change, &result)
 			if err != nil {
 				Warning.Printf("unable to update shooter rank for range: ", rangeId, ", shooter id:", shooter.Id)
 			}
@@ -446,12 +446,11 @@ func event_sort_aggs_with_grade(event Event, range_id string, shooter_id int) {
 	}
 }
 
-func event_update_range_data(event_id string, update_data M) {
-	change := mgo.Change{
-		Upsert: true,
-		Update: update_data,
-	}
-	conn.C(TBLevent).FindId(event_id).Apply(change, make(M))
+func event_update_range_data(eventId string, updateData M) {
+	conn.C(TBLevent).FindId(eventId).Apply(mgo.Change{
+			Upsert:    false,
+			Update:    updateData,
+		}, make(M))
 }
 
 func event_update_sort_scoreboard(eventId, sortByRange string) {

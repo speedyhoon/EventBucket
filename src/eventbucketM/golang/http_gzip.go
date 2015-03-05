@@ -11,29 +11,28 @@ import (
 
 const (
 	//GET
-	URL_home    = "/"
-	URL_about   = "/about"
-	URL_clubs   = "/clubs"
-	URL_licence = "/licence"
-	//URL_licence_summary	= "/licence-summary"
+	URL_home     = "/"
+	URL_about    = "/about"
+	URL_clubs    = "/clubs"
+	URL_licence  = "/licence"
 	URL_archive  = "/archive"
 	URL_shooters = "/shooters"
 	URL_event    = "/event/" //event Id special type characters only allowed
+	//URL_licence_summary	= "/licence-summary"
 	//GET with PARAMETERS
-	URL_club = "/club/"
 	//URL_events               = "/events/"
+	URL_club             = "/club/"
 	URL_eventSettings    = "/eventSettings/"    //event id
-	URL_scoreboard       = "/scoreboard/"       //event id/range_id
-	URL_totalScores      = "/totalScores/"      //event id/range_id
-	URL_totalScoresAll   = "/totalScoresAll/"   //event id/range_id
-	URL_startShooting    = "/startShooting/"    //event id/range_id
-	URL_startShootingAll = "/startShootingAll/" //event id/range_id
+	URL_scoreboard       = "/scoreboard/"       //event id/range id
+	URL_totalScores      = "/totalScores/"      //event id/range id
+	URL_totalScoresAll   = "/totalScoresAll/"   //event id/range id
+	URL_startShooting    = "/startShooting/"    //event id/range id
+	URL_startShootingAll = "/startShootingAll/" //event id/range id
 	URL_queryShooterList = "/queryShooterList"
 	//POST
-	URL_clubInsert  = "/clubInsert"
-	URL_champInsert = "/champInsert"
-	URL_eventInsert = "/eventInsert"
-	//	URL_eventInsert2         = "/eventInsert2"
+	URL_clubInsert           = "/clubInsert"
+	URL_champInsert          = "/champInsert"
+	URL_eventInsert          = "/eventInsert"
 	URL_eventRangeInsert     = "/rangeInsert"
 	URL_eventAggInsert       = "/aggInsert"
 	URL_shooterInsert        = "/shooterInsert"
@@ -84,7 +83,7 @@ func start() {
 	Post(URL_queryShooterList, queryShooterList) //Search for a shooter by first, surname & club
 	Post(URL_updateShooterList, PostVia(updateShooterList, URL_shooters))
 	Post(URL_clubInsert, PostVia(clubInsert, URL_clubs)) //TODO redirect to actual club created
-	Post(URL_updateRange, rangeUpdate2)
+	Post(URL_updateRange, rangeUpdate)
 	//	Post(URL_dateUpdate, dateUpdate)
 	Post(URL_eventRangeInsert, rangeInsert)
 	Post(URL_eventAggInsert, aggInsert)
@@ -194,7 +193,7 @@ func (w gzipResponseWriter) Write(b []byte) (int, error) {
 
 func getIdFromUrl(r *http.Request, page_url string) string {
 	//TODO add validation checking for id using regex pattens
-	//TODO add a http layer function between p_page functions and main.go so that the event_id or club_id can be validated and the p_page functions don't have to interact with http at all
+	//TODO add a http layer function between p_page functions and main.go so that the eventId or clubId can be validated and the p_page functions don't have to interact with http at all
 	return r.URL.Path[len(page_url):]
 }
 

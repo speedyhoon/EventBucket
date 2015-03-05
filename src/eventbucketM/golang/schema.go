@@ -48,7 +48,7 @@ type Club struct {
 
 type Range struct {
 	Name       string                   `bson:"n"`
-	Aggregate  string                   `bson:"a,omitempty"`
+	Aggregate  string                   `bson:"a,omitempty"`		//TODO Maybe this one could be a pointer to prevent it from being removed?
 	ScoreBoard bool                     `bson:"s,omitempty"`
 	Locked     bool                     `bson:"l,omitempty"`
 	Hidden     bool                     `bson:"h,omitempty"`
@@ -56,6 +56,7 @@ type Range struct {
 	Status     int                      `bson:"t,omitempty"`      //ENUM change to 1 when the first shooter has recorded their first shot change to 2 when the range is finished. http://stackoverflow.com/questions/14426366/what-is-an-idiomatic-way-of-representing-enums-in-golang
 	Class      map[string]RangeProperty `bson:"omitempty,inline"` //TODO possibly change it to optional grades per range in future
 	Id         *int                     `bson:"i,omitempty"`
+	IsAgg      bool                     `bson:"g,omitempty"`	//Prevents aggs switching to normal ranges //TODO is there a better way to determine an empty agg rather than having this separate column?
 }
 type RangeProperty struct {
 	ShotsQty    int `bson:"s,omitempty"`
