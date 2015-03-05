@@ -8,9 +8,9 @@ import (
 
 func scoreboard(url string) Page {
 	arr := strings.Split(url, "/")
-	event_id := arr[0]
+	eventId := arr[0]
 
-	event, _ := getEvent(event_id)
+	event, _ := getEvent(eventId)
 	var sortByRange string
 	if event.SortScoreboard != "" {
 		sortByRange = event.SortScoreboard
@@ -42,13 +42,11 @@ func scoreboard(url string) Page {
 	}
 
 	var shooter_list []EventShooter
-	for shooter_id, shooterList := range event.Shooters {
-		shooterList.Id = shooter_id
-		for range_id, score := range shooterList.Scores {
-			//vardump(score)
-			//export(score)
+	for shooterId, shooterList := range event.Shooters {
+		shooterList.Id = shooterId
+		for rangeId, score := range shooterList.Scores {
 			//score.Position = 0
-			shooterList.Scores[range_id] = score
+			shooterList.Scores[rangeId] = score
 		}
 		shooter_list = append(shooter_list, shooterList)
 	}
@@ -137,12 +135,12 @@ func scoreboard(url string) Page {
 		"ListRanges":     event.Ranges,
 		"Css":            "scoreboard.css",
 		"Legend":         render_legend(score_board_legend_on_off),
-		"menu":           eventMenu(event_id, event.Ranges, URL_scoreboard, event.IsPrizeMeet),
+		"menu":           eventMenu(eventId, event.Ranges, URL_scoreboard, event.IsPrizeMeet),
 		"SortScoreboard": "",
 	}
 	if len(event.Ranges) >= 1 {
 		outputer["SortByRange"], _ = strToInt(sortByRange)
-		outputer["SortScoreboard"] = generateForm2(eventSettings_sort_scoreboard(event_id, event.SortScoreboard, event.Ranges))
+		outputer["SortScoreboard"] = generateForm2(eventSettings_sort_scoreboard(eventId, event.SortScoreboard, event.Ranges))
 	}
 	return Page{
 		TemplateFile: "scoreboard",

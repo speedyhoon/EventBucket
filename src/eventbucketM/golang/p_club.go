@@ -138,7 +138,6 @@ func clubMoundInsert(w http.ResponseWriter, r *http.Request) {
 		Distance: distance,
 		Unit:     validatedValues["unit"],
 	}
-	vardump(validatedValues)
 	if moundId != "" {
 		newMound.Id, err = strToInt(moundId)
 		if err != nil {
