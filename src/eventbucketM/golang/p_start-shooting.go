@@ -69,7 +69,7 @@ func startShooting_Data(data string, showAll bool) Page {
 	var temp_grade Grade
 	var shooter_list []EventShooter
 	allGrades := grades()
-	for shooter_id, shooter_data := range event.Shooters {
+	for shooterId, shooter_data := range event.Shooters {
 		if showAll || (!showAll && ((event.IsPrizeMeet && len(shooter_data.Scores[fmt.Sprintf("%v", rangeId)].Shots) <= 0) || (!event.IsPrizeMeet && shooter_data.Scores[fmt.Sprintf("%v", rangeId)].Total <= 0))) {
 			temp_grade = allGrades[shooter_data.Grade]
 			class_shots[temp_grade.ClassName] = available_class_shots[temp_grade.ClassId]
@@ -79,7 +79,7 @@ func startShooting_Data(data string, showAll bool) Page {
 			shooter_data.Club = strings.Replace(shooter_data.Club, " Rifle Club.", "", -1)
 			shooter_data.Club = strings.Replace(shooter_data.Club, " Rifle Club", "", -1)
 			shooter_data.Club = strings.Replace(shooter_data.Club, " Ex-Services Memorial", "", -1)
-			shooter_data.Id = shooter_id
+			shooter_data.Id = shooterId
 			shooter_list = append(shooter_list, shooter_data)
 		}
 	}
@@ -145,14 +145,14 @@ func updateShotScores(w http.ResponseWriter, r *http.Request) {
 	validated_values, passed := valid8(startShooting_Form("", "", "", "").Inputs, r)
 	if passed {
 		event := validated_values["event"].(Event)
-		rangeId := validated_values["range_id"].(int)
+		rangeId := validated_values["rangeid"].(int)
 		//TODO check the range exists (is not nill) before accessing Locked or Aggregate
 		if !event.Ranges[rangeId].Locked && event.Ranges[rangeId].Aggregate == "" {
-			eventId := validated_values["event_id"].(string)
-			shooter_id := validated_values["shooter_id"].(int)
+			eventId := validated_values["eventid"].(string)
+			shooterId := validated_values["shooterid"].(int)
 			shots := validated_values["shots"].(string)
 
-			new_score := calc_total_centers(shots, grades()[event.Shooters[shooter_id].Grade].ClassId)
+			new_score := calc_total_centers(shots, grades()[event.Shooters[shooterId].Grade].ClassId)
 			var temp Page
 			if new_score.Centers > 0 {
 				generator(w, fmt.Sprintf("%v.%v", new_score.Total, new_score.Centers), temp)
@@ -160,21 +160,21 @@ func updateShotScores(w http.ResponseWriter, r *http.Request) {
 				generator(w, fmt.Sprintf("%v", new_score.Total), temp)
 			}
 			//Add any linked shooters to this update
-			shooterIds := []int{shooter_id}
-			if event.Shooters[shooter_id].LinkedId != nil {
-				shooterIds = append(shooterIds, *event.Shooters[shooter_id].LinkedId)
+			shooterIds := []int{shooterId}
+			if event.Shooters[shooterId].LinkedId != nil {
+				shooterIds = append(shooterIds, *event.Shooters[shooterId].LinkedId)
 			}
 			//Find all the aggs that this rangeId is in
 			aggsFound := searchForAggs(event.Ranges, rangeId)
 			var updateBson = make(M)
 			if len(aggsFound) > 0 {
-				updateBson = calculateAggs(event.Shooters[shooter_id].Scores, aggsFound, shooterIds, event.Ranges)
+				updateBson = calculateAggs(event.Shooters[shooterId].Scores, aggsFound, shooterIds, event.Ranges)
 			}
 			//			event/shooters/shooterid/rangeId
 
-			updateBson[Dot(schemaSHOOTER, shooter_id, rangeId)] = new_score
-			if event.Shooters[shooter_id].LinkedId != nil {
-				updateBson[Dot(schemaSHOOTER, event.Shooters[shooter_id].LinkedId, rangeId)] = new_score
+			updateBson[Dot(schemaSHOOTER, shooterId, rangeId)] = new_score
+			if event.Shooters[shooterId].LinkedId != nil {
+				updateBson[Dot(schemaSHOOTER, event.Shooters[shooterId].LinkedId, rangeId)] = new_score
 			}
 			//			eventTotalScoreUpdate(eventId, rangeId, shooterIds, new_score)
 			//			updateSetter := make(M)
@@ -193,8 +193,6 @@ func updateShotScores(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				Warning.Println(err)
 			}
-			//			return event
-			//			export(updateBson)
 		} else {
 			Warning.Println("BAD updateShotScores. Current Range is locked or is an aggreate range.")
 		}
@@ -229,7 +227,7 @@ func startShooting_Form(eventId, rangeId, shooterId, shots string) Form {
 		Action: URL_updateTotalScores,
 		Inputs: []Inputs{
 			{
-				Name:      "event_id",
+				Name:      "eventid",
 				Html:      "hidden",
 				Value:     eventId,
 				VarType:   "string",
@@ -237,7 +235,7 @@ func startShooting_Form(eventId, rangeId, shooterId, shots string) Form {
 				VarMinLen: 1,
 			},
 			{
-				Name:      "range_id",
+				Name:      "rangeid",
 				Html:      "hidden",
 				Value:     rangeId,
 				VarType:   "int",
@@ -245,7 +243,7 @@ func startShooting_Form(eventId, rangeId, shooterId, shots string) Form {
 				VarMinLen: 0,
 			},
 			{
-				Name:    "shooter_id",
+				Name:    "shooterid",
 				Html:    "hidden",
 				Value:   shooterId,
 				VarType: "int",
