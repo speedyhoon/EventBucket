@@ -16,24 +16,19 @@ func check_form(options []Inputs, r *http.Request) map[string]string {
 	r.ParseForm()
 	form := r.Form
 	new_values := make(map[string]string)
-	//	for option := range options {
 	for _, option := range options {
-		//		if options[option].Html != "submit" {
 		if option.Html != "submit" {
-			//			array, ok := form[option]
 			array, ok := form[option.Name]
-			//			if ok && ((options[option].Required && array[0] != "") || !options[option].Required) {
-			if ok && ((option.Required && array[0] != "") || !option.Required) {
-				if len(array) > 1 {
-					//					new_values[option] = strings.Join(array, ",")
-					new_values[option.Name] = strings.Join(array, ",")
+			if ok {
+				if (option.Required && array[0] != "") || !option.Required {
+					if len(array) > 1 {
+						new_values[option.Name] = strings.Join(array, ",")	//TODO it would be nice to trim whitepspace when joining the items together
+					} else {
+						new_values[option.Name] = strings.TrimSpace(array[0])
+					}
 				} else {
-					//					new_values[option] = strings.TrimSpace(array[0])
-					new_values[option.Name] = strings.TrimSpace(array[0])
+					Warning.Printf("options[%v] is REQUIRED OR is not in array", option)
 				}
-			} else {
-				Warning.Printf("options[%v] is REQUIRED OR is not in array", option)
-				//				warning("options[%v] is REQUIRED OR is not in array", option)
 			}
 		}
 	}
@@ -100,7 +95,7 @@ func valid8(options []Inputs, r *http.Request) (M, bool) {
 	var tempInt int
 	for name, value := range new_values {
 		switch name {
-		case "event_id":
+		case "eventid":
 			event, err = getEvent(fmt.Sprintf("%v", value))
 			if err == nil {
 				new_values["event"] = event
@@ -108,13 +103,13 @@ func valid8(options []Inputs, r *http.Request) (M, bool) {
 				Warning.Printf("event with id '%v' doesn't exist", value)
 				return make(M), false
 			}
-		case "range_id":
+		case "rangeid":
 			tempInt = value.(int)
 			if tempInt < 0 || tempInt > len(event.Ranges) {
 				Warning.Printf("event with range id '%v' doesn't exist", value)
 				return make(M), false
 			}
-		case "shooter_id":
+		case "shooterid":
 			//TODO this might be better as a pointer to check that index is not null
 			tempInt = value.(int)
 			if tempInt < 0 || tempInt > len(event.Shooters) {

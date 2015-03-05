@@ -36,7 +36,7 @@ var (
 func serveDir(contentType string) {
 	http.Handle(contentType,
 		http.HandlerFunc(agent.WrapHTTPHandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			defer dev_mode_timeTrack(time.Now(), r.RequestURI)
+			//			defer dev_mode_timeTrack(time.Now(), r.RequestURI)
 			//If url is a directory return a 404 to prevent displaying a directory listing
 			if strings.HasSuffix(r.URL.Path, "/") {
 				http.NotFound(w, r)
@@ -49,7 +49,7 @@ func serveDir(contentType string) {
 
 func serveHtml(h http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(agent.WrapHTTPHandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		defer dev_mode_timeTrack(time.Now(), r.RequestURI)
+		//		defer dev_mode_timeTrack(time.Now(), r.RequestURI)
 		httpHeaders(w, []string{"html", "noCache", "expireNow", "pragma"})
 		Gzip(h, w, r)
 	}))
@@ -180,10 +180,10 @@ func randomDataStartShooting(eventId, rangeId string) {
 	for shooterId, shooter := range event.Shooters {
 		http.PostForm("http://localhost/updateShotScores",
 			url.Values{
-				"shots":      {randomShooterScores(shooter.Grade)},
-				"shooter_id": {fmt.Sprintf("%v", shooterId)},
-				"range_id":   {rangeId},
-				"event_id":   {eventId},
+				"shots":     {randomShooterScores(shooter.Grade)},
+				"shooterid": {fmt.Sprintf("%v", shooterId)},
+				"rangeid":   {rangeId},
+				"eventid":   {eventId},
 			},
 		)
 	}
@@ -197,9 +197,9 @@ func randomDataTotalScores(eventId, rangeId string) {
 		go http.PostForm("http://localhost/updateTotalScores",
 			url.Values{"first":      {randomdata.FirstName(randomdata.RandomGender)},
 			"score":			{fmt.Sprintf("%v.%v",rand.Intn(51),rand.Intn(11))},
-			"shooter_id":	{shooter_id},
-			"range_id":		{range_id},
-			"event_id":		{event_id},
+			"shooterid":	{shooterid},
+			"rangeid":		{rangeid},
+			"eventid":		{eventid},
 		})
 		resp.Body.Close()*/
 		range_Id, err := strToInt(rangeId)

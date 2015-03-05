@@ -26,21 +26,21 @@
 						<td>{{with .Aggregate}}{{HTM .}}{{end}}</td>
 						<td>
 							{{if not .Hidden}}
-							<input type=checkbox name=hide form=range{{$key}}>
+								<input type=checkbox name=hide form=range{{$key}}>
 							{{else}}
-							<input type=checkbox name=hide form=range{{$key}} checked>
+								<input type=checkbox name=hide form=range{{$key}} checked>
 							{{end}}
 						</td>
 						<td>
 							{{if not .Aggregate}}
-							{{if not .Locked}}
-							<input type=checkbox name=lock form=range{{$key}}>
-							{{else}}
-							<input type=checkbox name=lock form=range{{$key}} checked>
-							{{end}}
+								{{if not .Locked}}
+									<input type=checkbox name=lock form=range{{$key}}>
+								{{else}}
+									<input type=checkbox name=lock form=range{{$key}} checked>
+								{{end}}
 							{{end}}
 						</td>
-						<td><form id=range{{$key}} method=post action=/updateRange><button>Save</button><input name=event_id type=hidden value={{$id}}><input name=range_id type=hidden value={{$key}}></form></td>
+						<td><form id=range{{$key}} method=post action=/updateRange><button>Save</button><input name=eventid type=hidden value={{$id}}><input name=rangeid type=hidden value={{$key}}></form></td>
 					</tr>
 				{{end}}
 			{{end}}
@@ -56,7 +56,7 @@
 {{if.ListRanges}}
 	{{Fieldset "Ranges Shots &amp; Sighters"}}
 		<form method=post action=/eventShotsNSighters>
-			<input type=hidden name=event_id value={{.Id}}>
+			<input type=hidden name=eventid value={{.Id}}>
 			<table>
 				<tr>
 					<th rowspan=2>Class</td>

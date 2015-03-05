@@ -8,8 +8,8 @@ import (
 
 func shooterInsert(w http.ResponseWriter, r *http.Request) {
 	validated_values := check_form(event_add_shooterForm("", []int{}).Inputs, r)
-	event_id := validated_values["event_id"]
-	http.Redirect(w, r, URL_event+event_id, http.StatusSeeOther)
+	eventId := validated_values["eventid"]
+	http.Redirect(w, r, URL_event+eventId, http.StatusSeeOther)
 	new_shooter := EventShooter{
 		FirstName: validated_values["first"],
 		Surname:   validated_values["surname"],
@@ -19,7 +19,7 @@ func shooterInsert(w http.ResponseWriter, r *http.Request) {
 	if validated_values["age"] != "" {
 		new_shooter.AgeGroup = validated_values["age"]
 	}
-	event_shooter_insert(event_id, new_shooter)
+	event_shooter_insert(eventId, new_shooter)
 }
 
 func event(eventId string) Page {
@@ -57,8 +57,8 @@ func event(eventId string) Page {
 
 func shooterListInsert(w http.ResponseWriter, r *http.Request) {
 	validated_values := check_form(event_add_shooterListForm("", []int{}).Inputs, r)
-	event_id := validated_values["event_id"]
-	http.Redirect(w, r, URL_event+event_id, http.StatusSeeOther)
+	eventId := validated_values["eventid"]
+	http.Redirect(w, r, URL_event+eventId, http.StatusSeeOther)
 
 	var new_shooter EventShooter
 	new_shooter.Grade, _ = strconv.Atoi(validated_values["grade"])
@@ -73,7 +73,7 @@ func shooterListInsert(w http.ResponseWriter, r *http.Request) {
 		new_shooter.Surname = temp_shooter.Surname
 		new_shooter.Club = temp_shooter.Club
 	}
-	event_shooter_insert(event_id, new_shooter)
+	event_shooter_insert(eventId, new_shooter)
 }
 
 func event_add_shooterForm(eventId string, grades []int) Form {
@@ -112,7 +112,7 @@ func event_add_shooterForm(eventId string, grades []int) Form {
 				Required:    true,
 				Options:     eventGradeOptions(grades),
 			}, {
-				Name:  "event_id",
+				Name:  "eventid",
 				Html:  "hidden",
 				Value: eventId,
 			},
@@ -168,7 +168,7 @@ func event_add_shooterListForm(eventId string, grades []int) Form {
 			//				Value:   "Add Shooter",
 			//			},
 			{
-				Name:  "event_id",
+				Name:  "eventid",
 				Html:  "hidden",
 				Value: eventId,
 			},

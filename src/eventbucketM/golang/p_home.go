@@ -106,7 +106,6 @@ func home_form_new_event(clubs []Club, event Event) Form {
 			Display: club_data.Name,
 		})
 	}
-	Trace.Println(event)
 	inputs := []Inputs{
 		{
 			Name:     "name",

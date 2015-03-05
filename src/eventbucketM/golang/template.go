@@ -144,7 +144,7 @@ func eventMenu(eventId string, eventRanges []Range, pageUrl string, isPrizeMeet 
 				if len(eventRanges) >= 1 {
 					menu += fmt.Sprintf("<li%v><a href=#>%v</a><ul>", selected, menuItem.Name)
 					for rangeId, range_item := range eventRanges {
-						if len(range_item.Aggregate) == 0 && !range_item.Hidden {
+						if !range_item.IsAgg && !range_item.Hidden {
 							menu += fmt.Sprintf("<li><a href=%v%v/%v>%v - %v</a></li>", menuItem.Link, eventId, rangeId, rangeId, range_item.Name)
 						}
 					}
