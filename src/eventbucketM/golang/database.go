@@ -448,9 +448,9 @@ func event_sort_aggs_with_grade(event Event, range_id string, shooter_id int) {
 
 func event_update_range_data(eventId string, updateData M) {
 	conn.C(TBLevent).FindId(eventId).Apply(mgo.Change{
-			Upsert:    false,
-			Update:    updateData,
-		}, make(M))
+		Upsert: false,
+		Update: updateData,
+	}, make(M))
 }
 
 func event_update_sort_scoreboard(eventId, sortByRange string) {

@@ -78,7 +78,12 @@
 111 KB (114,122 bytes) Prod only
 117 KB (120,430 bytes) Dev only
 
-5 Mar 2015
+4 Mar 2015
 126 KB (129,210 bytes) Go only
 103 KB (105,702 bytes) Go compiled (without comments)
 118 KB (121,739 bytes) Prod only
+
+5 Mar 2015
+124 KB (127,709 bytes) Go only
+103 KB (105,862 bytes) Go compiled
+117 KB (120,239 bytes) Prod only
