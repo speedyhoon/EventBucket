@@ -19,8 +19,8 @@ type Event struct {
 	Ranges         []Range        `bson:"^^schemaRANGE^^,omitempty"`
 	Shooters       []EventShooter `bson:"^^schemaSHOOTER^^,omitempty"`
 	AutoInc        AutoInc        `bson:"U"`
-	//	TeamCat        map[string]TeamCat      `bson:"A,omitempty"`
-	//	Teams          map[string]Team         `bson:"T,omitempty"`
+	//TeamCat        map[string]TeamCat      `bson:"A,omitempty"`
+	//Teams          map[string]Team         `bson:"T,omitempty"`
 	//Datetime string				`bson:"d,omitempty"`		No browser currently supports date time, so settling for separate fields that google chrome allows
 }
 
@@ -76,9 +76,9 @@ type Score struct {
 	Position int `bson:"p,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
 }
 
-type NRAA_Shooter struct {
+type NraaShooter struct {
 	SID       int    `bson:"_id,omitempty"`
-	NRAA_Id   int    `bson:"i,omitempty"`
+	NraaId    int    `bson:"i,omitempty"`
 	Surname   string `bson:"s,omitempty"`
 	FirstName string `bson:"f,omitempty"`
 	NickName  string `bson:"n,omitempty"`
@@ -112,9 +112,8 @@ type EventShooter struct {
 }
 
 type Shooter struct {
-	SID int `bson:"_id,omitempty"`
-	//	SID int					`bson:"s,omitempty"`
-	NRAA_Id   int    `bson:"i,omitempty"`
+	SID       int    `bson:"_id,omitempty"`
+	NraaId    int    `bson:"i,omitempty"`
 	Surname   string `bson:"s,omitempty"`
 	FirstName string `bson:"f,omitempty"`
 	NickName  string `bson:"n,omitempty"`

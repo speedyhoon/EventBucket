@@ -22,12 +22,12 @@ const (
 	//GET with PARAMETERS
 	//URL_events               = "/events/"
 	URL_club             = "/club/"
-	URL_eventSettings    = "/eventSettings/"    //event id
-	URL_scoreboard       = "/scoreboard/"       //event id/range id
-	URL_totalScores      = "/totalScores/"      //event id/range id
-	URL_totalScoresAll   = "/totalScoresAll/"   //event id/range id
-	URL_startShooting    = "/startShooting/"    //event id/range id
-	URL_startShootingAll = "/startShootingAll/" //event id/range id
+	URL_eventSettings    = "/eventSettings/" //eventId
+	URL_scoreboard       = "/scoreboard/"    //eventId/rangeId
+	URL_totalScores      = "/totalScores/"
+	URL_totalScoresAll   = "/totalScoresAll/"
+	URL_startShooting    = "/startShooting/"
+	URL_startShootingAll = "/startShootingAll/"
 	URL_queryShooterList = "/queryShooterList"
 	//POST
 	URL_clubInsert           = "/clubInsert"
@@ -41,10 +41,8 @@ const (
 	URL_updateTotalScores    = "/updateTotalScores"
 	URL_updateShotScores     = "/updateShotScores"
 	URL_updateEventGrades    = "/updateEventGrades"
-	URL_updateEventName      = "/updateEventName/"
 	URL_updateRange          = "/updateRange"
 	URL_updateIsPrizeMeet    = "/updateIsPrizeMeet"
-	URL_dateUpdate           = "/dateUpdate/"
 	URL_club_mound_update    = "/clubMoundUpdate/"
 	URL_clubMoundInsert      = "/clubMoundInsert/"
 	URL_clubDetailsUpsert    = "/clubDetailsUpsert/"
@@ -84,7 +82,6 @@ func start() {
 	Post(URL_updateShooterList, PostVia(updateShooterList, URL_shooters))
 	Post(URL_clubInsert, PostVia(clubInsert, URL_clubs)) //TODO redirect to actual club created
 	Post(URL_updateRange, rangeUpdate)
-	//	Post(URL_dateUpdate, dateUpdate)
 	Post(URL_eventRangeInsert, rangeInsert)
 	Post(URL_eventAggInsert, aggInsert)
 	Post(URL_shooterInsert, shooterInsert)
@@ -92,7 +89,6 @@ func start() {
 	//	Post(URL_updateTotalScores, updateTotalScores)
 	Post(URL_updateShotScores, updateShotScores)
 	Post(URL_updateSortScoreBoard, updateSortScoreBoard)
-	//	Post(URL_updateEventName, updateEventName)
 	Post(URL_updateEventGrades, updateEventGrades)
 	Post(URL_updateIsPrizeMeet, updateIsPrizeMeet)
 	//	Post(URL_champInsert, PostVia(champInsert, URL_championships))	//TODO redirect to actual club created
@@ -111,6 +107,22 @@ var (
 	VURL_eventSettings       = regexp.MustCompile("^" + URL_eventSettings + "([" + ID_CHARSET_REGEX + "]+)$")
 	VURL_scoreboard          = regexp.MustCompile("^" + URL_scoreboard + "([" + ID_CHARSET_REGEX + "]+)$")
 )
+
+type Page struct {
+	TemplateFile, Title string
+	Theme               string
+	Data                M
+	v8Url               *regexp.Regexp
+}
+
+type gzipResponseWriter struct {
+	io.Writer
+	http.ResponseWriter
+}
+
+func (w gzipResponseWriter) Write(b []byte) (int, error) {
+	return w.Writer.Write(b)
+}
 
 func Gzip(h http.Handler, w http.ResponseWriter, r *http.Request) {
 	//Return a gzip compressed response if appropriate
@@ -142,11 +154,12 @@ func GetParameters(url string, runner func(string) Page) {
 	http.Handle(url, serveHtml(h))
 }
 
-//TODO Post - Post to endpoint. If valid return to X page, else return to previous page with form filled out and wrong values highlighted with error message
-//TODO Add ajax detection to so ajax requests are not redirected back to the referrer page.
 func Post(url string, runner http.HandlerFunc) {
+	//TODO Post - Post to endpoint. If valid return to X page, else return to previous page with form filled out and wrong values highlighted with error message
+	//TODO Add ajax detection to so ajax requests are not redirected back to the referrer page.
 	http.HandleFunc(url, serveHtml(runner))
 }
+
 func PostVia(runThisFirst func(http.ResponseWriter, *http.Request), url string) func(http.ResponseWriter, *http.Request) {
 	//Always redirect after a successful Post to "url". Otherwise redirect back to referrer page.
 	//When Ajax is not in use this stops the server responding to Post requests and causes the user to request page "url"
@@ -158,11 +171,11 @@ func PostVia(runThisFirst func(http.ResponseWriter, *http.Request), url string) 
 	}
 }
 
-func httpHeaders(w http.ResponseWriter, set_headers []string) {
+func httpHeaders(w http.ResponseWriter, setHeaders []string) {
 	//TODO Only set CSP when not in debug mode
 	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'") //TODO remove unsafe inline when start shooting gets its settings a different way
 	headers := map[string][2]string{
-		"expire":    {"Expires", time.Now().UTC().AddDate(1, 0, 0).Format(time.RFC1123)}, //TODO should it return GMT time?  //Expiry date is in 1 year, 0 months & 0 days in the future
+		"expire":    {"Expires", time.Now().UTC().AddDate(1, 0, 0).Format(time.RFC1123)}, //RESEARCH should it return GMT time?  //Expiry date is in 1 year, 0 months & 0 days in the future
 		"cache":     {"Vary", "Accept-Encoding"},
 		"public":    {"Cache-Control", "public"},
 		"gzip":      {"Content-Encoding", "gzip"},
@@ -174,32 +187,14 @@ func httpHeaders(w http.ResponseWriter, set_headers []string) {
 		DIR_JS:      {"Content-Type", "text/javascript"},
 		DIR_PNG:     {"Content-Type", "image/png"},
 		DIR_JPEG:    {"Content-Type", "image/jpeg"},
-		//		DIR_WEBP:  [2]string{"Content-Type", "image/webp"},
-		DIR_SVG: {"Content-Type", "image/svg+xml"},
+		DIR_SVG:     {"Content-Type", "image/svg+xml"},
 	}
-	for _, lookup := range set_headers {
+	for _, lookup := range setHeaders {
 		w.Header().Set(headers[lookup][0], headers[lookup][1])
 	}
 }
 
-type gzipResponseWriter struct {
-	io.Writer
-	http.ResponseWriter
-}
-
-func (w gzipResponseWriter) Write(b []byte) (int, error) {
-	return w.Writer.Write(b)
-}
-
-func getIdFromUrl(r *http.Request, page_url string) string {
-	//TODO add validation checking for id using regex pattens
-	//TODO add a http layer function between p_page functions and main.go so that the eventId or clubId can be validated and the p_page functions don't have to interact with http at all
-	return r.URL.Path[len(page_url):]
-}
-
-type Page struct {
-	TemplateFile, Title string
-	Theme               string
-	Data                M
-	v8Url               *regexp.Regexp
+func getIdFromUrl(r *http.Request, pageUrl string) string {
+	//TODO add automatic validation checking for id using regex pattens
+	return r.URL.Path[len(pageUrl):]
 }

@@ -24,8 +24,8 @@ func startShooting_Data(data string, showAll bool) Page {
 		return Page{
 			TemplateFile: "start-shooting",
 			Theme:        TEMPLATE_ADMIN,
+			Title:        "Start Shooting",
 			Data: M{
-				"Title":                "Start Shooting",
 				"menu":                 eventMenu(eventId, event.Ranges, URL_startShooting, event.IsPrizeMeet),
 				"target_heading_cells": "",
 				"fclass_heading_cells": "",
@@ -116,8 +116,8 @@ func startShooting_Data(data string, showAll bool) Page {
 	return Page{
 		TemplateFile: "start-shooting",
 		Theme:        TEMPLATE_ADMIN,
+		Title:        "Start Shooting",
 		Data: M{
-			"Title":              "Start Shooting",
 			"EventId":            eventId,
 			"LinkToPage":         totalScores_link,
 			"RangeName":          event.Ranges[rangeId].Name,

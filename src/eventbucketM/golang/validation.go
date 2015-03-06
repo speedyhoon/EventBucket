@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func check_form(options []Inputs, r *http.Request) map[string]string {
+func checkForm(options []Inputs, r *http.Request) map[string]string {
 	//TODO add a struct parameter to this function (like Club, Event, etc) so that it can assign the values to the struct rather than return new_values
 	//TODO when the form doesn't meet the requirements send user back to certain page and display an error message
 	//TODO the base template should be able to handle error messages to it and display them accordingly.

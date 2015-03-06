@@ -96,6 +96,18 @@ const (
 */
 )
 
+type ClassSettings struct {
+	Name                  string
+	Display               string
+	DisplayValue          int
+	Buttons               string
+	SightersQty, ShotsQty int
+	ValidShots            map[string]Score
+	ValidSighters         []string
+	GradeQty              int
+	Grades                []int
+}
+
 var (
 	Error = log.New(os.Stderr, "ERROR:  ", log.Ldate|log.Ltime|log.Lshortfile)
 	//TODO move the below to a constant if possible
@@ -124,45 +136,7 @@ var (
 			Link: URL_shooters,
 		},
 	}
-)
 
-type ClassSettings struct {
-	Name                  string
-	Display               string
-	DisplayValue          int
-	Buttons               string
-	SightersQty, ShotsQty int
-	ValidShots            map[string]Score
-	ValidSighters         []string
-	GradeQty              int
-	Grades                []int
-}
-
-func ShotsToValue(shot string) string {
-	return map[string]string{
-		"-": "",
-		"0": "0",
-		"1": "1",
-		"2": "2",
-		"3": "3",
-		"4": "4",
-		"5": "5",
-		"V": "V",
-		"6": "6",
-		"X": "X",
-		")": "0",
-		"!": "1",
-		"@": "2",
-		"#": "3",
-		"$": "4",
-		"%": "5",
-		"v": "V",
-		"^": "6",
-		"x": "X",
-	}[shot]
-}
-
-var (
 	DEFAULT_CLASS_SETTINGS = []ClassSettings{
 		{
 			Name:         "target",
@@ -313,4 +287,28 @@ func scoreBoardLegend() [7]Legend {
 		{cssClass: "w3", name: "Incomplete Score"},
 		{cssClass: "w2", name: "No Score"},
 	}
+}
+
+func ShotsToValue(shot string) string {
+	return map[string]string{
+		"-": "",
+		"0": "0",
+		"1": "1",
+		"2": "2",
+		"3": "3",
+		"4": "4",
+		"5": "5",
+		"V": "V",
+		"6": "6",
+		"X": "X",
+		")": "0",
+		"!": "1",
+		"@": "2",
+		"#": "3",
+		"$": "4",
+		"%": "5",
+		"v": "V",
+		"^": "6",
+		"x": "X",
+	}[shot]
 }

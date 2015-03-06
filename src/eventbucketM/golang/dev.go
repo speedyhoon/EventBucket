@@ -33,12 +33,25 @@ var (
 	Warning = log.New(os.Stderr, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
 )
 
+func main() {
+	if NEWRELIC {
+		agent.Verbose = true
+		agent.CollectHTTPStat = true
+		agent.NewrelicLicense = "abf730f5454a9a1e78af7a75bfe04565e9e0d3f1"
+		agent.Run()
+	}
+	start()
+	Post(URL_randomData, randomData)
+	Info.Println("ready to go")
+	Warning.Println("ListenAndServe: %v", http.ListenAndServe(":81", nil))
+}
+
 func serveDir(contentType string) {
 	http.Handle(contentType,
 		http.HandlerFunc(agent.WrapHTTPHandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			//			defer dev_mode_timeTrack(time.Now(), r.RequestURI)
-			//If url is a directory return a 404 to prevent displaying a directory listing
+			//defer devModeTimeTrack(time.Now(), r.RequestURI)
 			if strings.HasSuffix(r.URL.Path, "/") {
+				//If url is a directory return a 404 to prevent displaying a directory listing
 				http.NotFound(w, r)
 				return
 			}
@@ -49,7 +62,7 @@ func serveDir(contentType string) {
 
 func serveHtml(h http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(agent.WrapHTTPHandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		//		defer dev_mode_timeTrack(time.Now(), r.RequestURI)
+		//defer devModeTimeTrack(time.Now(), r.RequestURI)
 		httpHeaders(w, []string{"html", "noCache", "expireNow", "pragma"})
 		Gzip(h, w, r)
 	}))
@@ -65,36 +78,36 @@ func export(input interface{}) {
 	Trace.Printf("%#v", input) //can copy and declare new variable with it. Most ouput available
 }
 
-func dev_mode_timeTrack(start time.Time, requestURI string) {
+func devModeTimeTrack(start time.Time, requestURI string) {
 	Trace.Printf("%s took %s", requestURI, time.Since(start))
 }
 
-func dev_mode_check_form(check bool, message string) {
+func devModeCheckForm(check bool, message string) {
 	if !check {
 		Warning.Println(message)
 	}
 }
 
-func loadHTM(page_name string) []byte {
-	bytes, err := ioutil.ReadFile(fmt.Sprintf(PATH_HTML_SOURCE, page_name))
+func loadHTM(pageName string) []byte {
+	bytes, err := ioutil.ReadFile(fmt.Sprintf(PATH_HTML_SOURCE, pageName))
 	if err == nil {
 		existingLength := len(bytes)
-		bytes = dev_mode_minifyHtml(page_name, bytes)
+		bytes = devModeMinifyHtml(pageName, bytes)
 		newLength := len(bytes)
 		if existingLength != newLength {
-			//Trace.Printf("Page '%v' had %v bytes removed (%v percent), from: %v, to: %v", page_name, existingLength-newLength, 100-newLength*100/existingLength, existingLength, newLength)
+			//Trace.Printf("Page '%v' had %v bytes removed (%v percent), from: %v, to: %v", pageName, existingLength-newLength, 100-newLength*100/existingLength, existingLength, newLength)
 		}
 		if newLength > existingLength {
 			Error.Println("How did this page get bigger?")
 		}
 	} else {
-		ioutil.WriteFile(fmt.Sprintf(PATH_HTML_SOURCE, page_name), bytes, 0777)
+		ioutil.WriteFile(fmt.Sprintf(PATH_HTML_SOURCE, pageName), bytes, 0777)
 	}
-	ioutil.WriteFile(fmt.Sprintf(PATH_HTML_MINIFIED, page_name), bytes, 0777)
+	ioutil.WriteFile(fmt.Sprintf(PATH_HTML_MINIFIED, pageName), bytes, 0777)
 	return bytes
 }
 
-func dev_mode_minifyHtml(pageName string, minify []byte) []byte {
+func devModeMinifyHtml(pageName string, minify []byte) []byte {
 	if bytes.Contains(minify, []byte("ZgotmplZ")) {
 		Warning.Println("Template generation error: ZgotmplZ")
 		return []byte("")
@@ -136,13 +149,10 @@ func dev_mode_minifyHtml(pageName string, minify []byte) []byte {
 }
 
 func randomData(w http.ResponseWriter, r *http.Request) {
-	eventId := ""
-	rangeId := ""
-	shooterQty := 0
-	totalScores := false
-	startShooting := false
+	var eventId, rangeId string
+	var totalScores, startShooting bool
 	var properties []string
-	//	random_grades := []string{/*"a","b","c",*/"d", "e", "f", "g", "h", "i", "j"}
+	var shooterQty int
 	for _, request := range strings.Split(strings.Replace(r.RequestURI, URL_randomData, "", -1), "&") {
 		properties = strings.Split(request, "=")
 		switch properties[0] {
@@ -218,7 +228,7 @@ func randomDataShooterQty(shooterQty int, eventId string) {
 		//make some requests for x number of shooters
 		counter += 1
 		Trace.Printf("inserting shooter :%v", counter)
-		event_shooter_insert(eventId, EventShooter{
+		eventShooterInsert(eventId, EventShooter{
 			FirstName: randomdata.FirstName(randomdata.RandomGender),
 			Surname:   randomdata.LastName(),
 			Club:      randomdata.State(randomdata.Large),
@@ -242,15 +252,10 @@ func randomShooterScores(shooterGrade int) string {
 	return score
 }
 
-func main() {
-	if NEWRELIC {
-		agent.Verbose = true
-		agent.CollectHTTPStat = true
-		agent.NewrelicLicense = "abf730f5454a9a1e78af7a75bfe04565e9e0d3f1"
-		agent.Run()
+func slice_to_map_bool(input []string) map[string]bool {
+	output := make(map[string]bool)
+	for _, value := range input {
+		output[value] = true
 	}
-	start()
-	Post(URL_randomData, randomData)
-	Info.Println("ready to go")
-	Warning.Println("ListenAndServe: %v", http.ListenAndServe(":81", nil))
+	return output
 }

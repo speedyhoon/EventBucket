@@ -103,11 +103,3 @@ func dirExists(path string) bool {
 	}
 	return false
 }
-
-func slice_to_map_bool(input []string) map[string]bool {
-	output := make(map[string]bool)
-	for _, value := range input {
-		output[value] = true
-	}
-	return output
-}

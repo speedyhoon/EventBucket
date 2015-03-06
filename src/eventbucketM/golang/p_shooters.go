@@ -13,17 +13,17 @@ func shooters() Page {
 	return Page{
 		TemplateFile: "shooters",
 		Theme:        TEMPLATE_HOME,
+		Title:        "Shooters",
 		Data: M{
-			"Title":       "Shooters",
-			"Menu":        home_menu(URL_shooters, HOME_MENU_ITEMS),
-			"ShooterList": generateForm2(organisers_update_shooter_list("")),
+			"Menu":        homeMenu(URL_shooters, HOME_MENU_ITEMS),
+			"ShooterList": generateForm(organisersUpdateShooterList("")),
 		},
 	}
 }
 
-func organisers_update_shooter_list(last_updated string) Form {
-	if last_updated == "" {
-		last_updated = "Never"
+func organisersUpdateShooterList(lastUpdated string) Form {
+	if lastUpdated == "" {
+		lastUpdated = "Never"
 	}
 	return Form{
 		Action: URL_updateShooterList,
@@ -31,7 +31,7 @@ func organisers_update_shooter_list(last_updated string) Form {
 		Inputs: []Inputs{
 			{
 				Html:      "submit",
-				Label:     "Last updated: " + last_updated,
+				Label:     "Last updated: " + lastUpdated,
 				Value:     "Update",
 				Autofocus: "on",
 			},
@@ -66,7 +66,7 @@ func updateShooterList2() int {
 		}
 		var i int = 0
 		var trim_space string
-		var shooter NRAA_Shooter
+		var shooter NraaShooter
 
 		var find_cells func(*html.Node)
 		find_cells = func(n *html.Node) {
@@ -107,9 +107,9 @@ func updateShooterList2() int {
 					if a.Key == "data-shooter-id" && a.Val != "" {
 						i = 0
 						id, _ := strconv.Atoi(a.Val)
-						shooter = NRAA_Shooter{NRAA_Id: id}
+						shooter = NraaShooter{NraaId: id}
 						find_cells(n)
-						nraa_upsert_shooter(shooter)
+						nraaUpsertShooter(shooter)
 					}
 				}
 			}
@@ -120,7 +120,6 @@ func updateShooterList2() int {
 		find_rows(doc)
 	}
 	//Info.Println("Finished copying from website.")
-
 	return copyNewEntries()
 }
 
@@ -129,8 +128,8 @@ func copyNewEntries() int {
 	shooter_list := getShooterLists()
 	for _, n_shooter := range shooter_list {
 		shooter := getShooterList(n_shooter.SID)
-		if shooter.SID != 0 && shooter.NRAA_Id != 0 && shooter.Surname != "" && shooter.FirstName != "" && shooter.NickName != "" && shooter.Club != "" && shooter.Address != "" && shooter.Email != "" {
-			Upsert_Doc("shooter", n_shooter.SID, n_shooter)
+		if shooter.SID != 0 && shooter.NraaId != 0 && shooter.Surname != "" && shooter.FirstName != "" && shooter.NickName != "" && shooter.Club != "" && shooter.Address != "" && shooter.Email != "" {
+			UpsertDoc("shooter", n_shooter.SID, n_shooter)
 			counter += 1
 		}
 	}
@@ -138,59 +137,30 @@ func copyNewEntries() int {
 	return counter
 }
 
-type Fdsa struct {
-	Surname string `json:"surname"`
-	First   string `json:"first"`
-	Club    string `json:"club"`
-}
-
 func queryShooterList(w http.ResponseWriter, r *http.Request) {
-	var t Fdsa
-	err := json.NewDecoder(r.Body).Decode(&t)
+	var shooters Shooter
+	err := json.NewDecoder(r.Body).Decode(&shooters)
 	if err != nil {
-		Warning.Println(err)
+		Error.Println(err)
 	}
-	query := make(M, 0)
-	if t.Surname != "" {
-		query["s"] = M{"$regex": fmt.Sprintf(`^%v`, t.Surname), "$options": "i"}
+	query := M{}
+	if shooters.Surname != "" {
+		query["s"] = M{"$regex": fmt.Sprintf(`^%v`, shooters.Surname), "$options": "i"}
 	}
-	if t.First != "" {
-		query["f"] = M{"$regex": fmt.Sprintf(`^%v`, t.First), "$options": "i"}
+	if shooters.FirstName != "" {
+		query["f"] = M{"$regex": fmt.Sprintf(`^%v`, shooters.FirstName), "$options": "i"}
 	}
-	if t.Club != "" {
-		query["c"] = M{"$regex": fmt.Sprintf(`^%v`, t.Club), "$options": "i"}
+	if shooters.Club != "" {
+		query["c"] = M{"$regex": fmt.Sprintf(`^%v`, shooters.Club), "$options": "i"}
 	}
 	//Ignore Deleted shooters. Selects not modified, updated & merged shooters
 	query["$or"] = []M{{"t": nil}, {"t": M{"$lt": 3}}}
-	var option_list []Option
+	var optionList []Option
 	for _, shooter := range searchShooters(query) {
-		option_list = append(option_list, Option{
+		optionList = append(optionList, Option{
 			Value:   fmt.Sprintf("%v", shooter.SID),
 			Display: fmt.Sprintf("%v %v, ~~ %v", shooter.FirstName, shooter.Surname, shooter.Club),
 		})
 	}
-	fmt.Fprint(w, draw_options(Inputs{Options: option_list}, ""))
-}
-func event_query_shooterForm() Form {
-	return Form{
-		Action: URL_shooterInsert,
-		Title:  "Add Shooters",
-		Inputs: []Inputs{
-			{
-				Name:  "first",
-				Html:  "text",
-				Label: "First Name",
-			}, {
-				Name:  "surname",
-				Html:  "text",
-				Label: "Surname",
-			}, {
-				Name: "club",
-				Html: "text",
-				//TODO change club to a select box. data-lists are too flexible!
-				//SelectValues:   getClubSelectBox(eventsCollection),
-				Label: "Club",
-			},
-		},
-	}
+	fmt.Fprint(w, drawOptions(Inputs{Options: optionList}, ""))
 }

@@ -1,20 +1,18 @@
 package main
 
-import ()
-
 func championships() Page {
 	return Page{
 		TemplateFile: "championships",
+		Title:        "Championships",
 		Theme:        TEMPLATE_HOME,
 		Data: M{
-			"Title":        "Championships",
-			"Championship": generateForm2(organisers_champForm()),
-			"Menu":         home_menu(URL_championships, HOME_MENU_ITEMS),
+			"Championship": generateForm(championshipForm()),
+			"Menu":         homeMenu(URL_championships, HOME_MENU_ITEMS),
 		},
 	}
 }
 
-func organisers_champForm() Form {
+func championshipForm() Form {
 	return Form{
 		Action: URL_champInsert,
 		Title:  "Create Championship",

@@ -6,7 +6,7 @@ func licence() Page {
 		Title:        "Licence",
 		Theme:        TEMPLATE_HOME,
 		Data: M{
-			"Menu": home_menu(URL_licence, HOME_MENU_ITEMS),
+			"Menu": homeMenu(URL_licence, HOME_MENU_ITEMS),
 		},
 	}
 }

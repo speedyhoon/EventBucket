@@ -27,10 +27,9 @@ const (
 var conn *mgo.Database
 
 func startDatabase() {
-	databasePath := os.Getenv("SystemDrive") + `/ProgramData/EventBucket`
-	exists := dirExists(databasePath)
-	if exists {
-		cmd := exec.Command("ebd", "^^DbArgs^^")
+	databasePath := os.Getenv("ProgramData") + "/EventBucket"
+	if dirExists(databasePath) {
+		cmd := exec.Command("^^DbArgs^^")
 		//TODO output mongodb errors/logs to stdOut
 		/*stdout, err := cmd.StdoutPipe()
 		if err != nil {
@@ -70,10 +69,10 @@ func DB() {
 	//defer session.Close()
 }
 
-func getCollection(collection_name string) []M {
+func getCollection(collectionName string) []M {
 	var result []M
 	if conn != nil {
-		err := conn.C(collection_name).Find(nil).All(&result)
+		err := conn.C(collectionName).Find(nil).All(&result)
 		if err != nil {
 			Warning.Println(err)
 		}
@@ -101,7 +100,7 @@ func getClub(id string) (Club, error) {
 	return result, errors.New("Unable to get club with id: '" + id + "'")
 }
 
-func getClub_by_name(clubName string) (Club, bool) {
+func getClubByName(clubName string) (Club, bool) {
 	var result Club
 	if conn != nil {
 		//remove double spaces
@@ -124,8 +123,8 @@ func getEvents() []Event {
 	return result
 }
 
-func getShooterLists() []NRAA_Shooter {
-	var result []NRAA_Shooter
+func getShooterLists() []NraaShooter {
+	var result []NraaShooter
 	if conn != nil {
 		conn.C(TBLshooterList).Find(nil).All(&result)
 	}
@@ -170,7 +169,7 @@ func getEvent20Shooters(id string) (Event, bool) {
 	return result, true
 }
 
-func getNextId(collection_name string) (string, error) {
+func getNextId(collectionName string) (string, error) {
 	var result M
 	if conn != nil {
 		change := mgo.Change{
@@ -178,40 +177,40 @@ func getNextId(collection_name string) (string, error) {
 			Upsert:    true,
 			ReturnNew: true,
 		}
-		_, err := conn.C(TBLAutoInc).FindId(collection_name).Apply(change, &result)
+		_, err := conn.C(TBLAutoInc).FindId(collectionName).Apply(change, &result)
 		if err != nil {
 			Error.Println(err)
 			return "", errors.New(fmt.Sprintf("Unable to generate the next ID: %v", err))
 		}
-		return id_suffix(result[schemaCounter].(int))
+		return idSuffix(result[schemaCounter].(int))
 	}
 	return "", errors.New("Unable to generate the next ID")
 }
 
-func id_suffix(id int) (string, error) {
+func idSuffix(id int) (string, error) {
 	if id < 0 {
 		return "", errors.New(fmt.Sprintf("Invalid id number supplied. Id \"%v\" is out of range", id))
 	}
 	id = id - 1
 	charset := ID_CHARSET
-	charset_length := 70
+	charsetLength := 70
 	temp := ""
-	for id >= charset_length {
-		temp = fmt.Sprintf("%c%v", charset[id%charset_length], temp)
-		id = id/charset_length - 1
+	for id >= charsetLength {
+		temp = fmt.Sprintf("%c%v", charset[id%charsetLength], temp)
+		id = id/charsetLength - 1
 	}
-	return fmt.Sprintf("%c%v", charset[id%charset_length], temp), nil
+	return fmt.Sprintf("%c%v", charset[id%charsetLength], temp), nil
 }
 
-func InsertDoc(collection_name string, data interface{}) {
-	err := conn.C(collection_name).Insert(data)
+func InsertDoc(collectionName string, data interface{}) {
+	err := conn.C(collectionName).Insert(data)
 	if err != nil {
 		Error.Println(err)
 	}
 }
 
-func UpdateDoc_by_id(collection_name, doc_id string, data interface{}) {
-	err := conn.C(collection_name).UpdateId(doc_id, data)
+func UpdateDocById(collectionName, docId string, data interface{}) {
+	err := conn.C(collectionName).UpdateId(docId, data)
 	if err != nil {
 		Error.Println(err)
 	}
@@ -226,26 +225,26 @@ func Dot(elem ...interface{}) string {
 	return strings.Join(dots, ".")
 }
 
-func DB_event_add_range(eventId string, new_range Range) (int, Event) {
+func EventAddRange(eventId string, newRange Range) (int, Event) {
 	change := mgo.Change{
 		Update: M{
-			"$push": M{schemaRANGE: new_range},
+			"$push": M{schemaRANGE: newRange},
 		},
 		Upsert:    true,
 		ReturnNew: true,
 	}
 	returned := Event{}
 	conn.C(TBLevent).FindId(eventId).Apply(change, &returned)
-	for range_id, range_data := range returned.Ranges {
-		if range_data.Name == new_range.Name && range_data.Aggregate == new_range.Aggregate && range_data.ScoreBoard == new_range.ScoreBoard && range_data.Locked == new_range.Locked && range_data.Hidden == new_range.Hidden {
+	for rangeId, rangeData := range returned.Ranges {
+		if rangeData.Name == newRange.Name && rangeData.Aggregate == newRange.Aggregate && rangeData.ScoreBoard == newRange.ScoreBoard && rangeData.Locked == newRange.Locked && rangeData.Hidden == newRange.Hidden {
 			//TODO this if check is really hacky!!!
-			return range_id, returned
+			return rangeId, returned
 		}
 	}
 	return -1, returned
 }
 
-func event_shooter_insert(eventId string, shooter EventShooter) {
+func eventShooterInsert(eventId string, shooter EventShooter) {
 	insert := M{
 		schemaSHOOTER: []EventShooter{shooter},
 	}
@@ -338,16 +337,16 @@ func eventTotalScoreUpdate(eventId string, rangeId int, shooterIds []int, score 
 	return event
 }
 
-func event_sort_aggs_with_grade(event Event, range_id string, shooter_id int) {
+func eventSortAggsWithGrade(event Event, rangeId string, shooterId int) {
 	eventId := event.Id
-	ranges_to_redo := search_for_aggs(eventId, range_id)
-	//TODO this seems quite inefficent
-	event = calculate_aggs(event, shooter_id, ranges_to_redo)
+	rangesToRedo := eventSearchForAggs(eventId, rangeId)
+	//TODO this seems quite inefficient
+	event = eventCalculateAggs(event, shooterId, rangesToRedo)
 	//Only worry about shooters in this shooters grade
-	current_grade := event.Shooters[shooter_id].Grade
+	currentGrade := event.Shooters[shooterId].Grade
 	//Add the current range to the list of ranges to re-calculate
-	ranges_to_redo = append(ranges_to_redo, range_id)
-	for _, rangeId := range ranges_to_redo {
+	rangesToRedo = append(rangesToRedo, rangeId)
+	for _, rangeId := range rangesToRedo {
 		// Closures that order the Change structure.
 		//	grade := func(c1, c2 *EventShooter) bool {
 		//		return c1.Grade < c2.Grade
@@ -363,63 +362,63 @@ func event_sort_aggs_with_grade(event Event, range_id string, shooter_id int) {
 		}
 
 		//convert the map[string] to a slice of EventShooters
-		var shooter_list []EventShooter
-		for shooter_id, shooterList := range event.Shooters {
-			if shooterList.Grade == current_grade {
-				shooterList.Id = shooter_id
-				for range_id, score := range shooterList.Scores {
+		var eventShooterList []EventShooter
+		for thisShooterId, shooterList := range event.Shooters {
+			if shooterList.Grade == currentGrade {
+				shooterList.Id = thisShooterId
+				for thisRangeId, score := range shooterList.Scores {
 					score.Position = 0
-					shooterList.Scores[range_id] = score
+					shooterList.Scores[thisRangeId] = score
 				}
-				shooter_list = append(shooter_list, shooterList)
+				eventShooterList = append(eventShooterList, shooterList)
 			}
 		}
-		OrderedBy(total, centa, cb).Sort(shooter_list)
+		OrderedBy(total, centa, cb).Sort(eventShooterList)
 
 		rank := 0
-		next_ordinal := 0
+		nextOrdinal := 0
 		//	score := 0
 		//	center := 0
 		//	countback := ""
-		//	var previous_shooter Shooter
-		//		shooter_length := len(shooter_list)
+		//	var previousShooter Shooter
+		//		shooterLength := len(shooterList)
 
 		//loop through the list of shooters
-		for index, shooter := range shooter_list {
-			this_shooter_score := shooter.Scores[rangeId]
+		for index, shooter := range eventShooterList {
+			thisShooterScore := shooter.Scores[rangeId]
 
-			//			if index+1 < shooter_length {
+			//			if index+1 < shooterLength {
 			//			if index-1 >= 0 {
 
 			//keep track of the next badge position number to assign when several shooters are tied-equal on the position
-			next_ordinal += 1
-			var next_shooter_score Score
+			nextOrdinal += 1
+			var nextShooterScore Score
 
 			if index-1 >= 0 {
-				next_shooter := shooter_list[index-1]
-				next_shooter_score = next_shooter.Scores[rangeId]
+				nextShooter := eventShooterList[index-1]
+				nextShooterScore = nextShooter.Scores[rangeId]
 
 				//compare the shooters scores
-				if this_shooter_score.Total == next_shooter_score.Total &&
-					this_shooter_score.Centers == next_shooter_score.Centers &&
-					this_shooter_score.CountBack1 == next_shooter_score.CountBack1 {
+				if thisShooterScore.Total == nextShooterScore.Total &&
+					thisShooterScore.Centers == nextShooterScore.Centers &&
+					thisShooterScore.CountBack1 == nextShooterScore.CountBack1 {
 					//Shooters have an equal score
-					if this_shooter_score.Total == 0 {
-						//					shoot_equ = true
+					if thisShooterScore.Total == 0 {
+						//					shootEqu = true
 						//					if SCOREBOARD_IGNORE_POSITION_FOR_ZERO_SCORES {
 						rank = 0
 						//					}
 						//						} else {
 						//							info("exact")
-						//					shoot_off = true
-						//					shooter_list[index].Warning = 1
-						//					score_board_legend_on_off["ShootOff"] = true
+						//					shootOff = true
+						//					shooterList[index].Warning = 1
+						//					scoreBoardLegendOnOff["ShootOff"] = true
 					}
 				} else {
 					//Shooters have a different score
-					if this_shooter_score.Total != 0 {
+					if thisShooterScore.Total != 0 {
 						//increase rank by 1
-						rank = next_ordinal
+						rank = nextOrdinal
 					} else {
 						rank = 0
 					}
@@ -427,7 +426,7 @@ func event_sort_aggs_with_grade(event Event, range_id string, shooter_id int) {
 			} else {
 				//The very first shooter without a previous shooter assigned
 				//increase rank by 1
-				rank = next_ordinal
+				rank = nextOrdinal
 			}
 
 			//update the database
@@ -446,14 +445,14 @@ func event_sort_aggs_with_grade(event Event, range_id string, shooter_id int) {
 	}
 }
 
-func event_update_range_data(eventId string, updateData M) {
+func eventUpdateRangeData(eventId string, updateData M) {
 	conn.C(TBLevent).FindId(eventId).Apply(mgo.Change{
 		Upsert: false,
 		Update: updateData,
 	}, make(M))
 }
 
-func event_update_sort_scoreboard(eventId, sortByRange string) {
+func eventUpdateSortScoreboard(eventId, sortByRange string) {
 	change := mgo.Change{
 		Upsert: true,
 		Update: M{
@@ -463,7 +462,7 @@ func event_update_sort_scoreboard(eventId, sortByRange string) {
 	conn.C(TBLevent).FindId(eventId).Apply(change, make(M))
 }
 
-func event_upsert_data(eventId string, data M) {
+func eventUpsertData(eventId string, data M) {
 	change := mgo.Change{
 		Upsert: true,
 		Update: M{
@@ -473,13 +472,13 @@ func event_upsert_data(eventId string, data M) {
 	conn.C(TBLevent).FindId(eventId).Apply(change, make(M))
 }
 
-func nraa_upsert_shooter(shooter NRAA_Shooter) {
+func nraaUpsertShooter(shooter NraaShooter) {
 	_, err := conn.C("N").UpsertId(shooter.SID, &shooter)
 	if err != nil {
 		Warning.Println(err)
 	}
 }
-func Upsert_Doc(collection string, id interface{}, document interface{}) {
+func UpsertDoc(collection string, id interface{}, document interface{}) {
 	_, err := conn.C(collection).UpsertId(id, document)
 	if err != nil {
 		Warning.Println(err)

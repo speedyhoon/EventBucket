@@ -48,7 +48,7 @@ func generator(w http.ResponseWriter, fillin string, viewController Page) {
 			return grades()[grade].Name
 		},
 		"Fieldset": func(title string) template.HTML {
-			return template.HTML(field_set(title))
+			return template.HTML(fieldSet(title))
 		},
 		"EndFieldset": func() template.HTML {
 			return template.HTML("</fieldset>")
@@ -171,11 +171,11 @@ func eventMenu(eventId string, eventRanges []Range, pageUrl string, isPrizeMeet 
 	return menu + "</ul>"
 }
 
-func home_menu(page string, menuItems []Menu) string {
+func homeMenu(page string, menuItems []Menu) string {
 	menu := "<ul id=menu>"
 	selected := ""
 	for _, menuItem := range menuItems {
-		if page != menuItem.Link {
+		if page == menuItem.Link {
 			selected = " class=v"
 		}
 		menu += fmt.Sprintf("<li%v><a href=%v>%v</a></li>", selected, addQuotes(menuItem.Link), menuItem.Name)

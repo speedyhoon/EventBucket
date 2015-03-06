@@ -12,43 +12,43 @@ import (
 
 func home() Page {
 	//Sort the list of shooters by grade only
-	sort_by_date := func(c1, c2 *Event) bool {
+	sortByDate := func(c1, c2 *Event) bool {
 		return c1.Date < c2.Date
 	}
-	sort_by_time := func(c1, c2 *Event) bool {
+	sortByTime := func(c1, c2 *Event) bool {
 		return c1.Time < c2.Time
 	}
-	sort_by_name := func(c1, c2 *Event) bool {
+	sortByName := func(c1, c2 *Event) bool {
 		return strings.ToLower(c1.Name) < strings.ToLower(c2.Name)
 	}
 	events := getEvents() //TODO make custom select
-	OrderedByEvent(sort_by_date, sort_by_time, sort_by_name).Sort(events)
+	OrderedByEvent(sortByDate, sortByTime, sortByName).Sort(events)
 	openEvents := []HomeCalendar{}
 	for _, event := range events {
 		if !event.Closed {
-			var list_of_ranges []string
+			var listRanges []string
 			for _, rangeObj := range event.Ranges {
-				list_of_ranges = append(list_of_ranges, rangeObj.Name)
+				listRanges = append(listRanges, rangeObj.Name)
 			}
 			club, _ := getClub(event.Club)
-			calendar_event := HomeCalendar{
+			calendarEvent := HomeCalendar{
 				Id:     event.Id,
 				Name:   event.Name,
 				ClubId: event.Club,
 				Club:   club.Name,
 				Time:   event.Time,
-				Ranges: strings.Join(list_of_ranges, ", "),
+				Ranges: strings.Join(listRanges, ", "),
 			}
 			if event.Date != "" {
-				date_obj, err := time.Parse("2006-01-02", event.Date)
+				dateObj, err := time.Parse("2006-01-02", event.Date)
 				if err == nil {
-					calendar_event.Day = date_obj.Weekday().String()
-					calendar_event.Date = ordinal(date_obj.Day())
-					calendar_event.Month = date_obj.Month()
-					calendar_event.Year = date_obj.Year()
+					calendarEvent.Day = dateObj.Weekday().String()
+					calendarEvent.Date = ordinal(dateObj.Day())
+					calendarEvent.Month = dateObj.Month()
+					calendarEvent.Year = dateObj.Year()
 				}
 			}
-			openEvents = append(openEvents, calendar_event)
+			openEvents = append(openEvents, calendarEvent)
 		}
 	}
 	hostname, ipAddresses := HostnameIpAddresses()
@@ -61,8 +61,8 @@ func home() Page {
 			"FutureEvents": openEvents,
 			"PageName":     "Calendar",
 			"ArchiveLink":  URL_archive,
-			"Menu":         home_menu("/", HOME_MENU_ITEMS),
-			"FormNewEvent": generateForm2(home_form_new_event(clubs, (Event{}))),
+			"Menu":         homeMenu("/", HOME_MENU_ITEMS),
+			"FormNewEvent": generateForm(homeFormNewEvent(clubs, (Event{}))),
 			"Hostname":     hostname,
 			"IpAddresses":  ipAddresses,
 		},
@@ -87,7 +87,7 @@ func HostnameIpAddresses() (string, []string) {
 	return hostname, ipAddress
 }
 
-func home_form_new_event(clubs []Club, event Event) Form {
+func homeFormNewEvent(clubs []Club, event Event) Form {
 	title := "Event Details"
 	save := "Update Event"
 	if event.Id == "" {
@@ -96,14 +96,14 @@ func home_form_new_event(clubs []Club, event Event) Form {
 		event.Date = time.Now().Format("2006-01-02")
 		event.Time = time.Now().Format("15:04")
 	}
-	var club_list []Option
-	for _, club_data := range clubs {
-		if event.Club != "" && club_data.Id == event.Club {
-			event.Club = club_data.Name
+	var clubList []Option
+	for _, clubData := range clubs {
+		if event.Club != "" && clubData.Id == event.Club {
+			event.Club = clubData.Name
 		}
-		club_list = append(club_list, Option{
-			Value:   club_data.Id,
-			Display: club_data.Name,
+		clubList = append(clubList, Option{
+			Value:   clubData.Id,
+			Display: clubData.Name,
 		})
 	}
 	inputs := []Inputs{
@@ -122,7 +122,7 @@ func home_form_new_event(clubs []Club, event Event) Form {
 			Placeholder: "Club Name",
 			//TODO previous club names appear from browser cahce when they are not available
 			//TODO auto set the club name to X if there is only one available
-			Options:  club_list,
+			Options:  clubList,
 			Required: true,
 			//				AutoComplete: "off",
 			Value: event.Club,
@@ -161,27 +161,27 @@ func eventInsert(w http.ResponseWriter, r *http.Request) {
 	//TODO merge this database functionality into an upsert
 	var clubs []Club
 	emptyEvent := Event{Id: "1"}
-	validated_values := check_form(home_form_new_event(clubs, emptyEvent).Inputs, r)
+	validatedValues := checkForm(homeFormNewEvent(clubs, emptyEvent).Inputs, r)
 	//TODO one day change validated values to return the schema compatible data so it can be directly used add constants would by used more often to access the map items
-	eventId := validated_values["eventid"]
+	eventId := validatedValues["eventid"]
 	if eventId == "" {
 		newEvent := Event{
-			Name: validated_values["name"],
+			Name: validatedValues["name"],
 		}
-		club, ok := getClub_by_name(validated_values["club"])
+		club, ok := getClubByName(validatedValues["club"])
 		if ok {
 			newEvent.Club = club.Id
 		} else {
-			clubId, _ := insertClub(validated_values["club"])
+			clubId, _ := insertClub(validatedValues["club"])
 			newEvent.Club = clubId
 		}
 
-		if validated_values["date"] != "" {
-			newEvent.Date = validated_values["date"]
+		if validatedValues["date"] != "" {
+			newEvent.Date = validatedValues["date"]
 		}
 
-		if validated_values["time"] != "" {
-			newEvent.Time = validated_values["time"]
+		if validatedValues["time"] != "" {
+			newEvent.Time = validatedValues["time"]
 		}
 
 		//Add default ranges and aggregate ranges
@@ -197,11 +197,11 @@ func eventInsert(w http.ResponseWriter, r *http.Request) {
 			//http.Redirect(w, r, URL_organisers, http.StatusSeeOther)
 		}
 	} else {
-		event_upsert_data(eventId, M{
-			"n": validated_values["name"],
-			"c": validated_values["club"],
-			"d": validated_values["date"],
-			"t": validated_values["time"],
+		eventUpsertData(eventId, M{
+			"n": validatedValues["name"],
+			"c": validatedValues["club"],
+			"d": validatedValues["date"],
+			"t": validatedValues["time"],
 		})
 		http.Redirect(w, r, URL_eventSettings+eventId, http.StatusSeeOther)
 	}
