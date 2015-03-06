@@ -23,7 +23,7 @@ const (
 	DIR_WEBP  = "/w/"
 	FAVICON = DIR_PNG+"a" //TODO Create a custom icon with sizes 16x16, 32, 48, 64 and 128
 
-	BD_ARGS = `--dbpath", databasePath, "--port", "38888", "--nssize", "1", "--smallfiles", "--noscripting", `
+	BD_ARGS = `ebd", "--dbpath", databasePath, "--port", "38888", "--nssize", "1", "--smallfiles", "--noscripting", `
 )
 
 var (

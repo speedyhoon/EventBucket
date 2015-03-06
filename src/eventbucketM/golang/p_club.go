@@ -10,10 +10,10 @@ import (
 func club(clubId string) Page {
 	page := Page{
 		TemplateFile: "club",
-		Theme:        TEMPLATE_HOME,
 		Title:        "Club with id '" + clubId + "' not found",
+		Theme:        TEMPLATE_HOME,
 		Data: M{
-			"Menu": home_menu(URL_club, HOME_MENU_ITEMS),
+			"Menu": homeMenu(URL_club, HOME_MENU_ITEMS),
 		},
 	}
 	club, err := getClub(clubId)
@@ -23,7 +23,7 @@ func club(clubId string) Page {
 	}
 	var mounds []string
 	for index, mound := range club.Mounds {
-		mounds = append(mounds, generateForm2(clubMoundInsertForm(clubId, mound, true, fmt.Sprintf("formMounds%v", index))))
+		mounds = append(mounds, generateForm(clubMoundInsertForm(clubId, mound, true, fmt.Sprintf("formMounds%v", index))))
 	}
 	tableMounds := "<p>No Mounds Listed</p>"
 	if len(mounds) >= 1 {
@@ -38,13 +38,13 @@ func club(clubId string) Page {
 	}
 
 	page.Title = club.Name
-	page.Data["MoundForm"] = generateForm2(clubMoundInsertForm(clubId, Mound{}, false, ""))
+	page.Data["MoundForm"] = generateForm(clubMoundInsertForm(clubId, Mound{}, false, ""))
 	//	page.Data["MapForm"] =  generateForm2(clubMapUpsertForm(clubId, club.Latitude, club.Longitude))
 	//	page.Data["ListMounds"] = mounds
 	page.Data["TableMounds"] = tableMounds
 	page.Data["Latitude"] = club.Latitude
 	page.Data["Longitude"] = club.Longitude
-	page.Data["Details"] = generateForm2(clubDetailsForm(club))
+	page.Data["Details"] = generateForm(clubDetailsForm(club))
 	return page
 }
 
@@ -121,7 +121,7 @@ func clubMoundInsertForm(clubId string, mound Mound, existing bool, formId strin
 }
 
 func clubMoundInsert(w http.ResponseWriter, r *http.Request) {
-	validatedValues := check_form(clubMoundInsertForm("", Mound{}, true, "").Inputs, r)
+	validatedValues := checkForm(clubMoundInsertForm("", Mound{}, true, "").Inputs, r)
 	clubId := validatedValues["clubid"]
 	club, err := getClub(clubId)
 	//TODO instead return true/false as success/failure and on failure return a filled out form (bool, FormInvalid, error.Message as string)
@@ -154,7 +154,7 @@ func clubMoundInsert(w http.ResponseWriter, r *http.Request) {
 		club.Mounds = append(club.Mounds, newMound)
 		club.AutoInc.Mound += 1
 	}
-	UpdateDoc_by_id(TBLclub, clubId, club)
+	UpdateDocById(TBLclub, clubId, club)
 	http.Redirect(w, r, URL_club+clubId, http.StatusSeeOther)
 }
 
@@ -224,7 +224,7 @@ Tip: Lines of longitude appear vertical (North-South), Lines of latitude appear 
 func clubDetailsUpsert(w http.ResponseWriter, r *http.Request) {
 	var club Club
 	var err error
-	validatedValues := check_form(clubDetailsForm(club).Inputs, r)
+	validatedValues := checkForm(clubDetailsForm(club).Inputs, r)
 	club, err = getClub(validatedValues["clubid"])
 	//TODO instead return true/false as success/failure and on failure return a filled out form (bool, FormInvalid, error.Message as string)
 	//TODO FormInvalid.Inputs { Name: "", Html, "number, Message: "Number is greater than 9750", }...
@@ -240,7 +240,7 @@ func clubDetailsUpsert(w http.ResponseWriter, r *http.Request) {
 	club.Town = validatedValues["town"]
 	club.Latitude = validatedValues["latitude"]
 	club.Longitude = validatedValues["longitude"]
-	UpdateDoc_by_id(TBLclub, club.Id, club)
+	UpdateDocById(TBLclub, club.Id, club)
 }
 
 func clubs() Page {
@@ -249,14 +249,14 @@ func clubs() Page {
 		Theme:        TEMPLATE_HOME,
 		Data: M{
 			"Title":    "Clubs",
-			"Clubs":    generateForm2(organisers_clubForm()),
+			"Clubs":    generateForm(organisersClubForm()),
 			"ClubList": getClubs(),
-			"Menu":     home_menu(URL_clubs, HOME_MENU_ITEMS),
+			"Menu":     homeMenu(URL_clubs, HOME_MENU_ITEMS),
 		},
 	}
 }
 
-func organisers_clubForm() Form {
+func organisersClubForm() Form {
 	//TODO add validation to
 	return Form{
 		Action: URL_clubInsert,
@@ -277,17 +277,16 @@ func organisers_clubForm() Form {
 	}
 }
 
-func getClubSelectionBox(club_list []Club) []Option {
-	var drop_down []Option
-	for _, club := range club_list {
-		drop_down = append(drop_down, Option{Display: club.Name, Value: club.Id})
+func getClubSelectionBox(clubList []Club) []Option {
+	var dropDown []Option
+	for _, club := range clubList {
+		dropDown = append(dropDown, Option{Display: club.Name, Value: club.Id})
 	}
-	return drop_down
+	return dropDown
 }
 
 func clubInsert(w http.ResponseWriter, r *http.Request) {
-	validated_values := check_form(organisers_clubForm().Inputs, r)
-	insertClub(validated_values["name"])
+	insertClub(checkForm(organisersClubForm().Inputs, r)["name"])
 }
 
 func insertClub(clubName string) (string, error) {

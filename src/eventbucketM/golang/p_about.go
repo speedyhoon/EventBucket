@@ -8,7 +8,7 @@ func about() Page {
 		Theme:        TEMPLATE_HOME,
 		Data: M{
 			"Version":     VERSION,
-			"Menu":        home_menu(URL_about, HOME_MENU_ITEMS),
+			"Menu":        homeMenu(URL_about, HOME_MENU_ITEMS),
 			"Hostname":    hostname,
 			"IpAddresses": ipAddresses,
 			"BuildDate":   BUILDDATE,

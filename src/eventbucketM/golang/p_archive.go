@@ -7,24 +7,24 @@ import (
 
 func archive() Page {
 	//Sort the list of shooters by grade only
-	sort_by_date := func(c1, c2 *Event) bool {
+	sortByDate := func(c1, c2 *Event) bool {
 		return c1.Date > c2.Date
 	}
-	sort_by_time := func(c1, c2 *Event) bool {
+	sortByTime := func(c1, c2 *Event) bool {
 		return c1.Time > c2.Time
 	}
-	sort_by_name := func(c1, c2 *Event) bool {
+	sortByName := func(c1, c2 *Event) bool {
 		return strings.ToLower(c1.Name) < strings.ToLower(c2.Name)
 	}
 	//TODO make custom mongodb query to get a more flexible list of events?
 	events := getEvents()
-	OrderedByEvent(sort_by_date, sort_by_time, sort_by_name).Sort(events)
+	OrderedByEvent(sortByDate, sortByTime, sortByName).Sort(events)
 	closedEvents := []HomeCalendar{}
 	for _, event := range events {
 		if event.Closed {
-			var list_of_ranges []string
+			var listRanges []string
 			for _, rangeObj := range event.Ranges {
-				list_of_ranges = append(list_of_ranges, rangeObj.Name)
+				listRanges = append(listRanges, rangeObj.Name)
 			}
 			club, _ := getClub(event.Club)
 			calendar_event := HomeCalendar{
@@ -33,7 +33,7 @@ func archive() Page {
 				ClubId: event.Club,
 				Club:   club.Name,
 				Time:   event.Time,
-				Ranges: strings.Join(list_of_ranges, ", "),
+				Ranges: strings.Join(listRanges, ", "),
 			}
 			if event.Date != "" {
 				date_obj, err := time.Parse("2006-01-02", event.Date)
@@ -49,11 +49,12 @@ func archive() Page {
 	}
 	return Page{
 		TemplateFile: "archive",
+		Title:        "Archive",
 		Theme:        TEMPLATE_HOME,
 		Data: M{
 			"ClosedEvents": closedEvents,
 			"PageName":     "Calendar",
-			"Menu":         home_menu(URL_archive, HOME_MENU_ITEMS),
+			"Menu":         homeMenu(URL_archive, HOME_MENU_ITEMS),
 		},
 	}
 }

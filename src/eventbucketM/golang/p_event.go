@@ -7,7 +7,7 @@ import (
 )
 
 func shooterInsert(w http.ResponseWriter, r *http.Request) {
-	validated_values := check_form(event_add_shooterForm("", []int{}).Inputs, r)
+	validated_values := checkForm(event_add_shooterForm("", []int{}).Inputs, r)
 	eventId := validated_values["eventid"]
 	http.Redirect(w, r, URL_event+eventId, http.StatusSeeOther)
 	new_shooter := EventShooter{
@@ -19,7 +19,7 @@ func shooterInsert(w http.ResponseWriter, r *http.Request) {
 	if validated_values["age"] != "" {
 		new_shooter.AgeGroup = validated_values["age"]
 	}
-	event_shooter_insert(eventId, new_shooter)
+	eventShooterInsert(eventId, new_shooter)
 }
 
 func event(eventId string) Page {
@@ -44,11 +44,11 @@ func event(eventId string) Page {
 			"Menu":            eventMenu(eventId, event.Ranges, URL_event, event.IsPrizeMeet),
 			"Valid":           true,
 			"NewShooterEntry": URL_shooterInsert,
-			"GradeOptions":    draw_options(Inputs{Options: eventGradeOptions(event.Grades)}, ""),
+			"GradeOptions":    drawOptions(Inputs{Options: eventGradeOptions(event.Grades)}, ""),
 			//TODO add ClubOptions when club textbox is changed to a datalist
-			"AgeOptions":           draw_options(Inputs{Options: AGE_GROUPS2()}, ""),
+			"AgeOptions":           drawOptions(Inputs{Options: AGE_GROUPS2()}, ""),
 			"ExistingShooterEntry": URL_shooterListInsert,
-			"EventGrades":          generateForm2(eventSettingsClassGrades(event.Id, event.Grades)),
+			"EventGrades":          generateForm(eventSettingsClassGrades(event.Id, event.Grades)),
 			"ListShooters":         event.Shooters,
 			"EventId":              eventId,
 		},
@@ -56,7 +56,7 @@ func event(eventId string) Page {
 }
 
 func shooterListInsert(w http.ResponseWriter, r *http.Request) {
-	validated_values := check_form(event_add_shooterListForm("", []int{}).Inputs, r)
+	validated_values := checkForm(event_add_shooterListForm("", []int{}).Inputs, r)
 	eventId := validated_values["eventid"]
 	http.Redirect(w, r, URL_event+eventId, http.StatusSeeOther)
 
@@ -73,7 +73,7 @@ func shooterListInsert(w http.ResponseWriter, r *http.Request) {
 		new_shooter.Surname = temp_shooter.Surname
 		new_shooter.Club = temp_shooter.Club
 	}
-	event_shooter_insert(eventId, new_shooter)
+	eventShooterInsert(eventId, new_shooter)
 }
 
 func event_add_shooterForm(eventId string, grades []int) Form {

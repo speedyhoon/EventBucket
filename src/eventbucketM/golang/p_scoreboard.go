@@ -22,9 +22,9 @@ func scoreboard(url string) Page {
 	}
 
 	//TODO using a map[string]bool for this is quite inefficient
-	score_board_legend_on_off := make(map[string]bool)
+	scoreBoardLegendOnOff := make(map[string]bool)
 	for _, legend := range scoreBoardLegend() {
-		score_board_legend_on_off[legend.name] = false
+		scoreBoardLegendOnOff[legend.name] = false
 	}
 
 	// Closures that order the Change structure.
@@ -79,7 +79,7 @@ func scoreboard(url string) Page {
 		}
 		var display string
 		if shoot_off {
-			score_board_legend_on_off["ShootOff"] = true
+			scoreBoardLegendOnOff["ShootOff"] = true
 			display = "="
 			shoot_off = false
 			shoot_equ = false
@@ -92,7 +92,7 @@ func scoreboard(url string) Page {
 
 		this_shooter_score := shooter.Scores[sortByRange]
 		if SCOREBOARD_SHOW_WARNING_FOR_ZERO_SCORES && this_shooter_score.Total == 0 && this_shooter_score.Centers == 0 {
-			score_board_legend_on_off["NoScore"] = true
+			scoreBoardLegendOnOff["NoScore"] = true
 			shooter_list[index].Warning = 2
 			if SCOREBOARD_IGNORE_POSITION_FOR_ZERO_SCORES {
 				position = 0
@@ -100,7 +100,7 @@ func scoreboard(url string) Page {
 		}
 		if this_shooter_score.Centers == 10 && ((this_shooter_score.Total == 60 && allGrades[shooter.Grade].ClassName == "F Class") || (this_shooter_score.Total == 50 && allGrades[shooter.Grade].ClassName == "Target")) {
 			shooter_list[index].Warning = 4
-			score_board_legend_on_off["HighestPossibleScore"] = true
+			scoreBoardLegendOnOff["HighestPossibleScore"] = true
 		}
 		if index+1 < shooter_length {
 			next_shooter := shooter_list[index+1]
@@ -118,7 +118,7 @@ func scoreboard(url string) Page {
 				} else {
 					shoot_off = true
 					shooter_list[index].Warning = 1
-					score_board_legend_on_off["ShootOff"] = true
+					scoreBoardLegendOnOff["ShootOff"] = true
 				}
 			}
 		}
@@ -134,13 +134,13 @@ func scoreboard(url string) Page {
 		"ListShooters":   shooter_list,
 		"ListRanges":     event.Ranges,
 		"Css":            "scoreboard.css",
-		"Legend":         render_legend(score_board_legend_on_off),
+		"Legend":         render_legend(scoreBoardLegendOnOff),
 		"menu":           eventMenu(eventId, event.Ranges, URL_scoreboard, event.IsPrizeMeet),
 		"SortScoreboard": "",
 	}
 	if len(event.Ranges) >= 1 {
 		outputer["SortByRange"], _ = strToInt(sortByRange)
-		outputer["SortScoreboard"] = generateForm2(eventSettings_sort_scoreboard(eventId, event.SortScoreboard, event.Ranges))
+		outputer["SortScoreboard"] = generateForm(eventSettings_sort_scoreboard(eventId, event.SortScoreboard, event.Ranges))
 	}
 	return Page{
 		TemplateFile: "scoreboard",

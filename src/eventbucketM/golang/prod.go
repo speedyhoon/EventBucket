@@ -12,12 +12,9 @@ import (
 	"strings"
 )
 
-var (
-	//Use io.Writer >>> ioutil.Discard to disable logging any output
-	Warning = log.New(os.Stdout, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
-)
+var Warning = log.New(os.Stdout, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
 
-func dev_mode_check_form(check bool, message string) {
+func devModeCheckForm(check bool, message string) {
 	if !check {
 		Warning.Println(message)
 	}
