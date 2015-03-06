@@ -45,32 +45,25 @@ func rangeUpdate(w http.ResponseWriter, r *http.Request) {
 		"$set": M{
 			Dot("R", rangeId, "n"): validated_values["name"],
 		},
+		"$unset": M{},
 	}
-	if validated_values["hide"] == "on" {
-		update["$set"].(M)[Dot("R", rangeId, "h")] = true
-	} else {
-		update["$unset"] = M{Dot("R", rangeId, "h"): false}
+	thingy := "$set"
+	if validated_values["hide"] != "on" {
+		thingy = "$unset"
 	}
+	update[thingy].(M)[Dot("R", rangeId, "h")] = true
 
-	if validated_values["lock"] == "on" {
-		update["$set"].(M)[Dot("R", rangeId, "l")] = true
-	} else {
-		if _, ok := update["$unset"]; ok {
-			update["$unset"].(M)[Dot("R", rangeId, "l")] = false
-		} else {
-			update["$unset"] = M{Dot("R", rangeId, "l"): false}
-		}
+	thingy = "$set"
+	if validated_values["lock"] != "on" {
+		thingy = "$unset"
 	}
+	update[thingy].(M)[Dot("R", rangeId, "l")] = true
 
-	if validated_values["aggs"] != "" {
-		update["$set"].(M)[Dot("R", rangeId, "a")] = validated_values["aggs"]
-	} else {
-		if _, ok := update["$unset"]; ok {
-			update["$unset"].(M)[Dot("R", rangeId, "a")] = false
-		} else {
-			update["$unset"] = M{Dot("R", rangeId, "a"): false}
-		}
+	thingy = "$set"
+	if validated_values["aggs"] == "" {
+		thingy = "$unset"
 	}
+	update[thingy].(M)[Dot("R", rangeId, "a")] = validated_values["aggs"]
 	event_update_range_data(eventId, update)
 	http.Redirect(w, r, URL_eventSettings+eventId, http.StatusSeeOther)
 }
@@ -173,11 +166,11 @@ func eventSettings_add_rangeForm(eventId string) Form {
 				Html:     "text",
 				Label:    "Range Name",
 				Required: true,
-			},{
+			}, {
 				Name:  "eventid",
 				Html:  "hidden",
 				Value: eventId,
-			},{
+			}, {
 				Html:  "submit",
 				Value: "Create Range",
 			},
@@ -212,11 +205,11 @@ func eventSettings_sort_scoreboard(eventId string, existing_sort string, ranges 
 				Label:    "Sort Scoreboard by Range",
 				Required: true,
 				Options:  sort_by_ranges,
-			},{
+			}, {
 				Name:  "eventid",
 				Html:  "hidden",
 				Value: eventId,
-			},{
+			}, {
 				Html:  "submit",
 				Value: "Save",
 			},
@@ -234,18 +227,18 @@ func eventSettings_add_aggForm(eventId string, eventRanges []Option) Form {
 				Html:     "text",
 				Label:    "Aggregate Name",
 				Required: true,
-			},{
+			}, {
 				Name:  "eventid",
 				Html:  "hidden",
 				Value: eventId,
-			},{
+			}, {
 				Name:        "agg",
 				Html:        "select",
 				MultiSelect: true,
 				Options:     eventRanges,
 				Label:       "Sum up ranges",
 				Required:    true,
-			},{
+			}, {
 				Html:  "submit",
 				Value: "Create Aggregate",
 			},
@@ -271,11 +264,11 @@ func eventSettingsClassGrades(eventId string, grades []int) Form {
 				//				Label:          "select Classes &amp; Grades in this event",
 				MultiSelect: true,
 				Options:     eventGradeOptions(grades),
-			},{
+			}, {
 				Name:  "eventid",
 				Html:  "hidden",
 				Value: eventId,
-			},{
+			}, {
 				Html:  "submit",
 				Value: "Save",
 			},
@@ -329,11 +322,11 @@ func eventSettings_isPrizeMeet(eventId string, checked bool) Form {
 				Html:    "checkbox",
 				Label:   "Is this Event a Prize Meeting?",
 				Checked: checked,
-			},{
+			}, {
 				Name:  "eventid",
 				Html:  "hidden",
 				Value: eventId,
-			},{
+			}, {
 				Html:  "submit",
 				Value: "Save",
 			},

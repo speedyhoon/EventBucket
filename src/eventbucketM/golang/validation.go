@@ -22,7 +22,7 @@ func check_form(options []Inputs, r *http.Request) map[string]string {
 			if ok {
 				if (option.Required && array[0] != "") || !option.Required {
 					if len(array) > 1 {
-						new_values[option.Name] = strings.Join(array, ",")	//TODO it would be nice to trim whitepspace when joining the items together
+						new_values[option.Name] = strings.Join(array, ",") //TODO it would be nice to trim whitepspace when joining the items together
 					} else {
 						new_values[option.Name] = strings.TrimSpace(array[0])
 					}

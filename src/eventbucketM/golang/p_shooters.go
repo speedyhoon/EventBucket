@@ -56,7 +56,7 @@ func updateShooterList2() int {
 		response, err := http.Get(fmt.Sprintf("%v%v", url, page_count))
 		defer response.Body.Close()
 		if err != nil {
-			Warning.Printf("ERROR: http.Get", err)	//TODO change to the error framework with a helpfull error message
+			Warning.Printf("ERROR: http.Get", err) //TODO change to the error framework with a helpfull error message
 			return 0
 		}
 
@@ -160,7 +160,6 @@ func queryShooterList(w http.ResponseWriter, r *http.Request) {
 	if t.Club != "" {
 		query["c"] = M{"$regex": fmt.Sprintf(`^%v`, t.Club), "$options": "i"}
 	}
-
 	//Ignore Deleted shooters. Selects not modified, updated & merged shooters
 	query["$or"] = []M{{"t": nil}, {"t": M{"$lt": 3}}}
 	var option_list []Option
@@ -176,21 +175,22 @@ func event_query_shooterForm() Form {
 	return Form{
 		Action: URL_shooterInsert,
 		Title:  "Add Shooters",
-		Inputs: []Inputs{{
-			Name:  "first",
-			Html:  "text",
-			Label: "First Name",
-		}, {
-			Name:  "surname",
-			Html:  "text",
-			Label: "Surname",
-		}, {
-			Name: "club",
-			Html: "text",
-			//TODO change club to a select box. data-lists are too flexible!
-			//SelectValues:   getClubSelectBox(eventsCollection),
-			Label: "Club",
-		},
+		Inputs: []Inputs{
+			{
+				Name:  "first",
+				Html:  "text",
+				Label: "First Name",
+			}, {
+				Name:  "surname",
+				Html:  "text",
+				Label: "Surname",
+			}, {
+				Name: "club",
+				Html: "text",
+				//TODO change club to a select box. data-lists are too flexible!
+				//SelectValues:   getClubSelectBox(eventsCollection),
+				Label: "Club",
+			},
 		},
 	}
 }
