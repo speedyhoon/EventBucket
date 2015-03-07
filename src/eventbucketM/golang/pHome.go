@@ -1,10 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"net"
 	"net/http"
-	"os"
 	"sort"
 	"strings"
 	"time"
@@ -68,23 +65,6 @@ func home() Page {
 		},
 		v8Url: VURL_home,
 	}
-}
-
-func HostnameIpAddresses() (string, []string) {
-	hostname, _ := os.Hostname()
-	var ipAddress []string
-	interfaces, err := net.Interfaces()
-	if err == nil {
-		for _, i := range interfaces {
-			addrs, err2 := i.Addrs()
-			if err2 == nil {
-				for _, addr := range addrs {
-					ipAddress = append(ipAddress, fmt.Sprintf("%v", addr))
-				}
-			}
-		}
-	}
-	return hostname, ipAddress
 }
 
 func homeFormNewEvent(clubs []Club, event Event) Form {

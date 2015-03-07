@@ -9,6 +9,7 @@ import (
 	"github.com/boombuler/barcode/datamatrix"
 	"github.com/boombuler/barcode/qr"
 	"image/png"
+	"net"
 	"os"
 	"strconv"
 	"strings"
@@ -102,4 +103,21 @@ func dirExists(path string) bool {
 		Error.Printf("folder does not exist: %v", err)
 	}
 	return false
+}
+
+func HostnameIpAddresses() (string, []string) {
+	hostname, _ := os.Hostname()
+	var ipAddress []string
+	interfaces, err := net.Interfaces()
+	if err == nil {
+		for _, i := range interfaces {
+			addrs, err2 := i.Addrs()
+			if err2 == nil {
+				for _, addr := range addrs {
+					ipAddress = append(ipAddress, fmt.Sprintf("%v", addr))
+				}
+			}
+		}
+	}
+	return hostname, ipAddress
 }
