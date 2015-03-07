@@ -3,23 +3,24 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
 func rangeInsert(w http.ResponseWriter, r *http.Request) {
-	validatedValues := checkForm(eventSettings_add_rangeForm("").Inputs, r)
-	range_agg_insert(validatedValues, false)
+	validatedValues := checkForm(eventSettingsAddRangeForm("").Inputs, r)
+	rangeAggInsert(validatedValues, false)
 	eventId := validatedValues["eventid"]
 	http.Redirect(w, r, URL_eventSettings+eventId, http.StatusSeeOther)
 }
 
 func aggInsert(w http.ResponseWriter, r *http.Request) {
-	validatedValues := checkForm(eventSettings_add_aggForm("", []Option{}).Inputs, r)
-	range_agg_insert(validatedValues, true)
+	validatedValues := checkForm(eventSettingsAddAggForm("", []Option{}).Inputs, r)
+	rangeAggInsert(validatedValues, true)
 	eventId := validatedValues["eventid"]
 	http.Redirect(w, r, URL_eventSettings+eventId, http.StatusSeeOther)
 }
-func range_agg_insert(validatedValues map[string]string, isAgg bool) {
+func rangeAggInsert(validatedValues map[string]string, isAgg bool) {
 	new_range := Range{Name: validatedValues["name"]}
 	if isAgg {
 		new_range.IsAgg = true
@@ -131,7 +132,7 @@ func eventSettings(eventId string) Page {
 	}
 	addAggregateForm := ""
 	if len(event.Ranges) >= 2 {
-		addAggregateForm = generateForm(eventSettings_add_aggForm(eventId, event_ranges))
+		addAggregateForm = generateForm(eventSettingsAddAggForm(eventId, event_ranges))
 	}
 	return Page{
 		TemplateFile: "eventSettings",
@@ -141,22 +142,20 @@ func eventSettings(eventId string) Page {
 			"Title":          "Event Settings",
 			"EventName":      event.Name,
 			"Id":             eventId,
-			"AddRange":       generateForm(eventSettings_add_rangeForm(eventId)),
+			"AddRange":       generateForm(eventSettingsAddRangeForm(eventId)),
 			"AddAgg":         addAggregateForm,
 			"ListRanges":     event.Ranges,
 			"ListGrades":     CLASSES,
-			"isPrizemeeting": generateForm(eventSettings_isPrizeMeet(eventId, event.IsPrizeMeet)),
-			//		"AddDate":        generateForm(eventSettings_add_dateForm(eventId, event.Date, event.Time)),
-			"menu":        eventMenu(eventId, event.Ranges, URL_eventSettings, event.IsPrizeMeet),
-			"EventGrades": generateForm(eventSettingsClassGrades(event.Id, event.Grades)),
-			//		"ChangeName":     generateForm(eventSettings_event_name(event.Name, eventId)),
+			"isPrizemeeting": generateForm(eventSettingsIsPrizeMeet(eventId, event.IsPrizeMeet)),
+			"menu":           eventMenu(eventId, event.Ranges, URL_eventSettings, event.IsPrizeMeet),
+			"EventGrades":    generateForm(eventSettingsClassGrades(event)),
 			"AllEventGrades": DEFAULT_CLASS_SETTINGS,
-			"SortScoreboard": generateForm(eventSettings_sort_scoreboard(eventId, event.SortScoreboard, event.Ranges)),
+			"SortScoreboard": generateForm(eventSettingsSortScoreboard(event)),
 			"FormNewEvent":   generateForm(homeFormNewEvent(getClubs(), event)),
 		},
 	}
 }
-func eventSettings_add_rangeForm(eventId string) Form {
+func eventSettingsAddRangeForm(eventId string) Form {
 	return Form{
 		Action: URL_eventRangeInsert,
 		Title:  "Add Range",
@@ -179,21 +178,21 @@ func eventSettings_add_rangeForm(eventId string) Form {
 }
 
 func updateSortScoreBoard(w http.ResponseWriter, r *http.Request) {
-	validatedValues := checkForm(eventSettings_sort_scoreboard("", "", make([]Range, 0)).Inputs, r)
+	validatedValues := checkForm(eventSettingsSortScoreboard(Event{}).Inputs, r)
 	eventId := validatedValues["eventid"]
 	http.Redirect(w, r, URL_scoreboard+eventId, http.StatusSeeOther)
 	eventUpdateSortScoreboard(eventId, validatedValues["sort"])
 }
 
-func eventSettings_sort_scoreboard(eventId string, existing_sort string, ranges []Range) Form {
-	var sort_by_ranges []Option
-	var sort_by bool
-	for index, Range := range ranges {
-		sort_by = false
-		if fmt.Sprintf("%v", index) == existing_sort {
-			sort_by = true
+func eventSettingsSortScoreboard(event Event) Form {
+	var sortByRanges []Option
+	var sortBy bool
+	for index, Range := range event.Ranges {
+		if fmt.Sprintf("%v", index) == event.SortScoreboard {
+			sortBy = true
 		}
-		sort_by_ranges = append(sort_by_ranges, Option{Display: Range.Name, Value: fmt.Sprintf("%v", index), Selected: sort_by})
+		sortByRanges = append(sortByRanges, Option{Display: Range.Name, Value: fmt.Sprintf("%v", index), Selected: sortBy})
+		sortBy = false
 	}
 	return Form{
 		Action: URL_updateSortScoreBoard,
@@ -204,11 +203,11 @@ func eventSettings_sort_scoreboard(eventId string, existing_sort string, ranges 
 				Html:     "select",
 				Label:    "Sort Scoreboard by Range",
 				Required: true,
-				Options:  sort_by_ranges,
+				Options:  sortByRanges,
 			}, {
 				Name:  "eventid",
 				Html:  "hidden",
-				Value: eventId,
+				Value: event.Id,
 			}, {
 				Html:  "submit",
 				Value: "Save",
@@ -217,7 +216,7 @@ func eventSettings_sort_scoreboard(eventId string, existing_sort string, ranges 
 	}
 }
 
-func eventSettings_add_aggForm(eventId string, eventRanges []Option) Form {
+func eventSettingsAddAggForm(eventId string, eventRanges []Option) Form {
 	return Form{
 		Action: URL_eventAggInsert,
 		Title:  "Add Aggregate Range",
@@ -247,27 +246,36 @@ func eventSettings_add_aggForm(eventId string, eventRanges []Option) Form {
 }
 
 func updateEventGrades(w http.ResponseWriter, r *http.Request) {
-	validatedValues := checkForm(eventSettingsClassGrades("", []int{}).Inputs, r)
+	validatedValues := checkForm(eventSettingsClassGrades(Event{}).Inputs, r)
 	eventId := validatedValues["eventid"]
+	grades := strings.Split(validatedValues["grades"], ",")
+	var gradeIds []int
+	var gradeIdInt int
+	var err error
+	for _, gradeId := range grades {
+		gradeIdInt, err = strconv.Atoi(gradeId)
+		if err == nil {
+			gradeIds = append(gradeIds, gradeIdInt)
+		}
+	}
 	http.Redirect(w, r, URL_event+eventId, http.StatusSeeOther)
-	eventUpsertData(eventId, M{schemaGRADES: validatedValues["grades"]})
+	tableUpdateData(TBLevent, eventId, M{schemaGRADES: gradeIds})
 }
 
-func eventSettingsClassGrades(eventId string, grades []int) Form {
+func eventSettingsClassGrades(event Event) Form {
 	return Form{
 		Action: URL_updateEventGrades,
-		Title:  "Classes &amp; Grades",
+		Title:  "Availalbe Classes &amp; Grades",
 		Inputs: []Inputs{
 			{
-				//Label:     "select Classes &amp; Grades in this event",
 				Name:        "grades",
 				Html:        "select",
 				MultiSelect: true,
-				Options:     eventGradeOptions(grades),
+				Options:     eventGradeOptions(event.Grades),
 			}, {
 				Name:  "eventid",
 				Html:  "hidden",
-				Value: eventId,
+				Value: event.Id,
 			}, {
 				Html:  "submit",
 				Value: "Save",
@@ -279,17 +287,18 @@ func eventSettingsClassGrades(eventId string, grades []int) Form {
 func eventShotsNSighters(eventId string) Page {
 	//TODO Display a list of ranges and shooters scores as shots and total scores, ordered in descending order
 	event, err := getEvent(eventId)
-	if err == nil {
-		//TODO shooters scores not displayed for each range etc.
-		Warning.Println("shooters scores not displayed for each range etc.")
-		/*for _, eventRange := range event.Ranges{
-			//Info.Printf("event Range: %v", eventRange.Id)
-			for _, shooter := range event.Shooters{
-				//TODO check if shooters has this range
-				//Info.Printf("shooter: %v", shooter.Id)
-			}
-		}*/
+	if err != nil {
+		Error.Printf("Event with id %v doesn't exist", eventId)
 	}
+	//TODO shooters scores not displayed for each range etc.
+	Warning.Println("shooters scores not displayed for each range etc.")
+	/*for _, eventRange := range event.Ranges{
+		//Info.Printf("event Range: %v", eventRange.Id)
+		for _, shooter := range event.Shooters{
+			//TODO check if shooters has this range
+			//Info.Printf("shooter: %v", shooter.Id)
+		}
+	}*/
 	return Page{
 		Theme:        TEMPLATE_EMPTY,
 		Title:        "eventShotsNSighters",
@@ -302,7 +311,7 @@ func eventShotsNSighters(eventId string) Page {
 }
 
 func updateIsPrizeMeet(w http.ResponseWriter, r *http.Request) {
-	validatedValues := checkForm(eventSettings_isPrizeMeet("", false).Inputs, r)
+	validatedValues := checkForm(eventSettingsIsPrizeMeet("", false).Inputs, r)
 	eventId := validatedValues["eventid"]
 	prizemeet := false
 	if "on" == validatedValues["prizemeet"] {
@@ -312,7 +321,7 @@ func updateIsPrizeMeet(w http.ResponseWriter, r *http.Request) {
 	eventUpsertData(eventId, M{"p": prizemeet})
 }
 
-func eventSettings_isPrizeMeet(eventId string, checked bool) Form {
+func eventSettingsIsPrizeMeet(eventId string, checked bool) Form {
 	return Form{
 		Action: URL_updateIsPrizeMeet,
 		Title:  "Prize Meeting Event",

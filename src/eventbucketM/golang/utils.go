@@ -52,6 +52,15 @@ func addQuotes(input string) string {
 	return input
 }
 
+func isValueInSlice(needle int, haystack []int) bool {
+	for _, value := range haystack {
+		if needle == value {
+			return true
+		}
+	}
+	return false
+}
+
 // Ordinal gives you the input number in a rank/ordinal format.
 // Ordinal(3) -> 3rd
 //author github.com/dustin/go-humanize/blob/master/ordinals.go

@@ -134,6 +134,7 @@ home page
 	Save Event Details doesn't go back to the correct event page
 database
 	rename collections to one letter
+	is it possible to replace bson.M with M?   YES IT IS!
 all forms
 	trim white space from text fields
 licence page
