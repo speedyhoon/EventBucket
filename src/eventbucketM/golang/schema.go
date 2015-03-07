@@ -76,15 +76,6 @@ type Score struct {
 	Position int `bson:"p,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
 }
 
-type NraaShooter struct {
-	SID       int    `bson:"_id,omitempty"`
-	NraaId    int    `bson:"i,omitempty"`
-	Surname   string `bson:"s,omitempty"`
-	FirstName string `bson:"f,omitempty"`
-	NickName  string `bson:"n,omitempty"`
-	Club      string `bson:"c,omitempty"`
-}
-
 type EventShooter struct {
 	FirstName string           `bson:"f"` //TODO change these to point to shooters in the other shooter tables
 	Surname   string           `bson:"s"`
@@ -129,6 +120,40 @@ type Shooter struct {
 	MergedSID int `bson:"m,omitempty"`
 }
 
+type NraaShooter struct {
+	NraaId    int           `bson:"_id,omitempty"`
+	SID       int           `bson:"i,omitempty"`
+	Surname   string        `bson:"s,omitempty"`
+	FirstName string        `bson:"f,omitempty"`
+	NickName  string        `bson:"n,omitempty"`
+	Club      string        `bson:"c,omitempty"`
+	Grades    []NraaGrading `bson:"g,omitempty"`
+}
+
+type NraaGrade struct {
+	Discipline NraaItem `json:"Discipline,omitempty"`
+	Grade      NraaItem `json:"Grade,omitempty"`
+	AvgScore   string   `json:"avg_score,omitempty"`
+	ShootQty   string   `json:"number_of_shoots,omitempty"`
+	//Shooter   NraaShooter2   `json:"Shooter,omitempty"`
+}
+
+type NraaItem struct {
+	Id        string `json:"id,omitempty"`
+	Name      string `json:"name,omitempty"`
+	Threshold string `json:"threshold,omitempty"`
+}
+
+type NraaGrading struct {
+	DisciplineId   string  `bson:"d,omitempty"`
+	DisciplineName string  `bson:"n,omitempty"`
+	GradeId        string  `bson:"g,omitempty"`
+	GradeName      string  `bson:"r,omitempty"`
+	GradeThreshold string  `bson:"t,omitempty"`
+	AvgScore       float64 `bson:"a,omitempty"`
+	ShootQty       int     `bson:"s,omitempty"`
+}
+
 type TeamCat struct {
 	Name string `bson:"n"`
 }
@@ -150,4 +175,39 @@ type Mound struct {
 type Skill struct {
 	Grade      string
 	Percentage float64 //TODO would prefer an unsigned float here
+}
+
+type Form struct {
+	Action string
+	Title  string
+	Inputs []Inputs
+	Help   string
+	Type   string // empty string "" = normal form, "table" = data table
+	Id     string
+}
+
+type Inputs struct {
+	Name, Html, Label, Help, Value, Pattern, Placeholder, AutoComplete string //AutoComplete values can be: "off" or "on"
+	Checked, MultiSelect, Required                                     bool
+	Min, Max                                                           *int
+	Size                                                               int
+	Options                                                            []Option
+	Step                                                               float64
+	VarType                                                            string //the type of variable to return
+	VarMaxLen                                                          int    //the length of variable to return
+	VarMinLen                                                          int    //the length of variable to return
+	Error                                                              string
+	Snippet                                                            string
+	Autofocus                                                          string
+}
+
+type Option struct {
+	Value    string `json:"v,omitempty"`
+	Display  string `json:"d,omitempty"`
+	Selected bool   `json:"s,omitempty"`
+}
+
+type Menu struct {
+	Name, Link string
+	Ranges     bool
 }

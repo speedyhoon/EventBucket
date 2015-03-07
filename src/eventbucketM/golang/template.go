@@ -99,11 +99,6 @@ func generator(w http.ResponseWriter, fillin string, viewController Page) {
 	}
 }
 
-type Menu struct {
-	Name, Link string
-	Ranges     bool
-}
-
 var EventMenuItems = []Menu{
 	{
 		Name: "Home",
