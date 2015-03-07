@@ -54,6 +54,7 @@ General
 	Feature  Add help docs into forms and table headings
 	Feature  Connect 404 Missing page
 	Security How to target the submit button to go onto a new line?
+	Security The project relies upon each file being available. Each page should be self sufficient once the base files are loaded. prod, httpgzip, utils, settings, form, schema, template
 
 Documentation
 	Feature  add a page how to use EventBucket via multiple people at once.

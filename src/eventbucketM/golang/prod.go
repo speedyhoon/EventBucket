@@ -24,9 +24,8 @@ func loadHTM(pageName string) []byte {
 	pageName = strings.Replace(pageName, "/", "", -1)
 	bytes, err := ioutil.ReadFile(fmt.Sprintf(PATH_HTML_MINIFIED, pageName))
 	if err != nil {
-		Warning.Println(err)
-		//TODO improve error handling for compressed htm files that are not found
-		//return []bytes, err
+		//TODO inline html as bytes here
+		Error.Println(err)
 	}
 	return bytes
 }

@@ -9,48 +9,6 @@ import (
 	"time"
 )
 
-const (
-	//GET
-	URL_home     = "/"
-	URL_about    = "/about"
-	URL_clubs    = "/clubs"
-	URL_licence  = "/licence"
-	URL_archive  = "/archive"
-	URL_shooters = "/shooters"
-	URL_event    = "/event/" //event Id special type characters only allowed
-	//URL_licence_summary	= "/licence-summary"
-	//GET with PARAMETERS
-	//URL_events               = "/events/"
-	URL_club             = "/club/"
-	URL_eventSettings    = "/eventSettings/" //eventId
-	URL_scoreboard       = "/scoreboard/"    //eventId/rangeId
-	URL_totalScores      = "/totalScores/"
-	URL_totalScoresAll   = "/totalScoresAll/"
-	URL_startShooting    = "/startShooting/"
-	URL_startShootingAll = "/startShootingAll/"
-	URL_queryShooterList = "/queryShooterList"
-	//POST
-	URL_clubInsert           = "/clubInsert"
-	URL_champInsert          = "/champInsert"
-	URL_eventInsert          = "/eventInsert"
-	URL_eventRangeInsert     = "/rangeInsert"
-	URL_eventAggInsert       = "/aggInsert"
-	URL_shooterInsert        = "/shooterInsert"
-	URL_shooterListInsert    = "/shooterListInsert"
-	URL_updateSortScoreBoard = "/updateSortScoreBoard"
-	URL_updateTotalScores    = "/updateTotalScores"
-	URL_updateShotScores     = "/updateShotScores"
-	URL_updateEventGrades    = "/updateEventGrades"
-	URL_updateRange          = "/updateRange"
-	URL_updateIsPrizeMeet    = "/updateIsPrizeMeet"
-	URL_club_mound_update    = "/clubMoundUpdate/"
-	URL_clubMoundInsert      = "/clubMoundInsert/"
-	URL_clubDetailsUpsert    = "/clubDetailsUpsert/"
-	URL_updateShooterList    = "/updateShooterList"
-	URL_eventShotsNSighters  = "/eventShotsNSighters/"
-	URL_rangeReport          = "/rangeReport/"
-)
-
 func start() {
 	go startDatabase()
 	serveDir(DIR_JS)
@@ -58,6 +16,8 @@ func start() {
 	serveDir(DIR_PNG)
 	serveDir(DIR_JPEG)
 	serveDir(DIR_SVG)
+	serveDir(DIR_WOF)
+	serveDir(DIR_WOF2)
 
 	GetRedirectPermanent(URL_about, about)
 	GetRedirectPermanent(URL_archive, archive)
@@ -78,8 +38,8 @@ func start() {
 	//	GetParameters(URL_rangeReport, range_report)
 
 	Post(URL_eventInsert, eventInsert)
-	Post(URL_queryShooterList, queryShooterList) //Search for a shooter by first, surname & club
-	Post(URL_updateShooterList, PostVia(updateShooterList, URL_shooters))
+	Post(URL_queryShooterList, searchShooter)
+	Post(URL_updateShooterList, PostVia(nraaStartUpdateShooterList, URL_shooters))
 	Post(URL_clubInsert, PostVia(clubInsert, URL_clubs)) //TODO redirect to actual club created
 	Post(URL_updateRange, rangeUpdate)
 	Post(URL_eventRangeInsert, rangeInsert)
@@ -144,7 +104,7 @@ func Get(url string, runner func() Page) {
 }
 func GetRedirectPermanent(url string, runner func() Page) {
 	Get(url, runner)
-	//Setup redirect back to subdirectory "url". Needed when url parameters are not wanted/needed.
+	//Redirects back to subdirectory "url". Needed when url parameters are not wanted/needed.
 	//e.g. if url = "foobar" then "http://localhost/foobar/fdsa" will redirect to "http://localhost/foobar"
 	http.Handle(url+"/", http.RedirectHandler(url, http.StatusMovedPermanently))
 }
@@ -188,6 +148,8 @@ func httpHeaders(w http.ResponseWriter, setHeaders []string) {
 		DIR_PNG:     {"Content-Type", "image/png"},
 		DIR_JPEG:    {"Content-Type", "image/jpeg"},
 		DIR_SVG:     {"Content-Type", "image/svg+xml"},
+		DIR_WOF:     {"Content-Type", "application/font-woff"},
+		DIR_WOF2:    {"Content-Type", "application/font-woff2"},
 	}
 	for _, lookup := range setHeaders {
 		w.Header().Set(headers[lookup][0], headers[lookup][1])

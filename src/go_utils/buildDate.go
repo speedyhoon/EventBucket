@@ -22,6 +22,8 @@ const (
 	DIR_SVG  = "/v/"
 	DIR_WEBP  = "/w/"
 	FAVICON = DIR_PNG+"a" //TODO Create a custom icon with sizes 16x16, 32, 48, 64 and 128
+	DIR_WOF  = "/f/"
+	DIR_WOF2 = "/2/"
 
 	BD_ARGS = `ebd", "--dbpath", databasePath, "--port", "38888", "--nssize", "1", "--smallfiles", "--noscripting", `
 )
@@ -38,6 +40,8 @@ var (
 		"DirPng": DIR_PNG,
 		"DirSvg": DIR_SVG,
 		"DirWebp": DIR_WEBP,
+		"DirWof": DIR_WOF,
+		"DirWof2": DIR_WOF2,
 		"Favicon": FAVICON,
 		"BuildDate": time.Now().Format("January 2, 2006"),
 		"schemaSHOOTER": "S",
