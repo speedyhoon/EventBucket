@@ -289,7 +289,7 @@ func grades() []Grade {
 	}
 }
 
-func AGE_GROUPS2() []Option {
+func AgeGroups() []Option {
 	return []Option{
 		0: {
 			Display:  "None",

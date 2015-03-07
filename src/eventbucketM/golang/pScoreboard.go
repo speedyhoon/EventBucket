@@ -140,7 +140,7 @@ func scoreboard(url string) Page {
 	}
 	if len(event.Ranges) >= 1 {
 		outputer["SortByRange"], _ = strToInt(sortByRange)
-		outputer["SortScoreboard"] = generateForm(eventSettings_sort_scoreboard(eventId, event.SortScoreboard, event.Ranges))
+		outputer["SortScoreboard"] = generateForm(eventSettingsSortScoreboard(event))
 	}
 	return Page{
 		TemplateFile: "scoreboard",

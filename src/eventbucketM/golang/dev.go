@@ -68,14 +68,20 @@ func serveHtml(h http.HandlerFunc) http.HandlerFunc {
 	}))
 }
 
-func dump(input interface{}) {
-	Trace.Printf("%v", input)
+func dump(input ...interface{}) {
+	for _, print := range input {
+		Trace.Printf("\n%v", print)
+	}
 }
-func vardump(input interface{}) {
-	Trace.Printf("%+v", input) //map field names included
+func vardump(input ...interface{}) {
+	for _, print := range input {
+		Trace.Printf("\n%+v", print) //map field names included
+	}
 }
-func export(input interface{}) {
-	Trace.Printf("%#v", input) //can copy and declare new variable with it. Most ouput available
+func export(input ...interface{}) {
+	for _, print := range input {
+		Trace.Printf("\n%#v", print) //can copy and declare new variable with it. Most ouput available
+	}
 }
 
 func devModeTimeTrack(start time.Time, requestURI string) {
