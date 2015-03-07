@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 )
 
 const (
@@ -21,39 +22,40 @@ const (
 	schemaGRADES   = "^^schemaGRADES^^"
 	TBLchamp       = "H"
 	TBLshooter     = "S"
-	TBLshooterList = "n"
+	TBLnraaShooter = "N"
 )
 
 var conn *mgo.Database
 
 func startDatabase() {
 	databasePath := os.Getenv("ProgramData") + "/EventBucket"
-	if dirExists(databasePath) {
-		cmd := exec.Command("^^DbArgs^^")
-		//TODO output mongodb errors/logs to stdOut
-		/*stdout, err := cmd.StdoutPipe()
-		if err != nil {
-			Error.Println(err)
-		}
-		stderr, err := cmd.StderrPipe()
-		if err != nil {
-			Error.Println(err)
-		}
-		err = cmd.Start()*/
-		cmd.Start()
-		/*if err != nil {
-			dump("exporting!")
-			dump(stdout)
-			dump(stderr)
-			return
-		}
-		fmt.Println("Result: Err")
-		dump(stderr)
-		fmt.Println("Result: stdn out")
-		dump(stdout)*/
-		//TODO is a new goroutine really needed for DB call?
-		go DB()
+	if !dirExists(databasePath) {
+		Error.Printf("Can't find folder %v", databasePath)
 	}
+	cmd := exec.Command("^^DbArgs^^")
+	//TODO output mongodb errors/logs to stdOut
+	/*stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		Error.Println(err)
+	}
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		Error.Println(err)
+	}
+	err = cmd.Start()*/
+	cmd.Start()
+	/*if err != nil {
+		dump("exporting!")
+		dump(stdout)
+		dump(stderr)
+		return
+	}
+	fmt.Println("Result: Err")
+	dump(stderr)
+	fmt.Println("Result: stdn out")
+	dump(stdout)*/
+	//TODO is a new goroutine really needed for DB call?
+	go DB()
 }
 
 func DB() {
@@ -126,7 +128,7 @@ func getEvents() []Event {
 func getShooterLists() []NraaShooter {
 	var result []NraaShooter
 	if conn != nil {
-		conn.C(TBLshooterList).Find(nil).All(&result)
+		conn.C(TBLnraaShooter).Find(nil).All(&result)
 	}
 	return result
 }
@@ -134,9 +136,37 @@ func getShooterLists() []NraaShooter {
 func getShooterList(id int) Shooter {
 	var result Shooter
 	if conn != nil {
-		conn.C(TBLshooterList).FindId(id).One(&result)
+		conn.C(TBLnraaShooter).FindId(id).One(&result)
 	}
 	return result
+}
+
+func nraaGetLastUpdated() string {
+	var result map[string]string
+	conn.C(TBLAutoInc).FindId(TBLnraaShooter).One(&result)
+	return result["n"]
+}
+
+func nraaUpsertShooter(shooter NraaShooter) {
+	_, err := conn.C(TBLnraaShooter).UpsertId(shooter.SID, &shooter)
+	if err != nil {
+		Warning.Println(err)
+	}
+}
+
+func nraaUpdateGrading(shooterId int, grades []NraaGrading) {
+	change := mgo.Change{
+		Upsert: false,
+		Update: M{"$set": M{"g": grades}},
+	}
+	conn.C(TBLnraaShooter).FindId(shooterId).Apply(change, make(M))
+}
+
+func nraaLastUpdated() {
+	conn.C(TBLAutoInc).FindId(TBLnraaShooter).Apply(mgo.Change{
+		Upsert: true,
+		Update: M{"$set": M{"n": time.Now().Format("January 2, 2006")}},
+	}, make(M))
 }
 
 func getShooter(id int) Shooter {
@@ -156,17 +186,13 @@ func getEvent(id string) (Event, error) {
 	return result, errors.New("Unable to get event with id: '" + id + "'")
 }
 
-func getEvent20Shooters(id string) (Event, bool) {
+func getEvent20Shooters(id string) (Event, error) {
 	var result Event
 	if conn != nil {
-		//TODO is it possible to replace bson.M with M?
-		//err := conn.C(TBLevent).FindId(id).Select(bson.M{"S": bson.M{"$slice": -20 }}).One(&result)
 		err := conn.C(TBLevent).FindId(id).Select(M{"S": M{"$slice": -20}}).One(&result)
-		if err == nil {
-			return result, false
-		}
+		return result, err
 	}
-	return result, true
+	return result, errors.New("Unable to get event with id: '" + id + "'")
 }
 
 func getNextId(collectionName string) (string, error) {
@@ -472,11 +498,11 @@ func eventUpsertData(eventId string, data M) {
 	conn.C(TBLevent).FindId(eventId).Apply(change, make(M))
 }
 
-func nraaUpsertShooter(shooter NraaShooter) {
-	_, err := conn.C("N").UpsertId(shooter.SID, &shooter)
-	if err != nil {
-		Warning.Println(err)
+func tableUpdateData(collectionName, eventId string, data M) {
+	change := mgo.Change{
+		Update: M{"$set": data,},
 	}
+	conn.C(collectionName).FindId(eventId).Apply(change, make(M))
 }
 func UpsertDoc(collection string, id interface{}, document interface{}) {
 	_, err := conn.C(collection).UpsertId(id, document)
