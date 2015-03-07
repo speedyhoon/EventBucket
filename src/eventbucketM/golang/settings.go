@@ -6,6 +6,46 @@ import (
 )
 
 const (
+	//GET
+	URL_home     = "/"
+	URL_about    = "/about"
+	URL_clubs    = "/clubs"
+	URL_licence  = "/licence"
+	URL_archive  = "/archive"
+	URL_shooters = "/shooters"
+	URL_event    = "/event/" //event Id special type characters only allowed
+	//URL_licence_summary	= "/licence-summary"
+	//GET with PARAMETERS
+	//URL_events               = "/events/"
+	URL_club             = "/club/"
+	URL_eventSettings    = "/eventSettings/" //eventId
+	URL_scoreboard       = "/scoreboard/"    //eventId/rangeId
+	URL_totalScores      = "/totalScores/"
+	URL_totalScoresAll   = "/totalScoresAll/"
+	URL_startShooting    = "/startShooting/"
+	URL_startShootingAll = "/startShootingAll/"
+	URL_queryShooterList = "/queryShooterList"
+	//POST
+	URL_clubInsert           = "/clubInsert"
+	URL_champInsert          = "/champInsert"
+	URL_eventInsert          = "/eventInsert"
+	URL_eventRangeInsert     = "/rangeInsert"
+	URL_eventAggInsert       = "/aggInsert"
+	URL_shooterInsert        = "/shooterInsert"
+	URL_shooterListInsert    = "/shooterListInsert"
+	URL_updateSortScoreBoard = "/updateSortScoreBoard"
+	URL_updateTotalScores    = "/updateTotalScores"
+	URL_updateShotScores     = "/updateShotScores"
+	URL_updateEventGrades    = "/updateEventGrades"
+	URL_updateRange          = "/updateRange"
+	URL_updateIsPrizeMeet    = "/updateIsPrizeMeet"
+	URL_club_mound_update    = "/clubMoundUpdate/"
+	URL_clubMoundInsert      = "/clubMoundInsert/"
+	URL_clubDetailsUpsert    = "/clubDetailsUpsert/"
+	URL_updateShooterList    = "/updateShooterList"
+	URL_eventShotsNSighters  = "/eventShotsNSighters/"
+	URL_rangeReport          = "/rangeReport/"
+
 	//Global program settings
 	VERSION            = "^^VersionNumber^^"
 	BUILDDATE          = "^^BuildDate^^"
@@ -22,6 +62,8 @@ const (
 	DIR_JS   = "^^DirJs^^"
 	DIR_PNG  = "^^DirPng^^"
 	DIR_SVG  = "^^DirSvg^^"
+	DIR_WOF  = "^^DirWof^^"
+	DIR_WOF2 = "^^DirWof2^^"
 	//Barcodes
 	QRCODE     = "qr"
 	DATAMATRIX = "dm"

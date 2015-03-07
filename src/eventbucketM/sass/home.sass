@@ -7,13 +7,11 @@
 body
 	background: #000
 	font-family: Arial, sans-serif
+	margin: 0
 
 #a
 	background: url(/e/a) no-repeat #fff
-	//max-width: 670px
-	max-width: 90%
 	padding: 0 15px
-	margin: auto
 	box-shadow: 0 0 3px 3px #888
 
 h1 a
@@ -29,7 +27,7 @@ h2,h3,h4,h5,h6
 
 span
 	font-size: 16px
-	margin: 0 0 104px 168px
+	margin: 0 0 80px 168px
 	display: block
 	white-space: nowrap
 
@@ -50,6 +48,7 @@ legend
 
 
 #menu
+	//TODO use an import for background gradient here
 	background: #444
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#888888', GradientType=0)
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(7%, #000), color-stop(7%, #888), color-stop(80%, #000), color-stop(99%, #888))
@@ -67,9 +66,8 @@ legend
 
 //The current visited page
 #menu .v
-	background: #fff
+	+background-linear-gradient(#F70, 7%, #FFF, 7%, #888, 80%, #333, 99%)
 	font-weight: 700
-	text-decoration: underline
 
 	a
 		color: #000
@@ -83,9 +81,8 @@ p, ul
 	margin-top: 0
 #b
 	border-top: 1px solid #000
-	margin: 9px -15px 0
+	margin-bottom: 0
 	//padding: 3px 9px
-	padding: 3px 60px
 	//text-align: right
 	//font-size: 9px
 	//background: url(/v/cc.svg) no-repeat right
@@ -175,3 +172,32 @@ p, ul
 //+db-error()
 
 +float-right()
+
+@media all and (min-width: 800px)
+	body
+		margin-left: 8px
+		margin-right: 8px
+
+@media all and (min-width: 900px)
+	#a
+		max-width: 90%
+		margin: auto
+
+@media all and (max-height: 649px)
+	h2,h3,p
+		margin-top: 0.3em
+
+	h2,h3,p,ul,#menu
+		margin-bottom: 0
+
+@media all and (min-height: 650px)
+	body
+		margin-top: 8px
+		margin-bottom: 8px
+
+	span
+		margin-bottom: 104px
+
+	#b
+		margin: 9px -15px 0
+		padding: 3px 60px

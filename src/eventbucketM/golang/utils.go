@@ -23,7 +23,25 @@ func exists(dict M, key string) string {
 }
 
 func strToInt(input interface{}) (int, error) {
+	//TODO remove this old version
+	Error.Println("remove this old version of strToInt")
 	return strconv.Atoi(fmt.Sprintf("%v", input))
+}
+
+func str2Int(input interface{}) int {
+	number, err := strconv.Atoi(fmt.Sprintf("%v", input))
+	if err != nil {
+		return number
+	}
+	return 0
+}
+
+func str2float(input interface{}) float64 {
+	float, err := strconv.ParseFloat(fmt.Sprintf("%v", input), 64)
+	if err != nil {
+		return float
+	}
+	return 0
 }
 
 //research http://net.tutsplus.com/tutorials/client-side-security-best-practices/
