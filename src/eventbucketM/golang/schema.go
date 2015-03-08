@@ -154,6 +154,14 @@ type NraaGrading struct {
 	ShootQty       int     `bson:"s,omitempty"`
 }
 
+/*type NraaGrading struct {
+	Class string  `bson:"n,omitempty"`
+	Grade      string  `bson:"r,omitempty"`
+	Threshold string  `bson:"t,omitempty"`
+	AvgScore       float64 `bson:"a,omitempty"`
+	ShootQty       int     `bson:"s,omitempty"`
+}*/
+
 type TeamCat struct {
 	Name string `bson:"n"`
 }

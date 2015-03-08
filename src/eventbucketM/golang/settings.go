@@ -24,8 +24,9 @@ const (
 	URL_totalScoresAll   = "/totalScoresAll/"
 	URL_startShooting    = "/startShooting/"
 	URL_startShootingAll = "/startShootingAll/"
-	URL_queryShooterList = "/queryShooterList"
 	//POST
+	URL_queryShooterList     = "/queryShooterList"
+	URL_queryShooterGrade    = "/queryShooterGrade"
 	URL_clubInsert           = "/clubInsert"
 	URL_champInsert          = "/champInsert"
 	URL_eventInsert          = "/eventInsert"

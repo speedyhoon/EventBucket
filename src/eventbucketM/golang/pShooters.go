@@ -1,9 +1,9 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 )
 
 func shooters() Page {
@@ -28,7 +28,7 @@ func updateShooterList() Form {
 		Title:  "Update Shooter List",
 		Inputs: []Inputs{
 			{
-				Snippet: "Last updated: " + lastUpdated+".",
+				Snippet: "Last updated: " + lastUpdated + ".",
 			}, {
 				Html:      "submit",
 				Value:     "Update",
@@ -40,24 +40,19 @@ func updateShooterList() Form {
 
 //Search for a shooter by first name, surname or club
 func searchShooter(w http.ResponseWriter, r *http.Request) {
-	var shooters Shooter
-	err := json.NewDecoder(r.Body).Decode(&shooters)
-	if err != nil {
-		Error.Println(err)
-		return
-	}
+	validatedValues := checkForm(searchShooterForm().Inputs, r)
 	query := M{
-		//Ignore Deleted shooters. Selects not modified, updated & merged shooters
-		"$or": []M{{"t": nil}, {"t": M{"$lt": 3}}},
+	//Ignore Deleted shooters. Selects not modified, updated & merged shooters
+	//"$or": []M{{"t": nil}, {"t": M{"$lt": 3}}},
 	}
-	if shooters.Surname != "" {
-		query["s"] = M{"$regex": fmt.Sprintf(`^%v`, shooters.Surname), "$options": "i"}
+	if validatedValues["surname"] != "" {
+		query["s"] = M{"$regex": fmt.Sprintf(`^%v`, validatedValues["surname"]), "$options": "i"}
 	}
-	if shooters.FirstName != "" {
-		query["f"] = M{"$regex": fmt.Sprintf(`^%v`, shooters.FirstName), "$options": "i"}
+	if validatedValues["first"] != "" {
+		query["f"] = M{"$regex": fmt.Sprintf(`^%v`, validatedValues["first"]), "$options": "i"}
 	}
-	if shooters.Club != "" {
-		query["c"] = M{"$regex": fmt.Sprintf(`^%v`, shooters.Club), "$options": "i"}
+	if validatedValues["club"] != "" {
+		query["c"] = M{"$regex": fmt.Sprintf(`^%v`, validatedValues["club"]), "$options": "i"}
 	}
 	var optionList []Option
 	for _, shooter := range searchShooters(query) {
@@ -67,4 +62,58 @@ func searchShooter(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 	fmt.Fprint(w, drawOptions(Inputs{Options: optionList}, ""))
+}
+
+func searchShooterForm() Form {
+	return Form{
+		Action: URL_shooterInsert,
+		Title:  "Add Shooters",
+		Inputs: []Inputs{
+			{
+				Name:  "first",
+				Html:  "text",
+				Label: "First Name",
+			}, {
+				Name:  "surname",
+				Html:  "text",
+				Label: "Surname",
+			}, {
+				Name:  "club",
+				Html:  "text",
+				Label: "Club",
+			},
+		},
+	}
+}
+
+func searchShooterGrade(w http.ResponseWriter, r *http.Request) {
+	output := ""
+	validatedValues := checkForm(searchShooterGradeForm().Inputs, r)
+	shooterId, err := strconv.Atoi(validatedValues["shooterid"])
+	if err != nil {
+		fmt.Fprint(w, output)
+		return
+	}
+	shooter := getNraaShooter(shooterId) //TODO change to getShooter after it is moved
+	output += fmt.Sprintf("%v %v", shooter.FirstName, shooter.Surname)
+	if len(shooter.Grades) == 0 {
+		output += "<div>No grades listed</div>"
+	}
+	for _, grade := range shooter.Grades {
+		output += fmt.Sprintf("<div>Class: %v, Grade: %v, Threshold: %v</div>", grade.DisciplineName, grade.GradeName, grade.GradeThreshold)
+	}
+	fmt.Fprint(w, output)
+}
+
+func searchShooterGradeForm() Form {
+	return Form{
+		Action: URL_shooterInsert,
+		Title:  "Shooters Grades",
+		Inputs: []Inputs{
+			{
+				Name: "shooterid",
+				Html: "number",
+			},
+		},
+	}
 }
