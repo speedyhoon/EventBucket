@@ -52,7 +52,7 @@ var (
 	}
 	DevMode = map[string]interface{}{
 		"DbArgs": BD_ARGS + `"--noauth", "--slowms", "3", "--cpu", "--profile", "2", "--objcheck", "--notablescan", "--rest`,
-		"NewRelic": "true",		//TODO there has to be a better way to do this? Maybe use Gulp.js instead?
+		//"NewRelic": "true",		//TODO there has to be a better way to do this? Maybe use Gulp.js instead?
 	}
 
 	ProdMode = map[string]interface{}{
@@ -135,6 +135,8 @@ func loadHtmlSnippets(){
 			fmt.Println("Unable to load NewRelic html contents")
 		}
 		ReplaceChars["NewRelic"] = string(replaceContents(ReplaceChars, fileContents)[:])
+	}else {
+		ReplaceChars["NewRelic"] = ""
 	}
 }
 

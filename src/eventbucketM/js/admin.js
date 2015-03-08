@@ -115,7 +115,7 @@
 		}
 	}
 
-	var shooterButtons = document.getElementById('ShooterEntry').getElementsByTagName('button'),
+	var shooterButtons = document.querySelector('#ShooterEntry button'),
 		clickIt = function(formAction){
 			return function(){
 				changeRequiredAttrs(formAction);
