@@ -521,7 +521,7 @@ func UpsertDoc(collection string, id interface{}, document interface{}) {
 
 func searchShooters(query M) []Shooter {
 	var result []Shooter
-	err := conn.C(TBLnraaShooter).Find(query).All(&result)	//TODO switch back to shooter
+	err := conn.C(TBLnraaShooter).Find(query).All(&result) //TODO switch back to shooter
 	//	err := conn.C(TBLshooter).Find(query).All(&result)
 	if err != nil {
 		Warning.Println(err)

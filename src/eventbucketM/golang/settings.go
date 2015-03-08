@@ -13,13 +13,11 @@ const (
 	URL_licence  = "/licence"
 	URL_archive  = "/archive"
 	URL_shooters = "/shooters"
-	URL_event    = "/event/" //event Id special type characters only allowed
-	//URL_licence_summary	= "/licence-summary"
 	//GET with PARAMETERS
-	//URL_events               = "/events/"
+	URL_event            = "/event/" //eventId
 	URL_club             = "/club/"
-	URL_eventSettings    = "/eventSettings/" //eventId
-	URL_scoreboard       = "/scoreboard/"    //eventId/rangeId
+	URL_eventSettings    = "/eventSettings/"
+	URL_scoreboard       = "/scoreboard/" //eventId/rangeId
 	URL_totalScores      = "/totalScores/"
 	URL_totalScoresAll   = "/totalScoresAll/"
 	URL_startShooting    = "/startShooting/"

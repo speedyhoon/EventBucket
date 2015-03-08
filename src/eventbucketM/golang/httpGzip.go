@@ -24,7 +24,6 @@ func start() {
 	GetRedirectPermanent(URL_licence, licence)
 	GetRedirectPermanent(URL_shooters, shooters)
 	GetRedirectPermanent(URL_clubs, clubs)
-	//	GetRedirectPermanent(URL_events, events)
 
 	GetParameters(URL_event, event)
 	GetParameters(URL_club, club)
