@@ -92,3 +92,8 @@
 122 KB (125,597 bytes) Go only      remove underscores from variable names
 101 KB (104,243 bytes) Go compiled
 115 KB (118,075 bytes) Prod only
+
+8 Mar 2015
+128 KB (131,948 bytes) Go only
+105 KB (107,619 bytes) Go compiled
+121 KB (124,306 bytes) Prod only
