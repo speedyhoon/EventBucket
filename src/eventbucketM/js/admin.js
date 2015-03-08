@@ -11,6 +11,20 @@
 	}
 
 
+	var j;
+	if(window.XMLHttpRequest){
+		j = new XMLHttpRequest();
+	}
+
+	var select = document.querySelector('select#sid');
+	if(select){
+		select.onchange=function(select){
+			return function(){
+				shooterSelected(select.value);
+			};
+		}(select);
+	}
+
 	function searchShooter(inputElement){
 		if(shooterEntryValues[inputElement.name] !== inputElement.value){
 			shooterEntryValues[inputElement.name] = inputElement.value;
@@ -26,6 +40,18 @@
 //				}
 			}
 		}
+	}
+
+	function shooterSelected(shooterId){
+		console.log(shooterId);
+		j.open('POST', '/queryShooterGrade', true);
+		j.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		j.send('shooterid='+shooterId);
+		j.onreadystatechange = function(){
+			if(j.status === 200){
+				document.getElementById('palette').innerHTML = !j.response.length ? 'No grades found.' : j.response;
+			}
+		};
 	}
 
 	var textboxes = document.getElementById('ShooterEntry'),
@@ -49,20 +75,20 @@
 		}
 	}
 
-	var j;
-	if(window.XMLHttpRequest){
-		j = new XMLHttpRequest();
-	}
 	function ajax(){
 //		var shots = getAjax();
 //		shots = encodeURI(shots).replace(/#/gi, '%23');	//hashes are converted after encodeURI to stop % being converted twice
 		j.open('POST', '/queryShooterList', true);// + 'scoreSave=' + classes.eventId + '~' + Id + '~' + shots, true);
-//		j.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-		j.send(JSON.stringify(shooterEntryValues));
+		j.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+//		j.send(JSON.stringify(shooterEntryValues));
+		j.send('first='+shooterEntryValues.first+'&surname='+shooterEntryValues.surname+'&club='+shooterEntryValues.club);
 		j.onreadystatechange = function(){
 			if(j.status === 200){
 //				if(!j.response.length){
-				document.getElementById('sid').innerHTML = !j.response.length ? '<option value>No shooters found...</option>' : j.response;
+				document.getElementById('sid').innerHTML = !j.response.length ? '<option value>0 shooters found.</option>' : j.response;
+				if(j.response.length){
+					shooterSelected(document.getElementById('sid').value)
+				}
 //				}else{
 //					document.getElementById('sid').innerHTML = j.response;
 //				}

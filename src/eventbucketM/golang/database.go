@@ -141,6 +141,14 @@ func getShooterList(id int) Shooter {
 	return result
 }
 
+func getNraaShooter(id int) NraaShooter {
+	var result NraaShooter
+	if conn != nil {
+		conn.C(TBLnraaShooter).FindId(id).One(&result)
+	}
+	return result
+}
+
 func nraaGetLastUpdated() string {
 	var result map[string]string
 	conn.C(TBLAutoInc).FindId(TBLnraaShooter).One(&result)
@@ -500,7 +508,7 @@ func eventUpsertData(eventId string, data M) {
 
 func tableUpdateData(collectionName, eventId string, data M) {
 	change := mgo.Change{
-		Update: M{"$set": data,},
+		Update: M{"$set": data},
 	}
 	conn.C(collectionName).FindId(eventId).Apply(change, make(M))
 }
@@ -513,7 +521,8 @@ func UpsertDoc(collection string, id interface{}, document interface{}) {
 
 func searchShooters(query M) []Shooter {
 	var result []Shooter
-	err := conn.C(TBLshooter).Find(query).All(&result)
+	err := conn.C(TBLnraaShooter).Find(query).All(&result)	//TODO switch back to shooter
+	//	err := conn.C(TBLshooter).Find(query).All(&result)
 	if err != nil {
 		Warning.Println(err)
 	}

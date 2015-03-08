@@ -124,23 +124,6 @@ func eventAddShooterListForm(event Event) Form {
 		Action: URL_shooterInsert,
 		Title:  "Add Shooters",
 		Inputs: []Inputs{
-			//"first":Inputs{
-			//	Html:      "text",
-			//	Label:   "First Name",
-			//	Required: true,
-			//},
-			//"surname":Inputs{
-			//	Html:      "text",
-			//	Label:   "Surname",
-			//	Required: true,
-			//},
-			//"club":Inputs{
-			//	Html:      "text",
-			//	TODO change club to a data-list
-			//	//SelectValues:   getClubSelectBox(eventsCollection),
-			//	Label:   "Club",
-			//	Required: true,
-			//},
 			{
 				Name:     "age",
 				Html:     "select",
@@ -155,12 +138,9 @@ func eventAddShooterListForm(event Event) Form {
 				Required:    true,
 				Options:     eventGradeOptions(event.Grades),
 			}, {
-				Name: "sid",
-				Html: "select",
-				//				Label: "Class & Grade",
-				//				Placeholder: "Class & Grade",
+				Name:     "sid",
+				Html:     "select",
 				Required: true,
-				//				SelectedValues: eventGradeOptions(event),
 			}, {
 				Name:  "eventid",
 				Html:  "hidden",
