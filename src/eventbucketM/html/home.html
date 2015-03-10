@@ -19,15 +19,13 @@
 					{{else}}&nbsp;{{end}}
 					{{with.Month}}
 						{{.}}
-					{{else}}&nbsp;{{end}}~~~
-					{{with.Year}}
+					{{else}}&nbsp;{{end}} {{with.Year}}
 						{{.}}
 					{{else}}&nbsp;{{end}}
 				</time>
 				<p>
 					{{if.Id}}
-						<a href=/event/{{.Id}}>{{.Name}}</a>~~~
-						{{with.Time}}
+						<a href=/event/{{.Id}}>{{.Name}}</a> {{with.Time}}
 							starts at {{.}}
 						{{end}}
 					{{end}}
@@ -40,5 +38,5 @@
 		{{end}}
 	</div>
 {{else}}
-	No events listed.~~~<a href={{$.ArchiveLink}}>Archive</a>
+	No events listed. <a href={{$.ArchiveLink}}>Archive</a>
 {{end}}

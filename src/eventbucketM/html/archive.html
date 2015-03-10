@@ -12,15 +12,13 @@
 					{{else}}&nbsp;{{end}}
 					{{if .Month}}
 						{{.Month}}
-					{{else}}&nbsp;{{end}}~~~
-					{{if .Year}}
+					{{else}}&nbsp;{{end}} {{if .Year}}
 						{{.Year}}
 					{{else}}&nbsp;{{end}}
 				</time>
 				<p>
 					{{if.Id}}
-						<a href=/event/{{.Id}}>{{.Name}}</a>~~~
-						{{if .Time}}
+						<a href=/event/{{.Id}}>{{.Name}}</a> {{if .Time}}
 							starts at {{.Time}}
 						{{end}}
 					{{end}}
@@ -31,5 +29,5 @@
 		{{end}}
 	</div>
 {{else}}
-	No events available.~~~<a href=/>Home</a>
+	No events available. <a href=/>Home</a>
 {{end}}
