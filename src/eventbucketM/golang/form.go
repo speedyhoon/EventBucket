@@ -6,7 +6,7 @@ import (
 )
 
 func generateForm(form Form) string {
-	var output string
+	var output, formId string
 	var formElements []string
 	if conn == nil {
 		formElements = []string{"<p class=error>Unable to connect to the EventBucket database.</p>"}
@@ -15,7 +15,9 @@ func generateForm(form Form) string {
 		formAttr := ""
 		if form.Type != "" && form.Id != "" {
 			formAttr = " form=" + addQuotes(form.Id)
+			formId = " id=" + addQuotes(form.Id)
 		}
+		var inputValue, inputSnippet string
 		for _, input := range form.Inputs {
 			element = ""
 			attributes = formAttr
@@ -23,17 +25,21 @@ func generateForm(form Form) string {
 			output = ""
 			//devModeCheckForm(input.Html != "submit" || input.Html != "number" || input.Html != "text" || input.Html != "range" || input.Html != "datalist" || input.Html != "select" || input.Html != "date" || input.Html != "hidden", "don't use element "+input.Html)
 
+			inputValue = fmt.Sprintf("%v", input.Value)
 			if input.Html != "submit" {
 				if input.Name != "" {
 					attributes += " name=" + input.Name
 					//devModeCheckForm(input.Name == addQuotes(input.Name), "names can't have spaces")
 				}
-				if input.Value != "" {
-					attributes += " value=" + addQuotes(input.Value)
+				if input.Value != nil && inputValue != "" {
+					attributes += " value=" + addQuotes(inputValue)
 					//devModeCheckForm(input.Html != "select", "select boxes shouldn't have a value attribute")
 				}
 			} else {
-				//devModeCheckForm(input.Value != "", "submits should have a value")
+				if input.Action != "" {
+					attributes += " formaction=" + input.Action
+				}
+				//devModeCheckForm(inputValue != "", "submits should have a value")
 			}
 			if input.Required {
 				attributes += " required"
@@ -85,7 +91,7 @@ func generateForm(form Form) string {
 			if input.Html == "select" {
 				element += "<select" + attributes + ">" + options + "</select>"
 			} else if input.Html == "submit" {
-				output += "<button" + attributes + ">" + input.Value + "</button>"
+				output += "<button" + attributes + ">" + inputValue + "</button>"
 			} else {
 				if input.Html == "datalist" && options != "" {
 					attributes += " type=datalist id=" + input.Name
@@ -101,14 +107,16 @@ func generateForm(form Form) string {
 				var errorClass string
 				if input.Error != "" {
 					errorClass = " class=error"
+					input.Error = " " + input.Error
 				}
-				output += "<label" + errorClass + ">" + input.Label + ": " + element + " " + input.Error + "</label>"
+				output += "<label" + errorClass + ">" + input.Label + ": " + element + input.Error + "</label>"
 				//devModeCheckForm(input.Html != "submit" || input.Html != "button", "submits and buttons shouldn't have lables")
-			} else {
+			} else if element != "" {
 				output += element
 			}
-			if input.Snippet != "" {
-				output += " " + input.Snippet
+			inputSnippet = fmt.Sprintf("%v", input.Snippet)
+			if input.Snippet != nil && inputSnippet != "" {
+				output += " " + inputSnippet
 			}
 			if input.Help != "" {
 				output += "<abbr class=help title=\"" + input.Help + "\">?</abbr>"
@@ -117,7 +125,7 @@ func generateForm(form Form) string {
 		}
 	}
 	if form.Type == "table" {
-		formElements[0] = fmt.Sprintf("<form action=%v method=post>%v</form>", addQuotes(form.Action), formElements[0])
+		formElements[0] = fmt.Sprintf("<form%v action=%v method=post>%v</form>", formId, addQuotes(form.Action), formElements[0])
 		output = "<tr><td>" + strings.Join(formElements, "</td><td>") + "</td></tr>"
 		return output
 	}
@@ -128,7 +136,7 @@ func generateForm(form Form) string {
 	} else {
 		//devModeCheckForm(false, "all forms should have a title")
 	}
-	return fmt.Sprintf("<form action=%v method=post>%v</form>", addQuotes(form.Action), output)
+	return fmt.Sprintf("<form%v action=%v method=post>%v</form>", formId, addQuotes(form.Action), output)
 }
 
 func drawOptions(input Inputs, name string) string {
@@ -137,6 +145,7 @@ func drawOptions(input Inputs, name string) string {
 		//devModeCheckForm(len(input.Options) > 0, "select shouldn't be required with no available options to select")
 	}
 	output := ""
+	var optionValue string
 	for _, option := range input.Options {
 		output += "<option"
 		if option.Selected {
@@ -144,8 +153,9 @@ func drawOptions(input Inputs, name string) string {
 			//devModeCheckForm(input.Html != "datalist", "datalist shouldn't have any selected values! change it to a value attribute")
 			//devModeCheckForm(!(input.Placeholder != "" && input.Html != "datalist"), "shouldn't set a placeholder when options are already selected")
 		}
-		if option.Value != "" {
-			output += " value=" + addQuotes(option.Value)
+		optionValue = fmt.Sprintf("%v", option.Value)
+		if optionValue != "" {
+			output += " value=" + addQuotes(optionValue)
 		} else {
 			//devModeCheckForm(false, "option values shouldn't be empty")
 		}
