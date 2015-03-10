@@ -6,7 +6,7 @@ import (
 	"time"
 	"fmt"
 	"path/filepath"
-	"strings"
+//	"strings"
 	"os"
 )
 //loop through all files & sub directories and replace the search variables with the actual values
@@ -69,6 +69,7 @@ func main(){
 //	filepath.Walk(ROOT_DIR + "sass", walkPath)
 	filepath.Walk(ROOT_DIR + "js", walkPath)
 	filepath.Walk(ROOT_DIR + "html", walkPath)
+	filepath.Walk(ROOT_DIR + "htm", walkPath)
 }
 
 func joinSettings(){
@@ -92,14 +93,13 @@ func walkPath(path string, f os.FileInfo, err error) error {
 			switch CURRENT_DIR{
 			case "golang":
 				err = ioutil.WriteFile(COPY_TO_DIR+f.Name(), source, 0777)
-				break
 			case "js":
 				err = ioutil.WriteFile(COPY_TO_DIR+"j/"+f.Name(), source, 0777)
-				break
 			case "html":
-				err = ioutil.WriteFile(COPY_TO_DIR+"/h/"+strings.Replace(f.Name(), ".html", ".htm", -1), source, 0777)
+//				err = ioutil.WriteFile(COPY_TO_DIR+"/h/"+strings.Replace(f.Name(), ".html", ".htm", -1), source, 0777)
 				err = ioutil.WriteFile(COPY_TO_DIR+"/html/"+f.Name(), source, 0777)
-				break
+			case "htm":
+				err = ioutil.WriteFile(COPY_TO_DIR+"/h/"+f.Name(), source, 0777)
 			}
 			if err != nil{
 				fmt.Printf("ERROR: %v", err)
