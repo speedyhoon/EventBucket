@@ -86,6 +86,7 @@ type EventShooter struct {
 	Scores    map[string]Score `bson:"omitempty,inline"` //S is not used!
 	LinkedId  *int             `bson:"l,omitempty"`      //For duplicating shooters that are in different classes with the same score
 	SID       int              `bson:"d,omitempty"`
+	Disabled  bool             `bson:"d,omitempty"`
 	//SCOREBOARD
 	Id       int    `bson:"i,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
 	Position string `bson:"x,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
@@ -195,24 +196,26 @@ type Form struct {
 }
 
 type Inputs struct {
-	Name, Html, Label, Help, Value, Pattern, Placeholder, AutoComplete string //AutoComplete values can be: "off" or "on"
-	Checked, MultiSelect, Required                                     bool
-	Min, Max                                                           *int
-	Size                                                               int
-	Options                                                            []Option
-	Step                                                               float64
-	VarType                                                            string //the type of variable to return
-	VarMaxLen                                                          int    //the length of variable to return
-	VarMinLen                                                          int    //the length of variable to return
-	Error                                                              string
-	Snippet                                                            string
-	Autofocus                                                          string
+	Name, Html, Label, Help, Pattern, Placeholder, AutoComplete string //AutoComplete values can be: "off" or "on"
+	Checked, MultiSelect, Required                              bool
+	Min, Max                                                    *int
+	Size                                                        int
+	Options                                                     []Option
+	Step                                                        float64
+	VarType                                                     string //the type of variable to return
+	VarMaxLen                                                   int    //the length of variable to return
+	VarMinLen                                                   int    //the length of variable to return
+	Error                                                       string
+	Snippet                                                     interface{}
+	Autofocus                                                   string
+	Action                                                      string //Way to switch the forms action to a different purpose
+	Value                                                       interface{}
 }
 
 type Option struct {
-	Value    string `json:"v,omitempty"`
-	Display  string `json:"d,omitempty"`
-	Selected bool   `json:"s,omitempty"`
+	Value    interface{} `json:"v,omitempty"`
+	Display  string      `json:"d,omitempty"`
+	Selected bool        `json:"s,omitempty"`
 }
 
 type Menu struct {
