@@ -43,7 +43,6 @@
 	}
 
 	function shooterSelected(shooterId){
-		console.log(shooterId);
 		j.open('POST', '/queryShooterGrade', true);
 		j.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 		j.send('shooterid='+shooterId);
@@ -127,4 +126,28 @@
 		}
 	}
 
+
+	var addExistingShooter = document.getElementById('addExistingShooter');
+	if (addExistingShooter){
+		addExistingShooter.onclick = function(button){
+			return function(){
+				button.form.first.required = false;
+				button.form.surname.required = false;
+				button.form.club.required = false;
+				button.form.sid.required = true;
+			};
+		}(addExistingShooter);
+	}
+
+	var addNewShooter = document.getElementById('addNewShooter');
+	if (addNewShooter){
+		addNewShooter.onclick = function(button){
+			return function(){
+				button.form.first.required = true;
+				button.form.surname.required = true;
+				button.form.club.required = true;
+				button.form.sid.required = false;
+			};
+		}(addNewShooter);
+	}
 }());

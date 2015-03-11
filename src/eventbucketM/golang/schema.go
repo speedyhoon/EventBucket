@@ -79,14 +79,14 @@ type Score struct {
 type EventShooter struct {
 	FirstName string           `bson:"f"` //TODO change these to point to shooters in the other shooter tables
 	Surname   string           `bson:"s"`
-	Club      string           `bson:"b"` //TODO should possibly change to "C"??
+	Club      string           `bson:"c"`
 	Grade     int              `bson:"g"`
 	Hidden    bool             `bson:"h,omitempty"`
 	AgeGroup  string           `bson:"a,omitempty"`
 	Scores    map[string]Score `bson:"omitempty,inline"` //S is not used!
 	LinkedId  *int             `bson:"l,omitempty"`      //For duplicating shooters that are in different classes with the same score
 	SID       int              `bson:"d,omitempty"`
-	Disabled  bool             `bson:"d,omitempty"`
+	Disabled  bool             `bson:"b,omitempty"`
 	//SCOREBOARD
 	Id       int    `bson:"i,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
 	Position string `bson:"x,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.

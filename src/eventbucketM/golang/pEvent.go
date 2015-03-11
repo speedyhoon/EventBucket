@@ -7,7 +7,7 @@ import (
 )
 
 func shooterInsert(w http.ResponseWriter, r *http.Request) {
-	validatedValues := checkForm(eventAddShooterForm("", []int{}).Inputs, r)
+	validatedValues := checkForm(eventAddShooterForm(Event{}, true).Inputs, r)
 	eventId := validatedValues["eventid"]
 	http.Redirect(w, r, URL_event+eventId, http.StatusSeeOther)
 	shooter := EventShooter{
@@ -33,6 +33,12 @@ func event(eventId string) Page {
 			},
 		}
 	}
+	clubList := dataListShooterClubNames()
+	var editShooterList string
+	for _, shooter := range event.Shooters {
+		editShooterList += generateForm(eventUpdateShooterForm(event, shooter, clubList))
+	}
+
 	//TODO add ClubOptions when club textbox is changed to a datalist
 	return Page{
 		TemplateFile: "event",
@@ -49,13 +55,15 @@ func event(eventId string) Page {
 			"ExistingShooterEntry": URL_shooterListInsert,
 			"EventGrades":          generateForm(eventSettingsClassGrades(event)),
 			"ListShooters":         event.Shooters,
+			"EditShooterList":      editShooterList,
 			"EventId":              eventId,
+			"ShooterQty":           len(event.Shooters),
 		},
 	}
 }
 
 func shooterListInsert(w http.ResponseWriter, r *http.Request) {
-	validatedValues := checkForm(eventAddShooterListForm(Event{}).Inputs, r)
+	validatedValues := checkForm(eventAddShooterForm(Event{}, false).Inputs, r)
 	eventId := validatedValues["eventid"]
 	http.Redirect(w, r, URL_event+eventId, http.StatusSeeOther)
 
@@ -75,72 +83,36 @@ func shooterListInsert(w http.ResponseWriter, r *http.Request) {
 	eventShooterInsert(eventId, eventShooter)
 }
 
-func eventAddShooterForm(eventId string, grades []int) Form {
+func eventAddShooterForm(event Event, new bool) Form {
 	return Form{
-		Action: URL_shooterInsert,
-		Title:  "Add Shooters",
 		Inputs: []Inputs{
 			{
 				Name:     "first",
 				Html:     "text",
-				Label:    "First Name",
-				Required: true,
-			}, {
+				Required: new,
+			},
+			{
 				Name:     "surname",
 				Html:     "text",
-				Label:    "Surname",
-				Required: true,
-			}, {
-				Name: "club",
-				Html: "text",
-				//TODO change club to a data-list
-				//SelectValues:   getClubSelectBox(eventsCollection),
-				Label:    "Club",
-				Required: true,
-			}, {
-				Name:     "age",
-				Html:     "select",
-				Label:    "Age Group",
-				Options:  AgeGroups(),
-				Required: true,
-			}, {
-				Name:        "grade",
-				Html:        "select",
-				Label:       "Class & Grade",
-				Placeholder: "Class & Grade",
-				Required:    true,
-				Options:     eventGradeOptions(grades),
-			}, {
-				Name:  "eventid",
-				Html:  "hidden",
-				Value: eventId,
+				Required: new,
 			},
-		},
-	}
-}
-
-func eventAddShooterListForm(event Event) Form {
-	return Form{
-		Action: URL_shooterInsert,
-		Title:  "Add Shooters",
-		Inputs: []Inputs{
+			{
+				Name:     "club",
+				Html:     "text",
+				Required: new,
+			},
 			{
 				Name:     "age",
 				Html:     "select",
-				Label:    "Age Group",
-				Options:  AgeGroups(),
 				Required: true,
 			}, {
-				Name:        "grade",
-				Html:        "select",
-				Label:       "Class & Grade",
-				Placeholder: "Class & Grade",
-				Required:    true,
-				Options:     eventGradeOptions(event.Grades),
+				Name:     "grade",
+				Html:     "select",
+				Required: true,
 			}, {
 				Name:     "sid",
 				Html:     "select",
-				Required: true,
+				Required: !new,
 			}, {
 				Name:  "eventid",
 				Html:  "hidden",
@@ -172,6 +144,9 @@ func eventGradeOptions(eventGrades []int) []Option {
 func eventGradeEntry(gradesToSelectFrom []int) []Option {
 	var options []Option
 	allGrades := grades()
+	if len(gradesToSelectFrom) == 0 {
+		gradesToSelectFrom = gradeList()
+	}
 	for _, gradeId := range gradesToSelectFrom {
 		options = append(options, Option{ //TODO change Value to an interface so type conversion isn't needed
 			Value:   fmt.Sprintf("%v", gradeId),
@@ -179,4 +154,92 @@ func eventGradeEntry(gradesToSelectFrom []int) []Option {
 		})
 	}
 	return options
+}
+
+func eventUpdateShooter(w http.ResponseWriter, r *http.Request) {
+	validatedValues := checkForm(eventUpdateShooterForm(Event{}, EventShooter{}, []Option{}).Inputs, r)
+	eventId := validatedValues["eventid"]
+	shooterId := validatedValues["sid"]
+	http.Redirect(w, r, URL_event+eventId, http.StatusSeeOther)
+	updateData := M{Dot(schemaSHOOTER, shooterId): M{
+		"f": validatedValues["first"],
+		"s": validatedValues["surname"],
+		"c": validatedValues["club"],
+		"g": str2Int(validatedValues["grade"]),
+		"b": validatedValues["disabled"] != "",
+		"a": validatedValues["age"],
+	}}
+	tableUpdateData(TBLevent, eventId, updateData)
+}
+
+func dataListShooterClubNames() []Option {
+	var clubList []Option
+	for _, club := range getClubs() {
+		clubList = append(clubList, Option{
+			Value:   club.Id,
+			Display: club.Name,
+		})
+	}
+	return clubList
+}
+
+func eventUpdateShooterForm(event Event, shooter EventShooter, clubList []Option) Form {
+	var options []Option
+	allGrades := grades()
+	if len(event.Grades) == 0 {
+		event.Grades = gradeList()
+	}
+	for _, gradeId := range event.Grades {
+		options = append(options, Option{
+			Display:  allGrades[gradeId].LongName,
+			Value:    gradeId,
+			Selected: shooter.Grade == gradeId,
+		})
+	}
+	return Form{
+		Action: URL_eventUpdateShooter,
+		Type:   "table",
+		Id:     fmt.Sprintf("update%v", shooter.Id),
+		Inputs: []Inputs{
+			{
+				Snippet: shooter.Id,
+			}, {
+				Name:    "disabled",
+				Html:    "checkbox",
+				Checked: shooter.Disabled,
+			}, {
+				Name:  "first",
+				Html:  "text",
+				Value: shooter.FirstName,
+			}, {
+				Name:  "surname",
+				Html:  "text",
+				Value: shooter.Surname,
+			}, {
+				Name:    "club",
+				Html:    "datalist",
+				Value:   shooter.Club,
+				Options: clubList,
+			}, {
+				Name:    "grade",
+				Html:    "select",
+				Options: options,
+			}, {
+				Name:    "age",
+				Html:    "select",
+				Options: shooterAgeGroupSelectbox(shooter),
+			}, {
+				Html:  "submit",
+				Value: "Save",
+			}, {
+				Name:  "sid",
+				Html:  "hidden",
+				Value: shooter.Id,
+			}, {
+				Name:  "eventid",
+				Html:  "hidden",
+				Value: event.Id,
+			},
+		},
+	}
 }

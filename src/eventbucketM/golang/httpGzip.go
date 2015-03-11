@@ -37,6 +37,7 @@ func start() {
 	//	GetParameters(URL_rangeReport, range_report)
 
 	Post(URL_eventInsert, eventInsert)
+	Post(URL_eventUpdateShooter, eventUpdateShooter)
 	Post(URL_queryShooterList, searchShooter)
 	Post(URL_queryShooterGrade, searchShooterGrade)
 	Post(URL_updateShooterList, PostVia(nraaStartUpdateShooterList, URL_shooters))
@@ -133,7 +134,7 @@ func PostVia(runThisFirst func(http.ResponseWriter, *http.Request), url string) 
 
 func httpHeaders(w http.ResponseWriter, setHeaders []string) {
 	//TODO Only set CSP when not in debug mode
-	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'") //TODO remove unsafe inline when start shooting gets its settings a different way
+	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'") //TODO remove unsafe inline when start shooting gets its settings a different way
 	headers := map[string][2]string{
 		"expire":    {"Expires", time.Now().UTC().AddDate(1, 0, 0).Format(time.RFC1123)}, //RESEARCH should it return GMT time?  //Expiry date is in 1 year, 0 months & 0 days in the future
 		"cache":     {"Vary", "Accept-Encoding"},

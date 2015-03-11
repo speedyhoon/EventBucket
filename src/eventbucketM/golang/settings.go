@@ -25,6 +25,7 @@ const (
 	//POST
 	URL_queryShooterList     = "/queryShooterList"
 	URL_queryShooterGrade    = "/queryShooterGrade"
+	URL_eventUpdateShooter   = "/eventUpdateShooter"
 	URL_clubInsert           = "/clubInsert"
 	URL_champInsert          = "/champInsert"
 	URL_eventInsert          = "/eventInsert"
@@ -312,6 +313,15 @@ func AgeGroups() []Option {
 			Value:   "SV",
 		},
 	}
+}
+
+//Return age group select box options with the shooters value selected
+func shooterAgeGroupSelectbox(shooter EventShooter) []Option {
+	options := AgeGroups()
+	for _, ageGroup := range options {
+		ageGroup.Value = shooter.AgeGroup == ageGroup.Value
+	}
+	return options
 }
 
 type Legend struct {
