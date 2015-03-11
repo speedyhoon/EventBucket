@@ -43,8 +43,8 @@
 				</td>
 			</tr>
 			<tr>
-				<td><button formaction={{.ExistingShooterEntry}}>Add Existing Shooter</button></td>
-				<td class=ar><button>Add New Shooter</button></td>
+				<td><button formaction={{.ExistingShooterEntry}} id=addExistingShooter>Add Existing Shooter</button></td>
+				<td class=ar><button id=addNewShooter>Add New Shooter</button></td>
 			</tr>
 		</table>
 		<input type=hidden name=eventid value={{.EventId}}>
@@ -56,29 +56,26 @@
 	{{EndFieldset}}
 {{end}}
 
-{{Fieldset "Entry List"}}
-	{{with .ListShooters}}
-		Displaying the last 20 shooters entered.
-		<table>
-			<tr>
-				<th>Id</th>
-				<th>Shooter</th>
-				<th>Club</th>
-				<th>Class &amp; Grade</th>
-			</tr>
-			{{/*range $shooterId, $shooter := .ListShooters*/}}
-			{{range $shooterId, $shooter := .}}
-				{{if eq false $shooter.Hidden}}
-					<tr>
-						<td>{{.Id}}</td>
-						<td>{{.FirstName}} {{.Surname}}</td>
-						<td>{{.Club}}</td>
-						<td>{{CLASSLONG .Grade}}</td>
-					</tr>
-				{{end}}
-			{{end}}
-		</table>
-	{{else}}
-		No shooters entered
-	{{end}}
-{{EndFieldset}}
+{{if .Valid}}
+	{{Fieldset "Entry List"}}
+		{{if gte .ShooterQty 20}}
+			Displaying the last 20 shooters entered.
+		{{end}}
+		{{with .EditShooterList}}
+			<table>
+				<tr>
+					<th>Id</th>
+					<th>Disabled</th>
+					<th>Name</th>
+					<th>Surname</th>
+					<th>Club</th>
+					<th>Class &amp; Grade</th>
+					<th>Age Group</th>
+				</tr>
+				{{HTM .}}
+			</table>
+		{{else}}
+			No shooters entered
+		{{end}}
+	{{EndFieldset}}
+{{end}}

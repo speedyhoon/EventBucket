@@ -81,6 +81,7 @@ DONE::::::
 Shooter entry:
 	search from nraa database
 	add nraa database
+	Optional first/surname & club when using existing shooter
 event-entry
 	hook up grades and settings to event entry
 totalscores
@@ -144,6 +145,8 @@ licence page
 	add some links to cc lamens terms and the official licence
 Installer
 	test that installer doesn't make a duplicate eb service!
+Minifyer
+	why is the string not being replaced here, even though it is 100% running? -- some time the minifyer wasn't run before the html was copied into the htm folder!
 
 ACE IMPROVEMENTS
 	change golang template actions to allow "{.}" instead of "{{.}}"

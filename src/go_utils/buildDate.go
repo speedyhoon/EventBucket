@@ -6,7 +6,7 @@ import (
 	"time"
 	"fmt"
 	"path/filepath"
-//	"strings"
+	"strings"
 	"os"
 )
 //loop through all files & sub directories and replace the search variables with the actual values
@@ -69,7 +69,7 @@ func main(){
 //	filepath.Walk(ROOT_DIR + "sass", walkPath)
 	filepath.Walk(ROOT_DIR + "js", walkPath)
 	filepath.Walk(ROOT_DIR + "html", walkPath)
-	filepath.Walk(ROOT_DIR + "htm", walkPath)
+//	filepath.Walk(ROOT_DIR + "htm", walkPath)
 }
 
 func joinSettings(){
@@ -96,10 +96,8 @@ func walkPath(path string, f os.FileInfo, err error) error {
 			case "js":
 				err = ioutil.WriteFile(COPY_TO_DIR+"j/"+f.Name(), source, 0777)
 			case "html":
-//				err = ioutil.WriteFile(COPY_TO_DIR+"/h/"+strings.Replace(f.Name(), ".html", ".htm", -1), source, 0777)
+				err = ioutil.WriteFile(COPY_TO_DIR+"/h/"+strings.Replace(f.Name(), ".html", ".htm", -1), minifyHtml(f.Name(), source), 0777)
 				err = ioutil.WriteFile(COPY_TO_DIR+"/html/"+f.Name(), source, 0777)
-			case "htm":
-				err = ioutil.WriteFile(COPY_TO_DIR+"/h/"+f.Name(), source, 0777)
 			}
 			if err != nil{
 				fmt.Printf("ERROR: %v", err)
@@ -145,4 +143,43 @@ func exists(dict map[string]interface{}, key string) string {
 		return fmt.Sprintf("%v", val)
 	}
 	return ""
+}
+
+func minifyHtml(pageName string, minify []byte) []byte {
+	if bytes.Contains(minify, []byte("ZgotmplZ")) {
+		fmt.Println("Template generation error: ZgotmplZ")
+		return []byte("")
+	}
+	removeChars := []string{
+		"	", //Tab
+		"\n", //new line
+		"\r", //carriage return
+	}
+	//TODO remove spaces between block elements like: </div> <div> but keep between inline elements like </span> <span>
+	//TODO use improved regex for better searching & replacement
+	replaceChars := map[string]string{
+		"  ":            " ", //double spaces
+		"type=text":     "",
+		"type=\"text\"": "",
+		"type='text'":   "",
+		" >":            ">",
+		"< ":            "<",
+		">  <":          "> <",
+		" />":           "/>",
+		"/ >":           "/>",
+		"<br/>":         "<br>",
+		"</br>":         "<br>",
+		"<br />":        "<br>",
+	}
+	for _, search := range removeChars {
+		minify = bytes.Replace(minify, []byte(search), []byte(""), -1)
+	}
+	for search, replace := range replaceChars {
+		length := len(minify)
+		minify = bytes.Replace(minify, []byte(search), []byte(replace), -1)
+		if length != len(minify) {
+			fmt.Printf("A dodgy character (%v) was found in '%v'! Please replace with (%v).", search, pageName, replace)
+		}
+	}
+	return minify
 }

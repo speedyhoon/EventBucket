@@ -31,6 +31,7 @@ func startDatabase() {
 	databasePath := os.Getenv("ProgramData") + "/EventBucket"
 	if !dirExists(databasePath) {
 		Error.Printf("Can't find folder %v", databasePath)
+		os.Mkdir(databasePath, os.ModeDir)
 	}
 	cmd := exec.Command("^^DbArgs^^")
 	//TODO output mongodb errors/logs to stdOut
@@ -65,13 +66,14 @@ func DB() {
 		Error.Println("The database service is not available.", err)
 		return
 	}
-	session.SetMode(mgo.Eventual, false) //false = the consistency guarantees won't be reset
+	//session.SetMode(mgo.Eventual, true) //false = the consistency guarantees won't be reset
+	session.SetMode(mgo.Strong, true)
 	conn = session.DB("local")
 	//TODO defer closing the session isn't working
 	//defer session.Close()
 }
 
-func getCollection(collectionName string) []M {
+/*func getCollection(collectionName string) []M {
 	var result []M
 	if conn != nil {
 		err := conn.C(collectionName).Find(nil).All(&result)
@@ -80,7 +82,7 @@ func getCollection(collectionName string) []M {
 		}
 	}
 	return result
-}
+}*/
 
 func getClubs() []Club {
 	var result []Club
@@ -282,6 +284,7 @@ func eventShooterInsert(eventId string, shooter EventShooter) {
 	insert := M{
 		schemaSHOOTER: []EventShooter{shooter},
 	}
+	//If shooter is Match Reserve, duplicate them in the Match Open category
 	increment := 1
 	if shooter.Grade == 8 {
 		increment = 2
@@ -323,32 +326,7 @@ func eventShooterInsert(eventId string, shooter EventShooter) {
 			},
 		}
 	}
-
 	conn.C(TBLevent).FindId(eventId).Apply(change, &event)
-	/*event, _ := getEvent(eventId)
-	increment := 1
-	insert := M{
-		Dot(schemaSHOOTER, event.AutoInc.Shooter): shooter,
-	}
-	//Match Reserve
-	if shooter.Grade == 8{
-		//Shooters in grade Match Reserve also must go in grade Match Open
-		shooter.LinkedId = event.AutoInc.Shooter + 1
-		insert[fmt.Sprintf("%v", Dot(schemaSHOOTER, event.AutoInc.Shooter))] = shooter
-		increment = 2
-		duplicate := shooter
-		duplicate.Grade = 7 //Match Open
-		duplicate.Hidden = true
-	//	duplicate.LinkedId = fmt.Sprintf("%v", event.AutoInc.Shooter)	//TODO remove when not needed!
-		insert[fmt.Sprintf("%v", Dot(schemaSHOOTER, event.AutoInc.Shooter + 1))] = duplicate
-	}
-	change := mgo.Change{
-		Update: M{
-			"$set": insert,
-			"$inc": M{Dot(schemaAutoInc, schemaSHOOTER): increment},
-		},
-	}
-	conn.C(TBLevent).FindId(eventId).Apply(change, make(M))*/
 }
 
 func eventTotalScoreUpdate(eventId string, rangeId int, shooterIds []int, score Score) Event {
@@ -506,11 +484,11 @@ func eventUpsertData(eventId string, data M) {
 	conn.C(TBLevent).FindId(eventId).Apply(change, make(M))
 }
 
-func tableUpdateData(collectionName, eventId string, data M) {
+func tableUpdateData(collectionName, documentId string, data M) {
 	change := mgo.Change{
 		Update: M{"$set": data},
 	}
-	conn.C(collectionName).FindId(eventId).Apply(change, make(M))
+	conn.C(collectionName).FindId(documentId).Apply(change, make(M))
 }
 func UpsertDoc(collection string, id interface{}, document interface{}) {
 	_, err := conn.C(collection).UpsertId(id, document)
