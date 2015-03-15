@@ -6,7 +6,7 @@
 {{HTM .menu}}
 {{Fieldset "Shooter Scores"}}
 
-	{{with .LinkToPage}}{{HTM .}}{{end}}
+	<a href={{.pageLink}}{{.EventId}}/{{.RangeId}}>View {{.linkName}} Shooters</a>
 
 	{{if .ListShooters}}
 		<table class=startShooting>
@@ -35,7 +35,7 @@
 			</thead>
 			<tbody>
 				{{range $zzz, $shooter := .ListShooters}}
-					{{if eq false $shooter.Hidden}}
+					{{if not $shooter.Hidden}}
 						<tr id={{$shooter.Id}} data-grade={{.Grade}} data-class={{JSCLASS .Grade}}>
 							<th>{{$shooter.Id}}</th>
 							<th>{{.Club}}</th>
@@ -57,17 +57,7 @@
 					{{end}}
 				{{end}}
 				<tr id=x>
-					<th colspan=99 id=bu>
-						{{/*<label class=sighters>
-							Sighters:<br>
-							<select id=selectSighters>
-								<option>Drop All</option>
-								<option>Keep S2 &gt;</option>
-								<option>Keep All</option>
-							</select>
-						</label>
-						<div id=bu></div>*/}}
-					</th>
+					<th colspan=99 id=bu></th>
 				</tr>
 			</tbody>
 		</table>

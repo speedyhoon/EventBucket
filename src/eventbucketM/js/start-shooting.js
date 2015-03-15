@@ -3,7 +3,7 @@
 	var currentCell = null, currentRow = null, j, classes = {
 		eventId:1,
 		currentType:null,
-		target:{
+		0:{
 			sighters:2,
 			validShots:'012345V6X',
 			validScore:'012345555',
@@ -11,13 +11,21 @@
 			validSighters:')!@#$%v^x',
 			buttons:'012345VX'
 		},
-		fclass:{
+		1:{
 			sighters:2,
 			validShots:'012345V6X',
 			validScore:'012345666',
 			validCenta:'000000001',
 			validSighters:')!@#$%v^x',
 			buttons:'0123456X'
+		},
+		2:{
+			sighters:2,
+			validShots:'012345V6X',
+			validScore:'012345555',
+			validCenta:'000000111',
+			validSighters:')!@#$%v^x',
+			buttons:'012345VX'
 		}
 	};
 	if(window.XMLHttpRequest){
@@ -83,9 +91,9 @@
 	function ajax(id){
 		var shots = getAjax();
 		shots = encodeURI(shots).replace(/#/gi, '%23');	//hashes are converted after encodeURI to stop % being converted twice
-		j.open('POST', window.pathname, true);// + 'scoreSave=' + classes.eventId + '~' + Id + '~' + shots, true);
+		j.open('POST', '/updateShotScores?eventid='+eventId+'&rangeid='+rangeId+'&shooterid='+id+'&shots='+shots, true);// + 'scoreSave=' + classes.eventId + '~' + Id + '~' + shots, true);
 		j.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-		j.send('scoreSave=' + classes.eventId + '~' + id + '~' + shots);
+		j.send();
 		j.onreadystatechange = function(){
 			if(j.status === 200){
 				document.getElementById(id).getElementsByClassName('t')[0].innerHTML = j.response;//total+'<sup>'+centers+'</sup>';
