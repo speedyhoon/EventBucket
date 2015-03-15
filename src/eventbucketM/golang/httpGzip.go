@@ -48,7 +48,8 @@ func start() {
 	Post(URL_shooterInsert, shooterInsert)
 	Post(URL_shooterListInsert, shooterListInsert)
 	//	Post(URL_updateTotalScores, updateTotalScores)
-	Post(URL_updateShotScores, updateShotScores)
+	//Startshooting
+	Post(URL_updateShotScores, updateShotScores2)
 	Post(URL_updateSortScoreBoard, updateSortScoreBoard)
 	Post(URL_updateEventGrades, updateEventGrades)
 	Post(URL_updateIsPrizeMeet, updateIsPrizeMeet)

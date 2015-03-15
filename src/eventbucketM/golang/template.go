@@ -25,7 +25,7 @@ func templator(viewController Page, w http.ResponseWriter, r *http.Request) {
 }
 
 func generator(w http.ResponseWriter, fillin string, viewController Page) {
-	my_html := template.New(viewController.TemplateFile + "Template").Funcs(template.FuncMap{
+	html := template.New(viewController.TemplateFile + "Template").Funcs(template.FuncMap{
 		"HTM": func(x string) template.HTML {
 			return template.HTML(x)
 		},
@@ -92,7 +92,7 @@ func generator(w http.ResponseWriter, fillin string, viewController Page) {
 			return template.HTMLAttr("")
 		},
 	})
-	t := template.Must(my_html.Parse(fillin))
+	t := template.Must(html.Parse(fillin))
 	err := t.Execute(w, viewController.Data)
 	if err != nil {
 		Error.Println(err)
@@ -113,12 +113,12 @@ var EventMenuItems = []Menu{
 		Name: "Scoreboard",
 		Link: URL_scoreboard,
 	}, {
-		Name:   "Total Scores",
-		Link:   URL_totalScores,
-		Ranges: true,
-	}, {
 		Name:   "Start Shooting",
 		Link:   URL_startShooting,
+		Ranges: true,
+	}, {
+		Name:   "Total Scores",
+		Link:   URL_totalScores,
 		Ranges: true,
 	}, {
 		Name: "Close Menu",

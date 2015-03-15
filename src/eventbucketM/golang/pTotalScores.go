@@ -166,6 +166,7 @@ func eventSearchForAggs(eventId, rangeId string) []string {
 
 func calculateAggs(shooterScores map[string]Score, ranges []int, shooterIds []int, eventRanges []Range) M {
 	if shooterScores == nil {
+		//TODO maybe it's best not to proceed when no scores exist
 		shooterScores = make(map[string]Score)
 	}
 	var total, centers int
@@ -183,7 +184,6 @@ func calculateAggs(shooterScores map[string]Score, ranges []int, shooterIds []in
 		for _, shooterId := range shooterIds {
 			updateBson[Dot(schemaSHOOTER, shooterId, aggId)] = Score{Total: total, Centers: centers, CountBack1: countBack}
 		}
-		//shooterScores[fmt.Sprintf("%v", aggId)] = Score{Total: total, Centers: centers, CountBack1: countBack}
 	}
 	return updateBson
 }
