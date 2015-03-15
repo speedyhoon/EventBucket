@@ -97,3 +97,8 @@
 128 KB (131,948 bytes) Go only
 105 KB (107,619 bytes) Go compiled
 121 KB (124,306 bytes) Prod only
+
+11 Mar 2015
+130 KB (133,825 bytes) Go only
+108 KB (111,403 bytes) Go compiled
+123 KB (125,994 bytes) Prod only
