@@ -13,16 +13,15 @@ body
 	background: url(/e/a) no-repeat #fff
 	padding: 0 15px
 	box-shadow: 0 0 3px 3px #888
-
-h1 a
-	text-decoration: none
-	color: #000
-
 h1
 	font: 66px/58px han, Verdana, sans-serif
 	margin: 0
 
-h2,h3,h4,h5,h6
+	a
+		text-decoration: none
+		color: #000
+
+h2
 	margin-bottom: 0
 
 span
@@ -46,7 +45,6 @@ legend
 .text-left
 	text-align: left
 
-
 #menu
 	//TODO use an import for background gradient here
 	background: #444
@@ -60,74 +58,35 @@ legend
 	margin: 0 -15px 15px
 	padding: 5px 15px
 
-#menu li
-	display: inline
-	padding: 5px 30px
+	li
+		display: inline
+		padding: 5px 30px
 
-//The current visited page
-#menu .v
-	+background-linear-gradient(#F70, 7%, #FFF, 7%, #888, 80%, #333, 99%)
-	font-weight: 700
+	.v
+		//The current visited page
+		+background-linear-gradient(#F70, 7%, #FFF, 7%, #888, 80%, #333, 99%)
+		font-weight: 700
 
 	a
 		color: #000
+		text-decoration: none
 
-#menu a
-	color: #fff
-	text-decoration: none
-#menu a:hover
-	text-decoration: underline
+		&:hover
+			text-decoration: underline
+
 p, ul
 	margin-top: 0
+
 #b
 	border-top: 1px solid #000
 	margin-bottom: 0
-	//padding: 3px 9px
-	//text-align: right
-	//font-size: 9px
-	//background: url(/v/cc.svg) no-repeat right
-	//display: block
-//.calendar
-//	background: #888
-//	border: 1px solid #000
-//	font-weight: 900
-//	text-align: center
-//	width: 90px
-//	float: left
-//	margin-right: 5px
-//.calendar b
-//	display: block
-//	font-size: 26px
-//	line-height: 23px
-//.details
-//	background: #ddd
-//	display: inline-block
-//	width: 100%
-//	margin-bottom: 5px
-//.blurb
-//	font-weight: 900
-//	padding: 0 5px 0 5px
-//	text-decoration: none
-//	border-bottom: 1px solid #000
-//.blurb a
-//	text-decoration: none
-//.edit
-//	float: right
-//	font-weight: 900
-//	font-style: italic
-//th
-//	vertical-align: top
-//
-//.r
-//	color: red
+
 @media print
 	#a
 		box-shadow: none
 		background: #fff
 	span
 		margin: 0 0 0 168px
-	//.edit
-	//	display: none
 
 .events
 	a
@@ -140,15 +99,12 @@ p, ul
 		margin-bottom: 5px
 
 	p
-		//font-weight: 900
 		padding: 0 5px 0 5px
 		text-decoration: none
 		border-bottom: 1px solid #000
 		margin: 0
 
-		//a:first-child
 		a
-			//float: right
 			font-weight: 700
 			font-style: italic
 
@@ -169,8 +125,6 @@ p, ul
 .center
 	text-align: center
 
-//+db-error()
-
 +float-right()
 
 @media all and (min-width: 800px)
@@ -184,10 +138,10 @@ p, ul
 		margin: auto
 
 @media all and (max-height: 649px)
-	h2,h3,p
+	h2,p
 		margin-top: 0.3em
 
-	h2,h3,p,ul,#menu
+	h2,p,ul,#menu
 		margin-bottom: 0
 
 @media all and (min-height: 650px)
