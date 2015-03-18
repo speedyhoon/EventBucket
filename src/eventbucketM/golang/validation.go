@@ -17,7 +17,7 @@ func checkForm(options []Inputs, r *http.Request) map[string]string {
 	form := r.Form
 	new_values := make(map[string]string)
 	for _, option := range options {
-		if option.Html != "submit" {
+		if option.Name != "" {
 			array, ok := form[option.Name]
 			if ok {
 				if (option.Required && array[0] != "") || !option.Required {
@@ -51,7 +51,7 @@ func valid8(options []Inputs, r *http.Request) (M, bool) {
 	var err error
 	var valueInt int
 	for _, option := range options {
-		if option.Html != "submit" {
+		if option.Name != "" {
 			passedV8tion = append(passedV8tion, false)
 			formArray, ok = form[option.Name]
 			if ok && (!option.Required || (option.Required && len(formArray) > 0)) {

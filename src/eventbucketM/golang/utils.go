@@ -92,6 +92,13 @@ func stringInSlice(a string, list []string) bool {
 	return false
 }
 
+func ternary(condition bool, True, False string) string {
+	if condition {
+		return True
+	}
+	return False
+}
+
 func imgBarcode(width, height int, barcodeType, value string) string {
 	var data barcode.Barcode
 	var err error

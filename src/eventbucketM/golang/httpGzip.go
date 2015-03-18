@@ -36,10 +36,12 @@ func start() {
 	GetParameters(URL_totalScoresAll, totalScoresAll)
 	//	GetParameters(URL_rangeReport, range_report)
 
+	//Event
 	Post(URL_eventInsert, eventInsert)
 	Post(URL_eventUpdateShooter, eventUpdateShooter)
 	Post(URL_queryShooterList, searchShooter)
 	Post(URL_queryShooterGrade, searchShooterGrade)
+	//Nraa
 	Post(URL_updateShooterList, PostVia(nraaStartUpdateShooterList, URL_shooters))
 	Post(URL_clubInsert, PostVia(clubInsert, URL_clubs)) //TODO redirect to actual club created
 	Post(URL_updateRange, rangeUpdate)
@@ -47,7 +49,8 @@ func start() {
 	Post(URL_eventAggInsert, aggInsert)
 	Post(URL_shooterInsert, shooterInsert)
 	Post(URL_shooterListInsert, shooterListInsert)
-	//	Post(URL_updateTotalScores, updateTotalScores)
+	//Total Scores
+	Post(URL_updateTotalScores, updateTotalScores)
 	//Startshooting
 	Post(URL_updateShotScores, updateShotScores2)
 	Post(URL_updateSortScoreBoard, updateSortScoreBoard)

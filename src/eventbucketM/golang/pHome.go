@@ -70,9 +70,11 @@ func home() Page {
 func homeFormNewEvent(clubs []Club, event Event) Form {
 	title := "Event Details"
 	save := "Update Event"
+	submitName := "eventid"
 	if event.Id == "" {
 		title = "New Event"
 		save = "Save Event"
+		submitName = ""
 		event.Date = time.Now().Format("2006-01-02")
 		event.Time = time.Now().Format("15:04")
 	}
@@ -86,54 +88,48 @@ func homeFormNewEvent(clubs []Club, event Event) Form {
 			Display: clubData.Name,
 		})
 	}
-	inputs := []Inputs{
-		{
-			Name:     "name",
-			Html:     "text",
-			Label:    "Event Name",
-			Required: true,
-			//				AutoComplete: "off",
-			Value:     event.Name,
-			Autofocus: "on",
-		}, {
-			Name:        "club",
-			Html:        "datalist",
-			Label:       "Host Club",
-			Placeholder: "Club Name",
-			//TODO previous club names appear from browser cahce when they are not available
-			//TODO auto set the club name to X if there is only one available
-			Options:  clubList,
-			Required: true,
-			//				AutoComplete: "off",
-			Value: event.Club,
-		}, {
-			Name:     "date",
-			Html:     "date",
-			Label:    "Date",
-			Required: true,
-			Value:    event.Date,
-		}, {
-			Name:  "time",
-			Html:  "time",
-			Label: "Time",
-			Value: event.Time,
-		}, {
-			Html:  "submit",
-			Value: save,
-		},
-	}
-	if event.Id != "" {
-		inputs = append(inputs, Inputs{
-			Name:  "eventid",
-			Html:  "hidden",
-			Value: event.Id,
-		})
-	}
-
 	return Form{
 		Action: URL_eventInsert,
 		Title:  title,
-		Inputs: inputs,
+		Inputs: []Inputs{
+			{
+				Name:     "name",
+				Html:     "text",
+				Label:    "Event Name",
+				Required: true,
+				//				AutoComplete: "off",
+				Value:     event.Name,
+				Autofocus: "on",
+			}, {
+				Name:        "club",
+				Html:        "datalist",
+				Label:       "Host Club",
+				Placeholder: "Club Name",
+				//TODO previous club names appear from browser cahce when they are not available
+				//TODO auto set the club name to X if there is only one available
+				Options:  clubList,
+				Required: true,
+				//				AutoComplete: "off",
+				Value: event.Club,
+			}, {
+				Name:     "date",
+				Html:     "date",
+				Label:    "Date",
+				Required: true,
+				Value:    event.Date,
+			}, {
+				Name:  "time",
+				Html:  "time",
+				Label: "Time",
+				Value: event.Time,
+			}, {
+				Html:      "submit",
+				Inner:     save,
+				Name:      submitName,
+				Value:     event.Id,
+				//AccessKey: "x",
+			},
+		},
 	}
 }
 

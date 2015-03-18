@@ -41,6 +41,19 @@ func generateForm(form Form) string {
 				}
 				//devModeCheckForm(inputValue != "", "submits should have a value")
 			}
+
+			if input.Name != "" {
+				attributes += " name=" + input.Name
+				//devModeCheckForm(input.Name == addQuotes(input.Name), "names can't have spaces")
+			}
+			if input.Action != "" {
+				attributes += " formaction=" + input.Action
+			}
+			inputValue = fmt.Sprintf("%v", input.Value)
+			if input.Value != nil && inputValue != "" {
+				attributes += " value=" + addQuotes(inputValue)
+				//devModeCheckForm(input.Html != "select", "select boxes shouldn't have a value attribute")
+			}
 			if input.Required {
 				attributes += " required"
 				//devModeCheckForm(input.Html == "number" || input.Html == "text" || input.Html == "range" || input.Html == "datalist" || input.Html == "date" || input.Html == "select" || input.Html == "tel", "this element shouldn't have required, type="+input.Html)
@@ -50,12 +63,20 @@ func generateForm(form Form) string {
 				//devModeCheckForm(input.Html == "text" || input.Html == "number" || input.Html == "range" || input.Html == "datalist", "placeholders are only allowed on text, datalist, number and ranges")
 			}
 			if input.Min != nil {
-				attributes += fmt.Sprintf(" min=%v", *input.Min)
-				//devModeCheckForm(input.Html == "number" || input.Html == "range", "min is only allowed on type  number and range")
+				if input.Html == "number" || input.Html == "range" {
+					attributes += fmt.Sprintf(" min=%v", *input.Min)
+					//devModeCheckForm(input.Html == "number" || input.Html == "range", "min is only allowed on type  number and range")
+				} else if input.Html == "text" || input.Html == "email" || input.Html == "search" || input.Html == "password" || input.Html == "tel" || input.Html == "url" {
+					attributes += fmt.Sprintf(" minlength=%v", *input.Min)
+				}
 			}
 			if input.Max != nil {
-				attributes += fmt.Sprintf(" max=%v", *input.Max)
-				//devModeCheckForm(input.Html == "number" || input.Html == "range", "max is only allowed on type  number and range")
+				if input.Html == "number" || input.Html == "range" {
+					attributes += fmt.Sprintf(" max=%v", *input.Max)
+					//devModeCheckForm(input.Html == "number" || input.Html == "range", "max is only allowed on type  number and range")
+				} else if input.Html == "text" || input.Html == "email" || input.Html == "search" || input.Html == "password" || input.Html == "tel" || input.Html == "url" {
+					attributes += fmt.Sprintf(" maxlength=%v", *input.Min)
+				}
 			}
 			if input.Step != 0 {
 				attributes += fmt.Sprintf(" step=%v", input.Step)
@@ -67,6 +88,9 @@ func generateForm(form Form) string {
 			}
 			if input.Autofocus == "on" {
 				attributes += " autofocus"
+			}
+			if input.AccessKey != "" {
+				attributes += " accesskey=" + input.AccessKey
 			}
 			if input.Size > 0 {
 				attributes += fmt.Sprintf(" size=%d", input.Size)
@@ -91,6 +115,12 @@ func generateForm(form Form) string {
 			if input.Html == "select" {
 				element += "<select" + attributes + ">" + options + "</select>"
 			} else if input.Html == "submit" {
+				if inputValue != "" && input.Inner != "" {
+					attributes += " value=" + addQuotes(inputValue)
+				}
+				if input.Inner != "" {
+					inputValue = input.Inner
+				}
 				output += "<button" + attributes + ">" + inputValue + "</button>"
 			} else {
 				if input.Html == "datalist" && options != "" {
