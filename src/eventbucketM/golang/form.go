@@ -110,7 +110,7 @@ func generateForm(form Form) string {
 				//devModeCheckForm(input.Html != "submit", "buttons and submits shouldn't have multiple")
 			}
 			if len(input.Options) > 0 {
-				options = drawOptions(input, input.Name)
+				options = drawOptions(input)
 			}
 			if input.Html == "select" {
 				element += "<select" + attributes + ">" + options + "</select>"
@@ -123,8 +123,14 @@ func generateForm(form Form) string {
 				}
 				output += "<button" + attributes + ">" + inputValue + "</button>"
 			} else {
-				if input.Html == "datalist" && options != "" {
-					attributes += " type=datalist id=" + input.Name
+				if input.DataList && options != "" {
+					if input.Id == "" {
+						Warning.Println("datalist needs a unique Id")
+					}
+					if input.Html == "text" {
+						Warning.Println("datalist type should be search")
+					}
+					attributes += " type=" + input.Html + " list=" + input.Id
 				}
 				if input.Html != "text" {
 					attributes += " type=" + input.Html
@@ -169,7 +175,7 @@ func generateForm(form Form) string {
 	return fmt.Sprintf("<form%v action=%v method=post>%v</form>", formId, addQuotes(form.Action), output)
 }
 
-func drawOptions(input Inputs, name string) string {
+func drawOptions(input Inputs) string {
 	//devModeCheckForm(len(input.Options) > 0, "select should have at least one option to select from for element='"+name+"' type='"+input.Html+"'")
 	if input.Required {
 		//devModeCheckForm(len(input.Options) > 0, "select shouldn't be required with no available options to select")
@@ -192,8 +198,8 @@ func drawOptions(input Inputs, name string) string {
 		output += ">" + option.Display + "</option>"
 		//devModeCheckForm(!(option.Display == "" && option.Value == "" && option.Selected == false), "option must have display text")
 	}
-	if input.Html == "datalist" {
-		output = "<datalist id=" + name + ">" + output + "</datalist>"
+	if input.DataList {
+		output = "<datalist id=" + input.Id + ">" + output + "</datalist>"
 	} else if input.Placeholder != "" {
 		output += "<option selected value disabled>" + input.Placeholder + "</option>"
 	}

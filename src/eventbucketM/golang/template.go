@@ -168,13 +168,14 @@ func eventMenu(eventId string, eventRanges []Range, pageUrl string, isPrizeMeet 
 
 func homeMenu(page string, menuItems []Menu) string {
 	menu := "<ul id=menu>"
-	selected := ""
+	var attributes string
 	for _, menuItem := range menuItems {
 		if page == menuItem.Link {
-			selected = " class=v"
+			attributes = " class=v"
+		} else {
+			attributes = " href=" + addQuotes(menuItem.Link)
 		}
-		menu += fmt.Sprintf("<li%v><a href=%v>%v</a></li>", selected, addQuotes(menuItem.Link), menuItem.Name)
-		selected = ""
+		menu += fmt.Sprintf("<li><a%v>%v</a></li>", attributes, menuItem.Name)
 	}
 	return menu + "</ul>"
 }

@@ -95,10 +95,10 @@ func clubMoundInsertForm(clubId string, mound Mound, existing bool, formId strin
 			Label:    "Unit",
 			Options:  options,
 		}, {
-			Html:      "submit",
-			Inner:     submitLabel,
-			Name:      "clubid",
-			Value:     clubId,
+			Html:  "submit",
+			Inner: submitLabel,
+			Name:  "clubid",
+			Value: clubId,
 			//AccessKey: "x",
 		},
 	}
@@ -206,10 +206,10 @@ func clubDetailsForm(club Club) Form {
 Longitude and Latitude decimal format is three digits with six decimal places e.g. 000.000000 or -000.000000
 Tip: Lines of longitude appear vertical (North-South), Lines of latitude appear horizontal (East-West).`,
 			}, {
-				Html:      "submit",
-				Inner:     "Save Club Details",
-				Name:      "clubid",
-				Value:     club.Id,
+				Html:  "submit",
+				Inner: "Save Club Details",
+				Name:  "clubid",
+				Value: club.Id,
 				//AccessKey: "x",
 			}, {
 				Snippet: "<a href=//maps.google.com.au/ target=_blank>Google Maps</a>",
@@ -243,6 +243,7 @@ func clubDetailsUpsert(w http.ResponseWriter, r *http.Request) {
 func clubs() Page {
 	return Page{
 		TemplateFile: "clubs",
+		Title:        "Clubs",
 		Theme:        TEMPLATE_HOME,
 		Data: M{
 			"Title":    "Clubs",
@@ -267,8 +268,8 @@ func organisersClubForm() Form {
 				Autofocus: "on",
 			},
 			{
-				Html:      "submit",
-				Inner:     "Add Club",
+				Html:  "submit",
+				Inner: "Add Club",
 				//AccessKey: "x",
 			},
 		},

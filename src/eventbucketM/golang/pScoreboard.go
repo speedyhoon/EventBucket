@@ -144,6 +144,7 @@ func scoreboard(url string) Page {
 	}
 	return Page{
 		TemplateFile: "scoreboard",
+		Title:        "Scoreboard",
 		Theme:        TEMPLATE_EMPTY,
 		Data:         outputer,
 	}

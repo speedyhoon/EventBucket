@@ -196,7 +196,7 @@ type Form struct {
 }
 
 type Inputs struct {
-	Name, Html, Label, Help, Pattern, Placeholder, AutoComplete string //AutoComplete values can be: "off" or "on"
+	Name, Html, Label, Help, Pattern, Placeholder, AutoComplete string //AutoComplete values can be: "on" or "off"
 	Checked, MultiSelect, Required                              bool
 	Min, Max                                                    *int
 	Size                                                        int
@@ -210,7 +210,8 @@ type Inputs struct {
 	Autofocus                                                   string
 	Action                                                      string //Way to switch the forms action to a different purpose
 	Value                                                       interface{}
-	AccessKey, Inner                                            string
+	AccessKey, Inner, Id                                        string
+	DataList                                                    bool
 }
 
 type Option struct {

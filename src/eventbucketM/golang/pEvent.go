@@ -49,14 +49,15 @@ func event(eventId string) Page {
 			"Menu":                 eventMenu(eventId, event.Ranges, URL_event, event.IsPrizeMeet),
 			"Valid":                true,
 			"NewShooterEntry":      URL_shooterInsert,
-			"GradeOptions":         drawOptions(Inputs{Options: eventGradeOptions(event.Grades)}, ""),
-			"EntryOptions":         drawOptions(Inputs{Options: eventGradeEntry(event.Grades)}, ""),
-			"AgeOptions":           drawOptions(Inputs{Options: AgeGroups()}, ""),
+			"GradeOptions":         drawOptions(Inputs{Options: eventGradeOptions(event.Grades)}),
+			"EntryOptions":         drawOptions(Inputs{Options: eventGradeEntry(event.Grades)}),
+			"AgeOptions":           drawOptions(Inputs{Options: AgeGroups()}),
 			"ExistingShooterEntry": URL_shooterListInsert,
 			"EventGrades":          generateForm(eventSettingsClassGrades(event)),
 			"ListShooters":         event.Shooters,
 			"EditShooterList":      editShooterList,
 			"EventId":              eventId,
+			"DataListClubs":        drawOptions(Inputs{Id: "clubSearch", DataList: true, Options: dataListShooterClubNames()}), //TODO optimise by saving as a global var so it is only executed once per club update/insert
 			"ShooterQty":           len(event.Shooters),
 		},
 	}
@@ -176,8 +177,7 @@ func dataListShooterClubNames() []Option {
 	var clubList []Option
 	for _, club := range getClubs() {
 		clubList = append(clubList, Option{
-			Value:   club.Id,
-			Display: club.Name,
+			Value: club.Name,
 		})
 	}
 	return clubList
@@ -204,41 +204,44 @@ func eventUpdateShooterForm(event Event, shooter EventShooter, clubList []Option
 			{
 				Snippet: shooter.Id,
 			}, {
-				Name:      "disabled",
-				Html:      "checkbox",
-				Checked:   shooter.Disabled,
+				Name:    "disabled",
+				Html:    "checkbox",
+				Checked: shooter.Disabled,
 				//AccessKey: "d",
 			}, {
-				Name:      "first",
-				Html:      "search",
-				Value:     shooter.FirstName,
+				Name:  "first",
+				Html:  "search",
+				Value: shooter.FirstName,
 				//AccessKey: "f",
 			}, {
-				Name:      "surname",
-				Html:      "search",
-				Value:     shooter.Surname,
+				Name:  "surname",
+				Html:  "search",
+				Value: shooter.Surname,
 				//AccessKey: "s",
 			}, {
-				Name:      "club",
-				Html:      "datalist",
-				Value:     shooter.Club,
-				Options:   clubList,
+				Name:         "club",
+				Html:         "search",
+				DataList:     true,
+				AutoComplete: "off",
+				Id:           fmt.Sprintf("club%v%v", shooter.Id, event.Id),
+				Value:        shooter.Club,
+				Options:      clubList,
 				//AccessKey: "c",
 			}, {
-				Name:      "grade",
-				Html:      "select",
-				Options:   options,
+				Name:    "grade",
+				Html:    "select",
+				Options: options,
 				//AccessKey: "g",
 			}, {
-				Name:      "age",
-				Html:      "select",
-				Options:   shooterAgeGroupSelectbox(shooter),
+				Name:    "age",
+				Html:    "select",
+				Options: shooterAgeGroupSelectbox(shooter),
 				//AccessKey: "a",
 			}, {
-				Html:      "submit",
-				Inner:     "Save",
-				Name:      "sid",
-				Value:     shooter.Id,
+				Html:  "submit",
+				Inner: "Save",
+				Name:  "sid",
+				Value: shooter.Id,
 				//AccessKey: "x",
 			}, {
 				Name:  "eventid",

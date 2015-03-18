@@ -56,23 +56,26 @@ legend
 	background: -ms-linear-gradient(top, #000 7%, #888 7%, #000 80%, #888 99%)
 	background: linear-gradient(to bottom, #000 7%, #888 7%, #000 80%, #888 99%)
 	margin: 0 -15px 15px
-	padding: 5px 15px
 
 	li
-		display: inline
-		padding: 5px 30px
+		display: inline-block
 
-	.v
+	a
+		padding: 5px 30px
+		color: #fff
+		text-decoration: none
+		display: block
+
+		&:hover
+			color: #f70
+			text-decoration: underline
+
+	a.v
 		//The current visited page
 		+background-linear-gradient(#F70, 7%, #FFF, 7%, #888, 80%, #333, 99%)
 		font-weight: 700
-
-	a
 		color: #000
 		text-decoration: none
-
-		&:hover
-			text-decoration: underline
 
 p, ul
 	margin-top: 0
@@ -80,13 +83,6 @@ p, ul
 #b
 	border-top: 1px solid #000
 	margin-bottom: 0
-
-@media print
-	#a
-		box-shadow: none
-		background: #fff
-	span
-		margin: 0 0 0 168px
 
 .events
 	a
@@ -126,6 +122,16 @@ p, ul
 	text-align: center
 
 +float-right()
+
+.developerTools a
+	padding: .35em
+
+@media print
+	#a
+		box-shadow: none
+		background: #fff
+	span
+		margin: 0 0 0 168px
 
 @media all and (min-width: 800px)
 	body

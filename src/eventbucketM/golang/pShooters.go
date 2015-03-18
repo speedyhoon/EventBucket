@@ -62,7 +62,7 @@ func searchShooter(w http.ResponseWriter, r *http.Request) {
 			Display: fmt.Sprintf("%v %v, ~~ %v", shooter.FirstName, shooter.Surname, shooter.Club),
 		})
 	}
-	fmt.Fprint(w, drawOptions(Inputs{Options: optionList}, ""))
+	fmt.Fprint(w, drawOptions(Inputs{Options: optionList}))
 }
 
 func searchShooterForm() Form {

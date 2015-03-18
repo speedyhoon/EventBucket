@@ -7,16 +7,19 @@
 		<table>
 			<tr>
 				<td><label for=first>First Name:</label></td>
-				<td><input id=first name=first required></td>
+				<td><input id=first name=first required type=search></td>
 			</tr>
 			<tr>
 				<td><label for=surname>Surname:</label></td>
-				<td><input id=surname name=surname required></td>
+				<td><input id=surname name=surname required type=search></td>
 			</tr>
 			<tr>
 				{{/* TODO change club to a data list*/}}
 				<td><label for=club>Club:</label></td>
-				<td><input id=club name=club required></td>
+				<td>
+					<input id=club name=club list=clubSearch required type=search autocomplete=off>
+					{{HTM .DataListClubs}}
+				</td>
 			</tr>
 			<tr>
 				<td rowspan=2><label for=sid>Existing Shooter:</label></td>
@@ -28,7 +31,7 @@
 				<td id=palette></td>
 			</tr>
 			<tr>
-				<td><label for=grade>Class &amp; Grade:</label></td>
+				<td><label for=grade>Grade:</label></td>
 				<td><select id=grade name=grade required>
 					<option selected value disabled></option>
 					{{HTM .EntryOptions}}
