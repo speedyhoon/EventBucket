@@ -79,10 +79,6 @@ func eventSettingsUpdateRange(eventId, rangeId string) Form {
 				Label:    "Range Name",
 				Required: true,
 			}, {
-				Name:  "eventid",
-				Html:  "hidden",
-				Value: eventId,
-			}, {
 				Name:  "rangeid",
 				Html:  "hidden",
 				Value: rangeId,
@@ -100,7 +96,10 @@ func eventSettingsUpdateRange(eventId, rangeId string) Form {
 				MultiSelect: true,
 			}, {
 				Html:  "submit",
-				Value: "Create Range",
+				Inner: "Create Range",
+				Name:  "eventid",
+				Value: eventId,
+				//AccessKey: "x",
 			},
 		},
 	}
@@ -166,12 +165,11 @@ func eventSettingsAddRangeForm(eventId string) Form {
 				Label:    "Range Name",
 				Required: true,
 			}, {
-				Name:  "eventid",
-				Html:  "hidden",
-				Value: eventId,
-			}, {
 				Html:  "submit",
-				Value: "Create Range",
+				Inner: "Create Range",
+				Name:  "eventid",
+				Value: eventId,
+				//AccessKey: "x",
 			},
 		},
 	}
@@ -205,12 +203,11 @@ func eventSettingsSortScoreboard(event Event) Form {
 				Required: true,
 				Options:  sortByRanges,
 			}, {
-				Name:  "eventid",
-				Html:  "hidden",
-				Value: event.Id,
-			}, {
 				Html:  "submit",
-				Value: "Save",
+				Inner: "Save",
+				Name:  "eventid",
+				Value: event.Id,
+				//AccessKey: "x",
 			},
 		},
 	}
@@ -227,10 +224,6 @@ func eventSettingsAddAggForm(eventId string, eventRanges []Option) Form {
 				Label:    "Aggregate Name",
 				Required: true,
 			}, {
-				Name:  "eventid",
-				Html:  "hidden",
-				Value: eventId,
-			}, {
 				Name:        "agg",
 				Html:        "select",
 				MultiSelect: true,
@@ -239,7 +232,10 @@ func eventSettingsAddAggForm(eventId string, eventRanges []Option) Form {
 				Required:    true,
 			}, {
 				Html:  "submit",
-				Value: "Create Aggregate",
+				Inner: "Create Aggregate",
+				Name:  "eventid",
+				Value: eventId,
+				//AccessKey: "x",
 			},
 		},
 	}
@@ -273,12 +269,11 @@ func eventSettingsClassGrades(event Event) Form {
 				MultiSelect: true,
 				Options:     eventGradeOptions(event.Grades),
 			}, {
-				Name:  "eventid",
-				Html:  "hidden",
-				Value: event.Id,
-			}, {
 				Html:  "submit",
-				Value: "Save",
+				Inner: "Save",
+				Name:  "eventid",
+				Value: event.Id,
+				//AccessKey: "x",
 			},
 		},
 	}
@@ -332,12 +327,11 @@ func eventSettingsIsPrizeMeet(eventId string, checked bool) Form {
 				Label:   "Is this Event a Prize Meeting?",
 				Checked: checked,
 			}, {
-				Name:  "eventid",
-				Html:  "hidden",
-				Value: eventId,
-			}, {
 				Html:  "submit",
-				Value: "Save",
+				Inner: "Save",
+				Name:  "eventid",
+				Value: eventId,
+				//AccessKey: "x",
 			},
 		},
 	}

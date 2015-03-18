@@ -210,6 +210,7 @@ type Inputs struct {
 	Autofocus                                                   string
 	Action                                                      string //Way to switch the forms action to a different purpose
 	Value                                                       interface{}
+	AccessKey, Inner                                            string
 }
 
 type Option struct {

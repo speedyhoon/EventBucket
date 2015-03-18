@@ -246,12 +246,11 @@ func totalScoresForm(eventId, rangeId string, shooterId int, score string) Form 
 				Html:  "hidden",
 				Value: rangeId,
 			}, {
-				Name:  "eventid",
-				Html:  "hidden",
-				Value: eventId,
-			}, {
-				Html:  "submit",
-				Value: "Save",
+				Html:      "submit",
+				Inner:     "Save",
+				Name:      "eventid",
+				Value:     eventId,
+				//AccessKey: "x",
 			},
 		},
 	}

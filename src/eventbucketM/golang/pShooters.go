@@ -31,8 +31,9 @@ func updateShooterList() Form {
 				Snippet: "Last updated: " + lastUpdated + ".",
 			}, {
 				Html:      "submit",
-				Value:     "Update",
+				Inner:     "Update",
 				Autofocus: "on",
+				//AccessKey: "x",
 			},
 		},
 	}
