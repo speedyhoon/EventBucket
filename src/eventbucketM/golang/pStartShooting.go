@@ -19,12 +19,15 @@ func startShooting_Data(data string, showAll bool) Page {
 	eventId := arr[0]
 	rangeId, err := strToInt(arr[1])
 	event, _ := getEvent(eventId)
-
+	var titleAll string
+	if showAll {
+		titleAll = " Show All"
+	}
 	if event.Ranges[rangeId].Aggregate != "" || err != nil {
 		return Page{
 			TemplateFile: "start-shooting",
 			Theme:        TEMPLATE_ADMIN,
-			Title:        "Start Shooting",
+			Title:        "Start Shooting" + titleAll,
 			Data: M{
 				"menu":                 eventMenu(eventId, event.Ranges, URL_startShooting, event.IsPrizeMeet),
 				"target_heading_cells": "",
@@ -116,7 +119,7 @@ func startShooting_Data(data string, showAll bool) Page {
 	return Page{
 		TemplateFile: "start-shooting",
 		Theme:        TEMPLATE_ADMIN,
-		Title:        "Start Shooting",
+		Title:        "Start Shooting" + titleAll,
 		Data: M{
 			"EventId":            eventId,
 			"pageLink":           pageLink,
