@@ -21,11 +21,15 @@ func totalScores_Data(data string, showAll bool) Page {
 	rangeId, err := strToInt(range_Id)
 	event, eventMissing := getEvent(eventId)
 	currentRange := event.Ranges[rangeId]
+	var titleAll string
+	if showAll {
+		titleAll = " Show All"
+	}
 	ERROR_ENTER_SCORES_IN_AGG := "<p>This range is an aggregate. Can't enter scores!</p>"
 	if err != nil || eventMissing != nil || currentRange.Locked || currentRange.Aggregate != "" {
 		return Page{
 			TemplateFile: "total-scores",
-			Title:        "Total Scores",
+			Title:        "Total Scores" + titleAll,
 			Theme:        TEMPLATE_ADMIN,
 			Data: M{
 				"Title":      "Total Scores",
@@ -47,7 +51,7 @@ func totalScores_Data(data string, showAll bool) Page {
 	if len(currentRange.Aggregate) > 0 {
 		return Page{
 			TemplateFile: "total-scores",
-			Title:        "Total Scores",
+			Title:        "Total Scores" + titleAll,
 			Theme:        TEMPLATE_ADMIN,
 			Data: M{
 				"LinkToPage": totalScores_link,
@@ -88,7 +92,7 @@ func totalScores_Data(data string, showAll bool) Page {
 
 	return Page{
 		TemplateFile: "total-scores",
-		Title:        "Total Scores",
+		Title:        "Total Scores" + titleAll,
 		Theme:        TEMPLATE_ADMIN,
 		Data: M{
 			"LinkToPage": totalScores_link,
