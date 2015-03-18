@@ -124,7 +124,7 @@ func eventSettings(eventId string) Page {
 				}
 			}
 			var tmp = event.Ranges[range_id]
-			select_options := drawOptions(Inputs{Options: list_of_ranges}, "")
+			select_options := drawOptions(Inputs{Options: list_of_ranges})
 			tmp.Aggregate = fmt.Sprintf("<select name=aggs form=range%v multiple size=%v required>%v</select>", range_id, len(list_of_ranges), select_options)
 			event.Ranges[range_id] = tmp
 		}

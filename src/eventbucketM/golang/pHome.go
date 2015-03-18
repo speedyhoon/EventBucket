@@ -84,8 +84,7 @@ func homeFormNewEvent(clubs []Club, event Event) Form {
 			event.Club = clubData.Name
 		}
 		clubList = append(clubList, Option{
-			Value:   clubData.Id,
-			Display: clubData.Name,
+			Value: clubData.Name,
 		})
 	}
 	return Form{
@@ -101,10 +100,13 @@ func homeFormNewEvent(clubs []Club, event Event) Form {
 				Value:     event.Name,
 				Autofocus: "on",
 			}, {
-				Name:        "club",
-				Html:        "datalist",
-				Label:       "Host Club",
-				Placeholder: "Club Name",
+				Name:         "club",
+				Html:         "search",
+				DataList:     true,
+				Id:           "clubSearch",
+				AutoComplete: "off",
+				Label:        "Host Club",
+				Placeholder:  "Club Name",
 				//TODO previous club names appear from browser cahce when they are not available
 				//TODO auto set the club name to X if there is only one available
 				Options:  clubList,
@@ -123,10 +125,10 @@ func homeFormNewEvent(clubs []Club, event Event) Form {
 				Label: "Time",
 				Value: event.Time,
 			}, {
-				Html:      "submit",
-				Inner:     save,
-				Name:      submitName,
-				Value:     event.Id,
+				Html:  "submit",
+				Inner: save,
+				Name:  submitName,
+				Value: event.Id,
 				//AccessKey: "x",
 			},
 		},
