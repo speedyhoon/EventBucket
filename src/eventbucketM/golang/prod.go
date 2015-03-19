@@ -12,7 +12,10 @@ import (
 	"strings"
 )
 
-var Warning = log.New(os.Stdout, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
+var (
+	//Info    = log.New(os.Stdout, "INFO:    ", log.Lshortfile)
+	Warning = log.New(os.Stdout, "WARNING: ", log.Lshortfile)
+)
 
 func devModeCheckForm(check bool, message string) {
 	if !check {
@@ -21,7 +24,6 @@ func devModeCheckForm(check bool, message string) {
 }
 
 func loadHTM(pageName string) []byte {
-	pageName = strings.Replace(pageName, "/", "", -1)
 	bytes, err := ioutil.ReadFile(fmt.Sprintf(PATH_HTML_MINIFIED, pageName))
 	if err != nil {
 		//TODO inline html as bytes here

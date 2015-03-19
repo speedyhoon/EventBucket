@@ -3,7 +3,7 @@
 package main
 
 import (
-	"bytes"
+	//	"bytes"
 	"fmt"
 	"go-randomdata-master"
 	"io/ioutil"
@@ -28,9 +28,9 @@ const (
 var (
 	agent = gorelic.NewAgent()
 	//Use io.Writer >>> ioutil.Discard to disable logging any output
-	Trace   = log.New(os.Stdout, "TRACE:   ", log.Ltime|log.Lshortfile)
-	Info    = log.New(os.Stdout, "INFO:    ", log.Ltime|log.Lshortfile)
-	Warning = log.New(os.Stderr, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
+	Trace   = log.New(os.Stdout, "TRACE:   ", log.Lshortfile)
+	Info    = log.New(os.Stdout, "INFO:    ", log.Lshortfile)
+	Warning = log.New(os.Stderr, "WARNING: ", log.Lshortfile)
 )
 
 func main() {
@@ -95,63 +95,11 @@ func devModeCheckForm(check bool, message string) {
 }
 
 func loadHTM(pageName string) []byte {
-	bytes, err := ioutil.ReadFile(fmt.Sprintf(PATH_HTML_SOURCE, pageName))
-	if err == nil {
-		existingLength := len(bytes)
-		bytes = devModeMinifyHtml(pageName, bytes)
-		newLength := len(bytes)
-		if existingLength != newLength {
-			//Trace.Printf("Page '%v' had %v bytes removed (%v percent), from: %v, to: %v", pageName, existingLength-newLength, 100-newLength*100/existingLength, existingLength, newLength)
-		}
-		if newLength > existingLength {
-			Error.Println("How did this page get bigger?")
-		}
-	} else {
-		ioutil.WriteFile(fmt.Sprintf(PATH_HTML_SOURCE, pageName), bytes, 0777)
+	bytes, err := ioutil.ReadFile(fmt.Sprintf(PATH_HTML_MINIFIED, pageName))
+	if err != nil {
+		Error.Println(err)
 	}
-	ioutil.WriteFile(fmt.Sprintf(PATH_HTML_MINIFIED, pageName), bytes, 0777)
 	return bytes
-}
-
-func devModeMinifyHtml(pageName string, minify []byte) []byte {
-	if bytes.Contains(minify, []byte("ZgotmplZ")) {
-		Warning.Println("Template generation error: ZgotmplZ")
-		return []byte("")
-	}
-	removeChars := []string{
-		"	", //Tab
-		"\n", //new line
-		"\r", //carriage return
-	}
-	//TODO remove spaces between block elements like: </div> <div> but keep between inline elements like </span> <span>
-	//TODO use improved regex for better searching & replacement
-	replaceChars := map[string]string{
-		"  ":            " ", //double spaces
-		"type=text":     "",
-		"type=\"text\"": "",
-		"type='text'":   "",
-		" >":            ">",
-		" <":            "<",
-		"< ":            "<",
-		">  <":          "> <",
-		" />":           "/>",
-		"/ >":           "/>",
-		"<br/>":         "<br>",
-		"</br>":         "<br>",
-		"<br />":        "<br>",
-	}
-	for _, search := range removeChars {
-		minify = bytes.Replace(minify, []byte(search), []byte(""), -1)
-	}
-	for search, replace := range replaceChars {
-		length := len(minify)
-		minify = bytes.Replace(minify, []byte(search), []byte(replace), -1)
-		if length != len(minify) {
-			Warning.Printf("A dodgy character (%v) was found in '%v'! Please replace with (%v).", search, pageName, replace)
-		}
-	}
-	//TODO why is the string not being replaced here, even though it is 100% running?
-	return bytes.Replace(minify, []byte("~~~"), []byte(" "), -1)
 }
 
 func randomData(w http.ResponseWriter, r *http.Request) {
