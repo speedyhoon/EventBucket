@@ -75,30 +75,35 @@
 
 20 Feb 2915
 119 KB (122,006 bytes) Go only
-111 KB (114,122 bytes) Prod only
 117 KB (120,430 bytes) Dev only
+111 KB (114,122 bytes) Prod only
 
 4 Mar 2015
 126 KB (129,210 bytes) Go only
-103 KB (105,702 bytes) Go compiled (without comments)
 118 KB (121,739 bytes) Prod only
+103 KB (105,702 bytes) Go minified
 
 5 Mar 2015
 124 KB (127,709 bytes) Go only
-103 KB (105,862 bytes) Go compiled
 117 KB (120,239 bytes) Prod only
+103 KB (105,862 bytes) Go minified
 
 6 Mar 2015
 122 KB (125,597 bytes) Go only      remove underscores from variable names
-101 KB (104,243 bytes) Go compiled
 115 KB (118,075 bytes) Prod only
+101 KB (104,243 bytes) Go minified
 
 8 Mar 2015
 128 KB (131,948 bytes) Go only
-105 KB (107,619 bytes) Go compiled
 121 KB (124,306 bytes) Prod only
+105 KB (107,619 bytes) Go minified
 
 11 Mar 2015
 130 KB (133,825 bytes) Go only
-108 KB (111,403 bytes) Go compiled
 123 KB (125,994 bytes) Prod only
+108 KB (111,403 bytes) Go minified
+
+19 Mar 2015
+132 KB (135,926 bytes) Go only
+125 KB (128,092 bytes) Prod only
+107 KB (109,954 bytes) Go minified
