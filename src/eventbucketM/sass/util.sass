@@ -120,8 +120,17 @@
 //		.error, .info
 //			display: none
 
+=form_layout()
+	form
+		input
+			display: block
+
+	fieldset > *:not(legend)
+		display: inline-block
+		margin: 0 1em 1em 0
+
 =update()
-	#update
+	.update
 		display: block
 		font-weight: 900
 		text-align: center
