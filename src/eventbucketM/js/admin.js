@@ -3,13 +3,12 @@
 	var browserVersion = window.navigator.appVersion.match(/Chrome\/(\d+)\./), shooterEntryValues = {};
 	if(!browserVersion){
 		var note = document.createElement('a');
-		note.id = 'update';
+		note.class = 'update';
 		note.href= '//google.com/chrome/browser/features.html';
 		note.target = '_blank';
 		note.textContent = 'EventBucket works best with Google Chrome';
 		document.body.insertBefore(note, document.body.childNodes[0]);
 	}
-
 
 	var j;
 	if(window.XMLHttpRequest){
@@ -95,8 +94,6 @@
 		};
 	}
 
-
-
 	function changeRequiredAttrs(formAction){
 		var inputs = document.getElementById('ShooterEntry').getElementsByTagName('input');
 		if(max > 0){
@@ -125,7 +122,6 @@
 			shooterButtons[i].onclick = clickIt(shooterButtons[i].getAttribute('formaction'));
 		}
 	}
-
 
 	var addExistingShooter = document.getElementById('addExistingShooter');
 	if (addExistingShooter){
