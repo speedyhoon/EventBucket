@@ -220,6 +220,6 @@ type Option struct {
 }
 
 type Menu struct {
-	Name, Link string
-	Ranges     bool
+	Name, Link     string
+	Ranges, Hidden bool
 }
