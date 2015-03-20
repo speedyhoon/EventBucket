@@ -13,7 +13,7 @@
 			{{range $index, $menuItem := .Menu}}
 				{{if eq $.Title $menuItem.Name}}
 					<li class=v>{{$menuItem.Name}}
-				{{else}}
+				{{else if not $menuItem.Hidden}}
 					<li><a href={{$menuItem.Link}}>{{$menuItem.Name}}</a>
 				{{end}}
 				</li>
