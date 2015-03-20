@@ -39,7 +39,7 @@ legend
 	display: inline-block
 	background: pink
 
-#gmap_canvas
+.googleMapCanvas
 	height: 350px
 
 .text-left
@@ -60,22 +60,21 @@ legend
 	li
 		display: inline-block
 
-	a
+	a, .v
 		padding: 5px 30px
 		color: #fff
 		text-decoration: none
-		display: block
+		display: inline-block
 
-		&:hover
-			color: #f70
-			text-decoration: underline
+	a:hover
+		color: #f70
+		text-decoration: underline
 
-	a.v
+	.v
 		//The current visited page
 		+background-linear-gradient(#F70, 7%, #FFF, 7%, #888, 80%, #333, 99%)
 		font-weight: 700
 		color: #000
-		text-decoration: none
 
 p, ul
 	margin-top: 0

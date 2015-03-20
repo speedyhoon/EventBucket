@@ -203,8 +203,7 @@ type Inputs struct {
 	Options                                                     []Option
 	Step                                                        float64
 	VarType                                                     string //the type of variable to return
-	VarMaxLen                                                   int    //the length of variable to return
-	VarMinLen                                                   int    //the length of variable to return
+	MaxLength, MinLength                                        int    //the length of variable to return
 	Error                                                       string
 	Snippet                                                     interface{}
 	Autofocus                                                   string

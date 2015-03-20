@@ -136,6 +136,17 @@ const (
 	SHOOTOFF_UseXs         = 1
 	SHOOTOFF_UseCountback  = 1 //system settings
 */
+
+	//Strings
+	v8MaxEventId     = 100
+	v8MinEventId     = 1
+	v8MaxStringInput = 100
+	v8MinStringInput = 1
+	v8MinShots       = 90
+	v8Minhots        = 1
+	//Integers
+	v8MaxIntegerId = 999
+	v8MinIntegerId = 0
 )
 
 type ClassSettings struct {

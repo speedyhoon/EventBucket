@@ -125,9 +125,11 @@
 		input
 			display: block
 
-	fieldset > *:not(legend)
-		display: inline-block
-		margin: 0 1em 1em 0
+	//fieldset > *:not(legend)		//this one broke the hidden forms on the even settings page
+	fieldset
+		label, button
+			display: inline-block
+			margin: 0 1em 1em 0
 
 =update()
 	.update

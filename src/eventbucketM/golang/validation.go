@@ -25,6 +25,15 @@ func checkForm(options []Inputs, r *http.Request) map[string]string {
 						new_values[option.Name] = strings.Join(array, ",") //TODO it would be nice to trim whitepspace when joining the items together
 					} else {
 						new_values[option.Name] = strings.TrimSpace(array[0])
+						/*//Test if the data length is less than specified
+						if option.MaxLength > 0 {
+							length := len(array[0])
+							if length <= option.MaxLength && length >= option.MinLength {
+								new_values[option.Name] = strings.TrimSpace(array[0])
+							}
+						} else {
+							new_values[option.Name] = strings.TrimSpace(array[0])
+						}*/
 					}
 				} else {
 					Warning.Printf("options[%v] is REQUIRED OR is not in array", option)
@@ -33,6 +42,39 @@ func checkForm(options []Inputs, r *http.Request) map[string]string {
 		}
 	}
 	return new_values
+}
+
+func v8(inputs []Inputs, r *http.Request) (map[string]string, bool) {
+	//TODO possibly call this function directly when a post is made and then pass the function if valid to execute the update/insert
+	err := r.ParseForm()
+	if err != nil {
+		//		http.Error(w, "Invalid request form data", 400)
+		return map[string]string{}, false
+	}
+	form := r.Form
+	passed := true
+	newValues := make(map[string]string)
+	for _, input := range inputs {
+		if input.Name != "" {
+			dataSlice, ok := form[input.Name]
+			if ok && len(dataSlice) == 1 {
+				data := strings.TrimSpace(dataSlice[0])
+				dataLength := len(data)
+				if (!input.Required && dataLength >= 1) || (input.Required && dataLength <= input.MaxLength && dataLength >= input.MinLength) {
+					newValues[input.Name] = data
+				} else {
+					passed = false
+					//					dump("Display info that this field didn't have enough characters", input.Name, data)
+				}
+			} else {
+				passed = false
+				//				dump("There was too many items in dataSlice", input.Name, dataSlice)
+			}
+			//			Error.Println("forgot to add a name to input!")
+			//			export(input)
+		}
+	}
+	return newValues, passed
 }
 
 func valid8(options []Inputs, r *http.Request) (M, bool) {
@@ -71,7 +113,7 @@ func valid8(options []Inputs, r *http.Request) (M, bool) {
 					}
 				case "string":
 					valueInt = len(value)
-					if valueInt >= option.VarMinLen && valueInt <= option.VarMinLen {
+					if valueInt >= option.MinLength && valueInt <= option.MinLength {
 						new_values[option.Name] = value
 						passedV8tion = append(passedV8tion, true)
 					} else {

@@ -82,6 +82,7 @@ Shooter entry:
 	search from nraa database
 	add nraa database
 	Optional first/surname & club when using existing shooter
+	previous club names appear from browser cahce when they are not available
 event-entry
 	hook up grades and settings to event entry
 totalscores
