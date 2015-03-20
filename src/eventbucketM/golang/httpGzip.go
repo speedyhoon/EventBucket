@@ -9,6 +9,23 @@ import (
 	"time"
 )
 
+//TODO maybe add page redirects for pages. replace uppercase urls with lowercase
+//Is this needed or not??????????????????????????
+func redirectToUppercase() {
+	/*listOfPages := map[string]*func(){
+		URL_eventSettings: eventSettings,
+	}*/
+	listOfPages := map[string]string{
+		URL_eventSettings: strings.ToLower(URL_eventSettings),
+	}
+	for from, to := range listOfPages {
+		GetRedirectPermanentTo(from, to)
+	}
+}
+func GetRedirectPermanentTo(from, to string) {
+	http.Handle(from, http.RedirectHandler(to, http.StatusMovedPermanently))
+}
+
 func start() {
 	go startDatabase()
 	serveDir(DIR_JS)
@@ -139,6 +156,7 @@ func PostVia(runThisFirst func(http.ResponseWriter, *http.Request), url string) 
 func httpHeaders(w http.ResponseWriter, setHeaders []string) {
 	//TODO Only set CSP when not in debug mode
 	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'") //TODO remove unsafe inline when start shooting gets its settings a different way
+	w.Header().Set("X-Frame-Options", "DENY")                                                                                                                                       //developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options
 	headers := map[string][2]string{
 		"expire":    {"Expires", time.Now().UTC().AddDate(1, 0, 0).Format(time.RFC1123)}, //RESEARCH should it return GMT time?  //Expiry date is in 1 year, 0 months & 0 days in the future
 		"cache":     {"Vary", "Accept-Encoding"},

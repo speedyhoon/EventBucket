@@ -92,10 +92,13 @@ func homeFormNewEvent(clubs []Club, event Event) Form {
 		Title:  title,
 		Inputs: []Inputs{
 			{
-				Name:     "name",
-				Html:     "text",
-				Label:    "Event Name",
-				Required: true,
+				Name:      "name",
+				Html:      "text",
+				Label:     "Event Name",
+				VarType:   "string",
+				MaxLength: v8MaxStringInput,
+				MinLength: v8MinStringInput,
+				Required:  true,
 				//				AutoComplete: "off",
 				Value:     event.Name,
 				Autofocus: "on",
@@ -105,30 +108,33 @@ func homeFormNewEvent(clubs []Club, event Event) Form {
 				DataList:     true,
 				Id:           "clubSearch",
 				AutoComplete: "off",
-				Label:        "Host Club",
-				Placeholder:  "Club Name",
-				//TODO previous club names appear from browser cahce when they are not available
+				Label:        "Club Name",
 				//TODO auto set the club name to X if there is only one available
 				Options:  clubList,
 				Required: true,
-				//				AutoComplete: "off",
-				Value: event.Club,
+				Value:     event.Club,
+				VarType:   "string",
+				MaxLength: v8MaxStringInput,
+				MinLength: v8MinStringInput,
 			}, {
-				Name:     "date",
-				Html:     "date",
-				Label:    "Date",
+				Name:  "date",
+				Html:  "date",
+				Label: "Date",
 				Required: true,
-				Value:    event.Date,
+				Value: event.Date,
 			}, {
 				Name:  "time",
 				Html:  "time",
 				Label: "Time",
 				Value: event.Time,
 			}, {
-				Html:  "submit",
-				Inner: save,
-				Name:  submitName,
-				Value: event.Id,
+				Html:      "submit",
+				Inner:     save,
+				Name:      submitName,
+				Value:     event.Id,
+				VarType:   "string",
+				MaxLength: v8MaxEventId,
+				MinLength: v8MinEventId,
 				//AccessKey: "x",
 			},
 		},
@@ -136,10 +142,13 @@ func homeFormNewEvent(clubs []Club, event Event) Form {
 }
 
 func eventInsert(w http.ResponseWriter, r *http.Request) {
+	/*validatedValues, ok := v8(homeFormNewEvent([]Club{}, Event{}).Inputs, r)
+	if !ok {
+		http.Error(w, "Invalid request form data", 400)
+		return
+	}*/
 	//TODO merge this database functionality into an upsert
-	var clubs []Club
-	emptyEvent := Event{Id: "1"}
-	validatedValues := checkForm(homeFormNewEvent(clubs, emptyEvent).Inputs, r)
+	validatedValues := checkForm(homeFormNewEvent([]Club{}, Event{}).Inputs, r)
 	//TODO one day change validated values to return the schema compatible data so it can be directly used add constants would by used more often to access the map items
 	eventId := validatedValues["eventid"]
 	if eventId == "" {

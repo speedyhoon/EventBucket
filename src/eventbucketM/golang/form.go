@@ -112,6 +112,12 @@ func generateForm(form Form) string {
 			if len(input.Options) > 0 {
 				options = drawOptions(input)
 			}
+			if input.MaxLength > 0 {
+				attributes += fmt.Sprintf(" maxlength=%v", input.MaxLength)
+			}
+			if input.MinLength > 1 { //Only adds it if MinLength is 2 - browse doesn't enforce 1! Using Required attribute enforces MinLength of 1
+				attributes += fmt.Sprintf(" minlength=%v", input.MinLength)
+			}
 			if input.Html == "select" {
 				element += "<select" + attributes + ">" + options + "</select>"
 			} else if input.Html == "submit" {

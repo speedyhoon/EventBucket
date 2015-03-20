@@ -10,10 +10,15 @@ import (
 func club(clubId string) Page {
 	page := Page{
 		TemplateFile: "club",
-		Title:        "Club with id '" + clubId + "' not found",
+		Title:        "Club",
 		Theme:        TEMPLATE_HOME,
 		Data: M{
-			"Menu": homeMenu(URL_club, HOME_MENU_ITEMS),
+			"Menu":        homeMenu(URL_club, HOME_MENU_ITEMS),
+			"MoundForm":   "",
+			"TableMounds": "",
+			"Latitude":    "",
+			"Longitude":   "",
+			"Details":     "",
 		},
 	}
 	club, err := getClub(clubId)

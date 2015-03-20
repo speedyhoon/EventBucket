@@ -203,6 +203,8 @@ func calcTotalCentres(shots string, class int) Score {
 }
 
 func startShootingForm(eventId, rangeId, shooterId, shots string) Form {
+	temp1 := v8MaxIntegerId
+	temp2 := v8MinIntegerId
 	return Form{
 		Action: URL_updateTotalScores,
 		Inputs: []Inputs{
@@ -211,20 +213,22 @@ func startShootingForm(eventId, rangeId, shooterId, shots string) Form {
 				Html:      "hidden",
 				Value:     eventId,
 				VarType:   "string",
-				VarMaxLen: 999,
-				VarMinLen: 1,
+				MaxLength: v8MaxEventId,
+				MinLength: v8MinEventId,
 			}, {
-				Name:      "rangeid",
-				Html:      "hidden",
-				Value:     rangeId,
-				VarType:   "int",
-				VarMaxLen: 999, //TODO needs better parameters
-				VarMinLen: 0,
+				Name:    "rangeid",
+				Html:    "hidden",
+				Value:   rangeId,
+				VarType: "int",
+				Max:     &temp1,
+				Min:     &temp2,
 			}, {
 				Name:    "shooterid",
 				Html:    "hidden",
 				Value:   shooterId,
 				VarType: "int",
+				Max:     &temp1,
+				Min:     &temp2,
 			}, {
 				Name:     "shots",
 				Html:     "number",
@@ -232,8 +236,8 @@ func startShootingForm(eventId, rangeId, shooterId, shots string) Form {
 				Value:    shots,
 				//TODO add min and max for validation on fclass and target
 				VarType:   "string",
-				VarMaxLen: 90, //TODO make dynamic by getting the shooters class
-				VarMinLen: 1,
+				MaxLength: v8MinShots, //TODO make dynamic by getting the shooters class
+				MinLength: v8Minhots,
 			},
 		},
 	}

@@ -167,15 +167,16 @@ func eventMenu(eventId string, eventRanges []Range, pageUrl string, isPrizeMeet 
 }
 
 func homeMenu(page string, menuItems []Menu) string {
+	//TODO move this entirely into an ace sub-template when ace is implemented
 	menu := "<ul id=menu>"
 	var attributes string
 	for _, menuItem := range menuItems {
 		if page == menuItem.Link {
-			attributes = " class=v"
+			attributes = fmt.Sprintf(" class=v>%v", menuItem.Name)
 		} else {
-			attributes = " href=" + addQuotes(menuItem.Link)
+			attributes = fmt.Sprintf("><a href=%v>%v</a>", addQuotes(menuItem.Link), menuItem.Name)
 		}
-		menu += fmt.Sprintf("<li><a%v>%v</a></li>", attributes, menuItem.Name)
+		menu += fmt.Sprintf("<li%v</li>", attributes)
 	}
 	return menu + "</ul>"
 }
