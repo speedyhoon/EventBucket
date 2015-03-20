@@ -54,11 +54,11 @@ func home() Page {
 	return Page{
 		TemplateFile: "home",
 		Theme:        TEMPLATE_HOME,
+		Title:        "Home",
 		Data: M{
 			"FutureEvents": openEvents,
 			"PageName":     "Calendar",
 			"ArchiveLink":  URL_archive,
-			"Menu":         homeMenu("/", HOME_MENU_ITEMS),
 			"FormNewEvent": generateForm(homeFormNewEvent(clubs, (Event{}))),
 			"Hostname":     hostname,
 			"IpAddresses":  ipAddresses,
@@ -110,18 +110,18 @@ func homeFormNewEvent(clubs []Club, event Event) Form {
 				AutoComplete: "off",
 				Label:        "Club Name",
 				//TODO auto set the club name to X if there is only one available
-				Options:  clubList,
-				Required: true,
+				Options:   clubList,
+				Required:  true,
 				Value:     event.Club,
 				VarType:   "string",
 				MaxLength: v8MaxStringInput,
 				MinLength: v8MinStringInput,
 			}, {
-				Name:  "date",
-				Html:  "date",
-				Label: "Date",
+				Name:     "date",
+				Html:     "date",
+				Label:    "Date",
 				Required: true,
-				Value: event.Date,
+				Value:    event.Date,
 			}, {
 				Name:  "time",
 				Html:  "time",

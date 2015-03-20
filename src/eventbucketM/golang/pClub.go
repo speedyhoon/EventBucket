@@ -13,7 +13,6 @@ func club(clubId string) Page {
 		Title:        "Club",
 		Theme:        TEMPLATE_HOME,
 		Data: M{
-			"Menu":        homeMenu(URL_club, HOME_MENU_ITEMS),
 			"MoundForm":   "",
 			"TableMounds": "",
 			"Latitude":    "",
@@ -254,7 +253,6 @@ func clubs() Page {
 			"Title":    "Clubs",
 			"Clubs":    generateForm(organisersClubForm()),
 			"ClubList": getClubs(),
-			"Menu":     homeMenu(URL_clubs, HOME_MENU_ITEMS),
 		},
 	}
 }
