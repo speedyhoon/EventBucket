@@ -54,7 +54,6 @@ func archive() Page {
 		Data: M{
 			"ClosedEvents": closedEvents,
 			"PageName":     "Calendar",
-			"Menu":         homeMenu(URL_archive, HOME_MENU_ITEMS),
 		},
 	}
 }

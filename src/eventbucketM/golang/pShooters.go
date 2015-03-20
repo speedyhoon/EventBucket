@@ -12,7 +12,6 @@ func shooters() Page {
 		Theme:        TEMPLATE_HOME,
 		Title:        "Shooters",
 		Data: M{
-			"Menu":        homeMenu(URL_shooters, HOME_MENU_ITEMS),
 			"ShooterList": generateForm(updateShooterList()),
 		},
 	}

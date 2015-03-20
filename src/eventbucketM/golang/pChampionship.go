@@ -7,7 +7,6 @@ func championships() Page {
 		Theme:        TEMPLATE_HOME,
 		Data: M{
 			"Championship": generateForm(championshipForm()),
-			"Menu":         homeMenu(URL_championships, HOME_MENU_ITEMS),
 		},
 	}
 }

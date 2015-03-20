@@ -17,6 +17,9 @@ func templator(viewController Page, w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+	if viewController.Theme == TEMPLATE_HOME {
+		viewController.Data["Menu"] = HOME_MENU_ITEMS
+	}
 	viewController.Data["Title"] = viewController.Title
 	viewController.Data["CurrentYear"] = time.Now().Year()
 	//Search in Theme html file & replace "^^BODY^^" with TemplateFile
@@ -162,21 +165,6 @@ func eventMenu(eventId string, eventRanges []Range, pageUrl string, isPrizeMeet 
 	}
 	if pageUrl == URL_scoreboard {
 		menu += "<li><a id=scoreSettings href=#scoreboard_settings onclick=\"var d=document.getElementById('scoreboard_settings');d.style.display=(d.style.display?'':'block')\">&nbsp;</a></li>"
-	}
-	return menu + "</ul>"
-}
-
-func homeMenu(page string, menuItems []Menu) string {
-	//TODO move this entirely into an ace sub-template when ace is implemented
-	menu := "<ul id=menu>"
-	var attributes string
-	for _, menuItem := range menuItems {
-		if page == menuItem.Link {
-			attributes = fmt.Sprintf(" class=v>%v", menuItem.Name)
-		} else {
-			attributes = fmt.Sprintf("><a href=%v>%v</a>", addQuotes(menuItem.Link), menuItem.Name)
-		}
-		menu += fmt.Sprintf("<li%v</li>", attributes)
 	}
 	return menu + "</ul>"
 }
