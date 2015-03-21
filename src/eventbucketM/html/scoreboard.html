@@ -48,7 +48,7 @@
 				{{if not .Hidden}}
 					{{$new_range_id := VAR2STR $rangeId}}
 					{{$now := index $shooter.Scores $new_range_id}}
-					<td{{POSITION $now.Position}}>
+					<td{{POSITION $now}}>
 						{{with $now}}
 							{{with.Total}}{{.}}{{end}}{{with .Centers}}<sup>{{.}}</sup>{{end}}
 						{{end}}
