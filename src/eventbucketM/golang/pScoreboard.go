@@ -57,17 +57,19 @@ func scoreboard(url string) Page {
 	previous_grade := -1
 	previous_class := "" //TODO change to an integer for faster comparisons
 	position := 0
-	should_be_position := 0
+	shouldBePosition := 0
 	shoot_off := false
 	shoot_equ := false
 	shooter_length := len(shooter_list)
 	allGrades := grades()
+
+	//Loop through all the shooters
 	for index, shooter := range shooter_list {
-		should_be_position += 1
+		shouldBePosition += 1
 		if shooter.Grade != previous_grade {
 			//reset position back to 1st
 			position = 1
-			should_be_position = 1
+			shouldBePosition = 1
 			shooter_list[index].GradeSeparator = true
 			previous_grade = shooter.Grade
 			if allGrades[shooter.Grade].ClassName != previous_class {
@@ -75,7 +77,7 @@ func scoreboard(url string) Page {
 				shooter_list[index].ClassSeparator = true
 			}
 		} else if !shoot_off && !shoot_equ {
-			position = should_be_position
+			position = shouldBePosition
 		}
 		var display string
 		if shoot_off {
