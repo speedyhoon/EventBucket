@@ -7,34 +7,33 @@ Start Shooting
 	Bug      the last few shots are removed from start shooting
 	Bug      calculating agg scores is slow
 	Security stop users accessing agg ranges in total scores and startShooting
-	Security Instead of saving shooter variables in a javascript file with an unique hash name. possibly use an ajax request instead. request POST for the settings of this event/range to change. respond with the new settings. then front end saves those settings in possibly web storage or the most browser compatible way. the local storage may become out of date quicker?- not sure on this.
 	Feature  when the url is changed use JS t highlight the navigated to row. maybe use: document.querySelector('[href="#30"]').parentNode.className
-	Feature  Connect barcode reader to use shooterId links in StartShooting page <a href=#123>MyShooter Name</a>
+	Research Connect barcode reader to use shooterId links in StartShooting page <a href=#123>MyShooter Name</a>
+	Research Instead of saving shooter variables in a javascript file with an unique hash name. possibly use an ajax request instead. request POST for the settings of this event/range to change. respond with the new settings. then front end saves those settings in possibly web storage or the most browser compatible way. the local storage may become out of date quicker?- not sure on this.
 	Research use event settings for ranges shots and sighters as base settings.
 
-Event
-	Feature  add a form to change a shooters details - name, club, change class/grade, age group
 Shooter entry:
-	Feature  set default club to current club
 	Feature  when changing a shooters class/grade also update the aggregates for the old class/grade and the new class/grade
 
 Event Settings
 	Bug      classes for event are not working
 	Bug      add agg range without any ranges should still display as an aggregate range
 	Bug      don't allow shooter entry with invalid class/grades
-	Feature  change the order of the ranges and aggregates
-	Feature  aggs can add up other aggs
 	Feature  event able to change class settings - number of shots
-	Feature  re order ranges
-	Feature  auto save ranges and aggregates via ajax or websocket silently.
-	Feature  delete range
-	Feature  instead of setting IsPrizeMeet to false, unset the value in the collection so it doesn't exist.
+
+
+
 	Research add custom classes and grades
 	Research connect ranges shots and sighters
 	Research add custom classes and grades
+	Version 2:
+	Research re order ranges & change the order of the ranges and aggregates - add option to change the order of ranges displayed on the scoreboard
 	Research add gender to classes and grades
 	Research archive event
-	Research add option to change the order of ranges displayed on the scoreboard
+	Version 3:
+	Research aggs can add up other aggs
+	Research auto save ranges and aggregates via ajax or websocket silently.
+	Research instead of setting IsPrizeMeet to false, unset the value in the collection so it doesn't exist.
 	Research change range and aggregate form to use only one form instead of one for each table row
 
 Scoreboard
@@ -53,8 +52,7 @@ General
 	Feature  Favicon and Setup icon
 	Feature  Add help docs into forms and table headings
 	Feature  Connect 404 Missing page
-	Security How to target the submit button to go onto a new line?
-	Security The project relies upon each file being available. Each page should be self sufficient once the base files are loaded. prod, httpgzip, utils, settings, form, schema, template
+	Research The project relies upon each file being available. Each page should be self sufficient once the base files are loaded. prod, httpgzip, utils, settings, form, schema, template
 
 Documentation
 	Feature  add a page how to use EventBucket via multiple people at once.
@@ -64,10 +62,10 @@ Documentation
 	Feature  running a prize meeting
 
 About
-	Feature  technologies?
-	Feature  about me?
-	Feature  additional Mac or linux versions may be available if you make it worth my while
-	Feature  I don't support installing EventBucket on iOS(TM) or Android(TM). However they can happily access EventBucket via your local wifi network using the Google Chrome internet browser
+	Research  technologies?
+	Research  about me?
+	Research  additional Mac or linux versions may be available if you make it worth my while
+	Research  I don't support installing EventBucket on iOS(TM) or Android(TM). However they can happily access EventBucket via your local wifi network using the Google Chrome internet browser
 
 
 
@@ -85,6 +83,7 @@ Shooter entry:
 	previous club names appear from browser cahce when they are not available
 event-entry
 	hook up grades and settings to event entry
+	add a form to change a shooters details - name, club, change class/grade, age group
 totalscores
 	shooter list is not ordered by grade
 organisers
@@ -154,9 +153,9 @@ ACE IMPROVEMENTS
 
 WONT FIX
 	test the installer on windows XP - is no longer supported
-
-
-
+	How to target the submit button to go onto a new line? Can be done with display: block but it takes up too much screen real estate
+	delete range a reange from a prize meeting - use loc instead and remove the range from any aggregates
+	Event Shooter entry: set default club to current club
 
 
 

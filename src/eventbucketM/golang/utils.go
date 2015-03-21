@@ -24,7 +24,7 @@ func exists(dict M, key string) string {
 
 func strToInt(input interface{}) (int, error) {
 	//TODO remove this old version
-	Error.Println("remove this old version of strToInt")
+	//	Error.Println("remove this old version of strToInt")
 	return strconv.Atoi(fmt.Sprintf("%v", input))
 }
 

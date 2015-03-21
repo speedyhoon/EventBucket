@@ -79,7 +79,7 @@ func scoreboard(url string) Page {
 		}
 		var display string
 		if shoot_off {
-			scoreBoardLegendOnOff["ShootOff"] = true
+			scoreBoardLegendOnOff["Shoot Off"] = true
 			display = "="
 			shoot_off = false
 			shoot_equ = false
