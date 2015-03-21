@@ -65,15 +65,12 @@ type RangeProperty struct {
 
 type Score struct {
 	//TODO the schema should change so that it can use unsigned 64 bit numbers instead
-	Total int `bson:"t"`
-	//	Total uint64								`bson:"t"`
-	Shots   string `bson:"s,omitempty"`
-	Centers int    `bson:"c,omitempty"`
-	//	Centers uint64								`bson:"c"`
+	Total      int    `bson:"t"`
+	Centers    int    `bson:"c,omitempty"`
+	Shots      string `bson:"s,omitempty"`
 	CountBack1 string `bson:"v,omitempty"`
-	//	CountBack2 string							`bson:"x,omitempty"`
-	//	Xs string									`bson:"u,omitempty"` //This might be handy for the future?
-	Position int `bson:"p,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
+	ShootOff   int    `bson:"o,omitempty"`
+	Position   int    `bson:"p,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
 }
 
 type EventShooter struct {
