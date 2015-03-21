@@ -3,10 +3,10 @@
 	{{HTM .}}
 {{end}}
 
-{{Fieldset "Clubs"}}
-	{{with.ClubList}}
+{{with.ClubList}}
+	{{Fieldset "Clubs"}}
 		{{range.}}
 			<p><a href=/club/{{.Id}}>{{.Name}}</a></p>
 		{{end}}
-	{{end}}
-{{EndFieldset}}
+	{{EndFieldset}}
+{{end}}
