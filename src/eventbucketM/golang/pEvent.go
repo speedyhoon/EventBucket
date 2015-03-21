@@ -161,16 +161,20 @@ func eventUpdateShooter(w http.ResponseWriter, r *http.Request) {
 	validatedValues := checkForm(eventUpdateShooterForm(Event{}, EventShooter{}, []Option{}).Inputs, r)
 	eventId := validatedValues["eventid"]
 	shooterId := validatedValues["sid"]
-	http.Redirect(w, r, URL_event+eventId, http.StatusSeeOther)
-	updateData := M{Dot(schemaSHOOTER, shooterId): M{
-		"f": validatedValues["first"],
-		"s": validatedValues["surname"],
-		"c": validatedValues["club"],
-		"g": str2Int(validatedValues["grade"]),
-		"b": validatedValues["disabled"] != "",
-		"a": validatedValues["age"],
-	}}
-	tableUpdateData(TBLevent, eventId, updateData)
+	if eventId != "" && shooterId != "" {
+		http.Redirect(w, r, URL_event+eventId, http.StatusSeeOther)
+		updateData := M{Dot(schemaSHOOTER, shooterId): M{
+			"f": validatedValues["first"],
+			"s": validatedValues["surname"],
+			"c": validatedValues["club"],
+			"g": str2Int(validatedValues["grade"]),
+			"b": validatedValues["disabled"] != "",
+			"a": validatedValues["age"],
+		}}
+		tableUpdateData(TBLevent, eventId, updateData)
+		return
+	}
+	http.Redirect(w, r, URL_home, http.StatusSeeOther)
 }
 
 func dataListShooterClubNames() []Option {

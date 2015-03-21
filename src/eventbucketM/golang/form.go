@@ -23,23 +23,27 @@ func generateForm(form Form) string {
 			attributes = formAttr
 			options = ""
 			output = ""
-			devModeCheckForm(input.Html != "submit" || input.Html != "number" || input.Html != "text" || input.Html != "range" || input.Html != "datalist" || input.Html != "select" || input.Html != "date" || input.Html != "hidden", "don't use element "+input.Html)
+			//devModeCheckForm(input.Html != "submit" || input.Html != "number" || input.Html != "text" || input.Html != "range" || input.Html != "datalist" || input.Html != "select" || input.Html != "date" || input.Html != "hidden", "don't use element "+input.Html)
 
 			inputValue = fmt.Sprintf("%v", input.Value)
 			if input.Html != "submit" {
 				if input.Name != "" {
 					attributes += " name=" + input.Name
-					devModeCheckForm(input.Name == addQuotes(input.Name), "names can't have spaces")
+					//devModeCheckForm(input.Name == addQuotes(input.Name), "names can't have spaces")
 				}
 				if input.Value != nil && inputValue != "" {
 					attributes += " value=" + addQuotes(inputValue)
-					devModeCheckForm(input.Html != "select", "select boxes shouldn't have a value attribute")
+					//devModeCheckForm(input.Html != "select", "select boxes shouldn't have a value attribute")
 				}
 			} else {
 				if input.Html == "submit" && input.Action != "" {
 					attributes += " formaction=" + input.Action
 				}
-				devModeCheckForm(inputValue != "", "submits should have a value")
+				//devModeCheckForm(inputValue != "", "submits should have a value")
+				if input.Name != "" {
+					attributes += " name=" + input.Name
+					//devModeCheckForm(input.Name == addQuotes(input.Name), "names can't have spaces")
+				}
 			}
 			if input.Action != "" {
 				attributes += " formaction=" + input.Action
@@ -47,20 +51,20 @@ func generateForm(form Form) string {
 			inputValue = fmt.Sprintf("%v", input.Value)
 			if input.Value != nil && inputValue != "" {
 				attributes += " value=" + addQuotes(inputValue)
-				devModeCheckForm(input.Html != "select", "select boxes shouldn't have a value attribute")
+				//devModeCheckForm(input.Html != "select", "select boxes shouldn't have a value attribute")
 			}
 			if input.Required {
 				attributes += " required"
-				devModeCheckForm(input.Html == "number" || input.Html == "text" || input.Html == "range" || input.Html == "datalist" || input.Html == "date" || input.Html == "select" || input.Html == "tel", "this element shouldn't have required, type="+input.Html)
+				//devModeCheckForm(input.Html == "number" || input.Html == "text" || input.Html == "range" || input.Html == "datalist" || input.Html == "date" || input.Html == "select" || input.Html == "tel", "this element shouldn't have required, type="+input.Html)
 			}
 			if input.Placeholder != "" && input.Html != "select" {
 				attributes += " placeholder=" + addQuotes(input.Placeholder)
-				devModeCheckForm(input.Html == "text" || input.Html == "number" || input.Html == "range" || input.Html == "datalist", "placeholders are only allowed on text, datalist, number and ranges")
+				//devModeCheckForm(input.Html == "text" || input.Html == "number" || input.Html == "range" || input.Html == "datalist", "placeholders are only allowed on text, datalist, number and ranges")
 			}
 			if input.Min != nil {
 				if input.Html == "number" || input.Html == "range" {
 					attributes += fmt.Sprintf(" min=%v", *input.Min)
-					devModeCheckForm(input.Html == "number" || input.Html == "range", "min is only allowed on type  number and range")
+					//devModeCheckForm(input.Html == "number" || input.Html == "range", "min is only allowed on type  number and range")
 				} else if input.Html == "text" || input.Html == "email" || input.Html == "search" || input.Html == "password" || input.Html == "tel" || input.Html == "url" {
 					attributes += fmt.Sprintf(" minlength=%v", *input.Min)
 				}
@@ -68,18 +72,18 @@ func generateForm(form Form) string {
 			if input.Max != nil {
 				if input.Html == "number" || input.Html == "range" {
 					attributes += fmt.Sprintf(" max=%v", *input.Max)
-					devModeCheckForm(input.Html == "number" || input.Html == "range", "max is only allowed on type  number and range")
+					//devModeCheckForm(input.Html == "number" || input.Html == "range", "max is only allowed on type  number and range")
 				} else if input.Html == "text" || input.Html == "email" || input.Html == "search" || input.Html == "password" || input.Html == "tel" || input.Html == "url" {
 					attributes += fmt.Sprintf(" maxlength=%v", *input.Min)
 				}
 			}
 			if input.Step != 0 {
 				attributes += fmt.Sprintf(" step=%v", input.Step)
-				devModeCheckForm(input.Html == "number" || input.Html == "range", "step is only allowed on type  number and range")
+				//devModeCheckForm(input.Html == "number" || input.Html == "range", "step is only allowed on type  number and range")
 			}
 			if input.Checked {
 				attributes += " checked"
-				devModeCheckForm(input.Html == "radio" || input.Html == "checkbox", "checked is only valid on radio buttons and checkboxes")
+				//devModeCheckForm(input.Html == "radio" || input.Html == "checkbox", "checked is only valid on radio buttons and checkboxes")
 			}
 			if input.Autofocus == "on" {
 				attributes += " autofocus"
@@ -89,20 +93,20 @@ func generateForm(form Form) string {
 			}
 			if input.Size > 0 {
 				attributes += fmt.Sprintf(" size=%d", input.Size)
-				devModeCheckForm(input.Html == "select", "size is only allowed on select tags")
-				devModeCheckForm(input.Size >= 4, "size should be >= 4")
+				//devModeCheckForm(input.Html == "select", "size is only allowed on select tags")
+				//devModeCheckForm(input.Size >= 4, "size should be >= 4")
 			}
 			if input.AutoComplete != "" {
 				attributes += " autocomplete=" + input.AutoComplete
-				devModeCheckForm(input.Html == "datalist", "autocomplete is only allowed on datalist tags")
+				//devModeCheckForm(input.Html == "datalist", "autocomplete is only allowed on datalist tags")
 			}
 			if input.MultiSelect {
 				attributes += " multiple"
 				if len(input.Options) > 4 {
 					attributes += fmt.Sprintf(" size=%d", len(input.Options))
 				}
-				devModeCheckForm(input.Html == "select", "multiple is only available on select boxes")
-				devModeCheckForm(input.Html != "submit", "buttons and submits shouldn't have multiple")
+				//devModeCheckForm(input.Html == "select", "multiple is only available on select boxes")
+				//devModeCheckForm(input.Html != "submit", "buttons and submits shouldn't have multiple")
 			}
 			if len(input.Options) > 0 {
 				options = drawOptions(input)
@@ -144,7 +148,7 @@ func generateForm(form Form) string {
 					input.Error = " " + input.Error
 				}
 				output += "<label" + errorClass + ">" + input.Label + ": " + element + input.Error + "</label>"
-				devModeCheckForm(input.Html != "submit" || input.Html != "button", "submits and buttons shouldn't have lables")
+				//devModeCheckForm(input.Html != "submit" || input.Html != "button", "submits and buttons shouldn't have lables")
 			} else if element != "" {
 				output += element
 			}
@@ -168,15 +172,15 @@ func generateForm(form Form) string {
 	if form.Title != "" {
 		output = fieldSet(form.Title) + output + "</fieldset>"
 	} else {
-		devModeCheckForm(false, "all forms should have a title")
+		//devModeCheckForm(false, "all forms should have a title")
 	}
 	return fmt.Sprintf("<form%v action=%v method=post>%v</form>", formId, addQuotes(form.Action), output)
 }
 
 func drawOptions(input Inputs) string {
-	devModeCheckForm(len(input.Options) > 0, "select should have at least one option to select from for element='"+input.Name+"' type='"+input.Html+"'")
+	//devModeCheckForm(len(input.Options) > 0, "select should have at least one option to select from for element='"+input.Name+"' type='"+input.Html+"'")
 	if input.Required {
-		devModeCheckForm(len(input.Options) > 0, "select shouldn't be required with no available options to select")
+		//devModeCheckForm(len(input.Options) > 0, "select shouldn't be required with no available options to select")
 	}
 	output := ""
 	var optionValue string
@@ -184,17 +188,17 @@ func drawOptions(input Inputs) string {
 		output += "<option"
 		if option.Selected {
 			output += " selected"
-			devModeCheckForm(input.Html != "datalist", "datalist shouldn't have any selected values! change it to a value attribute")
-			devModeCheckForm(!(input.Placeholder != "" && input.Html != "datalist"), "shouldn't set a placeholder when options are already selected")
+			//devModeCheckForm(input.Html != "datalist", "datalist shouldn't have any selected values! change it to a value attribute")
+			//devModeCheckForm(!(input.Placeholder != "" && input.Html != "datalist"), "shouldn't set a placeholder when options are already selected")
 		}
 		optionValue = fmt.Sprintf("%v", option.Value)
 		if optionValue != "" {
 			output += " value=" + addQuotes(optionValue)
 		} else {
-			devModeCheckForm(false, "option values shouldn't be empty")
+			//devModeCheckForm(false, "option values shouldn't be empty")
 		}
 		output += ">" + option.Display + "</option>"
-		devModeCheckForm(!(option.Display == "" && option.Value == "" && option.Selected == false), "option must have display text")
+		//devModeCheckForm(!(option.Display == "" && option.Value == "" && option.Selected == false), "option must have display text")
 	}
 	if input.DataList {
 		output = "<datalist id=" + input.Id + ">" + output + "</datalist>"

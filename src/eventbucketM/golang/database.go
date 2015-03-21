@@ -486,6 +486,7 @@ func eventUpsertData(eventId string, data M) {
 
 func tableUpdateData(collectionName, documentId string, data M) {
 	change := mgo.Change{
+		Upsert: false,
 		Update: M{"$set": data},
 	}
 	conn.C(collectionName).FindId(documentId).Apply(change, make(M))

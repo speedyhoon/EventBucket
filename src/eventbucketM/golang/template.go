@@ -132,6 +132,7 @@ var EventMenuItems = []Menu{
 func eventMenu(eventId string, eventRanges []Range, pageUrl string, isPrizeMeet bool) string {
 	menu := "<ul>"
 	selected := ""
+	closeMenu := false
 	for _, menuItem := range EventMenuItems {
 		if menuItem.Link == pageUrl {
 			selected = " class=v"
@@ -140,18 +141,21 @@ func eventMenu(eventId string, eventRanges []Range, pageUrl string, isPrizeMeet 
 			if (isPrizeMeet && menuItem.Link != URL_totalScores) || !isPrizeMeet {
 				//The a tag is needed for my ipad
 				if len(eventRanges) >= 1 {
-					menu += fmt.Sprintf("<li%v><a href=#>%v</a><ul>", selected, menuItem.Name)
+					var menuRangeItems string
 					for rangeId, range_item := range eventRanges {
 						if !range_item.IsAgg && !range_item.Hidden {
-							menu += fmt.Sprintf("<li><a href=%v%v/%v>%v - %v</a></li>", menuItem.Link, eventId, rangeId, rangeId, range_item.Name)
+							menuRangeItems += fmt.Sprintf("<li><a href=%v%v/%v>%v - %v</a></li>", menuItem.Link, eventId, rangeId, rangeId, range_item.Name)
 						}
 					}
-					menu += "</ul></li>"
+					if menuRangeItems != "" {
+						menu += fmt.Sprintf("<li%v><a href=#>%v</a><ul>%v</ul></li>", selected, menuItem.Name, menuRangeItems)
+						closeMenu = true
+					}
 				}
 			}
 		} else if menuItem.Name == "Close Menu" {
 			//Don't show the close menu item when there are no ranges available
-			if len(eventRanges) >= 1 {
+			if len(eventRanges) >= 1 && closeMenu {
 				menu += fmt.Sprintf("<li%v><a href=%v>%v</a></li>", selected, addQuotes(menuItem.Link), menuItem.Name)
 			}
 		} else {
