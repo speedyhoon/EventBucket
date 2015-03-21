@@ -174,7 +174,7 @@ func generateForm(form Form) string {
 }
 
 func drawOptions(input Inputs) string {
-	devModeCheckForm(len(input.Options) > 0, "select should have at least one option to select from for element='"+name+"' type='"+input.Html+"'")
+	devModeCheckForm(len(input.Options) > 0, "select should have at least one option to select from for element='"+input.Name+"' type='"+input.Html+"'")
 	if input.Required {
 		devModeCheckForm(len(input.Options) > 0, "select shouldn't be required with no available options to select")
 	}
