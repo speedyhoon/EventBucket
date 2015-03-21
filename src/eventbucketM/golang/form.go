@@ -36,16 +36,16 @@ func generateForm(form Form) string {
 					//devModeCheckForm(input.Html != "select", "select boxes shouldn't have a value attribute")
 				}
 			} else {
-				if input.Action != "" {
+				if input.Html == "submit" && input.Action != "" {
 					attributes += " formaction=" + input.Action
 				}
 				//devModeCheckForm(inputValue != "", "submits should have a value")
 			}
 
-			if input.Name != "" {
+			/*if input.Name != "" {
 				attributes += " name=" + input.Name
 				//devModeCheckForm(input.Name == addQuotes(input.Name), "names can't have spaces")
-			}
+			}*/
 			if input.Action != "" {
 				attributes += " formaction=" + input.Action
 			}
@@ -121,13 +121,10 @@ func generateForm(form Form) string {
 			if input.Html == "select" {
 				element += "<select" + attributes + ">" + options + "</select>"
 			} else if input.Html == "submit" {
-				if inputValue != "" && input.Inner != "" {
+				if input.Value != nil && inputValue != "" && input.Inner != "" {
 					attributes += " value=" + addQuotes(inputValue)
 				}
-				if input.Inner != "" {
-					inputValue = input.Inner
-				}
-				output += "<button" + attributes + ">" + inputValue + "</button>"
+				output += "<button" + attributes + ">" + input.Inner + "</button>"
 			} else {
 				if input.DataList && options != "" {
 					if input.Id == "" {
