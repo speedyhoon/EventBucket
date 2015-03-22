@@ -166,7 +166,7 @@ func randomDataTotalScores(eventId, rangeId string) {
 			"eventid":		{eventid},
 		})
 		resp.Body.Close()*/
-		range_Id, err := strToInt(rangeId)
+		range_Id, err := strconv.Atoi(rangeId)
 		if err == nil {
 			eventTotalScoreUpdate(eventId, range_Id, []int{shooter_id}, Score{
 				Total:   rand.Intn(51),
