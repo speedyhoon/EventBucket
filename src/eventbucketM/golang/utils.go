@@ -22,12 +22,6 @@ func exists(dict M, key string) string {
 	return ""
 }
 
-func strToInt(input interface{}) (int, error) {
-	//TODO remove this old version
-	//	Error.Println("remove this old version of strToInt")
-	return strconv.Atoi(fmt.Sprintf("%v", input))
-}
-
 func str2Int(input interface{}) int {
 	number, err := strconv.Atoi(fmt.Sprintf("%v", input))
 	if err != nil {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"strconv"
 )
 
 func club(clubId string) Page {
@@ -132,7 +133,7 @@ func clubMoundInsert(w http.ResponseWriter, r *http.Request) {
 		Error.Println("Unable to insert Mound")
 		return
 	}
-	distance, _ := strToInt(validatedValues["distance"])
+	distance, _ := strconv.Atoi(validatedValues["distance"])
 	moundId := validatedValues["moundid"]
 	newMound := Mound{
 		Id:       club.AutoInc.Mound,
@@ -141,7 +142,7 @@ func clubMoundInsert(w http.ResponseWriter, r *http.Request) {
 		Unit:     validatedValues["unit"],
 	}
 	if moundId != "" {
-		newMound.Id, err = strToInt(moundId)
+		newMound.Id, err = strconv.Atoi(moundId)
 		if err != nil {
 			Error.Println("Unable to update club")
 			return

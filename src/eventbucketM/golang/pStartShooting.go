@@ -17,7 +17,7 @@ func startShootingAll(data string) Page {
 func startShooting_Data(data string, showAll bool) Page {
 	arr := strings.Split(data, "/")
 	eventId := arr[0]
-	rangeId, err := strToInt(arr[1])
+	rangeId, err := strconv.Atoi(arr[1])
 	event, _ := getEvent(eventId)
 	var titleAll string
 	if showAll {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"strconv"
 )
 
 func totalScores(data string) Page {
@@ -18,7 +19,7 @@ func totalScores_Data(data string, showAll bool) Page {
 	arr := strings.Split(data, "/")
 	eventId := arr[0]
 	range_Id := arr[1]
-	rangeId, err := strToInt(range_Id)
+	rangeId, err := strconv.Atoi(range_Id)
 	event, eventMissing := getEvent(eventId)
 	currentRange := event.Ranges[rangeId]
 	var titleAll string
@@ -118,13 +119,13 @@ func updateTotalScores(w http.ResponseWriter, r *http.Request) {
 		rangeId := validatedValues["rangeid"].(int)
 		shooterId := validatedValues["shooterid"].(int)
 		score := strings.Split(validatedValues["score"].(string), ".")
-		total, err := strToInt(score[0])
+		total, err := strconv.Atoi(score[0])
 		if total > 0 && err == nil {
 			new_score := Score{Total: total}
 			var centers int
-			centers, err = strToInt(score[1])
+			centers, err = strconv.Atoi(score[1])
 			if len(score) > 1 && score[1] != "" && centers > 0 && err == nil {
-				centers, _ := strToInt(score[1])
+				centers, _ := strconv.Atoi(score[1])
 				new_score.Centers = centers
 			}
 			shooterIds := []int{shooterId}
@@ -144,7 +145,7 @@ func searchForAggs(ranges []Range, rangeId int) []int {
 	for _, rangeObj := range ranges {
 		if len(rangeObj.Aggregate) > 0 {
 			for _, thisRangeId := range rangeObj.Aggregate {
-				num, err = strToInt(thisRangeId)
+				num, err = strconv.Atoi(thisRangeId)
 				if err == nil && num == rangeId {
 					aggFound = append(aggFound, *rangeObj.Id)
 				}
@@ -197,7 +198,7 @@ func eventCalculateAggs(event Event, shooterId int, ranges []string) Event {
 		event.Shooters[shooterId].Scores = make(map[string]Score)
 	}
 	for _, _agg_id := range ranges {
-		agg_id, _ := strToInt(_agg_id)
+		agg_id, _ := strconv.Atoi(_agg_id)
 		total := 0
 		centers := 0
 		count_back1 := ""
