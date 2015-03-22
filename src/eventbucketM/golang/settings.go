@@ -326,6 +326,17 @@ func grades() []Grade {
 	}
 }
 
+func AgeGroupDisplay(value string) string {
+	if value != "N" {
+		for _, ageGroup := range AgeGroups() {
+			if value == ageGroup.Value {
+				return ageGroup.Display
+			}
+		}
+	}
+	return ""
+}
+
 func AgeGroups() []Option {
 	return []Option{
 		0: {
@@ -364,28 +375,27 @@ func shooterAgeGroupSelectbox(shooter EventShooter) []Option {
 type Legend struct {
 	//To access a field in HTML a struct, it must start with an uppercase letter. Other wise it will output error: xxx is an unexported field of struct type main.Legend
 	CssClass, Name string
-	On             bool
 }
 
 const (
-	LEGEND_FIRST                  = 0
-	LEGEND_SECOND                 = 1
-	LEGEND_THIRD                  = 2
-	LEGEND_HIGHEST_POSSIBLE_SCORE = 3
-	LEGEND_SHOOT_OFF              = 4
-	LEGEND_INCOMPLETE_SCORE       = 5
-	LEGEND_NO_SCORE               = 6
+	LEGEND_SHOOT_OFF              = 1
+	LEGEND_NO_SCORE               = 2
+	LEGEND_INCOMPLETE_SCORE       = 3
+	LEGEND_HIGHEST_POSSIBLE_SCORE = 4
+	LEGEND_FIRST                  = 5
+	LEGEND_SECOND                 = 6
+	LEGEND_THIRD                  = 7
 )
 
-func scoreBoardLegend() [7]Legend {
-	return [7]Legend{
-		{CssClass: "ST", Name: "First"},
-		{CssClass: "ND", Name: "Second"},
-		{CssClass: "TH", Name: "Third"},
+func scoreBoardLegend() []Legend {
+	return []Legend{
 		{CssClass: "w4", Name: "Highest Possible Score"},
 		{CssClass: "w1", Name: "Shoot Off"},
 		{CssClass: "w3", Name: "Incomplete Score"},
 		{CssClass: "w2", Name: "No Score"},
+		{CssClass: "p1", Name: "1st"},
+		{CssClass: "p2", Name: "2nd"},
+		{CssClass: "p3", Name: "3rd"},
 	}
 }
 
