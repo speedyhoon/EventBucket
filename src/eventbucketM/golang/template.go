@@ -88,10 +88,10 @@ func generator(w http.ResponseWriter, fillin string, viewController Page) {
 		"VAR2STR": func(input interface{}) string {
 			return fmt.Sprintf("%v", input)
 		},
+		"AgeGroupDisplay": func(value string) string {
+			return AgeGroupDisplay(value)
+		},
 		"POSITION": func(score Score) template.HTMLAttr {
-			if score.ShootOff != 0 {
-				return template.HTMLAttr(" class=w1")
-			}
 			if score.Warning != 0 {
 				return template.HTMLAttr(fmt.Sprintf(" class=w%v", score.Warning))
 			}

@@ -22,14 +22,13 @@
 	</tr>
 	{{range $shooter := .ListShooters}}
 		{{if .GradeSeparator}}
-			<tr><td colspan=99 class=cnr>{{CLASSLONG .Grade}}</td></tr>
-			<tr><td colspan=99 class=rS></td></tr>
+			<tr><td colspan=99 class=classHeadingRow>{{CLASSLONG .Grade}}<a href=//eventbucket.com.au target=_blank class=r>EventBucket.com.au</a></td></tr>
 		{{end}}
 		<tr>
 			<td{{CSSclass "w" .Warning}}>{{.Position}}</td>
 			<td class=tc>{{.FirstName}} {{.Surname}}</td>
 			<td>{{.Club}}</td>
-			<td>{{.AgeGroup}}</td>
+			<td>{{AgeGroupDisplay .AgeGroup}}</td>
 			{{range $rangeId, $rangeObj := $.ListRanges}}
 				{{if not .Hidden}}
 					{{$new_range_id := VAR2STR $rangeId}}
@@ -47,9 +46,7 @@
 		<td colspan=99 class=legend>
 			{{with .Legend}}
 				Legend: {{range $index, $legend := .}}
-					{{if $legend.On}}
-						<label class={{$legend.CssClass}}>{{$legend.Name}}</label>
-					{{end}}
+					<label class={{$legend.CssClass}}>{{$legend.Name}}</label>
 				{{end}}
 			{{end}}
 			<span class=r>Powered by <a href=//eventbucket.com.au target=_blank>EventBucket.com.au</a></span>

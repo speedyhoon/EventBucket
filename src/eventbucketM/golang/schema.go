@@ -69,7 +69,6 @@ type Score struct {
 	Centers    int    `bson:"c,omitempty"`
 	Shots      string `bson:"s,omitempty"` //Don't include this in the scoreboard struct when using a different []EventShooter
 	CountBack1 string `bson:"v,omitempty"`
-	ShootOff   int    `bson:"o,omitempty"`
 	Position   int    `bson:"p,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
 	Warning    int    `bson:"y,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
 }
@@ -97,7 +96,6 @@ type EventShooter struct {
 
 	//START-SHOOTING & TOTAL-SCORES
 	GradeSeparator bool `bson:"z,omitempty"` //DON'T SAVE THIS TO DB! used for start-shooting and total-scores only.
-	ClassSeparator bool `bson:"o,omitempty"` //DON'T SAVE THIS TO DB! used for start-shooting and total-scores only.
 	//	Id string									`bson:"w,omitempty"`//DON'T SAVE THIS TO DB! used for start-shooting and total-scores only.
 }
 
