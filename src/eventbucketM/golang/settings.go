@@ -291,6 +291,10 @@ func calculateHPS4Class(classId, numberOdShots int) Score {
 	}
 }
 
+func isScoreHighestPossibleScore(classId, numberOdShots, total, centres int)bool{
+	return DEFAULT_CLASS_SETTINGS[classId].Maximum.Total * numberOdShots == total && DEFAULT_CLASS_SETTINGS[classId].Maximum.Centers * numberOdShots == centres
+}
+
 func calculateHighestPossibleScores(numberOdShots int) []Score {
 	var classHPS []Score
 	for _, class := range DEFAULT_CLASS_SETTINGS {
