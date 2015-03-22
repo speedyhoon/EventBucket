@@ -68,9 +68,8 @@ const (
 	QRCODE     = "qr"
 	DATAMATRIX = "dm"
 
-	//Scoreboard
-	SCOREBOARD_SHOW_WARNING_FOR_ZERO_SCORES    = true
-	SCOREBOARD_IGNORE_POSITION_FOR_ZERO_SCORES = false
+	//Scoreboard Settings
+	SCOREBOARD_IGNORE_POSITION_FOR_ZERO_SCORES = true //true = Don't award shooters a place if they haven't submitted a score, false = shooter without a score is awarded last place (gets 5th when beaten by 4 other shooters)
 
 	//truman Cell -- air purifier
 	//TODO: eventually replace these settings with ones that are set for each club and sometimes overridden by a clubs event settings
@@ -160,6 +159,7 @@ type ClassSettings struct {
 	ValidSighters         []string
 	GradeQty              int
 	Grades                []int
+	Maximum               Score
 }
 
 var (
@@ -203,6 +203,7 @@ var (
 			Buttons:      "012345VX",
 			SightersQty:  2,
 			ShotsQty:     10,
+			Maximum:      Score{Total: 5, Centers: 1},
 			ValidShots: map[string]Score{
 				"-": {Total: 0, Centers: 0, CountBack1: "0"},
 				"0": {Total: 0, Centers: 0, CountBack1: "0"},
@@ -226,6 +227,7 @@ var (
 			Buttons:      "0123456X",
 			SightersQty:  2,
 			ShotsQty:     10,
+			Maximum:      Score{Total: 6, Centers: 1},
 			ValidShots: map[string]Score{
 				"-": {Total: 0, Centers: 0, CountBack1: "0"},
 				"0": {Total: 0, Centers: 0, CountBack1: "0"},
@@ -249,6 +251,7 @@ var (
 			Buttons:      "012345VX",
 			SightersQty:  2,
 			ShotsQty:     15,
+			Maximum:      Score{Total: 5, Centers: 1},
 			ValidShots: map[string]Score{
 				"-": {Total: 0, Centers: 0, CountBack1: "0"},
 				"0": {Total: 0, Centers: 0, CountBack1: "0"},
@@ -280,6 +283,24 @@ var (
 		9: "303 Rifle",
 	}
 )
+
+func calculateHPS4Class(classId, numberOdShots int) Score {
+	return Score{
+		Total:   DEFAULT_CLASS_SETTINGS[classId].Maximum.Total * numberOdShots,
+		Centers: DEFAULT_CLASS_SETTINGS[classId].Maximum.Centers * numberOdShots,
+	}
+}
+
+func calculateHighestPossibleScores(numberOdShots int) []Score {
+	var classHPS []Score
+	for _, class := range DEFAULT_CLASS_SETTINGS {
+		classHPS = append(classHPS, Score{
+			Total:   class.Maximum.Total * numberOdShots,
+			Centers: class.Maximum.Centers * numberOdShots,
+		})
+	}
+	return classHPS
+}
 
 type Grade struct {
 	Name, LongName, ClassName string
@@ -341,18 +362,30 @@ func shooterAgeGroupSelectbox(shooter EventShooter) []Option {
 }
 
 type Legend struct {
-	cssClass, name string
+	//To access a field in HTML a struct, it must start with an uppercase letter. Other wise it will output error: xxx is an unexported field of struct type main.Legend
+	CssClass, Name string
+	On             bool
 }
+
+const (
+	LEGEND_FIRST                  = 0
+	LEGEND_SECOND                 = 1
+	LEGEND_THIRD                  = 2
+	LEGEND_HIGHEST_POSSIBLE_SCORE = 3
+	LEGEND_SHOOT_OFF              = 4
+	LEGEND_INCOMPLETE_SCORE       = 5
+	LEGEND_NO_SCORE               = 6
+)
 
 func scoreBoardLegend() [7]Legend {
 	return [7]Legend{
-		{cssClass: "ST", name: "First"},
-		{cssClass: "ND", name: "Second"},
-		{cssClass: "TH", name: "Third"},
-		{cssClass: "w4", name: "Highest Possible Score"},
-		{cssClass: "w1", name: "Shoot Off"},
-		{cssClass: "w3", name: "Incomplete Score"},
-		{cssClass: "w2", name: "No Score"},
+		{CssClass: "ST", Name: "First"},
+		{CssClass: "ND", Name: "Second"},
+		{CssClass: "TH", Name: "Third"},
+		{CssClass: "w4", Name: "Highest Possible Score"},
+		{CssClass: "w1", Name: "Shoot Off"},
+		{CssClass: "w3", Name: "Incomplete Score"},
+		{CssClass: "w2", Name: "No Score"},
 	}
 }
 

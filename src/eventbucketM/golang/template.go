@@ -91,7 +91,11 @@ func generator(w http.ResponseWriter, fillin string, viewController Page) {
 		"POSITION": func(score Score) template.HTMLAttr {
 			if score.ShootOff != 0 {
 				return template.HTMLAttr(" class=w1")
-			} else if score.Position > 0 {
+			}
+			if score.Warning != 0 {
+				return template.HTMLAttr(fmt.Sprintf(" class=w%v", score.Warning))
+			}
+			if score.Position > 0 {
 				return template.HTMLAttr(fmt.Sprintf(" class=p%v", score.Position))
 			}
 			return template.HTMLAttr("")

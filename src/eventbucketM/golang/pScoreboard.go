@@ -6,138 +6,147 @@ import (
 	"strings"
 )
 
+func addShooterIdsToShooterObjects(eventShooters []EventShooter) []EventShooter {
+	for shooterId := range eventShooters {
+		eventShooters[shooterId].Id = shooterId
+	}
+	return eventShooters
+}
+
 func scoreboard(url string) Page {
 	arr := strings.Split(url, "/")
-	eventId := arr[0]
 
-	event, _ := getEvent(eventId)
+	//TODO handle the get event error properly
+	event, _ := getEvent(arr[0])
+
+	//set the range to sort by
 	var sortByRange string
 	if event.SortScoreboard != "" {
 		sortByRange = event.SortScoreboard
 	} else if len(event.Ranges) >= 1 {
-		for event_range := range event.Ranges {
-			sortByRange = fmt.Sprintf("%v", event_range)
-			break
-		}
+		sortByRange = "0"
 	}
 
-	//TODO using a map[string]bool for this is quite inefficient
-	scoreBoardLegendOnOff := make(map[string]bool)
-	for _, legend := range scoreBoardLegend() {
-		scoreBoardLegendOnOff[legend.name] = false
-	}
+	//Add shooter ids to the shooter objects
+	event.Shooters = addShooterIdsToShooterObjects(event.Shooters)
 
-	// Closures that order the Change structure.
-	grade := func(c1, c2 *EventShooter) bool {
-		return c1.Grade < c2.Grade
-	}
-	total := func(c1, c2 *EventShooter) bool {
-		return c1.Scores[sortByRange].Total > c2.Scores[sortByRange].Total
-	}
-	centa := func(c1, c2 *EventShooter) bool {
-		return c1.Scores[sortByRange].Centers > c2.Scores[sortByRange].Centers
-	}
-	cb := func(c1, c2 *EventShooter) bool {
-		return c1.Scores[sortByRange].CountBack1 > c2.Scores[sortByRange].CountBack1
-	}
-
-	var shooter_list []EventShooter
-	for shooterId, shooterList := range event.Shooters {
-		shooterList.Id = shooterId
-		for rangeId, score := range shooterList.Scores {
-			//score.Position = 0
-			shooterList.Scores[rangeId] = score
-		}
-		shooter_list = append(shooter_list, shooterList)
-	}
 	if sortByRange != "" {
-		OrderedBy(grade, total, centa, cb).Sort(shooter_list)
+		//Closures that order the Change structure.
+		grade := func(c1, c2 *EventShooter) bool {
+			return c1.Grade < c2.Grade
+		}
+		total := func(c1, c2 *EventShooter) bool {
+			return c1.Scores[sortByRange].Total > c2.Scores[sortByRange].Total
+		}
+		centres := func(c1, c2 *EventShooter) bool {
+			return c1.Scores[sortByRange].Centers > c2.Scores[sortByRange].Centers
+		}
+		cb := func(c1, c2 *EventShooter) bool {
+			return c1.Scores[sortByRange].CountBack1 > c2.Scores[sortByRange].CountBack1
+		}
+		OrderedBy(grade, total, centres, cb).Sort(event.Shooters)
 	}
 
-	previous_grade := -1
-	previous_class := "" //TODO change to an integer for faster comparisons
-	position := 0
-	shouldBePosition := 0
-	shoot_off := false
-	shoot_equ := false
-	shooter_length := len(shooter_list)
+	previousGrade := -1
+	previousClass := -1
+	shooterQty := len(event.Shooters)
+	var position, shouldBePosition int
+	var shoot_off, shoot_equ bool
 	allGrades := grades()
+	var thisShooterScore Score
+	scoreBoardLegendOnOff := scoreBoardLegend()
+	//classHPS := calculateHighestPossibleScores(10)
 
 	//Loop through all the shooters
-	for index, shooter := range shooter_list {
+	for index, shooter := range event.Shooters {
 		shouldBePosition += 1
-		if shooter.Grade != previous_grade {
-			//reset position back to 1st
+		if shooter.Grade != previousGrade {
+			//reset position back to 1st when the grade has changed
 			position = 1
 			shouldBePosition = 1
-			shooter_list[index].GradeSeparator = true
-			previous_grade = shooter.Grade
-			if allGrades[shooter.Grade].ClassName != previous_class {
-				previous_class = allGrades[shooter.Grade].ClassName
-				shooter_list[index].ClassSeparator = true
+
+			//Add the grade separator row in the table
+			event.Shooters[index].GradeSeparator = true
+			previousGrade = shooter.Grade
+
+			//Add a class label for the following shooters in the table
+			if allGrades[shooter.Grade].ClassId != previousClass {
+				previousClass = allGrades[shooter.Grade].ClassId
+				event.Shooters[index].ClassSeparator = true
 			}
 		} else if !shoot_off && !shoot_equ {
 			position = shouldBePosition
 		}
-		var display string
-		if shoot_off {
-			scoreBoardLegendOnOff["Shoot Off"] = true
-			display = "="
-			shoot_off = false
+		var positionEqual string
+		if shoot_equ || shoot_off {
+			positionEqual = "="
 			shoot_equ = false
-			shooter_list[index].Warning = 1
-		}
-		if shoot_equ {
-			display = "="
-			shoot_equ = false
+
+			if shoot_off {
+				shoot_off = false
+			}
 		}
 
-		this_shooter_score := shooter.Scores[sortByRange]
-		if SCOREBOARD_SHOW_WARNING_FOR_ZERO_SCORES && this_shooter_score.Total == 0 && this_shooter_score.Centers == 0 {
-			scoreBoardLegendOnOff["NoScore"] = true
-			shooter_list[index].Warning = 2
+		thisShooterScore = shooter.Scores[sortByRange]
+		if thisShooterScore.Total == 0 && thisShooterScore.Centers == 0 {
+			scoreBoardLegendOnOff[LEGEND_NO_SCORE].On = true
+			event.Shooters[index].Warning = 2
 			if SCOREBOARD_IGNORE_POSITION_FOR_ZERO_SCORES {
 				position = 0
 			}
 		}
-		if this_shooter_score.Centers == 10 && ((this_shooter_score.Total == 60 && allGrades[shooter.Grade].ClassName == "F Class") || (this_shooter_score.Total == 50 && allGrades[shooter.Grade].ClassName == "Target")) {
-			shooter_list[index].Warning = 4
-			scoreBoardLegendOnOff["HighestPossibleScore"] = true
-		}
-		if index+1 < shooter_length {
-			next_shooter := shooter_list[index+1]
+
+		//Add highest possible score warning to shooters score
+		/*if classHPS[previousClass].Total == thisShooterScore.Total && classHPS[previousClass].Centers == thisShooterScore.Centers {
+			//if thisShooterScore.Centers == 10 && ((thisShooterScore.Total == 60 && allGrades[shooter.Grade].ClassName == "F Class") || (thisShooterScore.Total == 50 && allGrades[shooter.Grade].ClassName == "Target")) {
+			//event.Shooters[index].Warning = 4
+			//			shooter.Scores[sortByRange].Warning = 4
+			thisShooterScore.Warning = 4
+			shooter.Scores[sortByRange] = thisShooterScore
+			scoreBoardLegendOnOff[LEGEND_HIGHEST_POSSIBLE_SCORE].On = true
+		}*/
+
+		//Calculate if there is a shoot off needed for the next shooter
+		if index+1 < shooterQty {
+			//Cache the next shooters details
+			next_shooter := event.Shooters[index+1]
 			next_shooter_score := next_shooter.Scores[sortByRange]
-			if shooter.Grade == next_shooter.Grade &&
-				this_shooter_score.Total == next_shooter_score.Total &&
-				this_shooter_score.Centers == next_shooter_score.Centers &&
-				this_shooter_score.CountBack1 == next_shooter_score.CountBack1 {
-				display = "="
-				if this_shooter_score.Total == 0 {
+
+			//Check if the scores are exactly the same
+			thisShooterScore.Shots = ""
+			next_shooter_score.Shots = ""
+			if shooter.Grade == next_shooter.Grade && thisShooterScore == next_shooter_score {
+				positionEqual = "="
+				if thisShooterScore.Total == 0 {
 					shoot_equ = true
 					if SCOREBOARD_IGNORE_POSITION_FOR_ZERO_SCORES {
 						position = 0
 					}
 				} else {
 					shoot_off = true
-					shooter_list[index].Warning = 1
-					scoreBoardLegendOnOff["ShootOff"] = true
+					event.Shooters[index].Warning = 1
+					event.Shooters[index+1].Warning = 1
+					scoreBoardLegendOnOff[LEGEND_SHOOT_OFF].On = true
 				}
 			}
 		}
+
+		//generate the shooters position e.g. "=33rd"
 		if position > 0 {
-			shooter_list[index].Position = fmt.Sprintf("%v%v", display, ordinal(position))
+			event.Shooters[index].Position = fmt.Sprintf("%v%v", positionEqual, ordinal(position))
 		}
 	}
 
 	outputer := M{
 		"Title":          "Scoreboard",
-		"EventId":        arr[0],
+		"EventId":        event.Id,
 		"EventName":      event.Name,
-		"ListShooters":   shooter_list,
+		"ListShooters":   event.Shooters,
 		"ListRanges":     event.Ranges,
 		"Css":            "scoreboard.css",
-		"Legend":         render_legend(scoreBoardLegendOnOff),
-		"menu":           eventMenu(eventId, event.Ranges, URL_scoreboard, event.IsPrizeMeet),
+		"Legend":         scoreBoardLegendOnOff,
+		"menu":           eventMenu(event.Id, event.Ranges, URL_scoreboard, event.IsPrizeMeet),
+		"SortByRange":    -1,
 		"SortScoreboard": "",
 	}
 	if len(event.Ranges) >= 1 {
@@ -150,16 +159,6 @@ func scoreboard(url string) Page {
 		Theme:        TEMPLATE_EMPTY,
 		Data:         outputer,
 	}
-}
-
-func render_legend(items_status map[string]bool) string {
-	labels := []string{}
-	for _, legend := range scoreBoardLegend() {
-		if items_status[legend.name] {
-			labels = append(labels, fmt.Sprintf("<label class=%v>%v</label>", legend.cssClass, legend.name))
-		}
-	}
-	return strings.Join(labels, " ")
 }
 
 type lessFunc func(p1, p2 *EventShooter) bool

@@ -67,10 +67,11 @@ type Score struct {
 	//TODO the schema should change so that it can use unsigned 64 bit numbers instead
 	Total      int    `bson:"t"`
 	Centers    int    `bson:"c,omitempty"`
-	Shots      string `bson:"s,omitempty"`
+	Shots      string `bson:"s,omitempty"` //Don't include this in the scoreboard struct when using a different []EventShooter
 	CountBack1 string `bson:"v,omitempty"`
 	ShootOff   int    `bson:"o,omitempty"`
 	Position   int    `bson:"p,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
+	Warning    int    `bson:"y,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
 }
 
 type EventShooter struct {

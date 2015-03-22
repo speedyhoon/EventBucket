@@ -49,9 +49,9 @@
 							{{end}}
 							{{$lenth_this_shot := index $class_shots_length $tempClass}}
 							<th{{COLSPAN $longest_shots $lenth_this_shot}} class=t>
-							{{with $range_scores}}
-								{{.Total}}{{with .Centers}}.{{.}}{{end}}
-							{{end}}
+								{{with $range_scores}}
+									{{.Total}}{{with .Centers}}<sup>{{.}}</sup>{{end}}
+								{{end}}
 							</th>
 						</tr>
 					{{end}}

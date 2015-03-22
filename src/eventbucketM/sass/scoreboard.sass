@@ -74,16 +74,17 @@ td.SB
 	color: #faf
 
 
-//Legend
-.leg
+.legend
 	padding: 0 5px
 	text-align: left
 
-.leg label
-	border: 0 solid #000
-	border-width: 0 1px
-	display: inline-block
-	padding: 0 5px
+	label
+		border-right: 1px solid #000
+		display: inline-block
+		padding: 0 5px
+
+		&:first-child
+			border-left: 1px solid #000
 
 +float-right()
 
