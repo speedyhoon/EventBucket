@@ -61,9 +61,6 @@
 
 {{if .Valid}}
 	{{Fieldset "Entry List"}}
-		{{if ge .ShooterQty 20}}
-			Displaying the last 20 shooters entered.
-		{{end}}
 		{{with .EditShooterList}}
 			<table>
 				<tr>
