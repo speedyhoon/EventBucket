@@ -92,6 +92,9 @@ func generator(w http.ResponseWriter, fillin string, viewController Page) {
 			return AgeGroupDisplay(value)
 		},
 		"POSITION": func(score Score) template.HTMLAttr {
+			if score.Total == 0 && score.Centers == 0 {
+				return template.HTMLAttr(fmt.Sprintf(" class=w%v", LEGEND_NO_SCORE))
+			}
 			if score.Warning != 0 {
 				return template.HTMLAttr(fmt.Sprintf(" class=w%v", score.Warning))
 			}
