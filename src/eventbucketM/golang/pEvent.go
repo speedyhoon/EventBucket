@@ -21,7 +21,7 @@ func shooterInsert(w http.ResponseWriter, r *http.Request) {
 }
 
 func event(eventId string) Page {
-	event, err := getEvent20Shooters(eventId)
+	event, err := getEvent(eventId)
 	if err != nil {
 		return Page{
 			TemplateFile: "event",

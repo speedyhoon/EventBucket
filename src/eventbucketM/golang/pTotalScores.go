@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"strings"
 	"strconv"
+	"strings"
 )
 
 func totalScores(data string) Page {
@@ -145,7 +145,7 @@ func searchForAggs(ranges []Range, rangeId int) []int {
 	for _, rangeObj := range ranges {
 		if len(rangeObj.Aggregate) > 0 {
 			for _, thisRangeId := range rangeObj.Aggregate {
-				num, err = strconv.Atoi(thisRangeId)
+				num, err = strconv.Atoi(fmt.Sprintf("%v", thisRangeId))
 				if err == nil && num == rangeId {
 					aggFound = append(aggFound, *rangeObj.Id)
 				}
@@ -155,18 +155,18 @@ func searchForAggs(ranges []Range, rangeId int) []int {
 	return aggFound
 }
 func eventSearchForAggs(eventId, rangeId string) []string {
-	var aggs_to_calculate []string
+	var aggsToCalculate []string
 	event, _ := getEvent(eventId)
 	for agg_id, range_data := range event.Ranges {
 		if len(range_data.Aggregate) > 0 {
 			for _, this_rangeId := range range_data.Aggregate {
 				if string(this_rangeId) == rangeId {
-					aggs_to_calculate = append(aggs_to_calculate, fmt.Sprintf("%v", agg_id))
+					aggsToCalculate = append(aggsToCalculate, fmt.Sprintf("%v", agg_id))
 				}
 			}
 		}
 	}
-	return aggs_to_calculate
+	return aggsToCalculate
 }
 
 func calculateAggs(shooterScores map[string]Score, ranges []int, shooterIds []int, eventRanges []Range) M {
