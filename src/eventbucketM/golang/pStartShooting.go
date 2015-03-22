@@ -151,13 +151,16 @@ func updateShotScores2(w http.ResponseWriter, r *http.Request) {
 	rangeId, rangeErr := strconv.Atoi(validatedValues["rangeid"])
 	shooterId, shooterErr := strconv.Atoi(validatedValues["shooterid"])
 	event, eventErr := getEvent(eventId)
+
 	//Check the score can be saved
 	if rangeErr != nil || shooterErr != nil || eventErr != nil || rangeId >= len(event.Ranges) || event.Ranges[rangeId].Locked || event.Ranges[rangeId].IsAgg {
 		http.NotFound(w, r)
 		return
 	}
+
 	//Calculate the score based on the shots given
 	newScore := calcTotalCentres(validatedValues["shots"], grades()[event.Shooters[shooterId].Grade].ClassId)
+
 	//Return the score to the client
 	if newScore.Centers > 0 {
 		fmt.Fprintf(w, "%v<sup>%v</sup>", newScore.Total, newScore.Centers)
@@ -188,26 +191,26 @@ func updateShootersScores(newScore Score, shooterId, rangeId int, event Event) {
 
 //This function assumes all validation on input "shots" has at least been done!
 //AND input "shots" is verified to contain all characters in settings[class].validShots!
-func calcTotalCentres(shots string, class int) Score {
+func calcTotalCentres(shots string, classId int) Score {
 	//TODO need validation to check that the shots given match the required validation given posed by the event. e.g. sighters are not in the middle of the shoot or shot are not missing in the middle of a shoot
 	var total, centres, warning int
 	var countBack string
-	if class >= 0 && class < len(DEFAULT_CLASS_SETTINGS) {
+	if classId >= 0 && classId < len(DEFAULT_CLASS_SETTINGS) {
+
 		//Ignore the first sighter shots from being added to the total score. Unused sighters should be still be present in the data passed
-		for _, shot := range strings.Split(shots[DEFAULT_CLASS_SETTINGS[class].SightersQty:], "") {
-			total += DEFAULT_CLASS_SETTINGS[class].ValidShots[shot].Total
-			centres += DEFAULT_CLASS_SETTINGS[class].ValidShots[shot].Centers
+		for _, shot := range strings.Split(shots[DEFAULT_CLASS_SETTINGS[classId].SightersQty:], "") {
+			total += DEFAULT_CLASS_SETTINGS[classId].ValidShots[shot].Total
+			centres += DEFAULT_CLASS_SETTINGS[classId].ValidShots[shot].Centers
 
 			//Append count back in reverse order so it can be ordered by the last few shots
-			countBack = DEFAULT_CLASS_SETTINGS[class].ValidShots[shot].CountBack1 + countBack
+			countBack = DEFAULT_CLASS_SETTINGS[classId].ValidShots[shot].CountBack1 + countBack
 			if shot == "-" {
-				warning = 3
+				warning = LEGEND_INCOMPLETE_SCORE
 			}
 		}
 	}
-	highestPossibleScore := calculateHPS4Class(class, 10)
-	if total == highestPossibleScore.Total && centres == highestPossibleScore.Centers {
-		warning = 4
+	if warning == 0 && isScoreHighestPossibleScore(classId, 10, total, centres) {
+		warning = LEGEND_HIGHEST_POSSIBLE_SCORE
 	}
 	return Score{Total: total, Centers: centres, Shots: shots, CountBack1: countBack, Warning: warning}
 }
