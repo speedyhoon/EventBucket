@@ -156,13 +156,15 @@ func updateShotScores2(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
+	//Calculate the score based on the shots given
 	newScore := calcTotalCentres(validatedValues["shots"], grades()[event.Shooters[shooterId].Grade].ClassId)
 	//Return the score to the client
 	if newScore.Centers > 0 {
-		fmt.Fprintf(w, "%v.%v", newScore.Total, newScore.Centers)
+		fmt.Fprintf(w, "%v<sup>%v</sup>", newScore.Total, newScore.Centers)
 	} else {
 		fmt.Fprintf(w, "%v", newScore.Total)
 	}
+	//Save the score & work out if a shoot off is needed against another shooter
 	go updateShootersScores(newScore, shooterId, rangeId, event)
 }
 
@@ -188,18 +190,26 @@ func updateShootersScores(newScore Score, shooterId, rangeId int, event Event) {
 //AND input "shots" is verified to contain all characters in settings[class].validShots!
 func calcTotalCentres(shots string, class int) Score {
 	//TODO need validation to check that the shots given match the required validation given posed by the event. e.g. sighters are not in the middle of the shoot or shot are not missing in the middle of a shoot
-	var total, centres int
+	var total, centres, warning int
 	var countBack string
 	if class >= 0 && class < len(DEFAULT_CLASS_SETTINGS) {
-		classRules := DEFAULT_CLASS_SETTINGS[class].ValidShots
 		//Ignore the first sighter shots from being added to the total score. Unused sighters should be still be present in the data passed
 		for _, shot := range strings.Split(shots[DEFAULT_CLASS_SETTINGS[class].SightersQty:], "") {
-			total += classRules[shot].Total
-			centres += classRules[shot].Centers
-			countBack = classRules[shot].CountBack1 + countBack
+			total += DEFAULT_CLASS_SETTINGS[class].ValidShots[shot].Total
+			centres += DEFAULT_CLASS_SETTINGS[class].ValidShots[shot].Centers
+
+			//Append count back in reverse order so it can be ordered by the last few shots
+			countBack = DEFAULT_CLASS_SETTINGS[class].ValidShots[shot].CountBack1 + countBack
+			if shot == "-" {
+				warning = 3
+			}
 		}
 	}
-	return Score{Total: total, Centers: centres, Shots: shots, CountBack1: countBack}
+	highestPossibleScore := calculateHPS4Class(class, 10)
+	if total == highestPossibleScore.Total && centres == highestPossibleScore.Centers {
+		warning = 4
+	}
+	return Score{Total: total, Centers: centres, Shots: shots, CountBack1: countBack, Warning: warning}
 }
 
 func startShootingForm(eventId, rangeId, shooterId, shots string) Form {
