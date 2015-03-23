@@ -161,17 +161,21 @@ func updateShotScores2(w http.ResponseWriter, r *http.Request) {
 	//Calculate the score based on the shots given
 	newScore := calcTotalCentres(validatedValues["shots"], grades()[event.Shooters[shooterId].Grade].ClassId)
 
+	//Update the shooters scores so the aggregates are added up properly
+	if event.Shooters[shooterId].Scores == nil {
+		event.Shooters[shooterId].Scores = make(map[string]Score)
+	}
+	event.Shooters[shooterId].Scores[validatedValues["rangeid"]] = newScore
+
 	//Return the score to the client
 	if newScore.Centers > 0 {
 		fmt.Fprintf(w, "%v<sup>%v</sup>", newScore.Total, newScore.Centers)
 	} else {
 		fmt.Fprintf(w, "%v", newScore.Total)
 	}
-	//Save the score & work out if a shoot off is needed against another shooter
-	go updateShootersScores(newScore, shooterId, rangeId, event)
-}
 
-func updateShootersScores(newScore Score, shooterId, rangeId int, event Event) {
+	//TODO possibly save the imediatly but calculate the shooters aggregates after 8 seconds
+	//Save the score & work out if a shoot off is needed against another shooter
 	updateBson := M{Dot(schemaSHOOTER, shooterId, rangeId): newScore}
 	shooterIds := []int{shooterId}
 	//Add any linked shooters to this update
@@ -214,6 +218,18 @@ func calcTotalCentres(shots string, classId int) Score {
 	}
 	return Score{Total: total, Centers: centres, Shots: shots, CountBack1: countBack, Warning: warning}
 }
+
+//TODO off load the grade position and shoot off calculations into another process
+//TODO only calculate the grade positions once a shooter has finished the range
+/*	if light.value {
+	go func() {
+		flasherTicker = time.NewTicker(time.Second*1)
+		for _ = range flasherTicker.C {
+			light.toggle = !light.toggle
+			sendSingleProperty(index, light.toggle)
+		}
+	}()
+}*/
 
 func startShootingForm(eventId, rangeId, shooterId, shots string) Form {
 	temp1 := v8MaxIntegerId

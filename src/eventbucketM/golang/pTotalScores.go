@@ -139,21 +139,22 @@ func updateTotalScores(w http.ResponseWriter, r *http.Request) {
 }
 
 func searchForAggs(ranges []Range, rangeId int) []int {
-	var aggFound []int
-	var num int
+	var aggsFound []int
+	var foundRangeId int
 	var err error
-	for _, rangeObj := range ranges {
+	for indexRangeId, rangeObj := range ranges {
 		if len(rangeObj.Aggregate) > 0 {
-			for _, thisRangeId := range rangeObj.Aggregate {
-				num, err = strconv.Atoi(fmt.Sprintf("%v", thisRangeId))
-				if err == nil && num == rangeId {
-					aggFound = append(aggFound, *rangeObj.Id)
+			for _, strRangeId := range strings.Split(rangeObj.Aggregate, ",") {
+				foundRangeId, err = strconv.Atoi(fmt.Sprintf("%v", strRangeId))
+				if err == nil && foundRangeId == rangeId {
+					aggsFound = append(aggsFound, indexRangeId)
 				}
 			}
 		}
 	}
-	return aggFound
+	return aggsFound
 }
+
 func eventSearchForAggs(eventId, rangeId string) []string {
 	var aggsToCalculate []string
 	event, _ := getEvent(eventId)
@@ -171,20 +172,18 @@ func eventSearchForAggs(eventId, rangeId string) []string {
 
 func calculateAggs(shooterScores map[string]Score, ranges []int, shooterIds []int, eventRanges []Range) M {
 	if shooterScores == nil {
-		//TODO maybe it's best not to proceed when no scores exist
-		shooterScores = make(map[string]Score)
+		return M{}
 	}
 	var total, centers int
-	var countBack, strRangeId string
+	var countBack string
 	updateBson := make(M)
 	for _, aggId := range ranges {
 		total = 0
 		centers = 0
-		for _, rangeId := range eventRanges[aggId].Aggregate {
-			strRangeId = fmt.Sprintf("%v", rangeId)
-			total += shooterScores[strRangeId].Total
-			centers += shooterScores[strRangeId].Centers
-			countBack = shooterScores[strRangeId].CountBack1
+		for _, rangeId := range strings.Split(eventRanges[aggId].Aggregate, ",") {
+			total += shooterScores[rangeId].Total
+			centers += shooterScores[rangeId].Centers
+			countBack = shooterScores[rangeId].CountBack1
 		}
 		for _, shooterId := range shooterIds {
 			updateBson[Dot(schemaSHOOTER, shooterId, aggId)] = Score{Total: total, Centers: centers, CountBack1: countBack}
