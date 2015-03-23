@@ -48,24 +48,26 @@ func scoreboard(url string) Page {
 	previousGrade := -1
 	shooterQty := len(event.Shooters)
 	var position, shouldBePosition int
-	var shootEqual bool
+	var shootEqual, thisExists, nextExists bool
 	var positionEqual string
-	var thisShooterScore Score
+	var nextShooter EventShooter
+	var thisShooterScore, nextShooterScore Score
 
 	//Loop through all the shooters
 	for index, shooter := range event.Shooters {
 		shouldBePosition += 1
+		positionEqual = ""
 		if shooter.Grade != previousGrade {
 			previousGrade = shooter.Grade
 			//reset position back to 1st when the grade has changed
 			position = 1
 			shouldBePosition = 1
+			shootEqual = false
 
 			//Add the grade separator row in the table
 			event.Shooters[index].GradeSeparator = true
 		} else if !shootEqual {
 			position = shouldBePosition
-			positionEqual = ""
 		}
 
 		if shootEqual {
@@ -73,27 +75,18 @@ func scoreboard(url string) Page {
 			shootEqual = false
 		}
 
-		thisShooterScore = shooter.Scores[sortByRange]
-		if thisShooterScore.Total == 0 && thisShooterScore.Centers == 0 {
-			event.Shooters[index].Warning = LEGEND_NO_SCORE
-			//Set the colour for the cell as well
-			thisShooterScore.Warning = LEGEND_NO_SCORE
-			shooter.Scores[sortByRange] = thisShooterScore
-			if SCOREBOARD_IGNORE_POSITION_FOR_ZERO_SCORES {
-				position = 0
-			}
-		}
-
+		//TODO possibly move all this shoot off code into the sub process save score calculations
+		thisShooterScore, thisExists = shooter.Scores[sortByRange]
 		//Calculate if there is a shoot off needed for the next shooter
 		if index+1 < shooterQty {
 			//Cache the next shooters details
-			next_shooter := event.Shooters[index+1]
-			nextShooterScore := next_shooter.Scores[sortByRange]
+			nextShooter = event.Shooters[index+1]
+			nextShooterScore, nextExists = nextShooter.Scores[sortByRange]
 
 			//Check if the scores are exactly the same
 			thisShooterScore.Shots = ""
 			nextShooterScore.Shots = ""
-			if shooter.Grade == next_shooter.Grade && thisShooterScore == nextShooterScore {
+			if shooter.Grade == nextShooter.Grade && thisShooterScore == nextShooterScore {
 				positionEqual = "="
 				shootEqual = true
 				if thisShooterScore.Total != 0 {
@@ -101,9 +94,25 @@ func scoreboard(url string) Page {
 					event.Shooters[index+1].Warning = LEGEND_SHOOT_OFF
 					//Set the colour for the cell as well
 					thisShooterScore.Warning = LEGEND_SHOOT_OFF
-					shooter.Scores[sortByRange] = thisShooterScore
+					if thisExists {
+						//TODO set to default somehow?
+						shooter.Scores[sortByRange] = thisShooterScore
+					} else {
+						event.Shooters[index].Scores = make(map[string]Score)
+						event.Shooters[index].Scores[sortByRange] = Score{
+							Warning: LEGEND_SHOOT_OFF,
+						}
+					}
 					nextShooterScore.Warning = LEGEND_SHOOT_OFF
-					event.Shooters[index+1].Scores[sortByRange] = nextShooterScore
+					if nextExists {
+						//TODO set to default somehow?
+						event.Shooters[index+1].Scores[sortByRange] = nextShooterScore
+					} else {
+						event.Shooters[index+1].Scores = make(map[string]Score)
+						event.Shooters[index+1].Scores[sortByRange] = Score{
+							Warning: LEGEND_SHOOT_OFF,
+						}
+					}
 				}
 			}
 		}

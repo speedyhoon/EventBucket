@@ -120,7 +120,7 @@ func randomData(w http.ResponseWriter, r *http.Request) {
 			totalScores = true
 			break
 		case "startShooting":
-			totalScores = true
+			startShooting = true
 		case "shooterQty":
 			shooterQty, _ = strconv.Atoi(properties[1])
 		}
@@ -129,20 +129,19 @@ func randomData(w http.ResponseWriter, r *http.Request) {
 		Error.Printf("Need a valid event Id to proceed.")
 	}
 	if shooterQty > 0 {
-		go randomDataShooterQty(shooterQty, eventId)
-	}
-	if totalScores {
-		go randomDataTotalScores(eventId, rangeId)
+		randomDataShooterQty(shooterQty, eventId)
 	}
 	if startShooting {
-		go randomDataStartShooting(eventId, rangeId)
+		randomDataStartShooting(eventId, rangeId, w)
+	} else if totalScores {
+		randomDataTotalScores(eventId, rangeId, w)
 	}
 }
 
-func randomDataStartShooting(eventId, rangeId string) {
+func randomDataStartShooting(eventId, rangeId string, w http.ResponseWriter) {
 	event, _ := getEvent(eventId)
 	for shooterId, shooter := range event.Shooters {
-		http.PostForm("http://localhost/updateShotScores",
+		http.PostForm("http://localhost:81/updateShotScores",
 			url.Values{
 				"shots":     {randomShooterScores(shooter.Grade)},
 				"shooterid": {fmt.Sprintf("%v", shooterId)},
@@ -151,9 +150,10 @@ func randomDataStartShooting(eventId, rangeId string) {
 			},
 		)
 	}
+	fmt.Fprintf(w, "<p>Finished StartShooting for all shooters in event %v", eventId)
 }
 
-func randomDataTotalScores(eventId, rangeId string) {
+func randomDataTotalScores(eventId, rangeId string, w http.ResponseWriter) {
 	event, _ := getEvent(eventId)
 	for shooter_id := range event.Shooters {
 		rand.Seed(time.Now().UnixNano()) //Use rand.Seed(90) with a constant number to make the same number
@@ -174,6 +174,7 @@ func randomDataTotalScores(eventId, rangeId string) {
 			})
 		}
 	}
+	fmt.Fprintf(w, "<p>Finished TotalScores for all shooters in event %v", eventId)
 }
 
 func randomDataShooterQty(shooterQty int, eventId string) {
@@ -194,16 +195,16 @@ func randomDataShooterQty(shooterQty int, eventId string) {
 
 func randomShooterScores(shooterGrade int) string {
 	shooterClass := grades()[shooterGrade].Settings
-	score := ""
+	var shots string
 	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < shooterClass.SightersQty; i++ {
-		score += "-"
+		shots += string(shooterClass.ValidSighters[rand.Intn(len(shooterClass.ValidSighters))])
 	}
-	availableShots := len(shooterClass.Buttons)
+	availableShots := shooterClass.Buttons + "-"
 	for i := 0; i < shooterClass.ShotsQty; i++ {
-		score += string(shooterClass.Buttons[rand.Intn(availableShots)])
+		shots += string(availableShots[rand.Intn(len(availableShots))])
 	}
-	return score
+	return shots
 }
 
 func slice_to_map_bool(input []string) map[string]bool {
