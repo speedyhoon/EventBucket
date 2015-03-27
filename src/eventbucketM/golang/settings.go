@@ -71,6 +71,9 @@ const (
 	//Scoreboard Settings
 	SCOREBOARD_IGNORE_POSITION_FOR_ZERO_SCORES = true //true = Don't award shooters a place if they haven't submitted a score, false = shooter without a score is awarded last place (gets 5th when beaten by 4 other shooters)
 
+	//Total Scores Settings
+	ERROR_ENTER_SCORES_IN_AGG = "<p>This range is an aggregate. Can't enter scores!</p>"
+
 	//truman Cell -- air purifier
 	//TODO: eventually replace these settings with ones that are set for each club and sometimes overridden by a clubs event settings
 	/*

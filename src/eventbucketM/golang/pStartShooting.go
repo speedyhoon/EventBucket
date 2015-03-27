@@ -17,12 +17,44 @@ func startShootingAll(data string) Page {
 func startShooting_Data(data string, showAll bool) Page {
 	arr := strings.Split(data, "/")
 	eventId := arr[0]
-	rangeId, err := strconv.Atoi(arr[1])
-	event, _ := getEvent(eventId)
 	var titleAll string
+	var rangeId int
+	var err error
+	if len(arr) >= 2 {
+		rangeId, err = strconv.Atoi(arr[1])
+	} else {
+		return Page{
+			TemplateFile: "start-shooting",
+			Theme:        TEMPLATE_ADMIN,
+			Title:        "Start Shooting" + titleAll,
+			Data: M{
+				"menu":                 "",
+				"target_heading_cells": "",
+				"fclass_heading_cells": "",
+				"match_heading_cells":  "",
+				"Aggregate":            true,
+			},
+		}
+	}
+	event, _ := getEvent(eventId)
 	if showAll {
 		titleAll = " Show All"
 	}
+	if event.Ranges == nil {
+		return Page{
+			TemplateFile: "start-shooting",
+			Theme:        TEMPLATE_ADMIN,
+			Title:        "Start Shooting" + titleAll,
+			Data: M{
+				"menu":                 eventMenu(eventId, event.Ranges, URL_startShooting, event.IsPrizeMeet),
+				"target_heading_cells": "",
+				"fclass_heading_cells": "",
+				"match_heading_cells":  "",
+				"Aggregate":            true,
+			},
+		}
+	}
+	//	_, ok := event.Ranges[rangeId]
 	if event.Ranges[rangeId].Aggregate != "" || err != nil {
 		return Page{
 			TemplateFile: "start-shooting",

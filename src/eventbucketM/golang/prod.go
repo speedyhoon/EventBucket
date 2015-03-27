@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	//Info    = log.New(os.Stdout, "INFO:    ", log.Lshortfile)
+	Info    = log.New(ioutil.Discard, "INFO:    ", log.Lshortfile)
 	Warning = log.New(os.Stdout, "WARNING: ", log.Lshortfile)
 )
 
