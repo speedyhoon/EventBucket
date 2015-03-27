@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
-	"mgo"
+	"gopkg.in/mgo.v2"
 	"os"
 	"os/exec"
 	"strings"

@@ -18,29 +18,35 @@ func totalScoresAll(data string) Page {
 func totalScores_Data(data string, showAll bool) Page {
 	arr := strings.Split(data, "/")
 	eventId := arr[0]
+	var titleAll string
+	emptyPage := Page{
+		TemplateFile: "total-scores",
+		Title:        "Total Scores" + titleAll,
+		Theme:        TEMPLATE_ADMIN,
+		Data: M{
+			"Title":      "Total Scores",
+			"LinkToPage": "",
+			"EventId":    "",
+			"RangeName":  "",
+			"Message":    ERROR_ENTER_SCORES_IN_AGG,
+			"menu":       "",
+		},
+	}
+	if !(len(arr) >= 2) {
+		return emptyPage
+	}
 	range_Id := arr[1]
 	rangeId, err := strconv.Atoi(range_Id)
 	event, eventMissing := getEvent(eventId)
+	if event.Ranges == nil {
+		return emptyPage
+	}
 	currentRange := event.Ranges[rangeId]
-	var titleAll string
 	if showAll {
 		titleAll = " Show All"
 	}
-	ERROR_ENTER_SCORES_IN_AGG := "<p>This range is an aggregate. Can't enter scores!</p>"
 	if err != nil || eventMissing != nil || currentRange.Locked || currentRange.Aggregate != "" {
-		return Page{
-			TemplateFile: "total-scores",
-			Title:        "Total Scores" + titleAll,
-			Theme:        TEMPLATE_ADMIN,
-			Data: M{
-				"Title":      "Total Scores",
-				"LinkToPage": "",
-				"EventId":    "",
-				"RangeName":  "",
-				"Message":    ERROR_ENTER_SCORES_IN_AGG,
-				"menu":       "",
-			},
-		}
+		return emptyPage
 	}
 	var totalScores_link string
 	if showAll {
