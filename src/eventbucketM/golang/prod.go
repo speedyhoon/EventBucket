@@ -17,12 +17,6 @@ var (
 	Warning = log.New(os.Stdout, "WARNING: ", log.Lshortfile)
 )
 
-/*func devModeCheckForm(check bool, message string) {
-	if !check {
-		Warning.Println(message)
-	}
-}*/
-
 func loadHTM(pageName string) []byte {
 	bytes, err := ioutil.ReadFile(fmt.Sprintf(pathHtmlMinified, pageName))
 	if err != nil {

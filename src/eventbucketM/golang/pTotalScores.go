@@ -161,21 +161,6 @@ func searchForAggs(ranges []Range, rangeID int) []int {
 	return aggsFound
 }
 
-/*func eventSearchForAggs(eventID, rangeID string) []string {
-	var aggsToCalculate []string
-	event, _ := getEvent(eventID)
-	for aggID, rangeData := range event.Ranges {
-		if len(rangeData.Aggregate) > 0 {
-			for _, thisRangeID := range rangeData.Aggregate {
-				if string(thisRangeID) == rangeID {
-					aggsToCalculate = append(aggsToCalculate, fmt.Sprintf("%v", aggID))
-				}
-			}
-		}
-	}
-	return aggsToCalculate
-}*/
-
 func calculateAggs(shooterScores map[string]Score, ranges []int, shooterIDs []int, eventRanges []Range) M {
 	if shooterScores == nil {
 		return M{}

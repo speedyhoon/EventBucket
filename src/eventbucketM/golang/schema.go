@@ -161,24 +161,6 @@ type NraaGrading struct {
 	ShootQty       int     `bson:"s,omitempty"`
 }
 
-/*type NraaGrading struct {
-	Class string  `bson:"n,omitempty"`
-	Grade      string  `bson:"r,omitempty"`
-	Threshold string  `bson:"t,omitempty"`
-	AvgScore       float64 `bson:"a,omitempty"`
-	ShootQty       int     `bson:"s,omitempty"`
-}*/
-
-/*type TeamCat struct {
-	Name string `bson:"n"`
-}
-
-type Team struct {
-	name     string `bson:"n"`
-	teamCat  []int  `bson:"t"`
-	shooters []int  `bson:"s,omitempty"`
-}*/
-
 // Mound is exported
 type Mound struct {
 	ID       int    `bson:"i"`
@@ -187,11 +169,6 @@ type Mound struct {
 	Name     string `bson:"n,omitempty"`
 	Notes    string `bson:"o,omitempty"`
 }
-
-/*type Skill struct {
-	Grade      string
-	Percentage float64 //TODO would prefer an unsigned float here
-}*/
 
 // Form is exported
 type Form struct {

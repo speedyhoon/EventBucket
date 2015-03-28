@@ -3,8 +3,8 @@
 package main
 
 import (
-	//	"bytes"
 	"fmt"
+	"github.com/yvasiyarov/gorelic"
 	"go-randomdata-master"
 	"io/ioutil"
 	"log"
@@ -15,13 +15,10 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	//"github.com/yosssi/ace"
-	"github.com/yvasiyarov/gorelic"
 )
 
 const (
-	newRelic = false //Send logging data to New Relic
-	//PATH_HTML_SOURCE = "html/%v.html"
+	newRelic      = false //Send logging data to New Relic
 	urlRandomData = "/randomData/"
 )
 
@@ -82,13 +79,13 @@ func export(input ...interface{}) {
 	for _, print := range input {
 		Trace.Printf("\n%#v", print) //can copy and declare new variable with it. Most ouput available
 	}
-}*/
+}
 
-/*func devModeTimeTrack(start time.Time, requestURI string) {
+func devModeTimeTrack(start time.Time, requestURI string) {
 	Trace.Printf("%s took %s", requestURI, time.Since(start))
-}*/
+}
 
-/*func devModeCheckForm(check bool, message string) {
+func devModeCheckForm(check bool, message string) {
 	if !check {
 		Warning.Println(message)
 	}
@@ -206,11 +203,3 @@ func randomShooterScores(shooterGrade int) string {
 	}
 	return shots
 }
-
-/*func slice_to_map_bool(input []string) map[string]bool {
-	output := make(map[string]bool)
-	for _, value := range input {
-		output[value] = true
-	}
-	return output
-}*/

@@ -92,7 +92,9 @@ func walkPath(path string, f os.FileInfo, err error) error {
 			source = replaceContents(replaceChars, source)
 			switch currentDir{
 			case "golang":
-				err = ioutil.WriteFile(copyToDir+f.Name(), source, 0777)
+				if f.Name() != "unused.go" {
+					err = ioutil.WriteFile(copyToDir+f.Name(), source, 0777)
+				}
 			case "js":
 				err = ioutil.WriteFile(copyToDir+"j/"+f.Name(), source, 0777)
 			case "html":
