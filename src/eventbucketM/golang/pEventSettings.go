@@ -35,7 +35,7 @@ func calcNewAggRangeScores(eventID string, rangeID int, event Event) {
 	for shooterID := range event.Shooters {
 		event = eventCalculateAggs(event, shooterID, ranges)
 	}
-	updateDocByID(TBLevent, eventID, event)
+	updateDocByID(tblEvent, eventID, event)
 }
 
 func rangeUpdate(w http.ResponseWriter, r *http.Request) {
@@ -253,7 +253,7 @@ func updateEventGrades(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	http.Redirect(w, r, urlEvent+eventID, http.StatusSeeOther)
-	tableUpdateData(TBLevent, eventID, M{schemaGRADES: gradeIDs})
+	tableUpdateData(tblEvent, eventID, M{schemaGRADES: gradeIDs})
 }
 
 func eventSettingsClassGrades(event Event) Form {
@@ -296,7 +296,7 @@ func eventShotsNSighters(eventID string) Page {
 		Theme:        templateEmpty,
 		Title:        "eventShotsNSighters",
 		TemplateFile: "eventShotsNSighters",
-		v8Url:        VURLEventShotsNSighters,
+		v8Url:        vURLEventShotsNSighters,
 		Data: M{
 			"EventName": event.Name,
 		},

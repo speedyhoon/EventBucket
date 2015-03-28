@@ -65,14 +65,12 @@ func start() {
 }
 
 var (
-	// VURLHome should be unexported
-	VURLHome = regexp.MustCompile("^/$")
-	// VURLEventShotsNSighters should be unexported
-	VURLEventShotsNSighters = regexp.MustCompile("^" + urlEventShotsNSighters + "([" + idCharsetRegex + "]+)$")
-	//VURLEvent               = regexp.MustCompile("^" + urlEvent + "([" + idCharsetRegex + "]+)$")
-	//VURLClub                = regexp.MustCompile("^" + urlClub + "([" + idCharsetRegex + "]+)$")
-	//VURLEventSettings       = regexp.MustCompile("^" + urlEventSettings + "([" + idCharsetRegex + "]+)$")
-	//VURLScoreboard          = regexp.MustCompile("^" + urlScoreboard + "([" + idCharsetRegex + "]+)$")
+	vURLHome                = regexp.MustCompile("^/$")
+	vURLEventShotsNSighters = regexp.MustCompile("^" + urlEventShotsNSighters + "([" + idCharsetRegex + "]+)$")
+	//vURLEvent               = regexp.MustCompile("^" + urlEvent + "([" + idCharsetRegex + "]+)$")
+	//vURLClub                = regexp.MustCompile("^" + urlClub + "([" + idCharsetRegex + "]+)$")
+	//vURLEventSettings       = regexp.MustCompile("^" + urlEventSettings + "([" + idCharsetRegex + "]+)$")
+	//vURLScoreboard          = regexp.MustCompile("^" + urlScoreboard + "([" + idCharsetRegex + "]+)$")
 )
 
 // Page is exported

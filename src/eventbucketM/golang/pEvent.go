@@ -171,7 +171,7 @@ func eventUpdateShooter(w http.ResponseWriter, r *http.Request) {
 			"b": validatedValues["disabled"] != "",
 			"a": validatedValues["age"],
 		}}
-		tableUpdateData(TBLevent, eventID, updateData)
+		tableUpdateData(tblEvent, eventID, updateData)
 		return
 	}
 	http.Redirect(w, r, urlHome, http.StatusSeeOther)
