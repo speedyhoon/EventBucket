@@ -63,7 +63,7 @@ func home() Page {
 			"Hostname":     hostname,
 			"IpAddresses":  ipAddresses,
 		},
-		v8Url: VURLHome,
+		v8Url: vURLHome,
 	}
 }
 
@@ -173,10 +173,10 @@ func eventInsert(w http.ResponseWriter, r *http.Request) {
 
 		//Add default ranges and aggregate ranges
 		var err error
-		newEvent.ID, err = getNextID(TBLevent)
+		newEvent.ID, err = getNextID(tblEvent)
 		newEvent.AutoInc.Range = 1
 		if err == nil {
-			insertDoc(TBLevent, newEvent)
+			insertDoc(tblEvent, newEvent)
 			//redirect user to event settings
 			http.Redirect(w, r, urlEventSettings+newEvent.ID, http.StatusSeeOther)
 		} else {

@@ -222,7 +222,7 @@ func updateShotScores2(w http.ResponseWriter, r *http.Request) {
 			updateBson[index] = data
 		}
 	}
-	tableUpdateData(TBLevent, event.ID, updateBson)
+	tableUpdateData(tblEvent, event.ID, updateBson)
 }
 
 //This function assumes all validation on input "shots" has at least been done!

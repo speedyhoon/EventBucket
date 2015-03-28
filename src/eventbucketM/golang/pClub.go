@@ -157,7 +157,7 @@ func clubMoundInsert(w http.ResponseWriter, r *http.Request) {
 		club.Mounds = append(club.Mounds, newMound)
 		club.AutoInc.Mound++
 	}
-	updateDocByID(TBLclub, clubID, club)
+	updateDocByID(tblClub, clubID, club)
 	http.Redirect(w, r, urlClub+clubID, http.StatusSeeOther)
 }
 
@@ -242,7 +242,7 @@ func clubDetailsUpsert(w http.ResponseWriter, r *http.Request) {
 	club.Town = validatedValues["town"]
 	club.Latitude = validatedValues["latitude"]
 	club.Longitude = validatedValues["longitude"]
-	updateDocByID(TBLclub, club.ID, club)
+	updateDocByID(tblClub, club.ID, club)
 }
 
 func clubs() Page {
@@ -285,14 +285,14 @@ func clubInsert(w http.ResponseWriter, r *http.Request) {
 }
 
 func insertClub(clubName string) (string, error) {
-	nextID, err := getNextID(TBLclub)
+	nextID, err := getNextID(tblClub)
 	if err == nil {
 		newClub := Club{
 			Name: clubName,
 			ID:   nextID,
 		}
 		newClub.AutoInc.Mound = 1
-		insertDoc(TBLclub, newClub)
+		insertDoc(tblClub, newClub)
 		return newClub.ID, nil
 	}
 	return "", errors.New("Unable to generate club id")

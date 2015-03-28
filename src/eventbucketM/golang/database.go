@@ -11,22 +11,18 @@ import (
 )
 
 const (
-	// TBLAutoInc shouldn't be exported
-	TBLAutoInc    = "A"
-	schemaCounter = "n"
-	// TBLclub shouldn't be exported
-	TBLclub = "C"
-	// TBLevent shouldn't be exported
-	TBLevent      = "E"
-	schemaSHOOTER = "^^schemaSHOOTER^^"
-	schemaAutoInc = "^^schemaAutoInc^^"
-	schemaRANGE   = "^^schemaRANGE^^"
-	schemaSORT    = "^^schemaSORT^^"
-	schemaGRADES  = "^^schemaGRADES^^"
-	//TBLshooter     = "S"
-	// TBLnraaShooter shouldn't be exported
-	TBLnraaShooter = "N"
-	//TBLchamp       = "H"
+	tblAutoInc     = "A"
+	schemaCounter  = "n"
+	tblClub        = "C"
+	tblEvent       = "E"
+	schemaSHOOTER  = "^^schemaSHOOTER^^"
+	schemaAutoInc  = "^^schemaAutoInc^^"
+	schemaRANGE    = "^^schemaRANGE^^"
+	schemaSORT     = "^^schemaSORT^^"
+	schemaGRADES   = "^^schemaGRADES^^"
+	tblNraaShooter = "N"
+	//tblShooter     = "S"
+	//tblChamp       = "H"
 )
 
 var conn *mgo.Database
@@ -80,7 +76,7 @@ func db() {
 func getClubs() []Club {
 	var result []Club
 	if conn != nil {
-		err := conn.C(TBLclub).Find(nil).All(&result)
+		err := conn.C(tblClub).Find(nil).All(&result)
 		if err != nil {
 			Warning.Println(err)
 		}
@@ -91,7 +87,7 @@ func getClubs() []Club {
 func getClub(ID string) (Club, error) {
 	var result Club
 	if conn != nil {
-		err := conn.C(TBLclub).FindId(ID).One(&result)
+		err := conn.C(tblClub).FindId(ID).One(&result)
 		return result, err
 	}
 	return result, errors.New("Unable to get club with ID: '" + ID + "'")
@@ -103,7 +99,7 @@ func getClubByName(clubName string) (Club, bool) {
 		//remove double spaces
 		clubName = strings.Join(strings.Fields(clubName), " ")
 		if clubName != "" {
-			err := conn.C(TBLclub).Find(M{"n": M{"$regex": fmt.Sprintf(`^%v$`, clubName), "$options": "i"}}).One(&result)
+			err := conn.C(tblClub).Find(M{"n": M{"$regex": fmt.Sprintf(`^%v$`, clubName), "$options": "i"}}).One(&result)
 			if err == nil {
 				return result, true
 			}
@@ -115,7 +111,7 @@ func getClubByName(clubName string) (Club, bool) {
 func getEvents() []Event {
 	var result []Event
 	if conn != nil {
-		conn.C(TBLevent).Find(nil).All(&result)
+		conn.C(tblEvent).Find(nil).All(&result)
 	}
 	return result
 }
@@ -123,7 +119,7 @@ func getEvents() []Event {
 func getShooterLists() []NraaShooter {
 	var result []NraaShooter
 	if conn != nil {
-		conn.C(TBLnraaShooter).Find(nil).All(&result)
+		conn.C(tblNraaShooter).Find(nil).All(&result)
 	}
 	return result
 }
@@ -131,7 +127,7 @@ func getShooterLists() []NraaShooter {
 func getShooterList(ID int) Shooter {
 	var result Shooter
 	if conn != nil {
-		conn.C(TBLnraaShooter).FindId(ID).One(&result)
+		conn.C(tblNraaShooter).FindId(ID).One(&result)
 	}
 	return result
 }
@@ -139,19 +135,19 @@ func getShooterList(ID int) Shooter {
 func getNraaShooter(ID int) NraaShooter {
 	var result NraaShooter
 	if conn != nil {
-		conn.C(TBLnraaShooter).FindId(ID).One(&result)
+		conn.C(tblNraaShooter).FindId(ID).One(&result)
 	}
 	return result
 }
 
 func nraaGetLastUpdated() string {
 	var result map[string]string
-	conn.C(TBLAutoInc).FindId(TBLnraaShooter).One(&result)
+	conn.C(tblAutoInc).FindId(tblNraaShooter).One(&result)
 	return result["n"]
 }
 
 func nraaUpsertShooter(shooter NraaShooter) {
-	_, err := conn.C(TBLnraaShooter).UpsertId(shooter.SID, &shooter)
+	_, err := conn.C(tblNraaShooter).UpsertId(shooter.SID, &shooter)
 	if err != nil {
 		Warning.Println(err)
 	}
@@ -162,11 +158,11 @@ func nraaUpdateGrading(shooterID int, grades []NraaGrading) {
 		Upsert: false,
 		Update: M{"$set": M{"g": grades}},
 	}
-	conn.C(TBLnraaShooter).FindId(shooterID).Apply(change, make(M))
+	conn.C(tblNraaShooter).FindId(shooterID).Apply(change, make(M))
 }
 
 func nraaLastUpdated() {
-	conn.C(TBLAutoInc).FindId(TBLnraaShooter).Apply(mgo.Change{
+	conn.C(tblAutoInc).FindId(tblNraaShooter).Apply(mgo.Change{
 		Upsert: true,
 		Update: M{"$set": M{"n": time.Now().Format("January 2, 2006")}},
 	}, make(M))
@@ -175,7 +171,7 @@ func nraaLastUpdated() {
 func getEvent(ID string) (Event, error) {
 	var result Event
 	if conn != nil {
-		err := conn.C(TBLevent).FindId(ID).One(&result)
+		err := conn.C(tblEvent).FindId(ID).One(&result)
 		return result, err
 	}
 	return result, errors.New("Unable to get event with ID: '" + ID + "'")
@@ -189,7 +185,7 @@ func getNextID(collectionName string) (string, error) {
 			Upsert:    true,
 			ReturnNew: true,
 		}
-		_, err := conn.C(TBLAutoInc).FindId(collectionName).Apply(change, &result)
+		_, err := conn.C(tblAutoInc).FindId(collectionName).Apply(change, &result)
 		if err != nil {
 			Error.Println(err)
 			return "", fmt.Errorf("Unable to generate the next ID: %v", err)
@@ -246,7 +242,7 @@ func eventAddRange(eventID string, newRange Range) (int, Event) {
 		ReturnNew: true,
 	}
 	returned := Event{}
-	conn.C(TBLevent).FindId(eventID).Apply(change, &returned)
+	conn.C(tblEvent).FindId(eventID).Apply(change, &returned)
 	for rangeID, rangeData := range returned.Ranges {
 		if rangeData.Name == newRange.Name && rangeData.Aggregate == newRange.Aggregate && rangeData.ScoreBoard == newRange.ScoreBoard && rangeData.Locked == newRange.Locked && rangeData.Hidden == newRange.Hidden {
 			//TODO this if check is really hacky!!!
@@ -280,7 +276,7 @@ func eventShooterInsert(eventID string, shooter EventShooter) {
 		ReturnNew: true,
 	}
 	var event Event
-	conn.C(TBLevent).FindId(eventID).Apply(change, &event)
+	conn.C(tblEvent).FindId(eventID).Apply(change, &event)
 
 	if increment == 2 {
 		change = mgo.Change{
@@ -302,7 +298,7 @@ func eventShooterInsert(eventID string, shooter EventShooter) {
 			},
 		}
 	}
-	conn.C(TBLevent).FindId(eventID).Apply(change, &event)
+	conn.C(tblEvent).FindId(eventID).Apply(change, &event)
 }
 
 func eventTotalScoreUpdate(eventID string, rangeID int, shooterIDs []int, score Score) Event {
@@ -317,7 +313,7 @@ func eventTotalScoreUpdate(eventID string, rangeID int, shooterIDs []int, score 
 		},
 	}
 	var event Event
-	_, err := conn.C(TBLevent).FindId(eventID).Apply(change, &event)
+	_, err := conn.C(tblEvent).FindId(eventID).Apply(change, &event)
 	//TODO better error handling would be nice
 	if err != nil {
 		Warning.Println(err)
@@ -326,7 +322,7 @@ func eventTotalScoreUpdate(eventID string, rangeID int, shooterIDs []int, score 
 }
 
 func eventUpdateRangeData(eventID string, updateData M) {
-	conn.C(TBLevent).FindId(eventID).Apply(mgo.Change{
+	conn.C(tblEvent).FindId(eventID).Apply(mgo.Change{
 		Upsert: false,
 		Update: updateData,
 	}, make(M))
@@ -339,7 +335,7 @@ func eventUpdateSortScoreboard(eventID, sortByRange string) {
 			"$set": M{schemaSORT: sortByRange},
 		},
 	}
-	conn.C(TBLevent).FindId(eventID).Apply(change, make(M))
+	conn.C(tblEvent).FindId(eventID).Apply(change, make(M))
 }
 
 func eventUpsertData(eventID string, data M) {
@@ -349,7 +345,7 @@ func eventUpsertData(eventID string, data M) {
 			"$set": data,
 		},
 	}
-	conn.C(TBLevent).FindId(eventID).Apply(change, make(M))
+	conn.C(tblEvent).FindId(eventID).Apply(change, make(M))
 }
 
 func tableUpdateData(collectionName, documentID string, data M) {
@@ -368,8 +364,8 @@ func upsertDoc(collection string, ID interface{}, document interface{}) {
 
 func searchShooters(query M) []Shooter {
 	var result []Shooter
-	err := conn.C(TBLnraaShooter).Find(query).All(&result) //TODO switch back to shooter
-	//	err := conn.C(TBLshooter).Find(query).All(&result)
+	err := conn.C(tblNraaShooter).Find(query).All(&result) //TODO switch back to shooter
+	//	err := conn.C(tblShooter).Find(query).All(&result)
 	if err != nil {
 		Warning.Println(err)
 	}
