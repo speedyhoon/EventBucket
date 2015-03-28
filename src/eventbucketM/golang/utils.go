@@ -1,26 +1,26 @@
 package main
 
 import (
-	"bytes"
-	"encoding/base64"
-	"errors"
+	//"bytes"
+	//"encoding/base64"
+	//"errors"
 	"fmt"
-	"github.com/boombuler/barcode"
-	"github.com/boombuler/barcode/datamatrix"
-	"github.com/boombuler/barcode/qr"
-	"image/png"
+	//"github.com/boombuler/barcode"
+	//"github.com/boombuler/barcode/datamatrix"
+	//"github.com/boombuler/barcode/qr"
+	//"image/png"
 	"net"
 	"os"
 	"strconv"
 	"strings"
 )
 
-func exists(dict M, key string) string {
+/*func exists(dict M, key string) string {
 	if val, ok := dict[key]; ok {
 		return fmt.Sprintf("%v", val)
 	}
 	return ""
-}
+}*/
 
 func str2Int(input interface{}) int {
 	number, err := strconv.Atoi(fmt.Sprintf("%v", input))
@@ -86,14 +86,14 @@ func stringInSlice(a string, list []string) bool {
 	return false
 }
 
-func ternary(condition bool, True, False string) string {
+/*func ternary(condition bool, True, False string) string {
 	if condition {
 		return True
 	}
 	return False
-}
+}*/
 
-func imgBarcode(width, height int, barcodeType, value string) string {
+/*func imgBarcode(width, height int, barcodeType, value string) string {
 	var data barcode.Barcode
 	var err error
 	switch barcodeType {
@@ -119,7 +119,7 @@ func imgBarcode(width, height int, barcodeType, value string) string {
 	}
 	Error.Println(err)
 	return ""
-}
+}*/
 
 // dirExists returns a bool whether the given directory exists or not
 func dirExists(path string) bool {
@@ -133,7 +133,7 @@ func dirExists(path string) bool {
 	return false
 }
 
-func HostnameIpAddresses() (string, []string) {
+func hostnameIPAddresses() (string, []string) {
 	hostname, _ := os.Hostname()
 	var ipAddress []string
 	interfaces, err := net.Interfaces()

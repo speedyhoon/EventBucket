@@ -18,8 +18,8 @@ func archive() Page {
 	}
 	//TODO make custom mongodb query to get a more flexible list of events?
 	events := getEvents()
-	OrderedByEvent(sortByDate, sortByTime, sortByName).Sort(events)
-	closedEvents := []HomeCalendar{}
+	orderedByEvent(sortByDate, sortByTime, sortByName).Sort(events)
+	closedEvents := []homeCalendar{}
 	for _, event := range events {
 		if event.Closed {
 			var listRanges []string
@@ -27,30 +27,30 @@ func archive() Page {
 				listRanges = append(listRanges, rangeObj.Name)
 			}
 			club, _ := getClub(event.Club)
-			calendar_event := HomeCalendar{
-				Id:     event.Id,
+			calendarEvent := homeCalendar{
+				ID:     event.ID,
 				Name:   event.Name,
-				ClubId: event.Club,
+				ClubID: event.Club,
 				Club:   club.Name,
 				Time:   event.Time,
 				Ranges: strings.Join(listRanges, ", "),
 			}
 			if event.Date != "" {
-				date_obj, err := time.Parse("2006-01-02", event.Date)
+				dateObj, err := time.Parse("2006-01-02", event.Date)
 				if err == nil {
-					calendar_event.Day = date_obj.Weekday().String()
-					calendar_event.Date = ordinal(date_obj.Day())
-					calendar_event.Month = date_obj.Month()
-					calendar_event.Year = date_obj.Year()
+					calendarEvent.Day = dateObj.Weekday().String()
+					calendarEvent.Date = ordinal(dateObj.Day())
+					calendarEvent.Month = dateObj.Month()
+					calendarEvent.Year = dateObj.Year()
 				}
 			}
-			closedEvents = append(closedEvents, calendar_event)
+			closedEvents = append(closedEvents, calendarEvent)
 		}
 	}
 	return Page{
 		TemplateFile: "archive",
 		Title:        "Archive",
-		Theme:        TEMPLATE_HOME,
+		Theme:        templateHome,
 		Data: M{
 			"ClosedEvents": closedEvents,
 			"PageName":     "Calendar",

@@ -4,7 +4,7 @@ func licence() Page {
 	return Page{
 		TemplateFile: "licence",
 		Title:        "Licence",
-		Theme:        TEMPLATE_HOME,
+		Theme:        templateHome,
 		Data:         M{},
 	}
 }

@@ -11,12 +11,12 @@ import (
 
 //TODO maybe add page redirects for pages. replace uppercase urls with lowercase
 //Is this needed or not??????????????????????????
-func redirectToUppercase() {
-	/*listOfPages := map[string]*func(){
-		URL_eventSettings: eventSettings,
-	}*/
+/*func redirectToUppercase() {
+	//listOfPages := map[string]*func(){
+	//	urlEventSettings: eventSettings,
+	//}
 	listOfPages := map[string]string{
-		URL_eventSettings: strings.ToLower(URL_eventSettings),
+		urlEventSettings: strings.ToLower(urlEventSettings),
 	}
 	for from, to := range listOfPages {
 		GetRedirectPermanentTo(from, to)
@@ -24,72 +24,75 @@ func redirectToUppercase() {
 }
 func GetRedirectPermanentTo(from, to string) {
 	http.Handle(from, http.RedirectHandler(to, http.StatusMovedPermanently))
-}
+}*/
 
 func start() {
 	go startDatabase()
-	serveDir(DIR_JS)
-	serveDir(DIR_CSS)
-	serveDir(DIR_PNG)
-	serveDir(DIR_JPEG)
-	serveDir(DIR_SVG)
-	serveDir(DIR_WOF)
-	serveDir(DIR_WOF2)
+	serveDir(dirJS)
+	serveDir(dirCSS)
+	serveDir(dirPNG)
+	serveDir(dirJPEG)
+	serveDir(dirSVG)
+	serveDir(dirWOF)
+	serveDir(dirWOF2)
 
-	GetRedirectPermanent(URL_about, about)
-	GetRedirectPermanent(URL_archive, archive)
-	GetRedirectPermanent(URL_licence, licence)
-	GetRedirectPermanent(URL_shooters, shooters)
-	GetRedirectPermanent(URL_clubs, clubs)
+	getRedirectPermanent(urlAbout, about)
+	getRedirectPermanent(urlArchive, archive)
+	getRedirectPermanent(urlLicence, licence)
+	getRedirectPermanent(urlShooters, shooters)
+	getRedirectPermanent(urlClubs, clubs)
 
-	GetParameters(URL_event, event)
-	GetParameters(URL_club, club)
-	GetParameters(URL_eventSettings, eventSettings)
-	GetParameters(URL_scoreboard, scoreboard)
-	GetParameters(URL_eventShotsNSighters, eventShotsNSighters)
-	GetParameters(URL_startShooting, startShooting)
-	GetParameters(URL_startShootingAll, startShootingAll)
-	GetParameters(URL_totalScores, totalScores)
-	GetParameters(URL_totalScoresAll, totalScoresAll)
-	//	GetParameters(URL_rangeReport, range_report)
+	getParameters(urlEvent, event)
+	getParameters(urlClub, club)
+	getParameters(urlEventSettings, eventSettings)
+	getParameters(urlScoreboard, scoreboard)
+	getParameters(urlEventShotsNSighters, eventShotsNSighters)
+	getParameters(urlStartShooting, startShooting)
+	getParameters(urlStartShootingAll, startShootingAll)
+	getParameters(urlTotalScores, totalScores)
+	getParameters(urlTotalScoresAll, totalScoresAll)
+	//	GetParameters(urlRangeReport, rangeReport)
 
 	//Event
-	Post(URL_eventInsert, eventInsert)
-	Post(URL_eventUpdateShooter, eventUpdateShooter)
-	Post(URL_queryShooterList, searchShooter)
-	Post(URL_queryShooterGrade, searchShooterGrade)
+	post(urlEventInsert, eventInsert)
+	post(urlEventUpdateShooter, eventUpdateShooter)
+	post(urlQueryShooterList, searchShooter)
+	post(urlQueryShooterGrade, searchShooterGrade)
 	//Nraa
-	Post(URL_updateShooterList, PostVia(nraaStartUpdateShooterList, URL_shooters))
-	Post(URL_clubInsert, PostVia(clubInsert, URL_clubs)) //TODO redirect to actual club created
-	Post(URL_updateRange, rangeUpdate)
-	Post(URL_eventRangeInsert, rangeInsert)
-	Post(URL_eventAggInsert, aggInsert)
-	Post(URL_shooterInsert, shooterInsert)
-	Post(URL_shooterListInsert, shooterListInsert)
+	post(urlUpdateShooterList, postVia(nraaStartUpdateShooterList, urlShooters))
+	post(urlClubInsert, postVia(clubInsert, urlClubs)) //TODO redirect to actual club created
+	post(urlUpdateRange, rangeUpdate)
+	post(urlEventRangeInsert, rangeInsert)
+	post(urlEventAggInsert, aggInsert)
+	post(urlShooterInsert, shooterInsert)
+	post(urlShooterListInsert, shooterListInsert)
 	//Total Scores
-	Post(URL_updateTotalScores, updateTotalScores)
+	post(urlUpdateTotalScores, updateTotalScores)
 	//Startshooting
-	Post(URL_updateShotScores, updateShotScores2)
-	Post(URL_updateSortScoreBoard, updateSortScoreBoard)
-	Post(URL_updateEventGrades, updateEventGrades)
-	Post(URL_updateIsPrizeMeet, updateIsPrizeMeet)
-	//	Post(URL_champInsert, PostVia(champInsert, URL_championships))	//TODO redirect to actual club created
+	post(urlUpdateShotScores, updateShotScores2)
+	post(urlUpdateSortScoreBoard, updateSortScoreBoard)
+	post(urlUpdateEventGrades, updateEventGrades)
+	post(urlUpdateIsPrizeMeet, updateIsPrizeMeet)
+	//	Post(urlChampInsert, PostVia(champInsert, urlChampionships))	//TODO redirect to actual club created
 	//Club insert/update
-	Post(URL_clubMoundInsert, clubMoundInsert)
-	Post(URL_clubDetailsUpsert, clubDetailsUpsert)
+	post(urlClubMoundInsert, clubMoundInsert)
+	post(urlClubDetailsUpsert, clubDetailsUpsert)
 
-	Get(URL_home, home)
+	get(urlHome, home)
 }
 
 var (
-	VURL_home                = regexp.MustCompile("^/$")
-	VURL_event               = regexp.MustCompile("^" + URL_event + "([" + ID_CHARSET_REGEX + "]+)$")
-	VURL_eventShotsNSighters = regexp.MustCompile("^" + URL_eventShotsNSighters + "([" + ID_CHARSET_REGEX + "]+)$")
-	VURL_club                = regexp.MustCompile("^" + URL_club + "([" + ID_CHARSET_REGEX + "]+)$")
-	VURL_eventSettings       = regexp.MustCompile("^" + URL_eventSettings + "([" + ID_CHARSET_REGEX + "]+)$")
-	VURL_scoreboard          = regexp.MustCompile("^" + URL_scoreboard + "([" + ID_CHARSET_REGEX + "]+)$")
+	// VURLHome should be unexported
+	VURLHome = regexp.MustCompile("^/$")
+	// VURLEventShotsNSighters should be unexported
+	VURLEventShotsNSighters = regexp.MustCompile("^" + urlEventShotsNSighters + "([" + idCharsetRegex + "]+)$")
+	//VURLEvent               = regexp.MustCompile("^" + urlEvent + "([" + idCharsetRegex + "]+)$")
+	//VURLClub                = regexp.MustCompile("^" + urlClub + "([" + idCharsetRegex + "]+)$")
+	//VURLEventSettings       = regexp.MustCompile("^" + urlEventSettings + "([" + idCharsetRegex + "]+)$")
+	//VURLScoreboard          = regexp.MustCompile("^" + urlScoreboard + "([" + idCharsetRegex + "]+)$")
 )
 
+// Page is exported
 type Page struct {
 	TemplateFile, Title string
 	Theme               string
@@ -106,7 +109,7 @@ func (w gzipResponseWriter) Write(b []byte) (int, error) {
 	return w.Writer.Write(b)
 }
 
-func Gzip(h http.Handler, w http.ResponseWriter, r *http.Request) {
+func gzipper(h http.Handler, w http.ResponseWriter, r *http.Request) {
 	//Return a gzip compressed response if appropriate
 	if strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
 		w.Header().Set("Content-Encoding", "gzip")
@@ -120,29 +123,29 @@ func Gzip(h http.Handler, w http.ResponseWriter, r *http.Request) {
 	h.ServeHTTP(w, r)
 }
 
-func Get(url string, runner func() Page) {
+func get(url string, runner func() Page) {
 	//Setup url as a subdirectory path. e.g. if url = "foobar" then "http://localhost/foobar" is available
 	http.Handle(url, serveHtml(func(w http.ResponseWriter, r *http.Request) { templator(runner(), w, r) }))
 }
-func GetRedirectPermanent(url string, runner func() Page) {
-	Get(url, runner)
+func getRedirectPermanent(url string, runner func() Page) {
+	get(url, runner)
 	//Redirects back to subdirectory "url". Needed when url parameters are not wanted/needed.
 	//e.g. if url = "foobar" then "http://localhost/foobar/fdsa" will redirect to "http://localhost/foobar"
 	http.Handle(url+"/", http.RedirectHandler(url, http.StatusMovedPermanently))
 }
-func GetParameters(url string, runner func(string) Page) {
+func getParameters(url string, runner func(string) Page) {
 	//TODO add a way to get the event id, club id and range id from the url
-	h := func(w http.ResponseWriter, r *http.Request) { templator(runner(getIdFromUrl(r, url)), w, r) }
+	h := func(w http.ResponseWriter, r *http.Request) { templator(runner(getIDFromURL(r, url)), w, r) }
 	http.Handle(url, serveHtml(h))
 }
 
-func Post(url string, runner http.HandlerFunc) {
+func post(url string, runner http.HandlerFunc) {
 	//TODO Post - Post to endpoint. If valid return to X page, else return to previous page with form filled out and wrong values highlighted with error message
 	//TODO Add ajax detection to so ajax requests are not redirected back to the referrer page.
 	http.HandleFunc(url, serveHtml(runner))
 }
 
-func PostVia(runThisFirst func(http.ResponseWriter, *http.Request), url string) func(http.ResponseWriter, *http.Request) {
+func postVia(runThisFirst func(http.ResponseWriter, *http.Request), url string) func(http.ResponseWriter, *http.Request) {
 	//Always redirect after a successful Post to "url". Otherwise redirect back to referrer page.
 	//When Ajax is not in use this stops the server responding to Post requests and causes the user to request page "url"
 	//This stops the browser from displaying the Post url in the address bar
@@ -166,20 +169,20 @@ func httpHeaders(w http.ResponseWriter, setHeaders []string) {
 		"noCache":   {"Cache-Control", "no-cache, no-store, must-revalidate"},
 		"expireNow": {"Expires", "0"},
 		"pragma":    {"Pragma", "no-cache"},
-		DIR_CSS:     {"Content-Type", "text/css; charset=utf-8"},
-		DIR_JS:      {"Content-Type", "text/javascript"},
-		DIR_PNG:     {"Content-Type", "image/png"},
-		DIR_JPEG:    {"Content-Type", "image/jpeg"},
-		DIR_SVG:     {"Content-Type", "image/svg+xml"},
-		DIR_WOF:     {"Content-Type", "application/font-woff"},
-		DIR_WOF2:    {"Content-Type", "application/font-woff2"},
+		dirCSS:      {"Content-Type", "text/css; charset=utf-8"},
+		dirJS:       {"Content-Type", "text/javascript"},
+		dirPNG:      {"Content-Type", "image/png"},
+		dirJPEG:     {"Content-Type", "image/jpeg"},
+		dirSVG:      {"Content-Type", "image/svg+xml"},
+		dirWOF:      {"Content-Type", "application/font-woff"},
+		dirWOF2:     {"Content-Type", "application/font-woff2"},
 	}
 	for _, lookup := range setHeaders {
 		w.Header().Set(headers[lookup][0], headers[lookup][1])
 	}
 }
 
-func getIdFromUrl(r *http.Request, pageUrl string) string {
+func getIDFromURL(r *http.Request, pageURL string) string {
 	//TODO add automatic validation checking for id using regex pattens
-	return r.URL.Path[len(pageUrl):]
+	return r.URL.Path[len(pageURL):]
 }

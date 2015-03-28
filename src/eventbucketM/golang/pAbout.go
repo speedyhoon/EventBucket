@@ -1,16 +1,16 @@
 package main
 
 func about() Page {
-	hostname, ipAddresses := HostnameIpAddresses()
+	hostname, ipAddresses := hostnameIPAddresses()
 	return Page{
 		TemplateFile: "about",
 		Title:        "About",
-		Theme:        TEMPLATE_HOME,
+		Theme:        templateHome,
 		Data: M{
-			"Version":     VERSION,
+			"Version":     versionNumber,
 			"Hostname":    hostname,
 			"IpAddresses": ipAddresses,
-			"BuildDate":   BUILDDATE,
+			"BuildDate":   buildDate,
 			"IconHeight":  30,
 		},
 	}

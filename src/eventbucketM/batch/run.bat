@@ -8,5 +8,5 @@ cd %root_dir%\eventbucketM\!
 rem gofmt -comments=false -s=true -e=true -w=true %go_files%
 gofmt -s=true -e=true -w=true %go_files%
 go tool vet -shadowstrict -test ./
-gometalinter --concurrency=4 --cyclo-over="9" --sort=path
+gometalinter --concurrency=2 --cyclo-over="30" --sort=path
 go run %go_files%

@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-func club(clubId string) Page {
+func club(clubID string) Page {
 	page := Page{
 		TemplateFile: "club",
 		Title:        "Club",
-		Theme:        TEMPLATE_HOME,
+		Theme:        templateHome,
 		Data: M{
 			"MoundForm":   "",
 			"TableMounds": "",
@@ -21,14 +21,14 @@ func club(clubId string) Page {
 			"Details":     "",
 		},
 	}
-	club, err := getClub(clubId)
+	club, err := getClub(clubID)
 	if err != nil {
 		//TODO return a 404 error
 		return page
 	}
 	var mounds []string
 	for index, mound := range club.Mounds {
-		mounds = append(mounds, generateForm(clubMoundInsertForm(clubId, mound, true, fmt.Sprintf("formMounds%v", index))))
+		mounds = append(mounds, generateForm(clubMoundInsertForm(clubID, mound, true, fmt.Sprintf("formMounds%v", index))))
 	}
 	tableMounds := "<p>No Mounds Listed</p>"
 	if len(mounds) >= 1 {
@@ -43,8 +43,8 @@ func club(clubId string) Page {
 	}
 
 	page.Title = club.Name
-	page.Data["MoundForm"] = generateForm(clubMoundInsertForm(clubId, Mound{}, false, ""))
-	//	page.Data["MapForm"] =  generateForm2(clubMapUpsertForm(clubId, club.Latitude, club.Longitude))
+	page.Data["MoundForm"] = generateForm(clubMoundInsertForm(clubID, Mound{}, false, ""))
+	//	page.Data["MapForm"] =  generateForm2(clubMapUpsertForm(clubID, club.Latitude, club.Longitude))
 	//	page.Data["ListMounds"] = mounds
 	page.Data["TableMounds"] = tableMounds
 	page.Data["Latitude"] = club.Latitude
@@ -54,14 +54,14 @@ func club(clubId string) Page {
 }
 
 //,"<input type=checkbox checked class=map>Display Map <abbr class=help title=\"Longitude and Latitude decimal format is three digits with six decimal places\ne.g. 000.000000 or -000.000000\n\nTo find your clubs longitude and latitude location go to Google Maps, then right click the Map and select What's here?\n\nTip:\nLines of longitude appear vertical (North-South)\nLines of latitude appear horizontal (East-West)\">?</abbr>"
-func clubMoundInsertForm(clubId string, mound Mound, existing bool, formId string) Form {
+func clubMoundInsertForm(clubID string, mound Mound, existing bool, formID string) Form {
 	min := 10
 	max := 9750
 	submitLabel := "Create Mound"
-	formType := ""
+	var formTable bool
 	if existing {
 		submitLabel = "Save Mound"
-		formType = "table"
+		formTable = true
 	}
 	options := []Option{
 		{
@@ -80,53 +80,53 @@ func clubMoundInsertForm(clubId string, mound Mound, existing bool, formId strin
 	}
 	inputs := []Inputs{
 		{
-			Name:  "name",
-			Html:  "text",
-			Label: "Mound Name",
-			Value: mound.Name,
+			name:  "name",
+			html:  "text",
+			label: "Mound Name",
+			value: mound.Name,
 		}, {
-			Name:     "distance",
-			Html:     "number",
-			Label:    "Distance",
-			Required: true,
-			Min:      &min,
-			Max:      &max,
-			Step:     1,
-			Value:    fmt.Sprintf("%v", mound.Distance),
+			name:     "distance",
+			html:     "number",
+			label:    "Distance",
+			required: true,
+			min:      &min,
+			max:      &max,
+			step:     1,
+			value:    fmt.Sprintf("%v", mound.Distance),
 		}, {
-			Name:     "unit",
-			Html:     "select",
-			Required: true,
-			Label:    "Unit",
-			Options:  options,
+			name:     "unit",
+			html:     "select",
+			required: true,
+			label:    "Unit",
+			options:  options,
 		}, {
-			Html:  "submit",
-			Inner: submitLabel,
-			Name:  "clubid",
-			Value: clubId,
+			html:  "submit",
+			inner: submitLabel,
+			name:  "clubid",
+			value: clubID,
 			//AccessKey: "x",
 		},
 	}
 	if existing {
 		inputs = append(inputs, Inputs{
-			Name:  "moundid",
-			Html:  "hidden",
-			Value: fmt.Sprintf("%v", mound.Id),
+			name:  "moundid",
+			html:  "hidden",
+			value: fmt.Sprintf("%v", mound.ID),
 		})
 	}
 	return Form{
-		Action: URL_clubMoundInsert,
-		Title:  "Add Shooting Mounds",
-		Inputs: inputs,
-		Type:   formType,
-		Id:     formId,
+		action: urlClubMoundInsert,
+		title:  "Add Shooting Mounds",
+		inputs: inputs,
+		table:  formTable,
+		id:     formID,
 	}
 }
 
 func clubMoundInsert(w http.ResponseWriter, r *http.Request) {
-	validatedValues := checkForm(clubMoundInsertForm("", Mound{}, true, "").Inputs, r)
-	clubId := validatedValues["clubid"]
-	club, err := getClub(clubId)
+	validatedValues := checkForm(clubMoundInsertForm("", Mound{}, true, "").inputs, r)
+	clubID := validatedValues["clubid"]
+	club, err := getClub(clubID)
 	//TODO instead return true/false as success/failure and on failure return a filled out form (bool, FormInvalid, error.Message as string)
 	//TODO FormInvalid.Inputs { Name: "", Html, "number, Message: "Number is greater than 9750", }...
 	if err != nil {
@@ -134,90 +134,90 @@ func clubMoundInsert(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	distance, _ := strconv.Atoi(validatedValues["distance"])
-	moundId := validatedValues["moundid"]
+	moundID := validatedValues["moundid"]
 	newMound := Mound{
-		Id:       club.AutoInc.Mound,
+		ID:       club.AutoInc.Mound,
 		Name:     validatedValues["name"],
 		Distance: distance,
 		Unit:     validatedValues["unit"],
 	}
-	if moundId != "" {
-		newMound.Id, err = strconv.Atoi(moundId)
+	if moundID != "" {
+		newMound.ID, err = strconv.Atoi(moundID)
 		if err != nil {
 			Error.Println("Unable to update club")
 			return
 		}
 		for index, mound := range club.Mounds {
-			if mound.Id == newMound.Id {
+			if mound.ID == newMound.ID {
 				club.Mounds[index] = newMound
 				break
 			}
 		}
 	} else {
 		club.Mounds = append(club.Mounds, newMound)
-		club.AutoInc.Mound += 1
+		club.AutoInc.Mound++
 	}
-	UpdateDocById(TBLclub, clubId, club)
-	http.Redirect(w, r, URL_club+clubId, http.StatusSeeOther)
+	updateDocByID(TBLclub, clubID, club)
+	http.Redirect(w, r, urlClub+clubID, http.StatusSeeOther)
 }
 
 func clubDetailsForm(club Club) Form {
 	return Form{
-		Action: URL_clubDetailsUpsert,
-		Title:  "Club Details",
-		Inputs: []Inputs{
+		action: urlClubDetailsUpsert,
+		title:  "Club Details",
+		inputs: []Inputs{
 			{
-				Name:     "name",
-				Html:     "text",
-				Label:    "Name",
-				Required: true,
-				Value:    club.Name,
+				name:     "name",
+				html:     "text",
+				label:    "Name",
+				required: true,
+				value:    club.Name,
 			}, {
-				Name:     "address",
-				Html:     "text",
-				Label:    "Address",
-				Required: true,
-				Value:    club.Address,
+				name:     "address",
+				html:     "text",
+				label:    "Address",
+				required: true,
+				value:    club.Address,
 			}, {
-				Name:     "town",
-				Html:     "text",
-				Label:    "Town",
-				Required: true,
-				Value:    club.Town,
+				name:     "town",
+				html:     "text",
+				label:    "Town",
+				required: true,
+				value:    club.Town,
 			}, {
-				Name:  "postcode",
-				Html:  "text",
-				Label: "Post Code",
-				Value: club.PostCode,
+				name:  "postcode",
+				html:  "text",
+				label: "Post Code",
+				value: club.PostCode,
 			}, {
-				Name:     "latitude",
-				Html:     "number",
-				Label:    "Latitude",
-				Required: true,
-				Min:      &LATITUDE_MIN,
-				Step:     0.000001,
-				Max:      &LATITUDE_MAX,
-				Value:    club.Latitude,
+				name:     "latitude",
+				html:     "number",
+				label:    "Latitude",
+				required: true,
+				min:      &latitudeMin,
+				step:     0.000001,
+				max:      &latitudeMax,
+				value:    club.Latitude,
 			}, {
-				Name:     "longitude",
-				Html:     "number",
-				Required: true,
-				Label:    "Longitude",
-				Min:      &LONGITUDE_MIN,
-				Step:     0.000001,
-				Max:      &LONGITUDE_MAX,
-				Value:    club.Longitude,
-				Help: `To find your clubs latitude &amp; longitude, go to Google Maps, then right click the Map and select What's here?
+				name:     "longitude",
+				html:     "number",
+				required: true,
+				label:    "Longitude",
+				min:      &longitudeMin,
+				step:     0.000001,
+				max:      &longitudeMax,
+				value:    club.Longitude,
+				help: `To find your clubs latitude &amp; longitude, go to Google Maps, then right click the Map and select What's here?
 Longitude and Latitude decimal format is three digits with six decimal places e.g. 000.000000 or -000.000000
 Tip: Lines of longitude appear vertical (North-South), Lines of latitude appear horizontal (East-West).`,
 			}, {
-				Html:  "submit",
-				Inner: "Save Club Details",
-				Name:  "clubid",
-				Value: club.Id,
-				//AccessKey: "x",
+				html:  "submit",
+				inner: "Save Club Details",
+				name:  "clubid",
+				value: club.ID,
+				//accessKey: "x",
 			}, {
-				Snippet: "<a href=//maps.google.com.au/ target=_blank>Google Maps</a>",
+				snippet: "<a href=//maps.google.com.au/ target=_blank>Google Maps</a>",
 			},
 		},
 	}
@@ -226,30 +226,30 @@ Tip: Lines of longitude appear vertical (North-South), Lines of latitude appear 
 func clubDetailsUpsert(w http.ResponseWriter, r *http.Request) {
 	var club Club
 	var err error
-	validatedValues := checkForm(clubDetailsForm(club).Inputs, r)
+	validatedValues := checkForm(clubDetailsForm(club).inputs, r)
 	club, err = getClub(validatedValues["clubid"])
 	//TODO instead return true/false as success/failure and on failure return a filled out form (bool, FormInvalid, error.Message as string)
 	//TODO FormInvalid.Inputs { Name: "", Html, "number, Message: "Number is greater than 9750", }...
 	if err != nil {
 		Error.Println("Unable to update club details")
-		http.Redirect(w, r, URL_clubs, http.StatusSeeOther)
+		http.Redirect(w, r, urlClubs, http.StatusSeeOther)
 		return
 	}
-	http.Redirect(w, r, URL_club+club.Id, http.StatusSeeOther)
+	http.Redirect(w, r, urlClub+club.ID, http.StatusSeeOther)
 	club.Name = validatedValues["name"]
 	club.Address = validatedValues["address"]
 	club.PostCode = validatedValues["postcode"]
 	club.Town = validatedValues["town"]
 	club.Latitude = validatedValues["latitude"]
 	club.Longitude = validatedValues["longitude"]
-	UpdateDocById(TBLclub, club.Id, club)
+	updateDocByID(TBLclub, club.ID, club)
 }
 
 func clubs() Page {
 	return Page{
 		TemplateFile: "clubs",
 		Title:        "Clubs",
-		Theme:        TEMPLATE_HOME,
+		Theme:        templateHome,
 		Data: M{
 			"Title":    "Clubs",
 			"Clubs":    generateForm(organisersClubForm()),
@@ -261,47 +261,47 @@ func clubs() Page {
 func organisersClubForm() Form {
 	//TODO add validation to
 	return Form{
-		Action: URL_clubInsert,
-		Title:  "New Club",
-		Inputs: []Inputs{
+		action: urlClubInsert,
+		title:  "New Club",
+		inputs: []Inputs{
 			{
-				Name:      "name",
-				Html:      "text",
-				Label:     "Club Name",
-				Required:  true,
-				Autofocus: "on",
+				name:      "name",
+				html:      "text",
+				label:     "Club Name",
+				required:  true,
+				autofocus: "on",
 			},
 			{
-				Html:  "submit",
-				Inner: "Add Club",
-				//AccessKey: "x",
+				html:  "submit",
+				inner: "Add Club",
+				//accessKey: "x",
 			},
 		},
 	}
 }
 
-func getClubSelectionBox(clubList []Club) []Option {
+/*func getClubSelectionBox(clubList []Club) []Option {
 	var dropDown []Option
 	for _, club := range clubList {
-		dropDown = append(dropDown, Option{Display: club.Name, Value: club.Id})
+		dropDown = append(dropDown, Option{Display: club.Name, Value: club.ID})
 	}
 	return dropDown
-}
+}*/
 
 func clubInsert(w http.ResponseWriter, r *http.Request) {
-	insertClub(checkForm(organisersClubForm().Inputs, r)["name"])
+	insertClub(checkForm(organisersClubForm().inputs, r)["name"])
 }
 
 func insertClub(clubName string) (string, error) {
-	nextId, err := getNextId(TBLclub)
+	nextID, err := getNextID(TBLclub)
 	if err == nil {
 		newClub := Club{
 			Name: clubName,
-			Id:   nextId,
+			ID:   nextID,
 		}
 		newClub.AutoInc.Mound = 1
-		InsertDoc(TBLclub, newClub)
-		return newClub.Id, nil
+		insertDoc(TBLclub, newClub)
+		return newClub.ID, nil
 	}
 	return "", errors.New("Unable to generate club id")
 }

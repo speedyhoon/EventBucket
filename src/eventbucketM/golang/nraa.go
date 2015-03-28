@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	NRAA_SHOOTER_LIST_URL       = "http://www.nraa.com.au/nraa-shooter-list/?_p="
-	NRAA_SHOOTER_LIST_GRADE_URL = "http://www.nraa.com.au/wp-admin/admin-ajax.php?action=get-calculated-grades&shooter_id="
+	nraaShooterListURL      = "http://www.nraa.com.au/nraa-shooter-list/?_p="
+	nraaShooterListGradeURL = "http://www.nraa.com.au/wp-admin/admin-ajax.php?action=get-calculated-grades&shooter_id="
 )
 
 /*	Sample grade data from NRAA website
@@ -32,17 +32,18 @@ func nraaUpdateShooterList() int {
 	Info.Println("Starting to download shooter list from website.")
 	//TODO get the max number of pages <div class="pagination"><a href="http://www.nraa.com.au/nraa-shooter-list/?_p=524">Last</a>
 	maxPages := 3 //maxPages := 524
-	var appendShooterIds []int
-	for pageCount := 2; pageCount <= maxPages; pageCount += 1 {
-		response, err := http.Get(fmt.Sprintf("%v%v", NRAA_SHOOTER_LIST_URL, pageCount))
+	var appendShooterIDs []int
+	//var htmlBody Node
+	for pageCount := 2; pageCount <= maxPages; pageCount++ {
+		response, err := http.Get(fmt.Sprintf("%v%v", nraaShooterListURL, pageCount))
 		defer response.Body.Close()
 		if err != nil {
 			Warning.Printf("Unable to get page %v http.Get %v", pageCount, err) //TODO Improve the error framework with a helpful error message
 			break
 		}
-		htmlBody, err := html.Parse(response.Body)
-		if err != nil {
-			Warning.Printf("Unable to parse HTML response: ", err)
+		htmlBody, err2 := html.Parse(response.Body)
+		if err2 != nil {
+			Warning.Printf("Unable to parse HTML response: %v", err)
 			break
 		}
 		var i int
@@ -58,7 +59,6 @@ func nraaUpdateShooterList() int {
 					if i >= 1 {
 						switch i {
 						case 1:
-							var err error
 							shooter.SID, err = strconv.Atoi(trimSpace)
 							if err != nil {
 								Error.Printf(fmt.Sprintf("Unable to convert shooter id %v to int", err))
@@ -75,7 +75,7 @@ func nraaUpdateShooterList() int {
 							shooter.Club = trimSpace
 						}
 					}
-					i += 1
+					i++
 				}
 			}
 			for c := n.FirstChild; c != nil; c = c.NextSibling {
@@ -91,10 +91,10 @@ func nraaUpdateShooterList() int {
 						i = 0
 						id, err := strconv.Atoi(attr.Val)
 						if err == nil {
-							shooter = NraaShooter{NraaId: id}
+							shooter = NraaShooter{NraaID: id}
 							findCells(n)
 							nraaUpsertShooter(shooter)
-							appendShooterIds = append(appendShooterIds, id)
+							appendShooterIDs = append(appendShooterIDs, id)
 						} else {
 							Warning.Printf(fmt.Sprintf("Unable to convert shooter id %v to int", err))
 						}
@@ -108,21 +108,21 @@ func nraaUpdateShooterList() int {
 		findRows(htmlBody)
 	}
 	Info.Println("Finished downloading shooter list from website.")
-	nraaShooterGrades(appendShooterIds)
+	nraaShooterGrades(appendShooterIDs)
 	nraaCopyShooters()
 	nraaLastUpdated()
 	return 1
 }
 
-func nraaShooterGrades(shooterIdList []int) {
+func nraaShooterGrades(shooterIDList []int) {
 	Info.Println("Starting to download shooter grades from website.")
-	for _, shooterId := range shooterIdList {
-		//Query the server for shooterId's grades
-		response, err := http.Get(fmt.Sprintf("%v%v", NRAA_SHOOTER_LIST_GRADE_URL, shooterId))
+	for _, shooterID := range shooterIDList {
+		//Query the server for shooterID's grades
+		response, err := http.Get(fmt.Sprintf("%v%v", nraaShooterListGradeURL, shooterID))
 		defer response.Body.Close()
 		if err != nil {
 			//Unable to contact the server
-			Warning.Printf("http.Get", err)
+			Warning.Printf("http.Get: %v", err)
 			break
 		}
 		//Decode the response to JSON
@@ -131,22 +131,22 @@ func nraaShooterGrades(shooterIdList []int) {
 		if err != nil || err == io.EOF {
 			//if err != nil : The JSON returned contained an error & couldn't be decoded
 			//if err == io.EOF : There was no JSON data in the returned string
-			Warning.Printf("json.Decode", err)
+			Warning.Printf("json.Decode: %v", err)
 			break
 		}
 		var grades []NraaGrading
 		for _, data := range m {
 			grades = append(grades, NraaGrading{
-				DisciplineId:   data.Discipline.Id,
+				DisciplineID:   data.Discipline.ID,
 				DisciplineName: data.Discipline.Name,
-				GradeId:        data.Grade.Id,
+				GradeID:        data.Grade.ID,
 				GradeName:      data.Grade.Name,
 				GradeThreshold: data.Grade.Threshold,
 				AvgScore:       str2float(data.AvgScore),
 				ShootQty:       str2Int(data.ShootQty),
 			})
 		}
-		nraaUpdateGrading(shooterId, grades)
+		nraaUpdateGrading(shooterID, grades)
 	}
 	Info.Println("Finished downloading shooter grades from website.")
 }
@@ -154,12 +154,11 @@ func nraaShooterGrades(shooterIdList []int) {
 func nraaCopyShooters() int {
 	Info.Println("Started inserting new shooters.")
 	counter := 0
-	shooter_list := getShooterLists()
-	for _, n_shooter := range shooter_list {
-		shooter := getShooterList(n_shooter.SID)
-		if shooter.SID != 0 && shooter.NraaId != 0 && shooter.Surname != "" && shooter.FirstName != "" && shooter.NickName != "" && shooter.Club != "" && shooter.Address != "" && shooter.Email != "" {
-			UpsertDoc("shooter", n_shooter.SID, n_shooter)
-			counter += 1
+	for _, nShooter := range getShooterLists() {
+		shooter := getShooterList(nShooter.SID)
+		if shooter.SID != 0 && shooter.NraaID != 0 && shooter.Surname != "" && shooter.FirstName != "" && shooter.NickName != "" && shooter.Club != "" && shooter.Address != "" && shooter.Email != "" {
+			upsertDoc("shooter", nShooter.SID, nShooter)
+			counter++
 		}
 	}
 	Info.Println("Finished inserting new shooters.")

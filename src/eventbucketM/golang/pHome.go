@@ -19,8 +19,8 @@ func home() Page {
 		return strings.ToLower(c1.Name) < strings.ToLower(c2.Name)
 	}
 	events := getEvents() //TODO make custom select
-	OrderedByEvent(sortByDate, sortByTime, sortByName).Sort(events)
-	openEvents := []HomeCalendar{}
+	orderedByEvent(sortByDate, sortByTime, sortByName).Sort(events)
+	openEvents := []homeCalendar{}
 	for _, event := range events {
 		if !event.Closed {
 			var listRanges []string
@@ -28,10 +28,10 @@ func home() Page {
 				listRanges = append(listRanges, rangeObj.Name)
 			}
 			club, _ := getClub(event.Club)
-			calendarEvent := HomeCalendar{
-				Id:     event.Id,
+			calendarEvent := homeCalendar{
+				ID:     event.ID,
 				Name:   event.Name,
-				ClubId: event.Club,
+				ClubID: event.Club,
 				Club:   club.Name,
 				Time:   event.Time,
 				Ranges: strings.Join(listRanges, ", "),
@@ -48,22 +48,22 @@ func home() Page {
 			openEvents = append(openEvents, calendarEvent)
 		}
 	}
-	hostname, ipAddresses := HostnameIpAddresses()
+	hostname, ipAddresses := hostnameIPAddresses()
 	//TODO change getClubs to simpler DB lookup getClubNames
 	clubs := getClubs()
 	return Page{
 		TemplateFile: "home",
-		Theme:        TEMPLATE_HOME,
+		Theme:        templateHome,
 		Title:        "Home",
 		Data: M{
 			"FutureEvents": openEvents,
 			"PageName":     "Calendar",
-			"ArchiveLink":  URL_archive,
+			"ArchiveLink":  urlArchive,
 			"FormNewEvent": generateForm(homeFormNewEvent(clubs, (Event{}))),
 			"Hostname":     hostname,
 			"IpAddresses":  ipAddresses,
 		},
-		v8Url: VURL_home,
+		v8Url: VURLHome,
 	}
 }
 
@@ -71,7 +71,7 @@ func homeFormNewEvent(clubs []Club, event Event) Form {
 	title := "Event Details"
 	save := "Update Event"
 	submitName := "eventid"
-	if event.Id == "" {
+	if event.ID == "" {
 		title = "New Event"
 		save = "Save Event"
 		submitName = ""
@@ -80,7 +80,7 @@ func homeFormNewEvent(clubs []Club, event Event) Form {
 	}
 	var clubList []Option
 	for _, clubData := range clubs {
-		if event.Club != "" && clubData.Id == event.Club {
+		if event.Club != "" && clubData.ID == event.Club {
 			event.Club = clubData.Name
 		}
 		clubList = append(clubList, Option{
@@ -88,79 +88,79 @@ func homeFormNewEvent(clubs []Club, event Event) Form {
 		})
 	}
 	return Form{
-		Action: URL_eventInsert,
-		Title:  title,
-		Inputs: []Inputs{
+		action: urlEventInsert,
+		title:  title,
+		inputs: []Inputs{
 			{
-				Name:      "name",
-				Html:      "text",
-				Label:     "Event Name",
-				VarType:   "string",
-				MaxLength: v8MaxStringInput,
-				MinLength: v8MinStringInput,
-				Required:  true,
-				//				AutoComplete: "off",
-				Value:     event.Name,
-				Autofocus: "on",
+				name:      "name",
+				html:      "text",
+				label:     "Event Name",
+				varType:   "string",
+				maxLength: v8MaxStringInput,
+				minLength: v8MinStringInput,
+				required:  true,
+				value:     event.Name,
+				autofocus: "on",
+				//autoComplete: "off",
 			}, {
-				Name:         "club",
-				Html:         "search",
-				DataList:     true,
-				Id:           "clubSearch",
-				AutoComplete: "off",
-				Label:        "Club Name",
+				name:         "club",
+				html:         "search",
+				dataList:     true,
+				id:           "clubSearch",
+				autoComplete: "off",
+				label:        "Club Name",
 				//TODO auto set the club name to X if there is only one available
-				Options:   clubList,
-				Required:  true,
-				Value:     event.Club,
-				VarType:   "string",
-				MaxLength: v8MaxStringInput,
-				MinLength: v8MinStringInput,
+				options:   clubList,
+				required:  true,
+				value:     event.Club,
+				varType:   "string",
+				maxLength: v8MaxStringInput,
+				minLength: v8MinStringInput,
 			}, {
-				Name:     "date",
-				Html:     "date",
-				Label:    "Date",
-				Required: true,
-				Value:    event.Date,
+				name:     "date",
+				html:     "date",
+				label:    "Date",
+				required: true,
+				value:    event.Date,
 			}, {
-				Name:  "time",
-				Html:  "time",
-				Label: "Time",
-				Value: event.Time,
+				name:  "time",
+				html:  "time",
+				label: "Time",
+				value: event.Time,
 			}, {
-				Html:      "submit",
-				Inner:     save,
-				Name:      submitName,
-				Value:     event.Id,
-				VarType:   "string",
-				MaxLength: v8MaxEventId,
-				MinLength: v8MinEventId,
-				//AccessKey: "x",
+				html:      "submit",
+				inner:     save,
+				name:      submitName,
+				value:     event.ID,
+				varType:   "string",
+				maxLength: v8MaxEventID,
+				minLength: v8MinEventID,
+				//accessKey: "x",
 			},
 		},
 	}
 }
 
 func eventInsert(w http.ResponseWriter, r *http.Request) {
-	/*validatedValues, ok := v8(homeFormNewEvent([]Club{}, Event{}).Inputs, r)
+	/*validatedValues, ok := v8(homeFormNewEvent([]Club{}, Event{}).inputs, r)
 	if !ok {
 		http.Error(w, "Invalid request form data", 400)
 		return
 	}*/
 	//TODO merge this database functionality into an upsert
-	validatedValues := checkForm(homeFormNewEvent([]Club{}, Event{}).Inputs, r)
+	validatedValues := checkForm(homeFormNewEvent([]Club{}, Event{}).inputs, r)
 	//TODO one day change validated values to return the schema compatible data so it can be directly used add constants would by used more often to access the map items
-	eventId := validatedValues["eventid"]
-	if eventId == "" {
+	eventID := validatedValues["eventid"]
+	if eventID == "" {
 		newEvent := Event{
 			Name: validatedValues["name"],
 		}
 		club, ok := getClubByName(validatedValues["club"])
 		if ok {
-			newEvent.Club = club.Id
+			newEvent.Club = club.ID
 		} else {
-			clubId, _ := insertClub(validatedValues["club"])
-			newEvent.Club = clubId
+			clubID, _ := insertClub(validatedValues["club"])
+			newEvent.Club = clubID
 		}
 
 		if validatedValues["date"] != "" {
@@ -173,30 +173,30 @@ func eventInsert(w http.ResponseWriter, r *http.Request) {
 
 		//Add default ranges and aggregate ranges
 		var err error
-		newEvent.Id, err = getNextId(TBLevent)
+		newEvent.ID, err = getNextID(TBLevent)
 		newEvent.AutoInc.Range = 1
 		if err == nil {
-			InsertDoc(TBLevent, newEvent)
+			insertDoc(TBLevent, newEvent)
 			//redirect user to event settings
-			http.Redirect(w, r, URL_eventSettings+newEvent.Id, http.StatusSeeOther)
+			http.Redirect(w, r, urlEventSettings+newEvent.ID, http.StatusSeeOther)
 		} else {
 			//TODO go to previous referer page (home or organisers both have the form)
-			//http.Redirect(w, r, URL_organisers, http.StatusSeeOther)
+			//http.Redirect(w, r, urlOrganisers, http.StatusSeeOther)
 		}
 	} else {
-		eventUpsertData(eventId, M{
+		eventUpsertData(eventID, M{
 			"n": validatedValues["name"],
 			"c": validatedValues["club"],
 			"d": validatedValues["date"],
 			"t": validatedValues["time"],
 		})
-		http.Redirect(w, r, URL_eventSettings+eventId, http.StatusSeeOther)
+		http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
 	}
 }
 
 //Home and archive pages
-type HomeCalendar struct {
-	Id, Name, Club, ClubId, Time string
+type homeCalendar struct {
+	ID, Name, Club, ClubID, Time string
 	Day                          string
 	Date, Ranges                 string
 	Month                        time.Month
@@ -239,7 +239,7 @@ func (ms *multiSorter2) Less(i, j int) bool {
 	return ms.less[k](p, q)
 }
 
-func OrderedByEvent(less ...lessFunc2) *multiSorter2 {
+func orderedByEvent(less ...lessFunc2) *multiSorter2 {
 	return &multiSorter2{
 		less: less,
 	}
