@@ -8,7 +8,7 @@
 {{HTM .TableMounds}}
 
 <h3>Map</h3>
-{{if .Latitude and .Longitude}}
+{{if and .Latitude .Longitude}}
 	<div class=googleMapCanvas></div>
 	<script src=/j/google_maps_api.js></script>
 	<script>

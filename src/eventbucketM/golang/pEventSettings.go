@@ -8,43 +8,43 @@ import (
 )
 
 func rangeInsert(w http.ResponseWriter, r *http.Request) {
-	validatedValues := checkForm(eventSettingsAddRangeForm("").Inputs, r)
+	validatedValues := checkForm(eventSettingsAddRangeForm("").inputs, r)
 	rangeAggInsert(validatedValues, false)
-	eventId := validatedValues["eventid"]
-	http.Redirect(w, r, URL_eventSettings+eventId, http.StatusSeeOther)
+	eventID := validatedValues["eventid"]
+	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
 }
 
 func aggInsert(w http.ResponseWriter, r *http.Request) {
-	validatedValues := checkForm(eventSettingsAddAggForm("", []Option{}).Inputs, r)
+	validatedValues := checkForm(eventSettingsAddAggForm("", []Option{}).inputs, r)
 	rangeAggInsert(validatedValues, true)
-	eventId := validatedValues["eventid"]
-	http.Redirect(w, r, URL_eventSettings+eventId, http.StatusSeeOther)
+	eventID := validatedValues["eventid"]
+	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
 }
 func rangeAggInsert(validatedValues map[string]string, isAgg bool) {
-	new_range := Range{Name: validatedValues["name"]}
+	newRange := Range{Name: validatedValues["name"]}
 	if isAgg {
-		new_range.IsAgg = true
-		new_range.Aggregate = validatedValues["agg"]
+		newRange.IsAgg = true
+		newRange.Aggregate = validatedValues["agg"]
 	}
-	eventId := validatedValues["eventid"]
-	range_id, event_data := EventAddRange(eventId, new_range)
-	go calc_new_agg_range_scores(eventId, range_id, event_data)
+	eventID := validatedValues["eventid"]
+	rangeID, eventData := eventAddRange(eventID, newRange)
+	go calcNewAggRangeScores(eventID, rangeID, eventData)
 }
-func calc_new_agg_range_scores(eventId string, range_id int, event Event) {
-	ranges := []string{fmt.Sprintf("%v", range_id)}
-	for shooter_id := range event.Shooters {
-		event = eventCalculateAggs(event, shooter_id, ranges)
+func calcNewAggRangeScores(eventID string, rangeID int, event Event) {
+	ranges := []string{fmt.Sprintf("%v", rangeID)}
+	for shooterID := range event.Shooters {
+		event = eventCalculateAggs(event, shooterID, ranges)
 	}
-	UpdateDocById(TBLevent, eventId, event)
+	updateDocByID(TBLevent, eventID, event)
 }
 
 func rangeUpdate(w http.ResponseWriter, r *http.Request) {
-	validatedValues := checkForm(eventSettingsUpdateRange("", "").Inputs, r)
-	eventId := validatedValues["eventid"]
-	rangeId := validatedValues["rangeid"]
+	validatedValues := checkForm(eventSettingsUpdateRange("", "").inputs, r)
+	eventID := validatedValues["eventid"]
+	rangeID := validatedValues["rangeid"]
 	update := M{
 		"$set": M{
-			Dot("R", rangeId, "n"): validatedValues["name"],
+			dot("R", rangeID, "n"): validatedValues["name"],
 		},
 		"$unset": M{},
 	}
@@ -52,134 +52,132 @@ func rangeUpdate(w http.ResponseWriter, r *http.Request) {
 	if validatedValues["hide"] != "on" {
 		thingy = "$unset"
 	}
-	update[thingy].(M)[Dot("R", rangeId, "h")] = true
+	update[thingy].(M)[dot("R", rangeID, "h")] = true
 
 	thingy = "$set"
 	if validatedValues["lock"] != "on" {
 		thingy = "$unset"
 	}
-	update[thingy].(M)[Dot("R", rangeId, "l")] = true
+	update[thingy].(M)[dot("R", rangeID, "l")] = true
 
 	thingy = "$set"
 	if validatedValues["aggs"] == "" {
 		thingy = "$unset"
 	}
-	update[thingy].(M)[Dot("R", rangeId, "a")] = validatedValues["aggs"]
-	eventUpdateRangeData(eventId, update)
-	http.Redirect(w, r, URL_eventSettings+eventId, http.StatusSeeOther)
+	update[thingy].(M)[dot("R", rangeID, "a")] = validatedValues["aggs"]
+	eventUpdateRangeData(eventID, update)
+	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
 }
 
-func eventSettingsUpdateRange(eventId, rangeId string) Form {
+func eventSettingsUpdateRange(eventID, rangeID string) Form {
 	return Form{
-		Action: URL_updateRange,
-		Inputs: []Inputs{
+		action: urlUpdateRange,
+		inputs: []Inputs{
 			{
-				Name:     "name",
-				Html:     "text",
-				Label:    "Range Name",
-				Required: true,
+				name:     "name",
+				html:     "text",
+				label:    "Range Name",
+				required: true,
 			}, {
-				Name:  "rangeid",
-				Html:  "hidden",
-				Value: rangeId,
+				name:  "rangeid",
+				html:  "hidden",
+				value: rangeID,
 			}, {
-				Name:    "hide",
-				Html:    "checkbox",
-				Checked: false,
+				name:    "hide",
+				html:    "checkbox",
+				checked: false,
 			}, {
-				Name:    "lock",
-				Html:    "checkbox",
-				Checked: false,
+				name:    "lock",
+				html:    "checkbox",
+				checked: false,
 			}, {
-				Name:        "aggs",
-				Html:        "select",
-				MultiSelect: true,
+				name:        "aggs",
+				html:        "select",
+				multiSelect: true,
 			}, {
-				Html:  "submit",
-				Inner: "Create Range",
-				Name:  "eventid",
-				Value: eventId,
-				//AccessKey: "x",
+				html:  "submit",
+				inner: "Create Range",
+				name:  "eventid",
+				value: eventID,
+				//accessKey: "x",
 			},
 		},
 	}
 }
 
-func eventSettings(eventId string) Page {
-	event, _ := getEvent(eventId)
-	var event_ranges []Option
-	for range_id, item := range event.Ranges {
+func eventSettings(eventID string) Page {
+	event, _ := getEvent(eventID)
+	var eventRanges []Option
+	for rangeID, item := range event.Ranges {
 		if !item.IsAgg {
-			event_ranges = append(event_ranges, Option{Value: fmt.Sprintf("%v", range_id), Display: item.Name, Selected: true})
+			eventRanges = append(eventRanges, Option{Value: fmt.Sprintf("%v", rangeID), Display: item.Name, Selected: true})
 		} else {
-			var list_of_ranges = []Option{}
-			agg_list := strings.Split(item.Aggregate, ",")
-			for agg_id, agg := range event.Ranges {
+			var listOfRanges = []Option{}
+			for aggID, agg := range event.Ranges {
 				if !agg.IsAgg {
-					list_of_ranges = append(list_of_ranges, Option{
-						Value:    fmt.Sprintf("%v", agg_id),
+					listOfRanges = append(listOfRanges, Option{
+						Value:    fmt.Sprintf("%v", aggID),
 						Display:  agg.Name,
-						Selected: stringInSlice(fmt.Sprintf("%v", agg_id), agg_list),
+						Selected: stringInSlice(fmt.Sprintf("%v", aggID), strings.Split(item.Aggregate, ",")),
 					})
 				}
 			}
-			var tmp = event.Ranges[range_id]
-			select_options := drawOptions(Inputs{Options: list_of_ranges})
-			tmp.Aggregate = fmt.Sprintf("<select name=aggs form=range%v multiple size=%v required>%v</select>", range_id, len(list_of_ranges), select_options)
-			event.Ranges[range_id] = tmp
+			var tmp = event.Ranges[rangeID]
+			tmp.Aggregate = fmt.Sprintf("<select name=aggs form=range%v multiple size=%v required>%v</select>", rangeID, len(listOfRanges), drawOptions(Inputs{options: listOfRanges}))
+			event.Ranges[rangeID] = tmp
 		}
 	}
 	addAggregateForm := ""
 	if len(event.Ranges) >= 2 {
-		addAggregateForm = generateForm(eventSettingsAddAggForm(eventId, event_ranges))
+		addAggregateForm = generateForm(eventSettingsAddAggForm(eventID, eventRanges))
 	}
 	return Page{
 		TemplateFile: "eventSettings",
 		Title:        "Event Settings",
-		Theme:        TEMPLATE_ADMIN,
+		Theme:        templateAdmin,
 		Data: M{
 			"Title":          "Event Settings",
 			"EventName":      event.Name,
-			"Id":             eventId,
-			"AddRange":       generateForm(eventSettingsAddRangeForm(eventId)),
+			"ID":             eventID,
+			"AddRange":       generateForm(eventSettingsAddRangeForm(eventID)),
 			"AddAgg":         addAggregateForm,
 			"ListRanges":     event.Ranges,
-			"ListGrades":     CLASSES,
-			"isPrizemeeting": generateForm(eventSettingsIsPrizeMeet(eventId, event.IsPrizeMeet)),
-			"menu":           eventMenu(eventId, event.Ranges, URL_eventSettings, event.IsPrizeMeet),
+			"ListGrades":     ClassNamesList,
+			"isPrizemeeting": generateForm(eventSettingsIsPrizeMeet(eventID, event.IsPrizeMeet)),
+			"menu":           eventMenu(eventID, event.Ranges, urlEventSettings, event.IsPrizeMeet),
 			"EventGrades":    generateForm(eventSettingsClassGrades(event)),
-			"AllEventGrades": DEFAULT_CLASS_SETTINGS,
+			"AllEventGrades": defaultClassSettings,
 			"SortScoreboard": generateForm(eventSettingsSortScoreboard(event)),
 			"FormNewEvent":   generateForm(homeFormNewEvent(getClubs(), event)),
 		},
 	}
 }
-func eventSettingsAddRangeForm(eventId string) Form {
+func eventSettingsAddRangeForm(eventID string) Form {
 	return Form{
-		Action: URL_eventRangeInsert,
-		Title:  "Add Range",
-		Inputs: []Inputs{
+		action: urlEventRangeInsert,
+		title:  "Add Range",
+		inputs: []Inputs{
 			{
-				Name:     "name",
-				Html:     "text",
-				Label:    "Range Name",
-				Required: true,
+				name:     "name",
+				html:     "text",
+				label:    "Range Name",
+				required: true,
 			}, {
-				Html:  "submit",
-				Inner: "Create Range",
-				Name:  "eventid",
-				Value: eventId,
-				//AccessKey: "x",
+				html:  "submit",
+				inner: "Create Range",
+				name:  "eventid",
+				value: eventID,
+				//accessKey: "x",
 			},
 		},
 	}
 }
 
 func updateSortScoreBoard(w http.ResponseWriter, r *http.Request) {
-	validatedValues := checkForm(eventSettingsSortScoreboard(Event{}).Inputs, r)
-	eventId := validatedValues["eventid"]
-	http.Redirect(w, r, URL_scoreboard+eventId, http.StatusSeeOther)
-	eventUpdateSortScoreboard(eventId, validatedValues["sort"])
+	validatedValues := checkForm(eventSettingsSortScoreboard(Event{}).inputs, r)
+	eventID := validatedValues["eventid"]
+	http.Redirect(w, r, urlScoreboard+eventID, http.StatusSeeOther)
+	eventUpdateSortScoreboard(eventID, validatedValues["sort"])
 }
 
 func eventSettingsSortScoreboard(event Event) Form {
@@ -193,112 +191,112 @@ func eventSettingsSortScoreboard(event Event) Form {
 		sortBy = false
 	}
 	return Form{
-		Action: URL_updateSortScoreBoard,
-		Title:  "Sort Scoreboard",
-		Inputs: []Inputs{
+		action: urlUpdateSortScoreBoard,
+		title:  "Sort Scoreboard",
+		inputs: []Inputs{
 			{
-				Name:     "sort",
-				Html:     "select",
-				Label:    "Sort Scoreboard by Range",
-				Required: true,
-				Options:  sortByRanges,
+				name:     "sort",
+				html:     "select",
+				label:    "Sort Scoreboard by Range",
+				required: true,
+				options:  sortByRanges,
 			}, {
-				Html:  "submit",
-				Inner: "Save",
-				Name:  "eventid",
-				Value: event.Id,
-				//AccessKey: "x",
+				html:  "submit",
+				inner: "Save",
+				name:  "eventid",
+				value: event.ID,
+				//accessKey: "x",
 			},
 		},
 	}
 }
 
-func eventSettingsAddAggForm(eventId string, eventRanges []Option) Form {
+func eventSettingsAddAggForm(eventID string, eventRanges []Option) Form {
 	return Form{
-		Action: URL_eventAggInsert,
-		Title:  "Add Aggregate Range",
-		Inputs: []Inputs{
+		action: urlEventAggInsert,
+		title:  "Add Aggregate Range",
+		inputs: []Inputs{
 			{
-				Name:     "name",
-				Html:     "text",
-				Label:    "Aggregate Name",
-				Required: true,
+				name:     "name",
+				html:     "text",
+				label:    "Aggregate Name",
+				required: true,
 			}, {
-				Name:        "agg",
-				Html:        "select",
-				MultiSelect: true,
-				Options:     eventRanges,
-				Label:       "Sum up ranges",
-				Required:    true,
+				name:        "agg",
+				html:        "select",
+				multiSelect: true,
+				options:     eventRanges,
+				label:       "Sum up ranges",
+				required:    true,
 			}, {
-				Html:  "submit",
-				Inner: "Create Aggregate",
-				Name:  "eventid",
-				Value: eventId,
-				//AccessKey: "x",
+				html:  "submit",
+				inner: "Create Aggregate",
+				name:  "eventid",
+				value: eventID,
+				//accessKey: "x",
 			},
 		},
 	}
 }
 
 func updateEventGrades(w http.ResponseWriter, r *http.Request) {
-	validatedValues := checkForm(eventSettingsClassGrades(Event{}).Inputs, r)
-	eventId := validatedValues["eventid"]
+	validatedValues := checkForm(eventSettingsClassGrades(Event{}).inputs, r)
+	eventID := validatedValues["eventid"]
 	grades := strings.Split(validatedValues["grades"], ",")
-	var gradeIds []int
-	var gradeIdInt int
+	var gradeIDs []int
+	var gradeIDInt int
 	var err error
-	for _, gradeId := range grades {
-		gradeIdInt, err = strconv.Atoi(gradeId)
+	for _, gradeID := range grades {
+		gradeIDInt, err = strconv.Atoi(gradeID)
 		if err == nil {
-			gradeIds = append(gradeIds, gradeIdInt)
+			gradeIDs = append(gradeIDs, gradeIDInt)
 		}
 	}
-	http.Redirect(w, r, URL_event+eventId, http.StatusSeeOther)
-	tableUpdateData(TBLevent, eventId, M{schemaGRADES: gradeIds})
+	http.Redirect(w, r, urlEvent+eventID, http.StatusSeeOther)
+	tableUpdateData(TBLevent, eventID, M{schemaGRADES: gradeIDs})
 }
 
 func eventSettingsClassGrades(event Event) Form {
 	return Form{
-		Action: URL_updateEventGrades,
-		Title:  "Availalbe Classes &amp; Grades",
-		Inputs: []Inputs{
+		action: urlUpdateEventGrades,
+		title:  "Availalbe Classes &amp; Grades",
+		inputs: []Inputs{
 			{
-				Name:        "grades",
-				Html:        "select",
-				MultiSelect: true,
-				Options:     eventGradeOptions(event.Grades),
+				name:        "grades",
+				html:        "select",
+				multiSelect: true,
+				options:     eventGradeOptions(event.Grades),
 			}, {
-				Html:  "submit",
-				Inner: "Save",
-				Name:  "eventid",
-				Value: event.Id,
-				//AccessKey: "x",
+				html:  "submit",
+				inner: "Save",
+				name:  "eventid",
+				value: event.ID,
+				//accessKey: "x",
 			},
 		},
 	}
 }
 
-func eventShotsNSighters(eventId string) Page {
+func eventShotsNSighters(eventID string) Page {
 	//TODO Display a list of ranges and shooters scores as shots and total scores, ordered in descending order
-	event, err := getEvent(eventId)
+	event, err := getEvent(eventID)
 	if err != nil {
-		Error.Printf("Event with id %v doesn't exist", eventId)
+		Error.Printf("Event with id %v doesn't exist", eventID)
 	}
 	//TODO shooters scores not displayed for each range etc.
 	Warning.Println("shooters scores not displayed for each range etc.")
 	/*for _, eventRange := range event.Ranges{
-		//Info.Printf("event Range: %v", eventRange.Id)
+		//Info.Printf("event Range: %v", eventRange.ID)
 		for _, shooter := range event.Shooters{
 			//TODO check if shooters has this range
-			//Info.Printf("shooter: %v", shooter.Id)
+			//Info.Printf("shooter: %v", shooter.ID)
 		}
 	}*/
 	return Page{
-		Theme:        TEMPLATE_EMPTY,
+		Theme:        templateEmpty,
 		Title:        "eventShotsNSighters",
 		TemplateFile: "eventShotsNSighters",
-		v8Url:        VURL_eventShotsNSighters,
+		v8Url:        VURLEventShotsNSighters,
 		Data: M{
 			"EventName": event.Name,
 		},
@@ -306,32 +304,32 @@ func eventShotsNSighters(eventId string) Page {
 }
 
 func updateIsPrizeMeet(w http.ResponseWriter, r *http.Request) {
-	validatedValues := checkForm(eventSettingsIsPrizeMeet("", false).Inputs, r)
-	eventId := validatedValues["eventid"]
+	validatedValues := checkForm(eventSettingsIsPrizeMeet("", false).inputs, r)
+	eventID := validatedValues["eventid"]
 	prizemeet := false
 	if "on" == validatedValues["prizemeet"] {
 		prizemeet = true
 	}
-	http.Redirect(w, r, URL_eventSettings+eventId, http.StatusSeeOther)
-	eventUpsertData(eventId, M{"p": prizemeet})
+	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
+	eventUpsertData(eventID, M{"p": prizemeet})
 }
 
-func eventSettingsIsPrizeMeet(eventId string, checked bool) Form {
+func eventSettingsIsPrizeMeet(eventID string, checked bool) Form {
 	return Form{
-		Action: URL_updateIsPrizeMeet,
-		Title:  "Prize Meeting Event",
-		Inputs: []Inputs{
+		action: urlUpdateIsPrizeMeet,
+		title:  "Prize Meeting Event",
+		inputs: []Inputs{
 			{
-				Name:    "prizemeet",
-				Html:    "checkbox",
-				Label:   "Is this Event a Prize Meeting?",
-				Checked: checked,
+				name:    "prizemeet",
+				html:    "checkbox",
+				label:   "Is this Event a Prize Meeting?",
+				checked: checked,
 			}, {
-				Html:  "submit",
-				Inner: "Save",
-				Name:  "eventid",
-				Value: eventId,
-				//AccessKey: "x",
+				html:  "submit",
+				inner: "Save",
+				name:  "eventid",
+				value: eventID,
+				//accessKey: "x",
 			},
 		},
 	}

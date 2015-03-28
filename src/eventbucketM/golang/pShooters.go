@@ -9,7 +9,7 @@ import (
 func shooters() Page {
 	return Page{
 		TemplateFile: "shooters",
-		Theme:        TEMPLATE_HOME,
+		Theme:        templateHome,
 		Title:        "Shooters",
 		Data: M{
 			"ShooterList": generateForm(updateShooterList()),
@@ -23,16 +23,16 @@ func updateShooterList() Form {
 		lastUpdated = "Never"
 	}
 	return Form{
-		Action: URL_updateShooterList,
-		Title:  "Update Shooter List",
-		Inputs: []Inputs{
+		action: urlUpdateShooterList,
+		title:  "Update Shooter List",
+		inputs: []Inputs{
 			{
-				Snippet: "Last updated: " + lastUpdated + ".",
+				snippet: "Last updated: " + lastUpdated + ".",
 			}, {
-				Html:      "submit",
-				Inner:     "Update",
-				Autofocus: "on",
-				//AccessKey: "x",
+				html:      "submit",
+				inner:     "Update",
+				autofocus: "on",
+				//accessKey: "x",
 			},
 		},
 	}
@@ -40,7 +40,7 @@ func updateShooterList() Form {
 
 //Search for a shooter by first name, surname or club
 func searchShooter(w http.ResponseWriter, r *http.Request) {
-	validatedValues := checkForm(searchShooterForm().Inputs, r)
+	validatedValues := checkForm(searchShooterForm().inputs, r)
 	query := M{
 	//Ignore Deleted shooters. Selects not modified, updated & merged shooters
 	//"$or": []M{{"t": nil}, {"t": M{"$lt": 3}}},
@@ -61,26 +61,26 @@ func searchShooter(w http.ResponseWriter, r *http.Request) {
 			Display: fmt.Sprintf("%v %v, ~~ %v", shooter.FirstName, shooter.Surname, shooter.Club),
 		})
 	}
-	fmt.Fprint(w, drawOptions(Inputs{Options: optionList}))
+	fmt.Fprint(w, drawOptions(Inputs{options: optionList}))
 }
 
 func searchShooterForm() Form {
 	return Form{
-		Action: URL_shooterInsert,
-		Title:  "Add Shooters",
-		Inputs: []Inputs{
+		action: urlShooterInsert,
+		title:  "Add Shooters",
+		inputs: []Inputs{
 			{
-				Name:  "first",
-				Html:  "text",
-				Label: "First Name",
+				name:  "first",
+				html:  "text",
+				label: "First Name",
 			}, {
-				Name:  "surname",
-				Html:  "text",
-				Label: "Surname",
+				name:  "surname",
+				html:  "text",
+				label: "Surname",
 			}, {
-				Name:  "club",
-				Html:  "text",
-				Label: "Club",
+				name:  "club",
+				html:  "text",
+				label: "Club",
 			},
 		},
 	}
@@ -88,13 +88,13 @@ func searchShooterForm() Form {
 
 func searchShooterGrade(w http.ResponseWriter, r *http.Request) {
 	output := ""
-	validatedValues := checkForm(searchShooterGradeForm().Inputs, r)
-	shooterId, err := strconv.Atoi(validatedValues["shooterid"])
+	validatedValues := checkForm(searchShooterGradeForm().inputs, r)
+	shooterID, err := strconv.Atoi(validatedValues["shooterid"])
 	if err != nil {
 		fmt.Fprint(w, output)
 		return
 	}
-	shooter := getNraaShooter(shooterId) //TODO change to getShooter after it is moved
+	shooter := getNraaShooter(shooterID) //TODO change to getShooter after it is moved
 	output += fmt.Sprintf("%v %v", shooter.FirstName, shooter.Surname)
 	if len(shooter.Grades) == 0 {
 		output += "<div>No grades listed</div>"
@@ -107,12 +107,12 @@ func searchShooterGrade(w http.ResponseWriter, r *http.Request) {
 
 func searchShooterGradeForm() Form {
 	return Form{
-		Action: URL_shooterInsert,
-		Title:  "Shooters Grades",
-		Inputs: []Inputs{
+		action: urlShooterInsert,
+		title:  "Shooters Grades",
+		inputs: []Inputs{
 			{
-				Name: "shooterid",
-				Html: "number",
+				name: "shooterid",
+				html: "number",
 			},
 		},
 	}

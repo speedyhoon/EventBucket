@@ -17,8 +17,8 @@ func templator(viewController Page, w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	if viewController.Theme == TEMPLATE_HOME {
-		viewController.Data["Menu"] = HOME_MENU_ITEMS
+	if viewController.Theme == templateHome {
+		viewController.Data["Menu"] = homeMenuItems
 	}
 	viewController.Data["Title"] = viewController.Title
 	viewController.Data["CurrentYear"] = time.Now().Year()
@@ -45,7 +45,7 @@ func generator(w http.ResponseWriter, fillin string, viewController Page) {
 			return grades()[grade].LongName
 		},
 		"JSCLASS": func(grade int) string {
-			return fmt.Sprintf("%v", grades()[grade].ClassId)
+			return fmt.Sprintf("%v", grades()[grade].ClassID)
 		},
 		"GRADE": func(grade int) string {
 			return grades()[grade].Name
@@ -56,29 +56,28 @@ func generator(w http.ResponseWriter, fillin string, viewController Page) {
 		"EndFieldset": func() template.HTML {
 			return template.HTML("</fieldset>")
 		},
-		"COLSPAN": func(longest_shots []string, short_shots int) template.HTMLAttr {
-			if len(longest_shots) > short_shots {
-				return template.HTMLAttr(fmt.Sprintf(" colspan=%v", len(longest_shots)-short_shots+1))
+		"COLSPAN": func(longestShots []string, shortShots int) template.HTMLAttr {
+			if len(longestShots) > shortShots {
+				return template.HTMLAttr(fmt.Sprintf(" colspan=%v", len(longestShots)-shortShots+1))
 			}
 			return template.HTMLAttr("")
 		},
-		"CSSclass": func(class_name1, class_name2 interface{}) template.HTMLAttr {
-			if class_name1 != "" && class_name2 != "" {
-				return template.HTMLAttr(fmt.Sprintf(" class=%v%v", class_name1, class_name2))
+		"CSSclass": func(className1, className2 interface{}) template.HTMLAttr {
+			if className1 != "" && className2 != "" {
+				return template.HTMLAttr(fmt.Sprintf(" class=%v%v", className1, className2))
 			}
 			return template.HTMLAttr("")
 		},
-		"DisplayShot": func(shot_index int, score Score) string {
-			if len(score.Shots) > shot_index {
-				//				return fmt.Sprintf("%s", ShotsToValue(string(score.Shots[shot_index])))
-				return ShotsToValue(string(score.Shots[shot_index]))
+		"DisplayShot": func(shotIndex int, score Score) string {
+			if len(score.Shots) > shotIndex {
+				return shotsToValue(string(score.Shots[shotIndex]))
 			}
 			return ""
 		},
 		"START_SHOOTING_SHOTS": func(score Score) template.HTML {
 			var output string
 			for _, shot := range strings.Split(score.Shots, "") {
-				output += fmt.Sprintf("<td>%v</td>", ShotsToValue(shot))
+				output += fmt.Sprintf("<td>%v</td>", shotsToValue(shot))
 			}
 			return template.HTML(output)
 		},
@@ -92,8 +91,8 @@ func generator(w http.ResponseWriter, fillin string, viewController Page) {
 			return AgeGroupDisplay(value)
 		},
 		"POSITION": func(score Score) template.HTMLAttr {
-			if score.Total == 0 && score.Centers == 0 {
-				return template.HTMLAttr(fmt.Sprintf(" class=w%v", LEGEND_NO_SCORE))
+			if score.Total == 0 && score.Centres == 0 {
+				return template.HTMLAttr(fmt.Sprintf(" class=w%v", legendNoScore))
 			}
 			if score.Warning != 0 {
 				return template.HTMLAttr(fmt.Sprintf(" class=w%v", score.Warning))
@@ -111,26 +110,26 @@ func generator(w http.ResponseWriter, fillin string, viewController Page) {
 	}
 }
 
-var EventMenuItems = []Menu{
+var eventMenuItems = []Menu{
 	{
 		Name: "Home",
 		Link: "/",
 	}, {
 		Name: "Event",
-		Link: URL_event,
+		Link: urlEvent,
 	}, {
 		Name: "Event Settings",
-		Link: URL_eventSettings,
+		Link: urlEventSettings,
 	}, {
 		Name: "Scoreboard",
-		Link: URL_scoreboard,
+		Link: urlScoreboard,
 	}, {
 		Name:   "Start Shooting",
-		Link:   URL_startShooting,
+		Link:   urlStartShooting,
 		Ranges: true,
 	}, {
 		Name:   "Total Scores",
-		Link:   URL_totalScores,
+		Link:   urlTotalScores,
 		Ranges: true,
 	}, {
 		Name: "Close Menu",
@@ -138,22 +137,22 @@ var EventMenuItems = []Menu{
 	},
 }
 
-func eventMenu(eventId string, eventRanges []Range, pageUrl string, isPrizeMeet bool) string {
+func eventMenu(eventID string, eventRanges []Range, pageURL string, isPrizeMeet bool) string {
 	menu := "<ul>"
 	selected := ""
 	closeMenu := false
-	for _, menuItem := range EventMenuItems {
-		if menuItem.Link == pageUrl {
+	for _, menuItem := range eventMenuItems {
+		if menuItem.Link == pageURL {
 			selected = " class=v"
 		}
 		if menuItem.Ranges {
-			if (isPrizeMeet && menuItem.Link != URL_totalScores) || !isPrizeMeet {
+			if (isPrizeMeet && menuItem.Link != urlTotalScores) || !isPrizeMeet {
 				//The a tag is needed for my ipad
 				if len(eventRanges) >= 1 {
 					var menuRangeItems string
-					for rangeId, range_item := range eventRanges {
-						if !range_item.IsAgg && !range_item.Hidden {
-							menuRangeItems += fmt.Sprintf("<li><a href=%v%v/%v>%v - %v</a></li>", menuItem.Link, eventId, rangeId, rangeId, range_item.Name)
+					for rangeID, rangeItem := range eventRanges {
+						if !rangeItem.IsAgg && !rangeItem.Hidden {
+							menuRangeItems += fmt.Sprintf("<li><a href=%v%v/%v>%v - %v</a></li>", menuItem.Link, eventID, rangeID, rangeID, rangeItem.Name)
 						}
 					}
 					if menuRangeItems != "" {
@@ -169,14 +168,14 @@ func eventMenu(eventId string, eventRanges []Range, pageUrl string, isPrizeMeet 
 			}
 		} else {
 			if menuItem.Link[len(menuItem.Link)-1:] == "/" && menuItem.Link != "/" {
-				menu += fmt.Sprintf("<li%v><a href=%v>%v</a></li>", selected, addQuotes(menuItem.Link+eventId), menuItem.Name)
+				menu += fmt.Sprintf("<li%v><a href=%v>%v</a></li>", selected, addQuotes(menuItem.Link+eventID), menuItem.Name)
 			} else {
 				menu += fmt.Sprintf("<li%v><a href=%v>%v</a></li>", selected, addQuotes(menuItem.Link), menuItem.Name)
 			}
 		}
 		selected = ""
 	}
-	if pageUrl == URL_scoreboard {
+	if pageURL == urlScoreboard {
 		menu += "<li><a id=scoreSettings href=#scoreboard_settings onclick=\"var d=document.getElementById('scoreboard_settings');d.style.display=(d.style.display?'':'block')\">&nbsp;</a></li>"
 	}
 	return menu + "</ul>"

@@ -1,9 +1,5 @@
 <h1>Total Scores: {{.RangeName}}</h1>
 {{HTM .menu}}
-{{$classShots := .classShots}}
-{{$eventId := .EventId}}
-{{$rangeId := .RangeId}}
-{{$FormTotalScores := .FormTotalScores}}
 {{with .Message}}
 	{{HTM .}}
 {{end}}
@@ -18,17 +14,16 @@
 				<th>Shooter</th>
 				<th>Scores</th>
 			</tr>
-			{{/*range $shooterId, $shooter := .ListShooters*/}}
 			{{range $shooter := .ListShooters}}
 				{{if eq false $shooter.Hidden}}
 					{{with $shooter}}
-						<tr id={{.Id}} data-class=fclass>
-							<td>{{.Id}}</td>
+						<tr id={{.ID}} data-class=fclass>
+							<td>{{.ID}}</td>
 							<td>{{GRADE .Grade}}</td>
 							<td>{{.Club}}</td>
 							<td class=name>{{.FirstName}} {{.Surname}}</td>
 							<td>
-								{{$newForm := index $FormTotalScores .Id}}
+								{{$newForm := index $.FormTotalScores .ID}}
 								{{HTM $newForm}}
 							</td>
 						</tr>

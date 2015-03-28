@@ -7,9 +7,9 @@ import (
 	"strings"
 )
 
-func addShooterIdsToShooterObjects(eventShooters []EventShooter) []EventShooter {
-	for shooterId := range eventShooters {
-		eventShooters[shooterId].Id = shooterId
+func addShooterIDsToShooterObjects(eventShooters []EventShooter) []EventShooter {
+	for shooterID := range eventShooters {
+		eventShooters[shooterID].ID = shooterID
 	}
 	return eventShooters
 }
@@ -26,7 +26,7 @@ func scoreboard(url string) Page {
 	}
 
 	//Add shooter ids to the shooter objects
-	event.Shooters = addShooterIdsToShooterObjects(event.Shooters)
+	event.Shooters = addShooterIDsToShooterObjects(event.Shooters)
 
 	if sortByRange != "" {
 		//Closures that order the Change structure.
@@ -37,12 +37,12 @@ func scoreboard(url string) Page {
 			return c1.Scores[sortByRange].Total > c2.Scores[sortByRange].Total
 		}
 		centres := func(c1, c2 *EventShooter) bool {
-			return c1.Scores[sortByRange].Centers > c2.Scores[sortByRange].Centers
+			return c1.Scores[sortByRange].Centres > c2.Scores[sortByRange].Centres
 		}
 		cb := func(c1, c2 *EventShooter) bool {
-			return c1.Scores[sortByRange].CountBack1 > c2.Scores[sortByRange].CountBack1
+			return c1.Scores[sortByRange].CountBack > c2.Scores[sortByRange].CountBack
 		}
-		OrderedBy(grade, total, centres, cb).Sort(event.Shooters)
+		orderedBy(grade, total, centres, cb).Sort(event.Shooters)
 	}
 
 	previousGrade := -1
@@ -55,7 +55,7 @@ func scoreboard(url string) Page {
 
 	//Loop through all the shooters
 	for index, shooter := range event.Shooters {
-		shouldBePosition += 1
+		shouldBePosition++
 		positionEqual = ""
 		if shooter.Grade != previousGrade {
 			previousGrade = shooter.Grade
@@ -90,27 +90,27 @@ func scoreboard(url string) Page {
 				positionEqual = "="
 				shootEqual = true
 				if thisShooterScore.Total != 0 {
-					event.Shooters[index].Warning = LEGEND_SHOOT_OFF
-					event.Shooters[index+1].Warning = LEGEND_SHOOT_OFF
+					event.Shooters[index].Warning = legendShootOff
+					event.Shooters[index+1].Warning = legendShootOff
 					//Set the colour for the cell as well
-					thisShooterScore.Warning = LEGEND_SHOOT_OFF
+					thisShooterScore.Warning = legendShootOff
 					if thisExists {
 						//TODO set to default somehow?
 						shooter.Scores[sortByRange] = thisShooterScore
 					} else {
 						event.Shooters[index].Scores = make(map[string]Score)
 						event.Shooters[index].Scores[sortByRange] = Score{
-							Warning: LEGEND_SHOOT_OFF,
+							Warning: legendShootOff,
 						}
 					}
-					nextShooterScore.Warning = LEGEND_SHOOT_OFF
+					nextShooterScore.Warning = legendShootOff
 					if nextExists {
 						//TODO set to default somehow?
 						event.Shooters[index+1].Scores[sortByRange] = nextShooterScore
 					} else {
 						event.Shooters[index+1].Scores = make(map[string]Score)
 						event.Shooters[index+1].Scores[sortByRange] = Score{
-							Warning: LEGEND_SHOOT_OFF,
+							Warning: legendShootOff,
 						}
 					}
 				}
@@ -130,16 +130,16 @@ func scoreboard(url string) Page {
 	return Page{
 		TemplateFile: "scoreboard",
 		Title:        "Scoreboard",
-		Theme:        TEMPLATE_EMPTY,
+		Theme:        templateEmpty,
 		Data: M{
 			"Title":          "Scoreboard",
-			"EventId":        event.Id,
+			"EventID":        event.ID,
 			"EventName":      event.Name,
 			"ListShooters":   event.Shooters,
 			"ListRanges":     event.Ranges,
 			"Css":            "scoreboard.css",
 			"Legend":         scoreBoardLegend(),
-			"menu":           eventMenu(event.Id, event.Ranges, URL_scoreboard, event.IsPrizeMeet),
+			"menu":           eventMenu(event.ID, event.Ranges, urlScoreboard, event.IsPrizeMeet),
 			"SortByRange":    intSortByRange,
 			"SortScoreboard": generateForm(eventSettingsSortScoreboard(event)),
 		},
@@ -158,7 +158,7 @@ func (ms *multiSorter) Sort(changes []EventShooter) {
 	sort.Sort(ms)
 }
 
-func OrderedBy(less ...lessFunc) *multiSorter {
+func orderedBy(less ...lessFunc) *multiSorter {
 	return &multiSorter{
 		less: less,
 	}

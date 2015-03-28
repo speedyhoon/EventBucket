@@ -8,64 +8,64 @@ import (
 )
 
 func totalScores(data string) Page {
-	return totalScores_Data(data, false)
+	return totalScoresData(data, false)
 }
 
 func totalScoresAll(data string) Page {
-	return totalScores_Data(data, true)
+	return totalScoresData(data, true)
 }
 
-func totalScores_Data(data string, showAll bool) Page {
+func totalScoresData(data string, showAll bool) Page {
 	arr := strings.Split(data, "/")
-	eventId := arr[0]
+	eventID := arr[0]
 	var titleAll string
 	emptyPage := Page{
 		TemplateFile: "total-scores",
 		Title:        "Total Scores" + titleAll,
-		Theme:        TEMPLATE_ADMIN,
+		Theme:        templateAdmin,
 		Data: M{
 			"Title":      "Total Scores",
 			"LinkToPage": "",
-			"EventId":    "",
+			"EventID":    "",
 			"RangeName":  "",
-			"Message":    ERROR_ENTER_SCORES_IN_AGG,
+			"Message":    errorEnterScoresInAgg,
 			"menu":       "",
 		},
 	}
 	if !(len(arr) >= 2) {
 		return emptyPage
 	}
-	range_Id := arr[1]
-	rangeId, err := strconv.Atoi(range_Id)
-	event, eventMissing := getEvent(eventId)
+	rangeID := arr[1]
+	strRangeID, err := strconv.Atoi(rangeID)
+	event, eventMissing := getEvent(eventID)
 	if event.Ranges == nil {
 		return emptyPage
 	}
-	currentRange := event.Ranges[rangeId]
+	currentRange := event.Ranges[strRangeID]
 	if showAll {
 		titleAll = " Show All"
 	}
 	if err != nil || eventMissing != nil || currentRange.Locked || currentRange.Aggregate != "" {
 		return emptyPage
 	}
-	var totalScores_link string
+	var totalScoresLink string
 	if showAll {
-		totalScores_link = fmt.Sprintf("<a href=%v%v>View Incompleted Shooters</a>", URL_totalScores, data)
+		totalScoresLink = fmt.Sprintf("<a href=%v%v>View Incompleted Shooters</a>", urlTotalScores, data)
 	} else {
-		totalScores_link = fmt.Sprintf("<a href=%v%v>View All Shooters</a>", URL_totalScoresAll, data)
+		totalScoresLink = fmt.Sprintf("<a href=%v%v>View All Shooters</a>", urlTotalScoresAll, data)
 	}
 
 	if len(currentRange.Aggregate) > 0 {
 		return Page{
 			TemplateFile: "total-scores",
 			Title:        "Total Scores" + titleAll,
-			Theme:        TEMPLATE_ADMIN,
+			Theme:        templateAdmin,
 			Data: M{
-				"LinkToPage": totalScores_link,
-				"EventId":    eventId,
+				"LinkToPage": totalScoresLink,
+				"EventID":    eventID,
 				"RangeName":  currentRange.Name,
-				"Message":    ERROR_ENTER_SCORES_IN_AGG,
-				"menu":       eventMenu(eventId, event.Ranges, URL_totalScores, event.IsPrizeMeet),
+				"Message":    errorEnterScoresInAgg,
+				"menu":       eventMenu(eventID, event.Ranges, urlTotalScores, event.IsPrizeMeet),
 			},
 		}
 	}
@@ -78,82 +78,82 @@ func totalScores_Data(data string, showAll bool) Page {
 		return c1.FirstName < c2.FirstName
 	}
 
-	var shooter_list []EventShooter
-	var shooters_forms []string
-	for shooterId, shooter_data := range event.Shooters {
+	var shooterList2 []EventShooter
+	var shootersForms2 []string
+	for shooterID, shooterData2 := range event.Shooters {
 		var score string
-		if shooter_data.Scores[range_Id].Total > 0 {
-			score = fmt.Sprintf("%v", shooter_data.Scores[range_Id].Total)
+		if shooterData2.Scores[rangeID].Total > 0 {
+			score = fmt.Sprintf("%v", shooterData2.Scores[rangeID].Total)
 		}
-		if shooter_data.Scores[range_Id].Centers > 0 {
-			score += fmt.Sprintf(".%v", shooter_data.Scores[range_Id].Centers)
+		if shooterData2.Scores[rangeID].Centres > 0 {
+			score += fmt.Sprintf(".%v", shooterData2.Scores[rangeID].Centres)
 		}
 		if showAll || (!showAll && score == "") {
-			shooters_forms = append(shooters_forms, generateForm(totalScoresForm(eventId, range_Id, shooterId, score)))
-			shooter_data.Id = shooterId
-			shooter_list = append(shooter_list, shooter_data)
+			shootersForms2 = append(shootersForms2, generateForm(totalScoresForm(eventID, rangeID, shooterID, score)))
+			shooterData2.ID = shooterID
+			shooterList2 = append(shooterList2, shooterData2)
 		}
 	}
 
-	OrderedBy(grade, name).Sort(shooter_list)
+	orderedBy(grade, name).Sort(shooterList2)
 
 	return Page{
 		TemplateFile: "total-scores",
 		Title:        "Total Scores" + titleAll,
-		Theme:        TEMPLATE_ADMIN,
+		Theme:        templateAdmin,
 		Data: M{
-			"LinkToPage": totalScores_link,
-			"EventId":    eventId,
+			"LinkToPage": totalScoresLink,
+			"EventID":    eventID,
 			"RangeName":  currentRange.Name,
-			"RangeId":    rangeId,
+			"RangeID":    rangeID,
 			"ListRanges": event.Ranges,
 			//"ListShooters": event.Shooters,
-			"ListShooters":    shooter_list,
-			"menu":            eventMenu(eventId, event.Ranges, URL_totalScores, event.IsPrizeMeet),
-			"FormTotalScores": shooters_forms,
+			"ListShooters":    shooterList2,
+			"menu":            eventMenu(eventID, event.Ranges, urlTotalScores, event.IsPrizeMeet),
+			"FormTotalScores": shootersForms2,
 			"Js":              "total-scores.js",
 		},
 	}
 }
 
 func updateTotalScores(w http.ResponseWriter, r *http.Request) {
-	//	validatedValues := check_form(totalScoresForm("", "", "", "").Inputs, r) //totalScoresForm(eventId, rangeId, shooterId, total, centers
-	validatedValues, passed := valid8(totalScoresForm("", "", -1, "").Inputs, r)
+	//	validatedValues := checkForm(totalScoresForm("", "", "", "").inputs, r) //totalScoresForm(eventID, rangeID, shooterID, total, centres
+	validatedValues, passed := valid8(totalScoresForm("", "", -1, "").inputs, r)
 	if passed {
-		eventId := validatedValues["eventid"].(string)
+		eventID := validatedValues["eventid"].(string)
 		event := validatedValues["event"].(Event)
-		rangeId := validatedValues["rangeid"].(int)
-		shooterId := validatedValues["shooterid"].(int)
+		rangeID := validatedValues["rangeid"].(int)
+		shooterID := validatedValues["shooterid"].(int)
 		score := strings.Split(validatedValues["score"].(string), ".")
 		total, err := strconv.Atoi(score[0])
 		if total > 0 && err == nil {
-			new_score := Score{Total: total}
-			var centers int
-			centers, err = strconv.Atoi(score[1])
-			if len(score) > 1 && score[1] != "" && centers > 0 && err == nil {
-				centers, _ := strconv.Atoi(score[1])
-				new_score.Centers = centers
+			newScore := Score{Total: total}
+			var centres int
+			centres, err = strconv.Atoi(score[1])
+			if len(score) > 1 && score[1] != "" && centres > 0 && err == nil {
+				centres, _ = strconv.Atoi(score[1])
+				newScore.Centres = centres
 			}
-			shooterIds := []int{shooterId}
-			if event.Shooters[shooterId].LinkedId != nil {
-				shooterIds = append(shooterIds, *event.Shooters[shooterId].LinkedId)
+			shooterIDs := []int{shooterID}
+			if event.Shooters[shooterID].LinkedID != nil {
+				shooterIDs = append(shooterIDs, *event.Shooters[shooterID].LinkedID)
 			}
-			go eventTotalScoreUpdate(eventId, rangeId, shooterIds, new_score)
+			go eventTotalScoreUpdate(eventID, rangeID, shooterIDs, newScore)
 		}
-		http.Redirect(w, r, fmt.Sprintf("%v%v", URL_totalScores+eventId+"/", rangeId), http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("%v%v", urlTotalScores+eventID+"/", rangeID), http.StatusSeeOther)
 	}
 }
 
-func searchForAggs(ranges []Range, rangeId int) []int {
+func searchForAggs(ranges []Range, rangeID int) []int {
 	var aggsFound []int
-	var foundRangeId int
+	var foundRangeID int
 	var err error
-	for indexRangeId, rangeObj := range ranges {
+	for indexRangeID, rangeObj := range ranges {
 		if len(rangeObj.Aggregate) > 0 {
-			for _, strRangeId := range strings.Split(rangeObj.Aggregate, ",") {
-				foundRangeId, err = strconv.Atoi(fmt.Sprintf("%v", strRangeId))
-				if err == nil && foundRangeId == rangeId {
-					aggsFound = append(aggsFound, indexRangeId)
+			for _, strRangeID := range strings.Split(rangeObj.Aggregate, ",") {
+				foundRangeID, err = strconv.Atoi(fmt.Sprintf("%v", strRangeID))
+				if err == nil && foundRangeID == rangeID {
+					aggsFound = append(aggsFound, indexRangeID)
 				}
 			}
 		}
@@ -161,106 +161,110 @@ func searchForAggs(ranges []Range, rangeId int) []int {
 	return aggsFound
 }
 
-func eventSearchForAggs(eventId, rangeId string) []string {
+/*func eventSearchForAggs(eventID, rangeID string) []string {
 	var aggsToCalculate []string
-	event, _ := getEvent(eventId)
-	for agg_id, range_data := range event.Ranges {
-		if len(range_data.Aggregate) > 0 {
-			for _, this_rangeId := range range_data.Aggregate {
-				if string(this_rangeId) == rangeId {
-					aggsToCalculate = append(aggsToCalculate, fmt.Sprintf("%v", agg_id))
+	event, _ := getEvent(eventID)
+	for aggID, rangeData := range event.Ranges {
+		if len(rangeData.Aggregate) > 0 {
+			for _, thisRangeID := range rangeData.Aggregate {
+				if string(thisRangeID) == rangeID {
+					aggsToCalculate = append(aggsToCalculate, fmt.Sprintf("%v", aggID))
 				}
 			}
 		}
 	}
 	return aggsToCalculate
-}
+}*/
 
-func calculateAggs(shooterScores map[string]Score, ranges []int, shooterIds []int, eventRanges []Range) M {
+func calculateAggs(shooterScores map[string]Score, ranges []int, shooterIDs []int, eventRanges []Range) M {
 	if shooterScores == nil {
 		return M{}
 	}
-	var total, centers int
+	var total, centres int
 	var countBack string
 	updateBson := make(M)
-	for _, aggId := range ranges {
+	for _, aggID := range ranges {
 		total = 0
-		centers = 0
-		for _, rangeId := range strings.Split(eventRanges[aggId].Aggregate, ",") {
-			total += shooterScores[rangeId].Total
-			centers += shooterScores[rangeId].Centers
-			countBack = shooterScores[rangeId].CountBack1
+		centres = 0
+		for _, rangeID := range strings.Split(eventRanges[aggID].Aggregate, ",") {
+			total += shooterScores[rangeID].Total
+			centres += shooterScores[rangeID].Centres
+			countBack = shooterScores[rangeID].CountBack
 		}
-		for _, shooterId := range shooterIds {
-			updateBson[Dot(schemaSHOOTER, shooterId, aggId)] = Score{Total: total, Centers: centers, CountBack1: countBack}
+		for _, shooterID := range shooterIDs {
+			updateBson[dot(schemaSHOOTER, shooterID, aggID)] = Score{Total: total, Centres: centres, CountBack: countBack}
 		}
 	}
 	return updateBson
 }
 
-func eventCalculateAggs(event Event, shooterId int, ranges []string) Event {
-	if event.Shooters[shooterId].Scores == nil {
-		event.Shooters[shooterId].Scores = make(map[string]Score)
+func eventCalculateAggs(event Event, shooterID int, ranges []string) Event {
+	if event.Shooters[shooterID].Scores == nil {
+		event.Shooters[shooterID].Scores = make(map[string]Score)
 	}
-	for _, _agg_id := range ranges {
-		agg_id, _ := strconv.Atoi(_agg_id)
-		total := 0
-		centers := 0
-		count_back1 := ""
-		rangeId := ""
-		for _, range_Id := range event.Ranges[agg_id].Aggregate {
-			rangeId = string(range_Id)
-			total += event.Shooters[shooterId].Scores[rangeId].Total
-			centers += event.Shooters[shooterId].Scores[rangeId].Centers
-			count_back1 += event.Shooters[shooterId].Scores[rangeId].CountBack1
+	var aggID, total, centres int
+	var countBack, strRangeID string
+	var err error
+	for _, strAggID := range ranges {
+		aggID, err = strconv.Atoi(strAggID)
+		if err == nil {
+			total = 0
+			centres = 0
+			countBack = ""
+			for _, rangeID := range event.Ranges[aggID].Aggregate {
+				strRangeID = string(rangeID)
+				total += event.Shooters[shooterID].Scores[strRangeID].Total
+				centres += event.Shooters[shooterID].Scores[strRangeID].Centres
+				countBack += event.Shooters[shooterID].Scores[strRangeID].CountBack
+			}
+			event.Shooters[shooterID].Scores[string(aggID)] = Score{Total: total, Centres: centres, CountBack: countBack}
 		}
-		event.Shooters[shooterId].Scores[fmt.Sprintf("%v", agg_id)] = Score{Total: total, Centers: centers, CountBack1: count_back1}
 	}
 	return event
 }
 
-func totalScoresForm(eventId, rangeId string, shooterId int, score string) Form {
+func totalScoresForm(eventID, rangeID string, shooterID int, score string) Form {
 	return Form{
-		Action: URL_updateTotalScores,
-		Inputs: []Inputs{
+		action: urlUpdateTotalScores,
+		inputs: []Inputs{
 			{
-				Name: "score",
-				Html: "tel",
-				//Label:   "Total",
-				Required: true,
-				Value:    score,
+				name: "score",
+				html: "tel",
+				//label:   "Total",
+				required: true,
+				value:    score,
 				//TODO add min and max for validation on fclass and target
-				//Size: 4,
-				//Min: 0,
-				//Step: 0.01,
-				//Max: 50,
-				Pattern: "[0-9]{1,2}(.[0-9]{1,2}){0,1}",
+				//size: 4,
+				//min: 0,
+				//step: 0.01,
+				//max: 50,
+				pattern: "[0-9]{1,2}(.[0-9]{1,2}){0,1}",
 				//},
-				//"centers":Inputs{
-				//	Html:      "number",
-				//	Label:   "Centers",
-				//	Required: true,
-				//	Value: centers,
-				//	Size: 4,
-				//	Min: 0,
-				//	Max: 10,
-				//	//TODO add html5 validation for centers based on total.
+				//"centres":Inputs{
+				//	html:      "number",
+				//	label:   "Centres",
+				//	required: true,
+				//	value: centres,
+				//	size: 4,
+				//	min: 0,
+				//	max: 10,
+				//	//TODO add html5 validation for centres based on total.
 				//	//TODO add min = 0, max = parseInt(  total / max(class_valid_shots) )
 			}, {
-				Name: "shooterid",
-				Html: "hidden",
+				name: "shooterid",
+				html: "hidden",
 				//TODO maybe change this to an interface so it can accept different types
-				Value: fmt.Sprintf("%v", shooterId),
+				value: fmt.Sprintf("%v", shooterID),
 			}, {
-				Name:  "rangeid",
-				Html:  "hidden",
-				Value: rangeId,
+				name:  "rangeid",
+				html:  "hidden",
+				value: rangeID,
 			}, {
-				Html:  "submit",
-				Inner: "Save",
-				Name:  "eventid",
-				Value: eventId,
-				//AccessKey: "x",
+				html:  "submit",
+				inner: "Save",
+				name:  "eventid",
+				value: eventID,
+				//accessKey: "x",
 			},
 		},
 	}

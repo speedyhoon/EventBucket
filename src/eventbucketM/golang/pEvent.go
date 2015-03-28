@@ -7,9 +7,9 @@ import (
 )
 
 func shooterInsert(w http.ResponseWriter, r *http.Request) {
-	validatedValues := checkForm(eventAddShooterForm(Event{}, true).Inputs, r)
-	eventId := validatedValues["eventid"]
-	http.Redirect(w, r, URL_event+eventId, http.StatusSeeOther)
+	validatedValues := checkForm(eventAddShooterForm(Event{}, true).inputs, r)
+	eventID := validatedValues["eventid"]
+	http.Redirect(w, r, urlEvent+eventID, http.StatusSeeOther)
 	shooter := EventShooter{
 		FirstName: validatedValues["first"],
 		Surname:   validatedValues["surname"],
@@ -17,16 +17,16 @@ func shooterInsert(w http.ResponseWriter, r *http.Request) {
 		Grade:     str2Int(validatedValues["grade"]),
 		AgeGroup:  validatedValues["age"],
 	}
-	eventShooterInsert(eventId, shooter)
+	eventShooterInsert(eventID, shooter)
 }
 
-func event(eventId string) Page {
-	event, err := getEvent(eventId)
+func event(eventID string) Page {
+	event, err := getEvent(eventID)
 	if err != nil {
 		return Page{
 			TemplateFile: "event",
-			Theme:        TEMPLATE_ADMIN,
-			Title:        "Event not found: " + eventId,
+			Theme:        templateAdmin,
+			Title:        "Event not found: " + eventID,
 			Data: M{
 				"Menu":  eventMenu("", []Range{}, "", false),
 				"Valid": false,
@@ -42,38 +42,38 @@ func event(eventId string) Page {
 	//TODO add ClubOptions when club textbox is changed to a datalist
 	return Page{
 		TemplateFile: "event",
-		Theme:        TEMPLATE_ADMIN,
+		Theme:        templateAdmin,
 		Title:        "Event",
 		Data: M{
 			"EventName":            event.Name,
-			"Menu":                 eventMenu(eventId, event.Ranges, URL_event, event.IsPrizeMeet),
+			"Menu":                 eventMenu(eventID, event.Ranges, urlEvent, event.IsPrizeMeet),
 			"Valid":                true,
-			"NewShooterEntry":      URL_shooterInsert,
-			"GradeOptions":         drawOptions(Inputs{Options: eventGradeOptions(event.Grades)}),
-			"EntryOptions":         drawOptions(Inputs{Options: eventGradeEntry(event.Grades)}),
-			"AgeOptions":           drawOptions(Inputs{Options: AgeGroups()}),
-			"ExistingShooterEntry": URL_shooterListInsert,
+			"NewShooterEntry":      urlShooterInsert,
+			"GradeOptions":         drawOptions(Inputs{options: eventGradeOptions(event.Grades)}),
+			"EntryOptions":         drawOptions(Inputs{options: eventGradeEntry(event.Grades)}),
+			"AgeOptions":           drawOptions(Inputs{options: ageGroups()}),
+			"ExistingShooterEntry": urlShooterListInsert,
 			"EventGrades":          generateForm(eventSettingsClassGrades(event)),
 			"ListShooters":         event.Shooters,
 			"EditShooterList":      editShooterList,
-			"EventId":              eventId,
-			"DataListClubs":        drawOptions(Inputs{Id: "clubSearch", DataList: true, Options: dataListShooterClubNames()}), //TODO optimise by saving as a global var so it is only executed once per club update/insert
+			"EventID":              eventID,
+			"DataListClubs":        drawOptions(Inputs{id: "clubSearch", dataList: true, options: dataListShooterClubNames()}), //TODO optimise by saving as a global var so it is only executed once per club update/insert
 			"ShooterQty":           len(event.Shooters),
 		},
 	}
 }
 
 func shooterListInsert(w http.ResponseWriter, r *http.Request) {
-	validatedValues := checkForm(eventAddShooterForm(Event{}, false).Inputs, r)
-	eventId := validatedValues["eventid"]
-	http.Redirect(w, r, URL_event+eventId, http.StatusSeeOther)
+	validatedValues := checkForm(eventAddShooterForm(Event{}, false).inputs, r)
+	eventID := validatedValues["eventid"]
+	http.Redirect(w, r, urlEvent+eventID, http.StatusSeeOther)
 
-	shooterId, err := strconv.Atoi(validatedValues["sid"])
+	shooterID, err := strconv.Atoi(validatedValues["sid"])
 	if err != nil {
 		Error.Printf("shooter id %v is not valid", validatedValues["sid"])
 		return
 	}
-	shooter := getShooterList(shooterId)
+	shooter := getShooterList(shooterID)
 	eventShooter := EventShooter{
 		Grade:     str2Int(validatedValues["grade"]),
 		AgeGroup:  validatedValues["age"],
@@ -81,43 +81,43 @@ func shooterListInsert(w http.ResponseWriter, r *http.Request) {
 		Surname:   shooter.Surname,
 		Club:      shooter.Club,
 	}
-	eventShooterInsert(eventId, eventShooter)
+	eventShooterInsert(eventID, eventShooter)
 }
 
 func eventAddShooterForm(event Event, new bool) Form {
 	return Form{
-		Inputs: []Inputs{
+		inputs: []Inputs{
 			{
-				Name:     "first",
-				Html:     "text",
-				Required: new,
+				name:     "first",
+				html:     "text",
+				required: new,
 			},
 			{
-				Name:     "surname",
-				Html:     "text",
-				Required: new,
+				name:     "surname",
+				html:     "text",
+				required: new,
 			},
 			{
-				Name:     "club",
-				Html:     "text",
-				Required: new,
+				name:     "club",
+				html:     "text",
+				required: new,
 			},
 			{
-				Name:     "age",
-				Html:     "select",
-				Required: true,
+				name:     "age",
+				html:     "select",
+				required: true,
 			}, {
-				Name:     "grade",
-				Html:     "select",
-				Required: true,
+				name:     "grade",
+				html:     "select",
+				required: true,
 			}, {
-				Name:     "sid",
-				Html:     "select",
-				Required: !new,
+				name:     "sid",
+				html:     "select",
+				required: !new,
 			}, {
-				Name:  "eventid",
-				Html:  "hidden",
-				Value: event.Id,
+				name:  "eventid",
+				html:  "hidden",
+				value: event.ID,
 			},
 		},
 	}
@@ -131,11 +131,11 @@ func eventGradeOptions(eventGrades []int) []Option {
 		allSelected = true
 	}
 	var options []Option
-	for gradeId, grade := range grades() {
+	for gradeID, grade := range grades() {
 		options = append(options, Option{ //TODO change Value to an interface so type conversion isn't needed
-			Value:    fmt.Sprintf("%v", gradeId),
+			Value:    fmt.Sprintf("%v", gradeID),
 			Display:  grade.LongName,
-			Selected: isValueInSlice(gradeId, eventGrades) || allSelected,
+			Selected: isValueInSlice(gradeID, eventGrades) || allSelected,
 		})
 	}
 	return options
@@ -148,22 +148,22 @@ func eventGradeEntry(gradesToSelectFrom []int) []Option {
 	if len(gradesToSelectFrom) == 0 {
 		gradesToSelectFrom = gradeList()
 	}
-	for _, gradeId := range gradesToSelectFrom {
+	for _, gradeID := range gradesToSelectFrom {
 		options = append(options, Option{ //TODO change Value to an interface so type conversion isn't needed
-			Value:   fmt.Sprintf("%v", gradeId),
-			Display: allGrades[gradeId].LongName,
+			Value:   fmt.Sprintf("%v", gradeID),
+			Display: allGrades[gradeID].LongName,
 		})
 	}
 	return options
 }
 
 func eventUpdateShooter(w http.ResponseWriter, r *http.Request) {
-	validatedValues := checkForm(eventUpdateShooterForm(Event{}, EventShooter{}, []Option{}).Inputs, r)
-	eventId := validatedValues["eventid"]
-	shooterId := validatedValues["sid"]
-	if eventId != "" && shooterId != "" {
-		http.Redirect(w, r, URL_event+eventId, http.StatusSeeOther)
-		updateData := M{Dot(schemaSHOOTER, shooterId): M{
+	validatedValues := checkForm(eventUpdateShooterForm(Event{}, EventShooter{}, []Option{}).inputs, r)
+	eventID := validatedValues["eventid"]
+	shooterID := validatedValues["sid"]
+	if eventID != "" && shooterID != "" {
+		http.Redirect(w, r, urlEvent+eventID, http.StatusSeeOther)
+		updateData := M{dot(schemaSHOOTER, shooterID): M{
 			"f": validatedValues["first"],
 			"s": validatedValues["surname"],
 			"c": validatedValues["club"],
@@ -171,10 +171,10 @@ func eventUpdateShooter(w http.ResponseWriter, r *http.Request) {
 			"b": validatedValues["disabled"] != "",
 			"a": validatedValues["age"],
 		}}
-		tableUpdateData(TBLevent, eventId, updateData)
+		tableUpdateData(TBLevent, eventID, updateData)
 		return
 	}
-	http.Redirect(w, r, URL_home, http.StatusSeeOther)
+	http.Redirect(w, r, urlHome, http.StatusSeeOther)
 }
 
 func dataListShooterClubNames() []Option {
@@ -193,64 +193,64 @@ func eventUpdateShooterForm(event Event, shooter EventShooter, clubList []Option
 	if len(event.Grades) == 0 {
 		event.Grades = gradeList()
 	}
-	for _, gradeId := range event.Grades {
+	for _, gradeID := range event.Grades {
 		options = append(options, Option{
-			Display:  allGrades[gradeId].LongName,
-			Value:    gradeId,
-			Selected: shooter.Grade == gradeId,
+			Display:  allGrades[gradeID].LongName,
+			Value:    gradeID,
+			Selected: shooter.Grade == gradeID,
 		})
 	}
 	return Form{
-		Action: URL_eventUpdateShooter,
-		Type:   "table",
-		Id:     fmt.Sprintf("update%v", shooter.Id),
-		Inputs: []Inputs{
+		action: urlEventUpdateShooter,
+		table:  true,
+		id:     fmt.Sprintf("update%v", shooter.ID),
+		inputs: []Inputs{
 			{
-				Snippet: shooter.Id,
+				snippet: shooter.ID,
 			}, {
-				Name:    "disabled",
-				Html:    "checkbox",
-				Checked: shooter.Disabled,
-				//AccessKey: "d",
+				name:    "disabled",
+				html:    "checkbox",
+				checked: shooter.Disabled,
+				//accessKey: "d",
 			}, {
-				Name:  "first",
-				Html:  "search",
-				Value: shooter.FirstName,
-				//AccessKey: "f",
+				name:  "first",
+				html:  "search",
+				value: shooter.FirstName,
+				//accessKey: "f",
 			}, {
-				Name:  "surname",
-				Html:  "search",
-				Value: shooter.Surname,
-				//AccessKey: "s",
+				name:  "surname",
+				html:  "search",
+				value: shooter.Surname,
+				//accessKey: "s",
 			}, {
-				Name:         "club",
-				Html:         "search",
-				DataList:     true,
-				AutoComplete: "off",
-				Id:           fmt.Sprintf("club%v%v", shooter.Id, event.Id),
-				Value:        shooter.Club,
-				Options:      clubList,
-				//AccessKey: "c",
+				name:         "club",
+				html:         "search",
+				dataList:     true,
+				autoComplete: "off",
+				id:           fmt.Sprintf("club%v%v", shooter.ID, event.ID),
+				value:        shooter.Club,
+				options:      clubList,
+				//accessKey: "c",
 			}, {
-				Name:    "grade",
-				Html:    "select",
-				Options: options,
-				//AccessKey: "g",
+				name:    "grade",
+				html:    "select",
+				options: options,
+				//accessKey: "g",
 			}, {
-				Name:    "age",
-				Html:    "select",
-				Options: shooterAgeGroupSelectbox(shooter),
-				//AccessKey: "a",
+				name:    "age",
+				html:    "select",
+				options: shooterAgeGroupSelectbox(shooter),
+				//accessKey: "a",
 			}, {
-				Html:  "submit",
-				Inner: "Save",
-				Name:  "sid",
-				Value: shooter.Id,
-				//AccessKey: "x",
+				html:  "submit",
+				inner: "Save",
+				name:  "sid",
+				value: shooter.ID,
+				//accessKey: "x",
 			}, {
-				Name:  "eventid",
-				Html:  "hidden",
-				Value: event.Id,
+				name:  "eventid",
+				html:  "hidden",
+				value: event.ID,
 			},
 		},
 	}

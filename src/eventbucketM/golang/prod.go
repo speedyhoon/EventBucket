@@ -17,14 +17,14 @@ var (
 	Warning = log.New(os.Stdout, "WARNING: ", log.Lshortfile)
 )
 
-func devModeCheckForm(check bool, message string) {
+/*func devModeCheckForm(check bool, message string) {
 	if !check {
 		Warning.Println(message)
 	}
-}
+}*/
 
 func loadHTM(pageName string) []byte {
-	bytes, err := ioutil.ReadFile(fmt.Sprintf(PATH_HTML_MINIFIED, pageName))
+	bytes, err := ioutil.ReadFile(fmt.Sprintf(pathHtmlMinified, pageName))
 	if err != nil {
 		//TODO inline html as bytes here
 		Error.Println(err)
@@ -41,14 +41,14 @@ func serveDir(contentType string) {
 				return
 			}
 			httpHeaders(w, []string{"expire", "cache", contentType, "public"})
-			Gzip(http.FileServer(http.Dir("^^DIR_ROOT^^")), w, r)
+			gzipper(http.FileServer(http.Dir("^^dirRoot^^")), w, r)
 		}))
 }
 
 func serveHtml(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		httpHeaders(w, []string{"html", "noCache", "expireNow", "pragma"})
-		Gzip(h, w, r)
+		gzipper(h, w, r)
 	}
 }
 

@@ -17,13 +17,13 @@
 					{{else}}&nbsp;{{end}}
 				</time>
 				<p>
-					{{if.Id}}
-						<a href=/event/{{.Id}}>{{.Name}}</a> {{if .Time}}
+					{{if.ID}}
+						<a href=/event/{{.ID}}>{{.Name}}</a> {{if .Time}}
 							starts at {{.Time}}
 						{{end}}
 					{{end}}
 				</p>
-				{{if.Club}}<a href=/club/{{.ClubId}}>{{.Club}}</a><br>{{end}}
+				{{if.Club}}<a href=/club/{{.ClubID}}>{{.Club}}</a><br>{{end}}
 				{{with.Ranges}}{{.}}{{end}}
 			</div>
 		{{end}}

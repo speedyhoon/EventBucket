@@ -8,24 +8,24 @@ import (
 )
 
 func startShooting(data string) Page {
-	return startShooting_Data(data, false)
+	return startShootingData(data, false)
 }
 
 func startShootingAll(data string) Page {
-	return startShooting_Data(data, true)
+	return startShootingData(data, true)
 }
-func startShooting_Data(data string, showAll bool) Page {
+func startShootingData(data string, showAll bool) Page {
 	arr := strings.Split(data, "/")
-	eventId := arr[0]
+	eventID := arr[0]
 	var titleAll string
-	var rangeId int
+	var rangeID int
 	var err error
 	if len(arr) >= 2 {
-		rangeId, err = strconv.Atoi(arr[1])
+		rangeID, err = strconv.Atoi(arr[1])
 	} else {
 		return Page{
 			TemplateFile: "start-shooting",
-			Theme:        TEMPLATE_ADMIN,
+			Theme:        templateAdmin,
 			Title:        "Start Shooting" + titleAll,
 			Data: M{
 				"menu":                 "",
@@ -36,32 +36,17 @@ func startShooting_Data(data string, showAll bool) Page {
 			},
 		}
 	}
-	event, _ := getEvent(eventId)
+	event, _ := getEvent(eventID)
 	if showAll {
 		titleAll = " Show All"
 	}
 	if event.Ranges == nil {
 		return Page{
 			TemplateFile: "start-shooting",
-			Theme:        TEMPLATE_ADMIN,
+			Theme:        templateAdmin,
 			Title:        "Start Shooting" + titleAll,
 			Data: M{
-				"menu":                 eventMenu(eventId, event.Ranges, URL_startShooting, event.IsPrizeMeet),
-				"target_heading_cells": "",
-				"fclass_heading_cells": "",
-				"match_heading_cells":  "",
-				"Aggregate":            true,
-			},
-		}
-	}
-	//	_, ok := event.Ranges[rangeId]
-	if event.Ranges[rangeId].Aggregate != "" || err != nil {
-		return Page{
-			TemplateFile: "start-shooting",
-			Theme:        TEMPLATE_ADMIN,
-			Title:        "Start Shooting" + titleAll,
-			Data: M{
-				"menu":                 eventMenu(eventId, event.Ranges, URL_startShooting, event.IsPrizeMeet),
+				"menu":                 eventMenu(eventID, event.Ranges, urlStartShooting, event.IsPrizeMeet),
 				"target_heading_cells": "",
 				"fclass_heading_cells": "",
 				"match_heading_cells":  "",
@@ -70,13 +55,28 @@ func startShooting_Data(data string, showAll bool) Page {
 		}
 	}
 
-	available_class_shots := make([][]string, len(DEFAULT_CLASS_SETTINGS))
-	html_available_class_shots := make([]string, len(DEFAULT_CLASS_SETTINGS))
+	if event.Ranges[rangeID].Aggregate != "" || err != nil {
+		return Page{
+			TemplateFile: "start-shooting",
+			Theme:        templateAdmin,
+			Title:        "Start Shooting" + titleAll,
+			Data: M{
+				"menu":                 eventMenu(eventID, event.Ranges, urlStartShooting, event.IsPrizeMeet),
+				"target_heading_cells": "",
+				"fclass_heading_cells": "",
+				"match_heading_cells":  "",
+				"Aggregate":            true,
+			},
+		}
+	}
+
+	availableClassShots := make([][]string, len(defaultClassSettings))
+	htmlAvailableClassShots := make([]string, len(defaultClassSettings))
 	var sightersQty, shotsQty int
 	var currentRangeClass RangeProperty
-	var longest_shots_for_current_range int
-	for index, classSetting := range DEFAULT_CLASS_SETTINGS {
-		currentRangeClass = event.Ranges[rangeId].Class[fmt.Sprintf("%v", index)]
+	var longestShotsForCurrentRange int
+	for index, classSetting := range defaultClassSettings {
+		currentRangeClass = event.Ranges[rangeID].Class[fmt.Sprintf("%v", index)]
 		//If the range properties are set then use them to override the default shotsQty and sightersQty
 		if currentRangeClass.ShotsQty > 0 || currentRangeClass.SightersQty > 0 {
 			sightersQty = currentRangeClass.SightersQty
@@ -85,50 +85,50 @@ func startShooting_Data(data string, showAll bool) Page {
 			sightersQty = classSetting.SightersQty
 			shotsQty = classSetting.ShotsQty
 		}
-		if sightersQty+shotsQty > longest_shots_for_current_range {
-			longest_shots_for_current_range = sightersQty + shotsQty
+		if sightersQty+shotsQty > longestShotsForCurrentRange {
+			longestShotsForCurrentRange = sightersQty + shotsQty
 		}
 		for i := 1; i <= sightersQty; i++ {
-			available_class_shots[index] = append(available_class_shots[index], fmt.Sprintf("S%v", i))
-			html_available_class_shots[index] += fmt.Sprintf("<td>S%v</td>", i)
+			availableClassShots[index] = append(availableClassShots[index], fmt.Sprintf("S%v", i))
+			htmlAvailableClassShots[index] += fmt.Sprintf("<td>S%v</td>", i)
 		}
 		for i := 1; i <= shotsQty; i++ {
-			available_class_shots[index] = append(available_class_shots[index], fmt.Sprintf("%v", i))
-			html_available_class_shots[index] += fmt.Sprintf("<td>%v</td>", i)
+			availableClassShots[index] = append(availableClassShots[index], fmt.Sprintf("%v", i))
+			htmlAvailableClassShots[index] += fmt.Sprintf("<td>%v</td>", i)
 		}
 	}
 
-	class_shots := map[string][]string{}
-	class_shots_length := map[string]int{}
-	var long_shots []string
-	var temp_grade Grade
-	var shooter_list []EventShooter
+	classShots := map[string][]string{}
+	classShotsLength := map[string]int{}
+	var longShots []string
+	var tempGrade Grade
+	var shooterList []EventShooter
 	allGrades := grades()
-	for shooterId, shooter_data := range event.Shooters {
-		if showAll || (!showAll && ((event.IsPrizeMeet && len(shooter_data.Scores[fmt.Sprintf("%v", rangeId)].Shots) <= 0) || (!event.IsPrizeMeet && shooter_data.Scores[fmt.Sprintf("%v", rangeId)].Total <= 0))) {
-			temp_grade = allGrades[shooter_data.Grade]
-			class_shots[temp_grade.ClassName] = available_class_shots[temp_grade.ClassId]
+	for shooterID, shooterData := range event.Shooters {
+		if showAll || (!showAll && ((event.IsPrizeMeet && len(shooterData.Scores[fmt.Sprintf("%v", rangeID)].Shots) <= 0) || (!event.IsPrizeMeet && shooterData.Scores[fmt.Sprintf("%v", rangeID)].Total <= 0))) {
+			tempGrade = allGrades[shooterData.Grade]
+			classShots[tempGrade.ClassName] = availableClassShots[tempGrade.ClassID]
 			//TODO add ignore case here!!!!!!!!
-			shooter_data.Club = strings.Replace(shooter_data.Club, " Rifle Club Inc.", "", -1)
-			shooter_data.Club = strings.Replace(shooter_data.Club, " Rifle Club Inc", "", -1)
-			shooter_data.Club = strings.Replace(shooter_data.Club, " Rifle Club.", "", -1)
-			shooter_data.Club = strings.Replace(shooter_data.Club, " Rifle Club", "", -1)
-			shooter_data.Club = strings.Replace(shooter_data.Club, " Ex-Services Memorial", "", -1)
-			shooter_data.Id = shooterId
-			shooter_list = append(shooter_list, shooter_data)
+			shooterData.Club = strings.Replace(shooterData.Club, " Rifle Club Inc.", "", -1)
+			shooterData.Club = strings.Replace(shooterData.Club, " Rifle Club Inc", "", -1)
+			shooterData.Club = strings.Replace(shooterData.Club, " Rifle Club.", "", -1)
+			shooterData.Club = strings.Replace(shooterData.Club, " Rifle Club", "", -1)
+			shooterData.Club = strings.Replace(shooterData.Club, " Ex-Services Memorial", "", -1)
+			shooterData.ID = shooterID
+			shooterList = append(shooterList, shooterData)
 		}
 	}
-	for temp_grade, shots_array := range class_shots {
-		class_shots_length[temp_grade] = len(shots_array)
-		if len(long_shots) < len(shots_array) {
-			long_shots = shots_array
+	for tempGrade2, shotsArray := range classShots {
+		classShotsLength[tempGrade2] = len(shotsArray)
+		if len(longShots) < len(shotsArray) {
+			longShots = shotsArray
 		}
 	}
-	first_class := ""
-	first_class_int := 0
+	var firstClass string
+	var firstClassInt int
 	for _, shooter := range event.Shooters {
-		first_class = allGrades[shooter.Grade].ClassName
-		first_class_int = allGrades[shooter.Grade].ClassId
+		firstClass = allGrades[shooter.Grade].ClassName
+		firstClassInt = allGrades[shooter.Grade].ClassID
 		break
 	}
 
@@ -139,116 +139,116 @@ func startShooting_Data(data string, showAll bool) Page {
 	name := func(c1, c2 *EventShooter) bool {
 		return c1.FirstName < c2.FirstName
 	}
-	OrderedBy(grade, name).Sort(shooter_list)
+	orderedBy(grade, name).Sort(shooterList)
 
 	linkName := "All"
-	pageLink := URL_startShootingAll
+	pageLink := urlStartShootingAll
 	if showAll {
 		linkName = "Incompleted"
-		pageLink = URL_startShooting
+		pageLink = urlStartShooting
 	}
 
 	return Page{
 		TemplateFile: "start-shooting",
-		Theme:        TEMPLATE_ADMIN,
+		Theme:        templateAdmin,
 		Title:        "Start Shooting" + titleAll,
 		Data: M{
-			"EventId":            eventId,
+			"EventID":            eventID,
 			"pageLink":           pageLink,
 			"linkName":           linkName,
-			"RangeName":          event.Ranges[rangeId].Name,
-			"class_shots":        class_shots,
-			"menu":               eventMenu(eventId, event.Ranges, URL_startShooting, event.IsPrizeMeet),
-			"strRangeId":         fmt.Sprintf("%v", rangeId),
-			"RangeId":            rangeId,
-			"first_class":        first_class,
-			"longest_shots":      long_shots,
-			"class_shots_length": class_shots_length,
-			"ListShooters":       shooter_list,
+			"RangeName":          event.Ranges[rangeID].Name,
+			"class_shots":        classShots,
+			"menu":               eventMenu(eventID, event.Ranges, urlStartShooting, event.IsPrizeMeet),
+			"strRangeID":         fmt.Sprintf("%v", rangeID),
+			"RangeID":            rangeID,
+			"first_class":        firstClass,
+			"longest_shots":      longShots,
+			"class_shots_length": classShotsLength,
+			"ListShooters":       shooterList,
 			"Js":                 "start-shooting.js",
-			"available_class_shots": available_class_shots,
-			"first_class_shots":     available_class_shots[first_class_int],
-			"first_loaded_colspan":  longest_shots_for_current_range - len(available_class_shots[first_class_int]) + 1,
-			"target_heading_cells":  html_available_class_shots[0],
-			"fclass_heading_cells":  html_available_class_shots[1],
-			"match_heading_cells":   html_available_class_shots[2],
+			"available_class_shots": availableClassShots,
+			"first_class_shots":     availableClassShots[firstClassInt],
+			"first_loaded_colspan":  longestShotsForCurrentRange - len(availableClassShots[firstClassInt]) + 1,
+			"target_heading_cells":  htmlAvailableClassShots[0],
+			"fclass_heading_cells":  htmlAvailableClassShots[1],
+			"match_heading_cells":   htmlAvailableClassShots[2],
 			"Aggregate":             false,
 		},
 	}
 }
 
 func updateShotScores2(w http.ResponseWriter, r *http.Request) {
-	validatedValues := checkForm(startShootingForm("", "", "", "").Inputs, r)
-	eventId := validatedValues["eventid"]
-	rangeId, rangeErr := strconv.Atoi(validatedValues["rangeid"])
-	shooterId, shooterErr := strconv.Atoi(validatedValues["shooterid"])
-	event, eventErr := getEvent(eventId)
+	validatedValues := checkForm(startShootingForm("", "", "", "").inputs, r)
+	eventID := validatedValues["eventid"]
+	rangeID, rangeErr := strconv.Atoi(validatedValues["rangeid"])
+	shooterID, shooterErr := strconv.Atoi(validatedValues["shooterid"])
+	event, eventErr := getEvent(eventID)
 
 	//Check the score can be saved
-	if rangeErr != nil || shooterErr != nil || eventErr != nil || rangeId >= len(event.Ranges) || event.Ranges[rangeId].Locked || event.Ranges[rangeId].IsAgg {
+	if rangeErr != nil || shooterErr != nil || eventErr != nil || rangeID >= len(event.Ranges) || event.Ranges[rangeID].Locked || event.Ranges[rangeID].IsAgg {
 		http.NotFound(w, r)
 		return
 	}
 
 	//Calculate the score based on the shots given
-	newScore := calcTotalCentres(validatedValues["shots"], grades()[event.Shooters[shooterId].Grade].ClassId)
+	newScore := calcTotalCentres(validatedValues["shots"], grades()[event.Shooters[shooterID].Grade].ClassID)
 
 	//Update the shooters scores so the aggregates are added up properly
-	if event.Shooters[shooterId].Scores == nil {
-		event.Shooters[shooterId].Scores = make(map[string]Score)
+	if event.Shooters[shooterID].Scores == nil {
+		event.Shooters[shooterID].Scores = make(map[string]Score)
 	}
-	event.Shooters[shooterId].Scores[validatedValues["rangeid"]] = newScore
+	event.Shooters[shooterID].Scores[validatedValues["rangeid"]] = newScore
 
 	//Return the score to the client
-	if newScore.Centers > 0 {
-		fmt.Fprintf(w, "%v<sup>%v</sup>", newScore.Total, newScore.Centers)
+	if newScore.Centres > 0 {
+		fmt.Fprintf(w, "%v<sup>%v</sup>", newScore.Total, newScore.Centres)
 	} else {
 		fmt.Fprintf(w, "%v", newScore.Total)
 	}
 
 	//TODO possibly save the imediatly but calculate the shooters aggregates after 8 seconds
 	//Save the score & work out if a shoot off is needed against another shooter
-	updateBson := M{Dot(schemaSHOOTER, shooterId, rangeId): newScore}
-	shooterIds := []int{shooterId}
+	updateBson := M{dot(schemaSHOOTER, shooterID, rangeID): newScore}
+	shooterIDs := []int{shooterID}
 	//Add any linked shooters to this update
-	if event.Shooters[shooterId].LinkedId != nil {
-		shooterIds = append(shooterIds, *event.Shooters[shooterId].LinkedId)
-		updateBson[Dot(schemaSHOOTER, event.Shooters[shooterId].LinkedId, rangeId)] = newScore
+	if event.Shooters[shooterID].LinkedID != nil {
+		shooterIDs = append(shooterIDs, *event.Shooters[shooterID].LinkedID)
+		updateBson[dot(schemaSHOOTER, event.Shooters[shooterID].LinkedID, rangeID)] = newScore
 	}
-	//Find all the aggs that this rangeId is in & update the scores
-	aggsFound := searchForAggs(event.Ranges, rangeId)
+	//Find all the aggs that this rangeID is in & update the scores
+	aggsFound := searchForAggs(event.Ranges, rangeID)
 	if len(aggsFound) > 0 {
-		for index, data := range calculateAggs(event.Shooters[shooterId].Scores, aggsFound, shooterIds, event.Ranges) {
+		for index, data := range calculateAggs(event.Shooters[shooterID].Scores, aggsFound, shooterIDs, event.Ranges) {
 			updateBson[index] = data
 		}
 	}
-	tableUpdateData(TBLevent, event.Id, updateBson)
+	tableUpdateData(TBLevent, event.ID, updateBson)
 }
 
 //This function assumes all validation on input "shots" has at least been done!
 //AND input "shots" is verified to contain all characters in settings[class].validShots!
-func calcTotalCentres(shots string, classId int) Score {
+func calcTotalCentres(shots string, classID int) Score {
 	//TODO need validation to check that the shots given match the required validation given posed by the event. e.g. sighters are not in the middle of the shoot or shot are not missing in the middle of a shoot
 	var total, centres, warning int
 	var countBack string
-	if classId >= 0 && classId < len(DEFAULT_CLASS_SETTINGS) {
+	if classID >= 0 && classID < len(defaultClassSettings) {
 
 		//Ignore the first sighter shots from being added to the total score. Unused sighters should be still be present in the data passed
-		for _, shot := range strings.Split(shots[DEFAULT_CLASS_SETTINGS[classId].SightersQty:], "") {
-			total += DEFAULT_CLASS_SETTINGS[classId].ValidShots[shot].Total
-			centres += DEFAULT_CLASS_SETTINGS[classId].ValidShots[shot].Centers
+		for _, shot := range strings.Split(shots[defaultClassSettings[classID].SightersQty:], "") {
+			total += defaultClassSettings[classID].ValidShots[shot].Total
+			centres += defaultClassSettings[classID].ValidShots[shot].Centres
 
 			//Append count back in reverse order so it can be ordered by the last few shots
-			countBack = DEFAULT_CLASS_SETTINGS[classId].ValidShots[shot].CountBack1 + countBack
+			countBack = defaultClassSettings[classID].ValidShots[shot].CountBack + countBack
 			if shot == "-" {
-				warning = LEGEND_INCOMPLETE_SCORE
+				warning = legendIncompleteScore
 			}
 		}
 	}
-	if warning == 0 && isScoreHighestPossibleScore(classId, 10, total, centres) {
-		warning = LEGEND_HIGHEST_POSSIBLE_SCORE
+	if warning == 0 && isScoreHighestPossibleScore(classID, 10, total, centres) {
+		warning = legendHighestPossibleScore
 	}
-	return Score{Total: total, Centers: centres, Shots: shots, CountBack1: countBack, Warning: warning}
+	return Score{Total: total, Centres: centres, Shots: shots, CountBack: countBack, Warning: warning}
 }
 
 //TODO off load the grade position and shoot off calculations into another process
@@ -263,42 +263,42 @@ func calcTotalCentres(shots string, classId int) Score {
 	}()
 }*/
 
-func startShootingForm(eventId, rangeId, shooterId, shots string) Form {
-	temp1 := v8MaxIntegerId
-	temp2 := v8MinIntegerId
+func startShootingForm(eventID, rangeID, shooterID, shots string) Form {
+	temp1 := v8MaxIntegerID
+	temp2 := v8MinIntegerID
 	return Form{
-		Action: URL_updateTotalScores,
-		Inputs: []Inputs{
+		action: urlUpdateTotalScores,
+		inputs: []Inputs{
 			{
-				Name:      "eventid",
-				Html:      "hidden",
-				Value:     eventId,
-				VarType:   "string",
-				MaxLength: v8MaxEventId,
-				MinLength: v8MinEventId,
+				name:      "eventid",
+				html:      "hidden",
+				value:     eventID,
+				varType:   "string",
+				maxLength: v8MaxEventID,
+				minLength: v8MinEventID,
 			}, {
-				Name:    "rangeid",
-				Html:    "hidden",
-				Value:   rangeId,
-				VarType: "int",
-				Max:     &temp1,
-				Min:     &temp2,
+				name:    "rangeid",
+				html:    "hidden",
+				value:   rangeID,
+				varType: "int",
+				max:     &temp1,
+				min:     &temp2,
 			}, {
-				Name:    "shooterid",
-				Html:    "hidden",
-				Value:   shooterId,
-				VarType: "int",
-				Max:     &temp1,
-				Min:     &temp2,
+				name:    "shooterid",
+				html:    "hidden",
+				value:   shooterID,
+				varType: "int",
+				max:     &temp1,
+				min:     &temp2,
 			}, {
-				Name:     "shots",
-				Html:     "number",
-				Required: true,
-				Value:    shots,
+				name:     "shots",
+				html:     "number",
+				required: true,
+				value:    shots,
 				//TODO add min and max for validation on fclass and target
-				VarType:   "string",
-				MaxLength: v8MinShots, //TODO make dynamic by getting the shooters class
-				MinLength: v8Minhots,
+				varType:   "string",
+				maxLength: v8MinShots, //TODO make dynamic by getting the shooters class
+				minLength: v8Minhots,
 			},
 		},
 	}

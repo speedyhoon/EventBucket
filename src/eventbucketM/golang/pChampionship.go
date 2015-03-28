@@ -1,10 +1,10 @@
 package main
 
-func championships() Page {
+/*func championships() Page {
 	return Page{
 		TemplateFile: "championships",
 		Title:        "Championships",
-		Theme:        TEMPLATE_HOME,
+		Theme:        templateHome,
 		Data: M{
 			"Championship": generateForm(championshipForm()),
 		},
@@ -13,20 +13,20 @@ func championships() Page {
 
 func championshipForm() Form {
 	return Form{
-		Action: URL_champInsert,
-		Title:  "Create Championship",
-		Inputs: []Inputs{
+		action: urlChampInsert,
+		title:  "Create Championship",
+		inputs: []Inputs{
 			{
-				Name:     "name",
-				Html:     "text",
-				Label:    "Championship Name",
-				Required: true,
+				name:     "name",
+				html:     "text",
+				label:    "Championship Name",
+				required: true,
 			},
 			{
-				Html:  "submit",
-				Inner: "Add Championship",
-				//AccessKey: "x",
+				html:  "submit",
+				inner: "Add Championship",
+				//accessKey: "x",
 			},
 		},
 	}
-}
+}*/

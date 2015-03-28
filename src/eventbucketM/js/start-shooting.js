@@ -53,14 +53,14 @@
 			newer = ~~classes[type].validScore[index],
 			newerC = ~~classes[type].validCenta[index],
 			total,
-			centers;
+			centres;
 		currentCell.innerHTML = value;
 		if(getCurrentNth() >= getNoOfSighters()){
 			total = getValue(currentRow, 'total') - getValue(currentCell, 'value') + newer;
-			centers = getValue(currentRow, 'centers') - getValue(currentCell, 'center') + newerC;
-			currentRow.lastChild.innerHTML = total + '<sup>' + centers + '</sup>';
+			centres = getValue(currentRow, 'centres') - getValue(currentCell, 'center') + newerC;
+			currentRow.lastChild.innerHTML = total + '<sup>' + centres + '</sup>';
 			currentRow.setAttribute('data-total', total);
-			currentRow.setAttribute('data-centers', centers);
+			currentRow.setAttribute('data-centres', centres);
 		}
 		currentCell.setAttribute('data-value', newer);
 		currentCell.setAttribute('data-center', newerC);
@@ -96,7 +96,7 @@
 		j.send();
 		j.onreadystatechange = function(){
 			if(j.status === 200){
-				document.getElementById(id).getElementsByClassName('t')[0].innerHTML = j.response;//total+'<sup>'+centers+'</sup>';
+				document.getElementById(id).getElementsByClassName('t')[0].innerHTML = j.response;//total+'<sup>'+centres+'</sup>';
 			}
 		};
 	}

@@ -1,4 +1,4 @@
-{{$id := .Id}}
+{{$id := .ID}}
 {{$allEventGrades := .AllEventGrades}}
 <h1>{{.Title}} - {{.EventName}}</h1>
 {{HTM .menu}}
@@ -9,7 +9,7 @@
 	{{if.ListRanges}}
 		<table>
 			<tr>
-				<th>Range Id</th>
+				<th>Range ID</th>
 				<th>Name</th>
 				<th>Aggregate Ranges</th>
 				<th>Hide</th>
@@ -54,7 +54,7 @@
 {{if.ListRanges}}
 	{{Fieldset "Ranges Shots &amp; Sighters"}}
 		<form method=post action=/eventShotsNSighters>
-			<input type=hidden name=eventid value={{.Id}}>
+			<input type=hidden name=eventid value={{.ID}}>
 			<table>
 				<tr>
 					<th rowspan=2>Class</td>
