@@ -74,82 +74,14 @@ const (
 	//Total Scores Settings
 	errorEnterScoresInAgg = "<p>This range is an aggregate. Can't enter scores!</p>"
 
-	//truman Cell -- air purifier
-	//TODO: eventually replace these settings with ones that are set for each club and sometimes overridden by a clubs event settings
-	/*
-		nullShots                     = "-" //record shots
-		showMaxNumShooters            = 20
-		showInitialShots              = 3 //the number of shots to show when a shooter is initially selected
-		showMaxInitialShots           = 4
-		shotGroupingBorder            = 3 //controlls where to place the shot separator/border between each number of shots
-		borderBetweenSightersAndShots = true
-		sighterGroupingBorder         = 2
-		indentFinish                  = false
-		startShootingInputs           = 0          //changes input text boxes to just tds for mobile input.
-		allowClubNameWrap             = true       //Club names have spaces between each word. false=Club names have &nbsp; between words
-		startShootingDefaultSighter   = "Drop All" //can select between 'Keep All' and 'Drop All'
-		startShootingMaxNumShooters   = 100        //can select between 'Keep All' and 'Drop All'
-
-		//Start Shooting Page
-		STARTSHOOTING_COL_ID        = -1
-		STARTSHOOTING_COL_UIN       = -2
-		STARTSHOOTING_COL_CLASS     = -3
-		STARTSHOOTING_COL_GRADE     = 4
-		STARTSHOOTING_COL_CLUB      = 5
-		STARTSHOOTING_COL_SHORTNAME = -6
-		STARTSHOOTING_COL_NAME      = 7
-		STARTSHOOTING_COL_SCORES    = 8
-		STARTSHOOTING_COL_TOTAL     = 9
-		STARTSHOOTING_COL_RECEIVED  = 10
-		//the columns to show and their order.
-
-		SCOREBOARD_COL_ID               = 1
-		SCOREBOARD_COL_SHOOTERENTRYID   = -3 //usefull to show entry id when a shooter is entered twice into the same event with different classes
-		SCOREBOARD_COL_UIN              = -5
-		SCOREBOARD_COL_POSITION         = 100
-		SCOREBOARD_COL_GRADE            = 20
-		SCOREBOARD_COL_NAME             = 30
-		SCOREBOARD_COL_CLASS            = -40
-		SCOREBOARD_COL_CLUB             = 70
-		SCOREBOARD_COL_GENDER           = -70
-		SCOREBOARD_COL_AGE              = 80
-		SCOREBOARD_COL_SHORTNAME        = -90
-		SCOREBOARD_COL_RANGESCORES      = 13
-		SCOREBOARD_ALTERNATE_ROW_COLOUR = 0 //colour every nth row, 0 = off
-		SCOREBOARD_DISPLAY_INDIVIDUALs  = 1
-		SCOREBOARD_COMBINE_GRADES       = 0
-		SCOREBOARD_SHOW_TITLE           = 0 //1 = show, 0,-1 = hide titles -- show title of for syme or saturday/sunday etc
-		SCOREBOARD_SHOW_TEAMS_XS        = 0 //1 = show, 0,-1 = hide Xs -- Agg columns if showXs == 1 display <sub>5Xs</sub>
-		SCOREBOARD_SHOWTEAMS_SHOOTERS   = 1 //1 = show, 0,-1 = hide Xs -- When set to 1 display Team shooters scores, When set to 0 only display teams totals.
-		SCOREBOARD_SHOW_SHOOTOFF        = 0
-		SCOREBOARD_SHOW_IN_PROGRESS     = 1 //when enabled total score blinks while shooter is in progress
-
-		// TODO: if one of the name options for scoreboard is not set then display the short name.
-		// TODO: Add functionality to set these for javascript. output javascript code from golang. generate js file so it is cached and doesn't need to be generated on every page load.
-
-		TARGET_Desc                = "Target Rifle 0-5 with V and X centres and able to convert Fclass scores to Target Rifle."
-		MATCH_Desc                = "Match Rifle 0-5 with V and X centres and able to convert to Fclass scores to Match Rifle."
-		FCLASS_Desc                = "Flcass 0-6 with X centres and able to convert Target and Match Rifle to Fclass scores."
-
-		//per Event
-		SHOOTOFF_Sighters      = 2
-		SHOOTOFF_ShotsStart    = 5
-		SHOOTOFF_nextShots     = 3
-		SHOOTOFF_UseXcountback = 1 //1= true, 0=false
-		SHOOTOFF_UseXs         = 1
-		SHOOTOFF_UseCountback  = 1 //system settings
-	*/
-
-	//Strings
 	v8MaxEventID     = 100
 	v8MinEventID     = 1
 	v8MaxStringInput = 100
 	v8MinStringInput = 1
 	v8MinShots       = 90
 	v8Minhots        = 1
-	//Integers
-	v8MaxIntegerID = 999
-	v8MinIntegerID = 0
+	v8MaxIntegerID   = 999
+	v8MinIntegerID   = 0
 )
 
 // ClassSettings is exported
@@ -290,27 +222,9 @@ var (
 	}
 )
 
-/*func calculateHPS4Class(classID, numberOdShots int) Score {
-	return Score{
-		Total:   defaultClassSettings[classID].Maximum.Total * numberOdShots,
-		Centres: defaultClassSettings[classID].Maximum.Centres * numberOdShots,
-	}
-}*/
-
 func isScoreHighestPossibleScore(classID, numberOdShots, total, centres int) bool {
 	return defaultClassSettings[classID].Maximum.Total*numberOdShots == total && defaultClassSettings[classID].Maximum.Centres*numberOdShots == centres
 }
-
-/*func calculateHighestPossibleScores(numberOdShots int) []Score {
-	var classHPS []Score
-	for _, class := range defaultClassSettings {
-		classHPS = append(classHPS, Score{
-			Total:   class.Maximum.Total * numberOdShots,
-			Centres: class.Maximum.Centres * numberOdShots,
-		})
-	}
-	return classHPS
-}*/
 
 // Grade is exported
 type Grade struct {
@@ -395,10 +309,9 @@ const (
 	legendNoScore              = 2
 	legendIncompleteScore      = 3
 	legendHighestPossibleScore = 4
-
-//	LEGEND_FIRST                  = 5
-//	LEGEND_SECOND                 = 6
-//	LEGEND_THIRD                  = 7
+	//LEGEND_FIRST               = 5
+	//LEGEND_SECOND              = 6
+	//LEGEND_THIRD               = 7
 )
 
 func scoreBoardLegend() []Legend {

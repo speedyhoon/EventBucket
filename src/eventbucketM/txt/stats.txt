@@ -107,3 +107,9 @@
 132 KB (135,926 bytes) Go only
 125 KB (128,092 bytes) Prod only
 107 KB (109,954 bytes) Go minified
+
+28 Mar 2015
+125 KB (128,131 bytes) Go only      Add go linter & move unused code out of package
+119 KB (122,394 bytes) Prod only
+Gofmt removed the option to remove comments
+

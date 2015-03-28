@@ -77,17 +77,6 @@ func db() {
 	//defer session.Close()
 }
 
-/*func getCollection(collectionName string) []M {
-	var result []M
-	if conn != nil {
-		err := conn.C(collectionName).Find(nil).All(&result)
-		if err != nil {
-			Warning.Println(err)
-		}
-	}
-	return result
-}*/
-
 func getClubs() []Club {
 	var result []Club
 	if conn != nil {
@@ -183,14 +172,6 @@ func nraaLastUpdated() {
 	}, make(M))
 }
 
-/*func getShooter(ID int) Shooter {
-	var result Shooter
-	if conn != nil {
-		conn.C(TBLshooter).FindId(ID).One(&result)
-	}
-	return result
-}*/
-
 func getEvent(ID string) (Event, error) {
 	var result Event
 	if conn != nil {
@@ -199,15 +180,6 @@ func getEvent(ID string) (Event, error) {
 	}
 	return result, errors.New("Unable to get event with ID: '" + ID + "'")
 }
-
-/*func getEvent20Shooters(ID string) (Event, error) {
-	var result Event
-	if conn != nil {
-		err := conn.C(TBLevent).FindId(ID).Select(M{"S": M{"$slice": -20}}).One(&result)
-		return result, err
-	}
-	return result, errors.New("Unable to get event with ID: '" + ID + "'")
-}*/
 
 func getNextID(collectionName string) (string, error) {
 	var result M
@@ -352,114 +324,6 @@ func eventTotalScoreUpdate(eventID string, rangeID int, shooterIDs []int, score 
 	}
 	return event
 }
-
-/*func eventSortAggsWithGrade(event Event, rangeID string, shooterID int) {
-	eventID := event.ID
-	rangesToRedo := eventSearchForAggs(eventID, rangeID)
-	//TODO this seems quite inefficient
-	event = eventCalculateAggs(event, shooterID, rangesToRedo)
-	//Only worry about shooters in this shooters grade
-	currentGrade := event.Shooters[shooterID].Grade
-	//Add the current range to the list of ranges to re-calculate
-	rangesToRedo = append(rangesToRedo, rangeID)
-	for _, rangeID := range rangesToRedo {
-		// Closures that order the Change structure.
-		//	grade := func(c1, c2 *EventShooter) bool {
-		//		return c1.Grade < c2.Grade
-		//	}
-		total := func(c1, c2 *EventShooter) bool {
-			return c1.Scores[rangeID].Total > c2.Scores[rangeID].Total
-		}
-		centa := func(c1, c2 *EventShooter) bool {
-			return c1.Scores[rangeID].Centres > c2.Scores[rangeID].Centres
-		}
-		cb := func(c1, c2 *EventShooter) bool {
-			return c1.Scores[rangeID].CountBack > c2.Scores[rangeID].CountBack
-		}
-
-		//convert the map[string] to a slice of EventShooters
-		var eventShooterList []EventShooter
-		for thisShooterID, shooterList := range event.Shooters {
-			if shooterList.Grade == currentGrade {
-				shooterList.ID = thisShooterID
-				for thisRangeID, score := range shooterList.Scores {
-					score.Position = 0
-					shooterList.Scores[thisRangeID] = score
-				}
-				eventShooterList = append(eventShooterList, shooterList)
-			}
-		}
-		orderedBy(total, centa, cb).Sort(eventShooterList)
-
-		rank := 0
-		nextOrdinal := 0
-		//	score := 0
-		//	centre := 0
-		//	countback := ""
-		//	var previousShooter Shooter
-		//		shooterLength := len(shooterList)
-
-		//loop through the list of shooters
-		for index, shooter := range eventShooterList {
-			thisShooterScore := shooter.Scores[rangeID]
-
-			//			if index+1 < shooterLength {
-			//			if index-1 >= 0 {
-
-			//keep track of the next badge position number to assign when several shooters are tied-equal on the position
-			nextOrdinal++
-			var nextShooterScore Score
-
-			if index-1 >= 0 {
-				nextShooter := eventShooterList[index-1]
-				nextShooterScore = nextShooter.Scores[rangeID]
-
-				//compare the shooters scores
-				if thisShooterScore.Total == nextShooterScore.Total &&
-					thisShooterScore.Centres == nextShooterScore.Centres &&
-					thisShooterScore.CountBack == nextShooterScore.CountBack {
-					//Shooters have an equal score
-					if thisShooterScore.Total == 0 {
-						//					shootEqu = true
-						//					if SCOREBOARD_IGNORE_POSITION_FOR_ZERO_SCORES {
-						rank = 0
-						//					}
-						//						} else {
-						//							info("exact")
-						//					shootOff = true
-						//					shooterList[index].Warning = 1
-						//					scoreBoardLegendOnOff["ShootOff"] = true
-					}
-				} else {
-					//Shooters have a different score
-					if thisShooterScore.Total != 0 {
-						//increase rank by 1
-						rank = nextOrdinal
-					} else {
-						rank = 0
-					}
-				}
-			} else {
-				//The very first shooter without a previous shooter assigned
-				//increase rank by 1
-				rank = nextOrdinal
-			}
-
-			//update the database
-			//TODO change this to only update once. not every loop iteration
-			change := mgo.Change{
-				Update: M{ //position
-					"$set": M{dot(schemaSHOOTER, shooter.ID, rangeID, "p"): rank},
-				},
-			}
-			var result Event
-			_, err := conn.C(TBLevent).FindID(eventID).Apply(change, &result)
-			if err != nil {
-				Warning.Printf("unable to update shooter rank for range: ", rangeID, ", shooter ID:", shooter.ID)
-			}
-		}
-	}
-}*/
 
 func eventUpdateRangeData(eventID string, updateData M) {
 	conn.C(TBLevent).FindId(eventID).Apply(mgo.Change{

@@ -280,14 +280,6 @@ func organisersClubForm() Form {
 	}
 }
 
-/*func getClubSelectionBox(clubList []Club) []Option {
-	var dropDown []Option
-	for _, club := range clubList {
-		dropDown = append(dropDown, Option{Display: club.Name, Value: club.ID})
-	}
-	return dropDown
-}*/
-
 func clubInsert(w http.ResponseWriter, r *http.Request) {
 	insertClub(checkForm(organisersClubForm().inputs, r)["name"])
 }

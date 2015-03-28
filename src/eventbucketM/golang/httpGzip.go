@@ -9,23 +9,6 @@ import (
 	"time"
 )
 
-//TODO maybe add page redirects for pages. replace uppercase urls with lowercase
-//Is this needed or not??????????????????????????
-/*func redirectToUppercase() {
-	//listOfPages := map[string]*func(){
-	//	urlEventSettings: eventSettings,
-	//}
-	listOfPages := map[string]string{
-		urlEventSettings: strings.ToLower(urlEventSettings),
-	}
-	for from, to := range listOfPages {
-		GetRedirectPermanentTo(from, to)
-	}
-}
-func GetRedirectPermanentTo(from, to string) {
-	http.Handle(from, http.RedirectHandler(to, http.StatusMovedPermanently))
-}*/
-
 func start() {
 	go startDatabase()
 	serveDir(dirJS)
