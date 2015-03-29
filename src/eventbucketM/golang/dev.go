@@ -18,16 +18,18 @@ import (
 )
 
 const (
-	newRelic      = false //Send logging data to New Relic
-	urlRandomData = "/randomData/"
+	newRelic           = false //Send logging data to New Relic
+	urlRandomData      = "/randomData/"
+	urlMakeShooterList = "/makeShooterList/"
 )
 
 var (
 	agent = gorelic.NewAgent()
 	//Use io.Writer >>> ioutil.Discard to disable logging any output
-	Trace   = log.New(os.Stdout, "TRACE:   ", log.Lshortfile)
-	Info    = log.New(os.Stdout, "INFO:    ", log.Lshortfile)
-	Warning = log.New(os.Stderr, "WARNING: ", log.Lshortfile)
+	Trace            = log.New(os.Stdout, "TRACE:   ", log.Lshortfile)
+	Info             = log.New(os.Stdout, "INFO:    ", log.Lshortfile)
+	Warning          = log.New(os.Stderr, "WARNING: ", log.Lshortfile)
+	shootersMakeList = generateForm(makeShooterList())
 )
 
 func main() {
@@ -39,6 +41,8 @@ func main() {
 	}
 	start()
 	post(urlRandomData, randomData)
+	//Nraa
+	post(urlMakeShooterList, postVia(nraaStartUpdateShooterList, urlShooters))
 	Info.Println("ready to go")
 	Warning.Println("ListenAndServe: %v", http.ListenAndServe(":81", nil))
 }
@@ -65,23 +69,24 @@ func serveHtml(h http.HandlerFunc) http.HandlerFunc {
 	}))
 }
 
-/*func dump(input ...interface{}) {
+func dump(input ...interface{}) {
 	for _, print := range input {
 		Trace.Printf("\n%v", print)
 	}
 }
-func vardump(input ...interface{}) {
+
+/*func vardump(input ...interface{}) {
 	for _, print := range input {
 		Trace.Printf("\n%+v", print) //map field names included
 	}
-}
+}*/
 func export(input ...interface{}) {
 	for _, print := range input {
 		Trace.Printf("\n%#v", print) //can copy and declare new variable with it. Most ouput available
 	}
 }
 
-func devModeTimeTrack(start time.Time, requestURI string) {
+/*func devModeTimeTrack(start time.Time, requestURI string) {
 	Trace.Printf("%s took %s", requestURI, time.Since(start))
 }
 
@@ -202,4 +207,18 @@ func randomShooterScores(shooterGrade int) string {
 		shots += string(availableShots[rand.Intn(len(availableShots))])
 	}
 	return shots
+}
+
+func makeShooterList() Form {
+	return Form{
+		action: urlMakeShooterList,
+		title:  "Generate Shooter List",
+		inputs: []Inputs{
+			{
+				html:      "submit",
+				inner:     "Update",
+				autofocus: "on",
+			},
+		},
+	}
 }
