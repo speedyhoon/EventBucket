@@ -12,24 +12,20 @@ func shooters() Page {
 		Theme:        templateHome,
 		Title:        "Shooters",
 		Data: M{
-			"makeList":   shootersMakeList,
-			"updateList": generateForm(updateShooterList()),
+			//"makeList":   generateForm(makeShooterList()),
+			"updateList": generateForm(makeShooterList()),
+			//"updateList": generateForm(updateShooterList()),
 		},
 	}
 }
 
-func updateShooterList() Form {
+func makeShooterList() Form {
+	//TODO move support for loading nraa data to dev mode only
 	return Form{
-		action: urlUpdateShooterList,
-		title:  "Update Shooter List",
+		action: urlMakeShooterList,
+		title:  "Generate Shooter List",
 		inputs: []Inputs{
 			{
-				snippet: "Last updated: <strong>" + nraaGetLastUpdated() + "</strong>",
-			}, {
-			//TODO add support for loading a JSON file
-			//	html:      "file",
-			//	name:      "source",
-			//}, {
 				html:      "submit",
 				inner:     "Update",
 				autofocus: "on",
@@ -37,6 +33,26 @@ func updateShooterList() Form {
 		},
 	}
 }
+
+/*func updateShooterList() Form {
+	return Form{
+		action: urlUpdateShooterList,
+		title:  "Update Shooter List",
+		inputs: []Inputs{
+			{
+				snippet: "Last updated: <strong>" + nraaGetLastUpdated() + "</strong>",
+			}, {
+				//TODO add support for loading a JSON file
+				//	html:      "file",
+				//	name:      "source",
+				//}, {
+				html:      "submit",
+				inner:     "Update",
+				autofocus: "on",
+			},
+		},
+	}
+}*/
 
 //Search for a shooter by first name, surname or club
 func searchShooter(w http.ResponseWriter, r *http.Request) {

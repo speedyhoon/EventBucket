@@ -15,7 +15,7 @@ import (
 var (
 	Info             = log.New(ioutil.Discard, "INFO:    ", log.Lshortfile)
 	Warning          = log.New(os.Stdout, "WARNING: ", log.Lshortfile)
-	shootersMakeList = Form{}
+	//shootersMakeList = Form{}
 )
 
 func loadHTM(pageName string) []byte {
