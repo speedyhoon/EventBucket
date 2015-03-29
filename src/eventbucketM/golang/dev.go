@@ -26,10 +26,10 @@ const (
 var (
 	agent = gorelic.NewAgent()
 	//Use io.Writer >>> ioutil.Discard to disable logging any output
-	Trace            = log.New(os.Stdout, "TRACE:   ", log.Lshortfile)
-	Info             = log.New(os.Stdout, "INFO:    ", log.Lshortfile)
-	Warning          = log.New(os.Stderr, "WARNING: ", log.Lshortfile)
-	shootersMakeList = generateForm(makeShooterList())
+	Trace   = log.New(os.Stdout, "TRACE:   ", log.Lshortfile)
+	Info    = log.New(os.Stdout, "INFO:    ", log.Lshortfile)
+	Warning = log.New(os.Stderr, "WARNING: ", log.Lshortfile)
+	//shootersMakeList = generateForm(makeShooterList())
 )
 
 func main() {
@@ -207,18 +207,4 @@ func randomShooterScores(shooterGrade int) string {
 		shots += string(availableShots[rand.Intn(len(availableShots))])
 	}
 	return shots
-}
-
-func makeShooterList() Form {
-	return Form{
-		action: urlMakeShooterList,
-		title:  "Generate Shooter List",
-		inputs: []Inputs{
-			{
-				html:      "submit",
-				inner:     "Update",
-				autofocus: "on",
-			},
-		},
-	}
 }
