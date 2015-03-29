@@ -42,7 +42,7 @@ func start() {
 	post(urlQueryShooterList, searchShooter)
 	post(urlQueryShooterGrade, searchShooterGrade)
 	//Nraa
-	post(urlUpdateShooterList, postVia(nraaStartUpdateShooterList, urlShooters))
+	post(urlUpdateShooterList, postVia(updateShooterList, urlShooters))
 	post(urlClubInsert, postVia(clubInsert, urlClubs)) //TODO redirect to actual club created
 	post(urlUpdateRange, rangeUpdate)
 	post(urlEventRangeInsert, rangeInsert)

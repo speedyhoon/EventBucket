@@ -31,6 +31,12 @@ type AutoInc struct {
 	Shooter int `bson:"^^schemaSHOOTER^^,omitempty"`
 }
 
+// AutoIncValue stores values from the AutoInc collection
+type AutoIncValue struct {
+	ID    string `bson:"_id,omitempty"`
+	Value string `bson:"n,omitempty"`
+}
+
 // Club is exported
 type Club struct {
 	ID        string  `bson:"_id"`
@@ -106,7 +112,7 @@ type EventShooter struct {
 
 // Shooter is exported
 type Shooter struct {
-	SID       int    `bson:"_id,omitempty"`
+	SID       int    `bson:"_id"`
 	NraaID    int    `bson:"i,omitempty"`
 	Surname   string `bson:"s,omitempty"`
 	FirstName string `bson:"f,omitempty"`
@@ -125,13 +131,13 @@ type Shooter struct {
 
 // NraaShooter is exported
 type NraaShooter struct {
-	NraaID    int           `bson:"_id,omitempty"`
-	SID       int           `bson:"i,omitempty"`
-	Surname   string        `bson:"s,omitempty"`
-	FirstName string        `bson:"f,omitempty"`
-	NickName  string        `bson:"n,omitempty"`
-	Club      string        `bson:"c,omitempty"`
-	Grades    []NraaGrading `bson:"g,omitempty"`
+	NraaID    int                    `bson:"_id"`
+	SID       int                    `bson:"i,omitempty"`
+	Surname   string                 `bson:"s,omitempty"`
+	FirstName string                 `bson:"f,omitempty"`
+	NickName  string                 `bson:"n,omitempty"`
+	Club      string                 `bson:"c,omitempty"`
+	Grades    map[string]NraaGrading `bson:"g,omitempty,inline"`
 }
 
 // NraaGrade is exported
@@ -152,13 +158,11 @@ type NraaItem struct {
 
 // NraaGrading is exported
 type NraaGrading struct {
-	DisciplineID   string  `bson:"d,omitempty"`
-	DisciplineName string  `bson:"n,omitempty"`
-	GradeID        string  `bson:"g,omitempty"`
-	GradeName      string  `bson:"r,omitempty"`
-	GradeThreshold string  `bson:"t,omitempty"`
-	AvgScore       float64 `bson:"a,omitempty"`
-	ShootQty       int     `bson:"s,omitempty"`
+	Class     string  `bson:"c,omitempty"`
+	Grade     string  `bson:"g,omitempty"`
+	Threshold string  `bson:"t,omitempty"`
+	AvgScore  float64 `bson:"a,omitempty"`
+	ShootQty  int     `bson:"s,omitempty"`
 }
 
 // Mound is exported

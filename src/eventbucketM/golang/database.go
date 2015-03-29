@@ -141,9 +141,14 @@ func getNraaShooter(ID int) NraaShooter {
 }
 
 func nraaGetLastUpdated() string {
-	var result map[string]string
-	conn.C(tblAutoInc).FindId(tblNraaShooter).One(&result)
-	return result["n"]
+	var result AutoIncValue
+	if conn != nil {
+		conn.C(tblAutoInc).FindId(tblNraaShooter).One(&result)
+		if result.Value != "" {
+			return result.Value
+		}
+	}
+	return "Never"
 }
 
 func nraaUpsertShooter(shooter NraaShooter) {
@@ -153,19 +158,29 @@ func nraaUpsertShooter(shooter NraaShooter) {
 	}
 }
 
-func nraaUpdateGrading(shooterID int, grades []NraaGrading) {
-	change := mgo.Change{
-		Upsert: false,
-		Update: M{"$set": M{"g": grades}},
+func nraaUpdateGrading(shooterID int, grades map[string]NraaGrading) {
+	if conn != nil {
+		change := mgo.Change{
+			Upsert: false,
+			Update: M{"$set": grades},
+		}
+		_, err := conn.C(tblNraaShooter).FindId(shooterID).Apply(change, make(M))
+		if err != nil {
+			Warning.Println(err)
+		}
 	}
-	conn.C(tblNraaShooter).FindId(shooterID).Apply(change, make(M))
 }
 
 func nraaLastUpdated() {
-	conn.C(tblAutoInc).FindId(tblNraaShooter).Apply(mgo.Change{
-		Upsert: true,
-		Update: M{"$set": M{"n": time.Now().Format("January 2, 2006")}},
-	}, make(M))
+	if conn != nil {
+		_, err := conn.C(tblAutoInc).FindId(tblNraaShooter).Apply(mgo.Change{
+			Upsert: true,
+			Update: M{"$set": M{"n": time.Now().Format("January 2, 2006")}},
+		}, make(M))
+		if err != nil {
+			Warning.Println(err)
+		}
+	}
 }
 
 func getEvent(ID string) (Event, error) {

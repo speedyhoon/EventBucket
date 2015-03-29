@@ -52,24 +52,18 @@
 		};
 	}
 
-	var textboxes = document.getElementById('ShooterEntry'),
+	var textboxes = document.querySelectorAll('#ShooterEntry input[type=search]'),
 		inputChange = function(inputElement){
 			return function(){
 				searchShooter(inputElement);
 			};
 		};
 
-
 	if(textboxes && textboxes.length){
-//	if(textboxes && max){
-		var i, max = textboxes.length;
-		for(i=0; i < max; i++){
-//		var i = textboxes.length;
-//		while(i--){
-			if(textboxes[i].type === 'text'){
-				shooterEntryValues[textboxes[i].name] = textboxes[i].value;
-				textboxes[i].onkeyup = inputChange(textboxes[i]);
-			}
+		var i=-1;
+		while(++i < textboxes.length){
+			shooterEntryValues[textboxes[i].name] = textboxes[i].value;
+			textboxes[i].onkeyup = inputChange(textboxes[i]);
 		}
 	}
 

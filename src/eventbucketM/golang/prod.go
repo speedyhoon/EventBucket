@@ -13,12 +13,13 @@ import (
 )
 
 var (
-	Info    = log.New(ioutil.Discard, "INFO:    ", log.Lshortfile)
-	Warning = log.New(os.Stdout, "WARNING: ", log.Lshortfile)
+	Info             = log.New(ioutil.Discard, "INFO:    ", log.Lshortfile)
+	Warning          = log.New(os.Stdout, "WARNING: ", log.Lshortfile)
+	shootersMakeList = Form{}
 )
 
 func loadHTM(pageName string) []byte {
-	bytes, err := ioutil.ReadFile(fmt.Sprintf(pathHtmlMinified, pageName))
+	bytes, err := ioutil.ReadFile(fmt.Sprintf(pathHTMLMinified, pageName))
 	if err != nil {
 		//TODO inline html as bytes here
 		Error.Println(err)

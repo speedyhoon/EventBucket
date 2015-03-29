@@ -12,27 +12,27 @@ func shooters() Page {
 		Theme:        templateHome,
 		Title:        "Shooters",
 		Data: M{
-			"ShooterList": generateForm(updateShooterList()),
+			"makeList":   shootersMakeList,
+			"updateList": generateForm(updateShooterList()),
 		},
 	}
 }
 
 func updateShooterList() Form {
-	lastUpdated := nraaGetLastUpdated()
-	if lastUpdated == "" {
-		lastUpdated = "Never"
-	}
 	return Form{
 		action: urlUpdateShooterList,
 		title:  "Update Shooter List",
 		inputs: []Inputs{
 			{
-				snippet: "Last updated: " + lastUpdated + ".",
+				snippet: "Last updated: <strong>" + nraaGetLastUpdated() + "</strong>",
 			}, {
+			//TODO add support for loading a JSON file
+			//	html:      "file",
+			//	name:      "source",
+			//}, {
 				html:      "submit",
 				inner:     "Update",
 				autofocus: "on",
-				//accessKey: "x",
 			},
 		},
 	}
@@ -100,7 +100,7 @@ func searchShooterGrade(w http.ResponseWriter, r *http.Request) {
 		output += "<div>No grades listed</div>"
 	}
 	for _, grade := range shooter.Grades {
-		output += fmt.Sprintf("<div>Class: %v, Grade: %v, Threshold: %v</div>", grade.DisciplineName, grade.GradeName, grade.GradeThreshold)
+		output += fmt.Sprintf("<div>Class: %v, Grade: %v, Threshold: %v</div>", grade.Class, grade.Grade, grade.Threshold)
 	}
 	fmt.Fprint(w, output)
 }
@@ -116,4 +116,8 @@ func searchShooterGradeForm() Form {
 			},
 		},
 	}
+}
+
+func updateShooterList(w http.ResponseWriter, r *http.Request) {
+
 }
