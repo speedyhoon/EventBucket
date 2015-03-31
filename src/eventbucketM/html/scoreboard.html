@@ -5,30 +5,25 @@
 <h1>{{.EventName}}</h1>
 <table>
 	<tr>
-		<td>Pos</td>
-		<td>Shooter</td>
-		<td>Club</td>
-		<td>Age Group</td>
+		<td>Pos
+		<td>Shooter
+		<td>Club
+		<td>Age Group
 		{{range $range_id, $range := .ListRanges}}
 			{{if not .Hidden}}
-				{{if eq $range_id $.SortByRange}}
-					<td class=SB>
-				{{else}}
-					<td>
-				{{end}}
-				{{.Name}}</td>
+				<td{{if eq $range_id $.SortByRange}} class=SB{{end}}>
+					 {{.Name}}
 			{{end}}
 		{{end}}
-	</tr>
 	{{range $shooter := .ListShooters}}
 		{{if .GradeSeparator}}
-			<tr><td colspan=99 class=classHeadingRow>{{CLASSLONG .Grade}}<a href=//eventbucket.com.au target=_blank class=r>EventBucket.com.au</a></td></tr>
+			<tr><td colspan=99 class=classHeadingRow>{{CLASSLONG .Grade}}<a href=//eventbucket.com.au target=_blank class=r>EventBucket.com.au</a>
 		{{end}}
 		<tr>
-			<td{{CSSclass "w" .Warning}}>{{.Position}}</td>
-			<td class=tc>{{.FirstName}} {{.Surname}}</td>
-			<td>{{.Club}}</td>
-			<td>{{AgeGroupDisplay .AgeGroup}}</td>
+			<td{{CSSclass "w" .Warning}}>{{.Position}}
+			<td class=tc>{{.FirstName}} {{.Surname}}
+			<td>{{.Club}}
+			<td>{{AgeGroupDisplay .AgeGroup}}
 			{{range $rangeID, $rangeObj := $.ListRanges}}
 				{{if not .Hidden}}
 					{{$new_range_id := VAR2STR $rangeID}}
@@ -37,10 +32,8 @@
 						{{with $now}}
 							{{with.Total}}{{.}}{{end}}{{with .Centres}}<sup>{{.}}</sup>{{end}}
 						{{end}}
-					</td>
 				{{end}}
 			{{end}}
-		</tr>
 	{{end}}
 	<tr>
 		<td colspan=99 class=legend>
@@ -50,8 +43,6 @@
 				{{end}}
 			{{end}}
 			<span class=r>Powered by <a href=//eventbucket.com.au target=_blank>EventBucket.com.au</a></span>
-		</td>
-	</tr>
 </table>
 
 {{if .ListRanges}}
@@ -60,41 +51,28 @@
 		{{if.ListRanges}}
 			<table>
 				<tr>
-					<th>Range ID</th>
-					<th>Name</th>
-					<th>Hide</th>
-					<th>Lock</th>
-					<th></th>
-				</tr>
+					<th>Range ID
+					<th>Name
+					<th>Hide
+					<th>Lock
+					<th>
 				{{range $key, $value := .ListRanges}}
 					{{with $value}}
 						<tr>
-							<td>{{$key}}</td>
-							<td><input name=name value={{.Name}} form=range{{$key}}></td>
+							<td>{{$key}}
+							<td><input name=name value={{.Name}} form=range{{$key}}>
 							<td>
-								{{if not .Hidden}}
-									<input type=checkbox name=hide form=range{{$key}}>
-								{{else}}
-									<input type=checkbox name=hide form=range{{$key}} checked>
-								{{end}}
-							</td>
+								<input type=checkbox name=hide form=range{{$key}}{{if .Hidden}} checked{{end}}>
 							<td>
 								{{if not .Aggregate}}
-									{{if not .Locked}}
-										<input type=checkbox name=lock form=range{{$key}}>
-									{{else}}
-										<input type=checkbox name=lock form=range{{$key}} checked>
-									{{end}}
+									<input type=checkbox name=lock form=range{{$key}}{{if .Locked}} checked{{end}}>>
 								{{end}}
-							</td>
 							<td>
 								<form id=range{{$key}} method=post action=/updateRange>
 									<button>Save</button>
 									<input name=event_id type=hidden value={{$.EventID}}>
 									<input name=range_id type=hidden value={{$key}}>
 								</form>
-							</td>
-						</tr>
 					{{end}}
 				{{end}}
 			</table>

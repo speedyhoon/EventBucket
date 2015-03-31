@@ -6,49 +6,40 @@
 	<form action={{.NewShooterEntry}} id=ShooterEntry class=l>
 		<table>
 			<tr>
-				<td><label for=first>First Name:</label></td>
-				<td><input id=first name=first required type=search></td>
-			</tr>
+				<td><label for=first>First Name:</label>
+				<td><input id=first name=first required type=search>
 			<tr>
-				<td><label for=surname>Surname:</label></td>
-				<td><input id=surname name=surname required type=search></td>
-			</tr>
+				<td><label for=surname>Surname:</label>
+				<td><input id=surname name=surname required type=search>
 			<tr>
 				{{/* TODO change club to a data list*/}}
-				<td><label for=club>Club:</label></td>
+				<td><label for=club>Club:</label>
 				<td>
 					<input id=club name=club list=clubSearch required type=search autocomplete=off>
 					{{HTM .DataListClubs}}
-				</td>
-			</tr>
 			<tr>
-				<td rowspan=2><label for=sid>Existing Shooter:</label></td>
+				<td rowspan=2><label for=sid>Existing Shooter:</label>
 				<td><select id=sid name=sid class=es>
-					<option value disabled>Search for a shooter...</option>
-				</select></td>
-			</tr>
+					<option value disabled>Search for a shooter...
+				</select>
 			<tr>
-				<td id=palette></td>
-			</tr>
+				<td id=palette>
 			<tr>
-				<td><label for=grade>Grade:</label></td>
-				<td><select id=grade name=grade required>
-					<option selected value disabled></option>
-					{{HTM .EntryOptions}}
-				</select><input type=button class="r bs" tabindex=-1 onclick="var d=document.getElementById('gradeSettings');d.hidden=(!d.hidden)" title="Edit the available classes &amp; grades for this event."></td>
-			</tr>
+				<td><label for=grade>Grade:</label>
+				<td>
+					<select id=grade name=grade required>
+						<option selected value disabled>
+						{{HTM .EntryOptions}}
+					</select><input type=button class="r bs" tabindex=-1 onclick="var d=document.getElementById('gradeSettings');d.hidden=(!d.hidden)" title="Edit the available classes &amp; grades for this event.">
 			<tr>
-				<td><label for=age>Age Group:</label></td>
+				<td><label for=age>Age Group:</label>
 				<td>
 					<select id=age name=age required>
 						{{HTM .AgeOptions}}
 					</select>
-				</td>
-			</tr>
 			<tr>
-				<td><button formaction={{.ExistingShooterEntry}} id=addExistingShooter>Add Existing Shooter</button></td>
-				<td class=ar><button id=addNewShooter>Add New Shooter</button></td>
-			</tr>
+				<td><button formaction={{.ExistingShooterEntry}} id=addExistingShooter>Add Existing Shooter</button>
+				<td class=ar><button id=addNewShooter>Add New Shooter</button>
 		</table>
 		<input type=hidden name=eventid value={{.EventID}}>
 	</form>
@@ -64,14 +55,13 @@
 		{{with .EditShooterList}}
 			<table>
 				<tr>
-					<th>ID</th>
-					<th>Disabled</th>
-					<th>First Name</th>
-					<th>Surname</th>
-					<th>Club</th>
-					<th>Grade</th>
-					<th>Age Group</th>
-				</tr>
+					<th>ID
+					<th>Disabled
+					<th>First Name
+					<th>Surname
+					<th>Club
+					<th>Grade
+					<th>Age Group
 				{{HTM .}}
 			</table>
 		{{else}}
