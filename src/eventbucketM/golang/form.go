@@ -6,285 +6,285 @@ import (
 )
 
 var on = 1
-var formAttrs := map[string]Inputs{
-		//submit, button, reset
-		"submit": {
-			autofocus: true,
-			//disabled
-			//form
-			action: "1",
-			//formenctype
-			//formmethod
-			//formnovalidate
-			//formtarget
-			name:  "1",
-			value: "1",
-		},
-		"datalist": {
-			id: "1",
-		},
-		"meter": {
-			min: &on,
-			max: &on,
-			//low
-			//high
-			//optimum
-			//form
-			value: "1",
-		},
-		"output": {
-			//for
-			//form
-			name: "1",
-		},
-		"select": {
-			autofocus: true,
-			//disabled
-			//form
-			multiSelect: true,
-			name:        "1",
-			required:    true,
-			size:        1,
-		},
-		"textarea": {
-			autoComplete: "1",
-			//cols
-			//disabled
-			//form
-			maxLength:   1,
-			minLength:   1,
-			name:        "1",
-			placeholder: "1",
-			//readonly
-			required: true,
-			//rows
-			//selectionDirection
-			//selectionEnd
-			//selectionStart
-			//spellcheck
-			//wrap
-		},
-		"text": {
-			//accept
-			//autocomplete
-			autofocus: true,
-			//autosave
-			//checked: true,
-			//disabled
-			//form
-			//action: "1",
-			//formmethod
-			//formnovalidate
-			//formtarget
-			//inputmode
-			dataList: true,
-			//max: 1,
-			//min: 1,
-			//step: 1,
-			maxLength: 1,
-			minLength: 1,
-			//multiSelect: true,
-			name:        "1",
-			pattern:     "1",
-			placeholder: "1",
-			//readonly
-			required: true,
-			size:     1,
-			//spellcheck
-			value: "1",
-		},
-		"checkbox": { //checkbox, radio
-			//accept
-			//autocomplete
-			autofocus: true,
-			//autosave
-			checked: true,
-			//disabled
-			//form
-			//action: "1",
-			//formmethod
-			//formnovalidate
-			//formtarget
-			//inputmode
-			//dataList: true,
-			//max: 1,
-			//min: 1,
-			//maxLength: 1,
-			//minLength: 1,
-			//multiSelect: true,
-			name: "1",
-			//pattern: "1",
-			//placeholder: "1",
-			//readonly
-			required: true,
-			//size: 1,
-			//spellcheck
-			value: "1",
-			html:  "1",
-		},
-		//colour
-		"date": {
-			//accept
-			//autocomplete
-			autofocus: true,
-			//autosave
-			//checked: true,
-			//disabled
-			//form
-			//action: "1",
-			//formmethod
-			//formnovalidate
-			//formtarget
-			//inputmode
-			//dataList: true,
-			//max: 1,
-			//min: 1,
-			//maxLength: 1,
-			//minLength: 1,
-			//multiSelect: true,
-			name: "1",
-			//pattern: "1",
-			//placeholder: "1",
-			//readonly
-			required: true,
-			//size: 1,
-			//spellcheck
-			value: "1",
-			html:  "1",
-		},
-		//datetime
-		//datetime-local
-		//email
-		//file
-		"hidden": {
-			//accept
-			//autocomplete
-			//autofocus: true,
-			//autosave
-			//checked: true,
-			//disabled
-			//form
-			//action: "1",
-			//formmethod
-			//formnovalidate
-			//formtarget
-			//inputmode
-			//dataList: true,
-			//max: 1,
-			//min: 1,
-			//maxLength: 1,
-			//minLength: 1,
-			//multiSelect: true,
-			name: "1",
-			//pattern: "1",
-			//placeholder: "1",
-			//readonly
-			//required: true,
-			//size: 1,
-			//spellcheck
-			value: "1",
-			html:  "1",
-		},
-		//image
-		//month
-		"number": { //number, range
-			//accept
-			//autocomplete
-			autofocus: true,
-			//autosave
-			//checked: true,
-			//disabled
-			//form
-			//action: "1",
-			//formmethod
-			//formnovalidate
-			//formtarget
-			//inputmode
-			//dataList: true,
-			max:  &on,
-			min:  &on,
-			step: 1,
-			//maxLength: 1,
-			//minLength: 1,
-			//multiSelect: true,
-			name: "1",
-			//pattern: "1",
-			//placeholder: "1",
-			//readonly
-			required: true,
-			//size: 1,
-			//spellcheck
-			value: "1",
-			html:  "1",
-		},
-		//password
-		//radio
-		//range
-		//reset
-		"search": { //number, range
-			//accept
-			//autocomplete
-			autofocus: true,
-			//autosave
-			//checked: true,
-			//disabled
-			//form
-			//action: "1",
-			//formmethod
-			//formnovalidate
-			//formtarget
-			//inputmode
-			dataList: true,
-			//max: 1,
-			//min: 1,
-			//step: 1,
-			maxLength: 1,
-			minLength: 1,
-			//multiSelect: true,
-			name:        "1",
-			pattern:     "1",
-			placeholder: "1",
-			//readonly
-			required: true,
-			size:     1,
-			//spellcheck
-			value: "1",
-			html:  "1",
-		},
-		//tel
-		"time": { //number, range
-			//accept
-			//autocomplete
-			autofocus: true,
-			//autosave
-			//checked: true,
-			//disabled
-			//form
-			//action: "1",
-			//formmethod
-			//formnovalidate
-			//formtarget
-			//inputmode
-			//dataList: true,
-			max:  &on,
-			min:  &on,
-			step: 1,
-			//maxLength: 1,
-			//minLength: 1,
-			//multiSelect: true,
-			name: "1",
-			//pattern: "1",
-			//placeholder: "1",
-			//readonly
-			required: true,
-			//size: 1,
-			//spellcheck
-			value: "1",
-			html:  "1",
-		},
-		//url
-		//week
-	}
+var formAttrs = map[string]Inputs{
+	//submit, button, reset
+	"submit": {
+		autofocus: true,
+		//disabled
+		//form
+		action: "1",
+		//formenctype
+		//formmethod
+		//formnovalidate
+		//formtarget
+		name:  "1",
+		value: "1",
+	},
+	"datalist": {
+		id: "1",
+	},
+	"meter": {
+		min: &on,
+		max: &on,
+		//low
+		//high
+		//optimum
+		//form
+		value: "1",
+	},
+	"output": {
+		//for
+		//form
+		name: "1",
+	},
+	"select": {
+		autofocus: true,
+		//disabled
+		//form
+		multiSelect: true,
+		name:        "1",
+		required:    true,
+		size:        1,
+	},
+	"textarea": {
+		autoComplete: "1",
+		//cols
+		//disabled
+		//form
+		maxLength:   1,
+		minLength:   1,
+		name:        "1",
+		placeholder: "1",
+		//readonly
+		required: true,
+		//rows
+		//selectionDirection
+		//selectionEnd
+		//selectionStart
+		//spellcheck
+		//wrap
+	},
+	"text": {
+		//accept
+		//autocomplete
+		autofocus: true,
+		//autosave
+		//checked: true,
+		//disabled
+		//form
+		//action: "1",
+		//formmethod
+		//formnovalidate
+		//formtarget
+		//inputmode
+		dataList: true,
+		//max: 1,
+		//min: 1,
+		//step: 1,
+		maxLength: 1,
+		minLength: 1,
+		//multiSelect: true,
+		name:        "1",
+		pattern:     "1",
+		placeholder: "1",
+		//readonly
+		required: true,
+		size:     1,
+		//spellcheck
+		value: "1",
+	},
+	"checkbox": { //checkbox, radio
+		//accept
+		//autocomplete
+		autofocus: true,
+		//autosave
+		checked: true,
+		//disabled
+		//form
+		//action: "1",
+		//formmethod
+		//formnovalidate
+		//formtarget
+		//inputmode
+		//dataList: true,
+		//max: 1,
+		//min: 1,
+		//maxLength: 1,
+		//minLength: 1,
+		//multiSelect: true,
+		name: "1",
+		//pattern: "1",
+		//placeholder: "1",
+		//readonly
+		required: true,
+		//size: 1,
+		//spellcheck
+		value: "1",
+		html:  "1",
+	},
+	//colour
+	"date": {
+		//accept
+		//autocomplete
+		autofocus: true,
+		//autosave
+		//checked: true,
+		//disabled
+		//form
+		//action: "1",
+		//formmethod
+		//formnovalidate
+		//formtarget
+		//inputmode
+		//dataList: true,
+		//max: 1,
+		//min: 1,
+		//maxLength: 1,
+		//minLength: 1,
+		//multiSelect: true,
+		name: "1",
+		//pattern: "1",
+		//placeholder: "1",
+		//readonly
+		required: true,
+		//size: 1,
+		//spellcheck
+		value: "1",
+		html:  "1",
+	},
+	//datetime
+	//datetime-local
+	//email
+	//file
+	"hidden": {
+		//accept
+		//autocomplete
+		//autofocus: true,
+		//autosave
+		//checked: true,
+		//disabled
+		//form
+		//action: "1",
+		//formmethod
+		//formnovalidate
+		//formtarget
+		//inputmode
+		//dataList: true,
+		//max: 1,
+		//min: 1,
+		//maxLength: 1,
+		//minLength: 1,
+		//multiSelect: true,
+		name: "1",
+		//pattern: "1",
+		//placeholder: "1",
+		//readonly
+		//required: true,
+		//size: 1,
+		//spellcheck
+		value: "1",
+		html:  "1",
+	},
+	//image
+	//month
+	"number": { //number, range
+		//accept
+		//autocomplete
+		autofocus: true,
+		//autosave
+		//checked: true,
+		//disabled
+		//form
+		//action: "1",
+		//formmethod
+		//formnovalidate
+		//formtarget
+		//inputmode
+		//dataList: true,
+		max:  &on,
+		min:  &on,
+		step: 1,
+		//maxLength: 1,
+		//minLength: 1,
+		//multiSelect: true,
+		name: "1",
+		//pattern: "1",
+		//placeholder: "1",
+		//readonly
+		required: true,
+		//size: 1,
+		//spellcheck
+		value: "1",
+		html:  "1",
+	},
+	//password
+	//radio
+	//range
+	//reset
+	"search": { //number, range
+		//accept
+		//autocomplete
+		autofocus: true,
+		//autosave
+		//checked: true,
+		//disabled
+		//form
+		//action: "1",
+		//formmethod
+		//formnovalidate
+		//formtarget
+		//inputmode
+		dataList: true,
+		//max: 1,
+		//min: 1,
+		//step: 1,
+		maxLength: 1,
+		minLength: 1,
+		//multiSelect: true,
+		name:        "1",
+		pattern:     "1",
+		placeholder: "1",
+		//readonly
+		required: true,
+		size:     1,
+		//spellcheck
+		value: "1",
+		html:  "1",
+	},
+	//tel
+	"time": { //number, range
+		//accept
+		//autocomplete
+		autofocus: true,
+		//autosave
+		//checked: true,
+		//disabled
+		//form
+		//action: "1",
+		//formmethod
+		//formnovalidate
+		//formtarget
+		//inputmode
+		//dataList: true,
+		max:  &on,
+		min:  &on,
+		step: 1,
+		//maxLength: 1,
+		//minLength: 1,
+		//multiSelect: true,
+		name: "1",
+		//pattern: "1",
+		//placeholder: "1",
+		//readonly
+		required: true,
+		//size: 1,
+		//spellcheck
+		value: "1",
+		html:  "1",
+	},
+	//url
+	//week
+}
 
 func generateForm(form Form) string {
 	if conn == nil {
@@ -338,6 +338,9 @@ func generateForm(form Form) string {
 		}
 		if allowedAttrs.multiSelect && input.multiSelect {
 			attributes += " multiple"
+			if input.html == "select" && len(input.options) > 0 {
+				attributes += fmt.Sprintf(" size=%v", min(len(input.options), 12))
+			}
 		}
 		if input.html == "select" {
 			options = drawOnlyOptions(input.options)
@@ -353,7 +356,7 @@ func generateForm(form Form) string {
 		}
 		if allowedAttrs.size > 0 && input.size > 0 {
 			if input.html == "select" && len(input.options) > 0 {
-				attributes += fmt.Sprintf(" size=%v", min(len(input.options), 8))
+				attributes += fmt.Sprintf(" size=%v", min(len(input.options), 12))
 			} else if input.html != "select" {
 				attributes += fmt.Sprintf(" size=%v", input.size)
 			}
@@ -391,7 +394,6 @@ func generateForm(form Form) string {
 		formID = " id=" + form.id
 	}
 	if form.table {
-		//		dump(formElements)
 		formElements[0] = fmt.Sprintf("<form%v action=%v method=post>%v</form>", formID, addQuotes(form.action), formElements[0])
 		return "<tr><td>" + strings.Join(formElements, "<td>")
 	}
@@ -539,9 +541,6 @@ func drawOnlyOptions(options []Option) string {
 			if input.html == "select" {
 				element += "<select" + attributes + ">" + options + "</select>"
 			} else if input.html == "submit" {
-				/*if input.value != nil && inputValue != "" && input.inner != "" {
-					attributes += " value=" + addQuotes(inputValue)
-				}*/
 				output += "<button" + attributes + ">" + input.inner + "</button>"
 			} else {
 				if input.html != "text" {
@@ -594,7 +593,7 @@ func drawOnlyOptions(options []Option) string {
 		//devModeCheckForm(false, "all forms should have a title")
 	}
 	return fmt.Sprintf("<form%v action=%v method=post>%v</form>", formID, addQuotes(form.action), output)
-}
+}*/
 
 func drawOptions(input Inputs) string {
 	//devModeCheckForm(len(input.options) > 0, "select should have at least one option to select from for element='"+input.name+"' type='"+input.html+"'")
