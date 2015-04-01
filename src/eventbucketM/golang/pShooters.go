@@ -28,7 +28,7 @@ func makeShooterList() Form {
 			{
 				html:      "submit",
 				inner:     "Update",
-				autofocus: "on",
+				autofocus: true,
 			},
 		},
 	}

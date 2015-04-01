@@ -42,7 +42,7 @@ var (
 		"dirWEBP": dirWEBP,
 		"dirWOF": dirWOF,
 		"dirWOF2": dirWOF2,
-		"Favicon": favicon,
+		"favicon": favicon,
 		"BuildDate": time.Now().Format("January 2, 2006"),
 		"schemaSHOOTER": "S",
 		"schemaAutoInc": "U",

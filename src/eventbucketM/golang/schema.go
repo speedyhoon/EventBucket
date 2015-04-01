@@ -196,7 +196,7 @@ type Inputs struct {
 	maxLength, minLength                                        int    //the length of variable to return
 	error                                                       string
 	snippet                                                     interface{}
-	autofocus                                                   string
+	autofocus                                                   bool
 	action                                                      string //Way to switch the forms action to a different purpose
 	value                                                       interface{}
 	accessKey, inner, id                                        string

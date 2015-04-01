@@ -100,7 +100,7 @@ func homeFormNewEvent(clubs []Club, event Event) Form {
 				minLength: v8MinStringInput,
 				required:  true,
 				value:     event.Name,
-				autofocus: "on",
+				autofocus: true,
 				//autoComplete: "off",
 			}, {
 				name:         "club",
