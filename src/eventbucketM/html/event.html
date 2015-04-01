@@ -30,7 +30,7 @@
 					<select id=grade name=grade required>
 						<option selected value disabled>
 						{{HTM .EntryOptions}}
-					</select><input type=button class="r bs" tabindex=-1 onclick="var d=document.getElementById('gradeSettings');d.hidden=(!d.hidden)" title="Edit the available classes &amp; grades for this event.">
+					</select>
 			<tr>
 				<td><label for=age>Age Group:</label>
 				<td>
@@ -44,7 +44,8 @@
 		<input type=hidden name=eventid value={{.EventID}}>
 	</form>
 
-	<div id=gradeSettings hidden>
+	<div id=gradeSettings class=l>
+		<abbr title="Edit the available classes &amp; grades for this event.">?</abbr>
 		{{HTM .EventGrades}}
 	</div>
 	{{EndFieldset}}

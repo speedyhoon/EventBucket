@@ -176,12 +176,13 @@ type Mound struct {
 
 // Form is exported
 type Form struct {
-	action string
-	title  string
-	inputs []Inputs
-	help   string
-	table  bool // empty string "" = normal form, "table" = data table
-	id     string
+	action  string
+	title   string
+	inputs  []Inputs
+	help    string
+	table   bool // empty string "" = normal form, "table" = data table
+	id      string
+	details bool
 }
 
 // Inputs is exported

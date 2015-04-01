@@ -5,7 +5,431 @@ import (
 	"strings"
 )
 
+var on = 1
+var formAttrs := map[string]Inputs{
+		//submit, button, reset
+		"submit": {
+			autofocus: true,
+			//disabled
+			//form
+			action: "1",
+			//formenctype
+			//formmethod
+			//formnovalidate
+			//formtarget
+			name:  "1",
+			value: "1",
+		},
+		"datalist": {
+			id: "1",
+		},
+		"meter": {
+			min: &on,
+			max: &on,
+			//low
+			//high
+			//optimum
+			//form
+			value: "1",
+		},
+		"output": {
+			//for
+			//form
+			name: "1",
+		},
+		"select": {
+			autofocus: true,
+			//disabled
+			//form
+			multiSelect: true,
+			name:        "1",
+			required:    true,
+			size:        1,
+		},
+		"textarea": {
+			autoComplete: "1",
+			//cols
+			//disabled
+			//form
+			maxLength:   1,
+			minLength:   1,
+			name:        "1",
+			placeholder: "1",
+			//readonly
+			required: true,
+			//rows
+			//selectionDirection
+			//selectionEnd
+			//selectionStart
+			//spellcheck
+			//wrap
+		},
+		"text": {
+			//accept
+			//autocomplete
+			autofocus: true,
+			//autosave
+			//checked: true,
+			//disabled
+			//form
+			//action: "1",
+			//formmethod
+			//formnovalidate
+			//formtarget
+			//inputmode
+			dataList: true,
+			//max: 1,
+			//min: 1,
+			//step: 1,
+			maxLength: 1,
+			minLength: 1,
+			//multiSelect: true,
+			name:        "1",
+			pattern:     "1",
+			placeholder: "1",
+			//readonly
+			required: true,
+			size:     1,
+			//spellcheck
+			value: "1",
+		},
+		"checkbox": { //checkbox, radio
+			//accept
+			//autocomplete
+			autofocus: true,
+			//autosave
+			checked: true,
+			//disabled
+			//form
+			//action: "1",
+			//formmethod
+			//formnovalidate
+			//formtarget
+			//inputmode
+			//dataList: true,
+			//max: 1,
+			//min: 1,
+			//maxLength: 1,
+			//minLength: 1,
+			//multiSelect: true,
+			name: "1",
+			//pattern: "1",
+			//placeholder: "1",
+			//readonly
+			required: true,
+			//size: 1,
+			//spellcheck
+			value: "1",
+			html:  "1",
+		},
+		//colour
+		"date": {
+			//accept
+			//autocomplete
+			autofocus: true,
+			//autosave
+			//checked: true,
+			//disabled
+			//form
+			//action: "1",
+			//formmethod
+			//formnovalidate
+			//formtarget
+			//inputmode
+			//dataList: true,
+			//max: 1,
+			//min: 1,
+			//maxLength: 1,
+			//minLength: 1,
+			//multiSelect: true,
+			name: "1",
+			//pattern: "1",
+			//placeholder: "1",
+			//readonly
+			required: true,
+			//size: 1,
+			//spellcheck
+			value: "1",
+			html:  "1",
+		},
+		//datetime
+		//datetime-local
+		//email
+		//file
+		"hidden": {
+			//accept
+			//autocomplete
+			//autofocus: true,
+			//autosave
+			//checked: true,
+			//disabled
+			//form
+			//action: "1",
+			//formmethod
+			//formnovalidate
+			//formtarget
+			//inputmode
+			//dataList: true,
+			//max: 1,
+			//min: 1,
+			//maxLength: 1,
+			//minLength: 1,
+			//multiSelect: true,
+			name: "1",
+			//pattern: "1",
+			//placeholder: "1",
+			//readonly
+			//required: true,
+			//size: 1,
+			//spellcheck
+			value: "1",
+			html:  "1",
+		},
+		//image
+		//month
+		"number": { //number, range
+			//accept
+			//autocomplete
+			autofocus: true,
+			//autosave
+			//checked: true,
+			//disabled
+			//form
+			//action: "1",
+			//formmethod
+			//formnovalidate
+			//formtarget
+			//inputmode
+			//dataList: true,
+			max:  &on,
+			min:  &on,
+			step: 1,
+			//maxLength: 1,
+			//minLength: 1,
+			//multiSelect: true,
+			name: "1",
+			//pattern: "1",
+			//placeholder: "1",
+			//readonly
+			required: true,
+			//size: 1,
+			//spellcheck
+			value: "1",
+			html:  "1",
+		},
+		//password
+		//radio
+		//range
+		//reset
+		"search": { //number, range
+			//accept
+			//autocomplete
+			autofocus: true,
+			//autosave
+			//checked: true,
+			//disabled
+			//form
+			//action: "1",
+			//formmethod
+			//formnovalidate
+			//formtarget
+			//inputmode
+			dataList: true,
+			//max: 1,
+			//min: 1,
+			//step: 1,
+			maxLength: 1,
+			minLength: 1,
+			//multiSelect: true,
+			name:        "1",
+			pattern:     "1",
+			placeholder: "1",
+			//readonly
+			required: true,
+			size:     1,
+			//spellcheck
+			value: "1",
+			html:  "1",
+		},
+		//tel
+		"time": { //number, range
+			//accept
+			//autocomplete
+			autofocus: true,
+			//autosave
+			//checked: true,
+			//disabled
+			//form
+			//action: "1",
+			//formmethod
+			//formnovalidate
+			//formtarget
+			//inputmode
+			//dataList: true,
+			max:  &on,
+			min:  &on,
+			step: 1,
+			//maxLength: 1,
+			//minLength: 1,
+			//multiSelect: true,
+			name: "1",
+			//pattern: "1",
+			//placeholder: "1",
+			//readonly
+			required: true,
+			//size: 1,
+			//spellcheck
+			value: "1",
+			html:  "1",
+		},
+		//url
+		//week
+	}
+
 func generateForm(form Form) string {
+	if conn == nil {
+		return "<p class=error>Unable to connect to the EventBucket database.</p>"
+	}
+	var formElements []string
+	var formID, attributes, element, options string
+	for _, input := range form.inputs {
+		allowedAttrs := formAttrs[input.html]
+		if input.snippet != nil {
+			element = fmt.Sprintf("%v", input.snippet)
+		}
+		if allowedAttrs.html != "" {
+			attributes += " type=" + input.html
+		}
+		if allowedAttrs.name != "" && input.name != "" {
+			attributes += " name=" + input.name
+		}
+		if input.accessKey != "" {
+			attributes += " accesskey=" + input.accessKey
+		}
+		if allowedAttrs.autoComplete != "" && input.autoComplete == "on" || input.autoComplete == "off" {
+			attributes += " autocomplete=" + input.autoComplete
+		}
+		if allowedAttrs.autofocus && input.autofocus {
+			attributes += " autofocus"
+		}
+		if allowedAttrs.checked && input.checked {
+			attributes += " checked"
+		}
+		if allowedAttrs.action != "" && input.action != "" {
+			attributes += " formaction=" + input.action
+		}
+		if allowedAttrs.dataList && input.dataList && input.id != "" {
+			attributes += " list=" + input.id
+			if len(input.options) > 0 {
+				options = "<datalist id=" + input.id + ">" + drawOnlyOptions(input.options) + "</datalist>"
+			}
+		}
+		if allowedAttrs.max != nil && input.max != nil {
+			attributes += fmt.Sprintf(" max=%v", input.max)
+		}
+		if allowedAttrs.maxLength > 0 && input.maxLength > 0 {
+			attributes += fmt.Sprintf(" maxlength=%v", input.maxLength)
+		}
+		if allowedAttrs.min != nil && input.min != nil {
+			attributes += fmt.Sprintf(" min=%v", input.min)
+		}
+		if allowedAttrs.minLength > 0 && input.minLength > 0 {
+			attributes += fmt.Sprintf(" minlength=%v", input.minLength)
+		}
+		if allowedAttrs.multiSelect && input.multiSelect {
+			attributes += " multiple"
+		}
+		if input.html == "select" {
+			options = drawOnlyOptions(input.options)
+		}
+		if allowedAttrs.pattern != "" && input.pattern != "" {
+			attributes += " pattern=" + addQuotes(input.pattern)
+		}
+		if allowedAttrs.placeholder != "" && input.placeholder != "" {
+			attributes += " placeholder=" + addQuotes(input.placeholder)
+		}
+		if allowedAttrs.required && input.required {
+			attributes += " required"
+		}
+		if allowedAttrs.size > 0 && input.size > 0 {
+			if input.html == "select" && len(input.options) > 0 {
+				attributes += fmt.Sprintf(" size=%v", min(len(input.options), 8))
+			} else if input.html != "select" {
+				attributes += fmt.Sprintf(" size=%v", input.size)
+			}
+		}
+		if allowedAttrs.step > 0 && input.step > 0 {
+			attributes += fmt.Sprintf(" step=%v", input.step)
+		}
+		if allowedAttrs.value != nil && input.value != nil {
+			attributes += " value=" + addQuotes(fmt.Sprintf("%v", input.value))
+		}
+
+		if allowedAttrs.html != "" || input.html == "text" {
+			element += fmt.Sprintf("<input%v>%v", attributes, options)
+		} else if input.html == "select" {
+			element += fmt.Sprintf("<select%v>%v</select>", attributes, options)
+		} else if input.html == "submit" {
+			element += fmt.Sprintf("<button%v>%v</button>", attributes, input.inner)
+		} else if input.html != "" {
+			dump(input.html)
+			element += fmt.Sprintf("<%v%v>%v</%v>", input.html, attributes, input.inner, input.html)
+		}
+		if input.help != "" {
+			element += "<abbr class=help title=\"" + input.help + "\">?</abbr>"
+		}
+		if input.label != "" {
+			element = "<label>" + input.label + element + "</label>"
+		}
+		formElements = append(formElements, element)
+		attributes = ""
+		options = ""
+		element = ""
+	}
+
+	if form.id != "" {
+		formID = " id=" + form.id
+	}
+	if form.table {
+		//		dump(formElements)
+		formElements[0] = fmt.Sprintf("<form%v action=%v method=post>%v</form>", formID, addQuotes(form.action), formElements[0])
+		return "<tr><td>" + strings.Join(formElements, "<td>")
+	}
+	if form.details {
+		return fmt.Sprintf("<form%v action=%v method=post><details><summary>%v</summary>%v</details></form>", formID, addQuotes(form.action), form.title, strings.Join(formElements, ""))
+	}
+	return fmt.Sprintf("<form%v action=%v method=post>%v%v</fieldset></form>", formID, addQuotes(form.action), fieldSet(form.title), strings.Join(formElements, ""))
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+func drawOnlyOptions(options []Option) string {
+	var output, optionValue string
+	for _, option := range options {
+		optionValue = fmt.Sprintf("%v", option.Value)
+		if optionValue == "" && option.Display == "" {
+			Info.Println("options contains an empty option")
+		}
+		output += "<option"
+		if option.Selected {
+			output += " selected"
+		}
+		if optionValue != option.Display {
+			output += " value=" + addQuotes(optionValue)
+		} else {
+			Info.Println("option.Value shouldn't be included when it has the save value as option.Display")
+		}
+		output += ">" + option.Display
+	}
+	return output
+}
+
+/*func generateForm(form Form) string {
 	var output, formID string
 	var formElements []string
 	if conn == nil {
@@ -31,10 +455,6 @@ func generateForm(form Form) string {
 					attributes += " name=" + input.name
 					//devModeCheckForm(input.name == addQuotes(input.name), "names can't have spaces")
 				}
-				if input.value != nil && inputValue != "" {
-					attributes += " value=" + addQuotes(inputValue)
-					//devModeCheckForm(input.html != "select", "select boxes shouldn't have a value attribute")
-				}
 			} else {
 				if input.html == "submit" && input.action != "" {
 					attributes += " formaction=" + input.action
@@ -48,7 +468,6 @@ func generateForm(form Form) string {
 			if input.action != "" {
 				attributes += " formaction=" + input.action
 			}
-			inputValue = fmt.Sprintf("%v", input.value)
 			if input.value != nil && inputValue != "" {
 				attributes += " value=" + addQuotes(inputValue)
 				//devModeCheckForm(input.html != "select", "select boxes shouldn't have a value attribute")
@@ -85,14 +504,14 @@ func generateForm(form Form) string {
 				attributes += " checked"
 				//devModeCheckForm(input.html == "radio" || input.html == "checkbox", "checked is only valid on radio buttons and checkboxes")
 			}
-			if input.autofocus == "on" {
+			if input.autofocus {
 				attributes += " autofocus"
 			}
 			if input.accessKey != "" {
 				attributes += " accesskey=" + input.accessKey
 			}
 			if input.size > 0 {
-				attributes += fmt.Sprintf(" size=%d", input.size)
+				attributes += fmt.Sprintf(" size=%v", input.size)
 				//devModeCheckForm(input.html == "select", "size is only allowed on select tags")
 				//devModeCheckForm(input.size >= 4, "size should be >= 4")
 			}
@@ -103,7 +522,7 @@ func generateForm(form Form) string {
 			if input.multiSelect {
 				attributes += " multiple"
 				if len(input.options) > 4 {
-					attributes += fmt.Sprintf(" size=%d", len(input.options))
+					attributes += fmt.Sprintf(" size=%v", len(input.options))
 				}
 				//devModeCheckForm(input.html == "select", "multiple is only available on select boxes")
 				//devModeCheckForm(input.html != "submit", "buttons and submits shouldn't have multiple")
@@ -120,11 +539,14 @@ func generateForm(form Form) string {
 			if input.html == "select" {
 				element += "<select" + attributes + ">" + options + "</select>"
 			} else if input.html == "submit" {
-				if input.value != nil && inputValue != "" && input.inner != "" {
+				/*if input.value != nil && inputValue != "" && input.inner != "" {
 					attributes += " value=" + addQuotes(inputValue)
-				}
+				}*/
 				output += "<button" + attributes + ">" + input.inner + "</button>"
 			} else {
+				if input.html != "text" {
+					attributes += " type=" + input.html
+				}
 				if input.dataList && options != "" {
 					if input.id == "" {
 						Warning.Println("datalist needs a unique ID")
@@ -132,10 +554,7 @@ func generateForm(form Form) string {
 					if input.html == "text" {
 						Warning.Println("datalist type should be search")
 					}
-					attributes += " type=" + input.html + " list=" + input.id
-				}
-				if input.html != "text" {
-					attributes += " type=" + input.html
+					attributes += " list=" + input.id
 				}
 				if input.html != "" {
 					element += "<input" + attributes + ">" + options
@@ -197,13 +616,13 @@ func drawOptions(input Inputs) string {
 		} else {
 			//devModeCheckForm(false, "option values shouldn't be empty")
 		}
-		output += ">" + option.Display + "</option>"
+		output += ">" + option.Display
 		//devModeCheckForm(!(option.Display == "" && option.Value == "" && option.Selected == false), "option must have display text")
 	}
 	if input.dataList {
 		output = "<datalist id=" + input.id + ">" + output + "</datalist>"
 	} else if input.placeholder != "" {
-		output += "<option selected value disabled>" + input.placeholder + "</option>"
+		output += "<option selected value disabled>" + input.placeholder
 	}
 	return output
 }
