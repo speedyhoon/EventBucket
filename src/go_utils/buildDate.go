@@ -99,7 +99,8 @@ func walkPath(path string, f os.FileInfo, err error) error {
 				err = ioutil.WriteFile(copyToDir+"j/"+f.Name(), source, 0777)
 			case "html":
 				err = ioutil.WriteFile(copyToDir+"/h/"+strings.Replace(f.Name(), ".html", ".htm", -1), minifyHtml(f.Name(), source), 0777)
-				err = ioutil.WriteFile(copyToDir+"/html/"+f.Name(), source, 0777)
+				//err = ioutil.WriteFile(copyToDir+"/h/"+strings.Replace(f.Name(), ".html", ".htm", -1), source, 0777)
+				//err = ioutil.WriteFile(copyToDir+"/html/"+f.Name(), source, 0777)
 			}
 			if err != nil{
 				fmt.Printf("ERROR: %v", err)
