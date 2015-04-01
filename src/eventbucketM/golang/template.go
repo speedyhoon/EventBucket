@@ -77,7 +77,7 @@ func generator(w http.ResponseWriter, fillin string, viewController Page) {
 		"START_SHOOTING_SHOTS": func(score Score) template.HTML {
 			var output string
 			for _, shot := range strings.Split(score.Shots, "") {
-				output += fmt.Sprintf("<td>%v</td>", shotsToValue(shot))
+				output += fmt.Sprintf("<td>%v", shotsToValue(shot))
 			}
 			return template.HTML(output)
 		},
@@ -139,8 +139,8 @@ var eventMenuItems = []Menu{
 
 func eventMenu(eventID string, eventRanges []Range, pageURL string, isPrizeMeet bool) string {
 	menu := "<ul>"
-	selected := ""
-	closeMenu := false
+	var selected string
+	var closeMenu bool
 	for _, menuItem := range eventMenuItems {
 		if menuItem.Link == pageURL {
 			selected = " class=v"
@@ -152,11 +152,11 @@ func eventMenu(eventID string, eventRanges []Range, pageURL string, isPrizeMeet 
 					var menuRangeItems string
 					for rangeID, rangeItem := range eventRanges {
 						if !rangeItem.IsAgg && !rangeItem.Hidden {
-							menuRangeItems += fmt.Sprintf("<li><a href=%v%v/%v>%v - %v</a></li>", menuItem.Link, eventID, rangeID, rangeID, rangeItem.Name)
+							menuRangeItems += fmt.Sprintf("<li><a href=%v%v/%v>%v - %v</a>", menuItem.Link, eventID, rangeID, rangeID, rangeItem.Name)
 						}
 					}
 					if menuRangeItems != "" {
-						menu += fmt.Sprintf("<li%v><a href=#>%v</a><ul>%v</ul></li>", selected, menuItem.Name, menuRangeItems)
+						menu += fmt.Sprintf("<li%v><a href=#>%v</a><ul>%v</ul>", selected, menuItem.Name, menuRangeItems)
 						closeMenu = true
 					}
 				}
@@ -164,19 +164,19 @@ func eventMenu(eventID string, eventRanges []Range, pageURL string, isPrizeMeet 
 		} else if menuItem.Name == "Close Menu" {
 			//Don't show the close menu item when there are no ranges available
 			if len(eventRanges) >= 1 && closeMenu {
-				menu += fmt.Sprintf("<li%v><a href=%v>%v</a></li>", selected, addQuotes(menuItem.Link), menuItem.Name)
+				menu += fmt.Sprintf("<li%v><a href=%v>%v</a>", selected, addQuotes(menuItem.Link), menuItem.Name)
 			}
 		} else {
 			if menuItem.Link[len(menuItem.Link)-1:] == "/" && menuItem.Link != "/" {
-				menu += fmt.Sprintf("<li%v><a href=%v>%v</a></li>", selected, addQuotes(menuItem.Link+eventID), menuItem.Name)
+				menu += fmt.Sprintf("<li%v><a href=%v>%v</a>", selected, addQuotes(menuItem.Link+eventID), menuItem.Name)
 			} else {
-				menu += fmt.Sprintf("<li%v><a href=%v>%v</a></li>", selected, addQuotes(menuItem.Link), menuItem.Name)
+				menu += fmt.Sprintf("<li%v><a href=%v>%v</a>", selected, addQuotes(menuItem.Link), menuItem.Name)
 			}
 		}
 		selected = ""
 	}
 	if pageURL == urlScoreboard {
-		menu += "<li><a id=scoreSettings href=#scoreboard_settings onclick=\"var d=document.getElementById('scoreboard_settings');d.style.display=(d.style.display?'':'block')\">&nbsp;</a></li>"
+		menu += "<li><a id=scoreSettings href=#scoreboard_settings onclick=\"var d=document.getElementById('scoreboard_settings');d.style.display=(d.style.display?'':'block')\">&nbsp;</a>"
 	}
 	return menu + "</ul>"
 }

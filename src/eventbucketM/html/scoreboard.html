@@ -11,8 +11,11 @@
 		<td>Age Group
 		{{range $range_id, $range := .ListRanges}}
 			{{if not .Hidden}}
-				<td{{if eq $range_id $.SortByRange}} class=SB{{end}}>
-					 {{.Name}}
+				{{if eq $range_id $.SortByRange}}
+					<td class=SB>{{.Name}}
+				{{else}}
+					<td>{{.Name}}
+				{{end}}
 			{{end}}
 		{{end}}
 	{{range $shooter := .ListShooters}}
@@ -55,17 +58,25 @@
 					<th>Name
 					<th>Hide
 					<th>Lock
-					<th>
+					<th></th>
 				{{range $key, $value := .ListRanges}}
 					{{with $value}}
 						<tr>
 							<td>{{$key}}
 							<td><input name=name value={{.Name}} form=range{{$key}}>
 							<td>
-								<input type=checkbox name=hide form=range{{$key}}{{if .Hidden}} checked{{end}}>
+								{{if .Hidden}}
+									<input type=checkbox name=hide form=range{{$key}} checked>
+								{{else}}
+									<input type=checkbox name=hide form=range{{$key}}>
+								{{end}}
 							<td>
 								{{if not .Aggregate}}
-									<input type=checkbox name=lock form=range{{$key}}{{if .Locked}} checked{{end}}>>
+									{{if .Locked}}
+										<input type=checkbox name=lock form=range{{$key}} checked>
+									{{else}}
+										<input type=checkbox name=lock form=range{{$key}}>
+									{{end}}
 								{{end}}
 							<td>
 								<form id=range{{$key}} method=post action=/updateRange>

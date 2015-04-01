@@ -32,13 +32,11 @@ func club(clubID string) Page {
 	}
 	tableMounds := "<p>No Mounds Listed</p>"
 	if len(mounds) >= 1 {
-		tableMounds = `
-		<table>
+		tableMounds = `<table>
 			<tr>
-				<th>Name</th>
-				<th>Distance</th>
-				<th colspan=2 class=text-left>Units</th>
-			</tr>`
+				<th>Name
+				<th>Distance
+				<th colspan=2 class=text-left>Units`
 		tableMounds += strings.Join(mounds, "") + "</table>"
 	}
 
@@ -269,7 +267,7 @@ func organisersClubForm() Form {
 				html:      "text",
 				label:     "Club Name",
 				required:  true,
-				autofocus: "on",
+				autofocus: true,
 			},
 			{
 				html:  "submit",
