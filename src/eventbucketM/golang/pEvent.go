@@ -207,6 +207,9 @@ func eventUpdateShooterForm(event Event, shooter EventShooter, clubList []Option
 		inputs: []Inputs{
 			{
 				snippet: shooter.ID,
+				name:    "eventid",
+				html:    "hidden",
+				value:   event.ID,
 			}, {
 				name:    "disabled",
 				html:    "checkbox",
@@ -247,10 +250,6 @@ func eventUpdateShooterForm(event Event, shooter EventShooter, clubList []Option
 				name:  "sid",
 				value: shooter.ID,
 				//accessKey: "x",
-			}, {
-				name:  "eventid",
-				html:  "hidden",
-				value: event.ID,
 			},
 		},
 	}
