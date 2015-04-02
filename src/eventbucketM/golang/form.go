@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -363,7 +364,8 @@ func generateForm(form Form) string {
 			}
 		}
 		if allowedAttrs.step > 0 && input.step > 0 {
-			attributes += fmt.Sprintf(" step=%f", input.step)
+			//Trim leading zeros & FormatFloat removes any trailing decimal places. e.g. 1.000000 = "1", 0.001000 = ".001".
+			attributes += " step=" + strings.TrimLeft(strconv.FormatFloat(input.step, 'f', -1, 32), "0")
 		}
 		if allowedAttrs.value != nil && input.value != nil {
 			value := fmt.Sprintf("%v", input.value)
