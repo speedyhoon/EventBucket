@@ -325,15 +325,16 @@ func generateForm(form Form) string {
 			}
 		}
 		if allowedAttrs.max != nil && input.max != nil {
-			attributes += fmt.Sprintf(" max=%v", input.max)
+			attributes += fmt.Sprintf(" max=%v", *input.max)
 		}
 		if allowedAttrs.maxLength > 0 && input.maxLength > 0 {
+			Info.Printf("type=%v attrs=%v real=%v", input.html, allowedAttrs.maxLength, input.maxLength)
 			attributes += fmt.Sprintf(" maxlength=%v", input.maxLength)
 		}
 		if allowedAttrs.min != nil && input.min != nil {
-			attributes += fmt.Sprintf(" min=%v", input.min)
+			attributes += fmt.Sprintf(" min=%v", *input.min)
 		}
-		if allowedAttrs.minLength > 0 && input.minLength > 0 {
+		if allowedAttrs.minLength > 0 && ((input.required && input.minLength > 1) || (!input.required && input.minLength > 0)) {
 			attributes += fmt.Sprintf(" minlength=%v", input.minLength)
 		}
 		if allowedAttrs.multiSelect && input.multiSelect {
@@ -362,10 +363,13 @@ func generateForm(form Form) string {
 			}
 		}
 		if allowedAttrs.step > 0 && input.step > 0 {
-			attributes += fmt.Sprintf(" step=%v", input.step)
+			attributes += fmt.Sprintf(" step=%f", input.step)
 		}
 		if allowedAttrs.value != nil && input.value != nil {
-			attributes += " value=" + addQuotes(fmt.Sprintf("%v", input.value))
+			value := fmt.Sprintf("%v", input.value)
+			if value != "" {
+				attributes += " value=" + addQuotes(value)
+			}
 		}
 
 		if allowedAttrs.html != "" || input.html == "text" {
