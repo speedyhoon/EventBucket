@@ -89,17 +89,19 @@
 	}
 
 	function changeRequiredAttrs(formAction){
-		var inputs = document.getElementById('ShooterEntry').getElementsByTagName('input');
-		if(max > 0){
-			for(i = 0, max = inputs.length; i < max; i++){
-				if(inputs[i].type === 'text'){
-					if(formAction){
-						inputs[i].removeAttribute('required');
-						document.getElementById('sid').setAttribute('required', '');
-					}else{
-						inputs[i].setAttribute('required', '');
-						document.getElementById('sid').removeAttribute('required');
-					}
+		var inputs = document.querySelectorAll('#ShooterEntry [type=search]');
+		if(formAction){
+			document.getElementById('sid').setAttribute('required', '');
+		}else{
+			document.getElementById('sid').removeAttribute('required');
+		}
+		if(input && inputs.length){
+			var i = inputs.length;
+			while(--i){
+				if(formAction){
+					inputs[i].removeAttribute('required');
+				}else{
+					inputs[i].setAttribute('required', '');
 				}
 			}
 		}
@@ -111,8 +113,9 @@
 				changeRequiredAttrs(formAction);
 			};
 		};
-	if(max > 0){
-		for(i = 0, max = shooterButtons.length; i < max; i++){
+	if(shooterButtons && shooterButtons.length){
+		var i = shooterButtons.length;
+		while(--i){
 			shooterButtons[i].onclick = clickIt(shooterButtons[i].getAttribute('formaction'));
 		}
 	}
