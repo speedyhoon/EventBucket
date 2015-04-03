@@ -236,6 +236,20 @@ type Grade struct {
 func gradeList() []int {
 	return []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
 }
+func grade2Class(grade int) int {
+	return []Grade{
+		0: {ClassID: 0},
+		1: {ClassID: 0},
+		2: {ClassID: 0},
+		3: {ClassID: 1},
+		4: {ClassID: 1},
+		5: {ClassID: 1},
+		6: {ClassID: 1},
+		7: {ClassID: 2},
+		8: {ClassID: 2},
+		9: {ClassID: 1},
+	}[grade].ClassID
+}
 func grades() []Grade {
 	return []Grade{
 		0: {Settings: defaultClassSettings[0], ClassID: 0, Name: "A", ClassName: "Target", LongName: "Target A"},
