@@ -1,7 +1,6 @@
 (function(){
 	'use strict';
 	var currentCell = null, currentRow = null, j, classes = {
-		eventId:1,
 		currentType:null,
 		0:{
 			sighters:2,
@@ -91,7 +90,7 @@
 	function ajax(id){
 		var shots = getAjax();
 		shots = encodeURI(shots).replace(/#/gi, '%23');	//hashes are converted after encodeURI to stop % being converted twice
-		j.open('POST', '/updateShotScores?eventid='+eventId+'&rangeid='+rangeId+'&shooterid='+id+'&shots='+shots, true);// + 'scoreSave=' + classes.eventId + '~' + Id + '~' + shots, true);
+		j.open('POST', '/updateShotScores?eventid='+eventID+'&rangeid='+rangeID+'&shooterid='+id+'&shots='+shots, true);
 		j.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 		j.send();
 		j.onreadystatechange = function(){

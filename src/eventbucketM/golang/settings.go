@@ -186,7 +186,7 @@ var (
 			Display:      "Match",
 			DisplayValue: 2,
 			Buttons:      "012345VX",
-			SightersQty:  2,
+			SightersQty:  3,
 			ShotsQty:     15,
 			Maximum:      Score{Total: 5, Centres: 1},
 			ValidShots: map[string]Score{
