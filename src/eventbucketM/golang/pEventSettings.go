@@ -99,7 +99,6 @@ func eventSettingsUpdateRange(eventID, rangeID string) Form {
 				inner: "Create Range",
 				name:  "eventid",
 				value: eventID,
-				//accessKey: "x",
 			},
 		},
 	}
@@ -167,7 +166,6 @@ func eventSettingsAddRangeForm(eventID string) Form {
 				inner: "Create Range",
 				name:  "eventid",
 				value: eventID,
-				//accessKey: "x",
 			},
 		},
 	}
@@ -205,7 +203,6 @@ func eventSettingsSortScoreboard(event Event) Form {
 				inner: "Save",
 				name:  "eventid",
 				value: event.ID,
-				//accessKey: "x",
 			},
 		},
 	}
@@ -233,7 +230,6 @@ func eventSettingsAddAggForm(eventID string, eventRanges []Option) Form {
 				inner: "Create Aggregate",
 				name:  "eventid",
 				value: eventID,
-				//accessKey: "x",
 			},
 		},
 	}
@@ -267,12 +263,12 @@ func eventSettingsClassGrades(event Event) Form {
 				html:        "select",
 				multiSelect: true,
 				options:     eventGradeOptions(event.Grades),
+				help:        "Edit the available classes &amp; grades for this event.",
 			}, {
 				html:  "submit",
 				inner: "Save",
 				name:  "eventid",
 				value: event.ID,
-				//accessKey: "x",
 			},
 		},
 	}
@@ -330,7 +326,6 @@ func eventSettingsIsPrizeMeet(eventID string, checked bool) Form {
 				inner: "Save",
 				name:  "eventid",
 				value: eventID,
-				//accessKey: "x",
 			},
 		},
 	}

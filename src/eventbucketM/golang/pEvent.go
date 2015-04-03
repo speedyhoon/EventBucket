@@ -249,7 +249,6 @@ func eventUpdateShooterForm(event Event, shooter EventShooter, clubList []Option
 				inner: "Save",
 				name:  "sid",
 				value: shooter.ID,
-				//accessKey: "x",
 			},
 		},
 	}

@@ -102,7 +102,6 @@ func clubMoundInsertForm(clubID string, mound Mound, existing bool, formID strin
 			inner: submitLabel,
 			name:  "clubid",
 			value: clubID,
-			//AccessKey: "x",
 		},
 	}
 	if existing {
@@ -213,7 +212,6 @@ Tip: Lines of longitude appear vertical (North-South), Lines of latitude appear 
 				inner: "Save Club Details",
 				name:  "clubid",
 				value: club.ID,
-				//accessKey: "x",
 			}, {
 				snippet: "<a href=//maps.google.com.au/ target=_blank>Google Maps</a>",
 			},
@@ -272,7 +270,6 @@ func organisersClubForm() Form {
 			{
 				html:  "submit",
 				inner: "Add Club",
-				//accessKey: "x",
 			},
 		},
 	}

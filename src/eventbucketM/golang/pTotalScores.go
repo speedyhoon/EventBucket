@@ -249,7 +249,6 @@ func totalScoresForm(eventID, rangeID string, shooterID int, score string) Form 
 				inner: "Save",
 				name:  "eventid",
 				value: eventID,
-				//accessKey: "x",
 			},
 		},
 	}
