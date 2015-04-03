@@ -14,7 +14,7 @@ body
 	background: #495154
 	color: #ccc
 
-h1, legend
+h1, legend, summary
 	text-shadow: #000 1px 2px 0px, #07F 3px 4px 3px, #000 4px 5px 3px
 
 fieldset
@@ -23,11 +23,12 @@ fieldset
 	background: #222
 	border-color: #777
 
-legend
+legend, summary
 	font-size: 24px
 	font-weight: 900
 
 fieldset fieldset legend
+	//I don't think this is needed any more?
 	font-size: inherit
 
 select
@@ -58,6 +59,9 @@ select
 
 .nbw
 	border-width: 0
+
+.marginLeft1em
+	margin-left: 1em
 
 +form_layout()
 

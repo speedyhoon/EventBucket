@@ -135,7 +135,6 @@ func homeFormNewEvent(clubs []Club, event Event) Form {
 				varType:   "string",
 				maxLength: v8MaxEventID,
 				minLength: v8MinEventID,
-				//accessKey: "x",
 			},
 		},
 	}

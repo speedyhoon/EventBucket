@@ -25,7 +25,6 @@ func championshipForm() Form {
 			{
 				html:  "submit",
 				inner: "Add Championship",
-				//accessKey: "x",
 			},
 		},
 	}

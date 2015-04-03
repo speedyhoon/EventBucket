@@ -329,7 +329,6 @@ func generateForm(form Form) string {
 			attributes += fmt.Sprintf(" max=%v", *input.max)
 		}
 		if allowedAttrs.maxLength > 0 && input.maxLength > 0 {
-			Info.Printf("type=%v attrs=%v real=%v", input.html, allowedAttrs.maxLength, input.maxLength)
 			attributes += fmt.Sprintf(" maxlength=%v", input.maxLength)
 		}
 		if allowedAttrs.min != nil && input.min != nil {
