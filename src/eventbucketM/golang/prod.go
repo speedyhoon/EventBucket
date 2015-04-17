@@ -3,7 +3,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -13,18 +12,43 @@ import (
 )
 
 var (
-	Info             = log.New(ioutil.Discard, "INFO:    ", log.Lshortfile)
-	Warning          = log.New(os.Stdout, "WARNING: ", log.Lshortfile)
-	//shootersMakeList = Form{}
+	Info    = log.New(ioutil.Discard, "INFO:    ", log.Lshortfile)
+	Warning = log.New(os.Stdout, "WARNING: ", log.Lshortfile)
 )
 
 func loadHTM(pageName string) []byte {
-	bytes, err := ioutil.ReadFile(fmt.Sprintf(pathHTMLMinified, pageName))
-	if err != nil {
-		//TODO inline html as bytes here
-		Error.Println(err)
+	switch pageName {
+	case "about.htm":
+		return `^^about.htm^^`
+	case "archive.htm":
+		return `^^archive.htm^^`
+	case "club.htm":
+		return `^^club.htm^^`
+	case "clubs.htm":
+		return `^^clubs.htm^^`
+	case "event.htm":
+		return `^^event.htm^^`
+	case "eventSettings.htm":
+		return `^^eventSettings.htm^^`
+	case "home.htm":
+		return `^^home.htm^^`
+	case "licence.htm":
+		return `^^licence.htm^^`
+	case "scoreboard.htm":
+		return `^^scoreboard.htm^^`
+	case "shooters.htm":
+		return `^^shooters.htm^^`
+	case "start-shooting.htm":
+		return `^^start-shooting.htm^^`
+	case "total-scores.htm":
+		return `^^total-scores.htm^^`
+	case "_template_admin.htm":
+		return `^^_template_admin.htm^^`
+	case "_template_empty.htm":
+		return `^^_template_empty.htm^^`
+	case "_template_home.htm":
+		return `^^_template_home.htm^^`
 	}
-	return bytes
 }
 
 func serveDir(contentType string) {

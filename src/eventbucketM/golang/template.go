@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -23,8 +22,8 @@ func templator(viewController Page, w http.ResponseWriter, r *http.Request) {
 	viewController.Data["Title"] = viewController.Title
 	viewController.Data["CurrentYear"] = time.Now().Year()
 	//Search in Theme html file & replace "^^BODY^^" with TemplateFile
-	source := bytes.Replace(loadHTM(viewController.Theme), []byte("^^BODY^^"), loadHTM(viewController.TemplateFile), -1)
-	generator(w, string(source), viewController)
+	source := strings.Replace(loadHTM(viewController.Theme), "^^BODY^^", loadHTM(viewController.TemplateFile), -1)
+	generator(w, source, viewController)
 }
 
 func generator(w http.ResponseWriter, fillin string, viewController Page) {
