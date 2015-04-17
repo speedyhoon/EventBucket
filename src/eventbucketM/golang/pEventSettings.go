@@ -157,10 +157,11 @@ func eventSettingsAddRangeForm(eventID string) Form {
 		title:  "Add Range",
 		inputs: []Inputs{
 			{
-				name:     "name",
-				html:     "text",
-				label:    "Range Name",
-				required: true,
+				name:      "name",
+				html:      "text",
+				label:     "Range Name",
+				autofocus: true,
+				required:  true,
 			}, {
 				html:  "submit",
 				inner: "Create Range",
