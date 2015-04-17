@@ -71,7 +71,7 @@ func serveHtml(h http.HandlerFunc) http.HandlerFunc {
 
 func dump(input ...interface{}) {
 	for _, print := range input {
-		Trace.Printf("\n%v", print)
+		Trace.Printf("%v", print)
 	}
 }
 
@@ -82,7 +82,7 @@ func dump(input ...interface{}) {
 }*/
 func export(input ...interface{}) {
 	for _, print := range input {
-		Trace.Printf("\n%#v", print) //can copy and declare new variable with it. Most ouput available
+		Trace.Printf("%#v", print) //can copy and declare new variable with it. Most ouput available
 	}
 }
 
@@ -96,12 +96,12 @@ func devModeCheckForm(check bool, message string) {
 	}
 }*/
 
-func loadHTM(pageName string) []byte {
+func loadHTM(pageName string) string {
 	bytes, err := ioutil.ReadFile(fmt.Sprintf(pathHTMLMinified, pageName))
 	if err != nil {
 		Error.Println(err)
 	}
-	return bytes
+	return string(bytes)
 }
 
 func randomData(w http.ResponseWriter, r *http.Request) {

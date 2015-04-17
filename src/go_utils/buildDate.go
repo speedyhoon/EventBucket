@@ -25,12 +25,13 @@ const (
 	dirWOF  = "/f/"
 	dirWOF2 = "/2/"
 
-	dbArguments = `ebd", "--dbpath", databasePath, "--port", "38888", "--nssize", "1", "--smallfiles", "--noscripting", `
+	dbArguments = `mongod", "--dbpath", databasePath, "--port", "38888", "--nssize", "1", "--smallfiles", "--noscripting", `
 )
 
 var (
 	currentDir = ""
-	dev = "true"
+//	dev = "true"
+	dev = ""
 	replaceChars = map[string]interface{}{
 		"VersionNumber": 58,		//TODO get the Git tag from the last commit
 		"dirRoot": "",
@@ -52,11 +53,31 @@ var (
 	}
 	devMode = map[string]interface{}{
 		"DbArgs": dbArguments + `"--noauth", "--slowms", "3", "--cpu", "--profile", "2", "--objcheck", "--notablescan", "--rest`,
-		//"NewRelic": "true",		//TODO there has to be a better way to do this? Maybe use Gulp.js instead?
+		"NewRelic": "",		//TODO there has to be a better way to do this? Maybe use Gulp.js instead?
 	}
 
 	prodMode = map[string]interface{}{
 		"DbArgs": dbArguments + `"--nohttpinterface`,
+		//"404.htm":						loadHTMLFile("404.htm"),
+		"about.htm":					loadHTMLFile("about.htm"),
+		"archive.htm":					loadHTMLFile("archive.htm"),
+		"club.htm":						loadHTMLFile("club.htm"),
+		"clubs.htm":					loadHTMLFile("clubs.htm"),
+		"event.htm":					loadHTMLFile("event.htm"),
+		"eventSettings.htm":			loadHTMLFile("eventSettings.htm"),
+		//"eventShotsNSighters.htm":	loadHTMLFile("eventShotsNSighters.htm"),
+		"home.htm":						loadHTMLFile("home.htm"),
+		"licence.htm":					loadHTMLFile("licence.htm"),
+		//"NetworkAdaptor.htm":		loadHTMLFile("NetworkAdaptor.htm"),
+		//"newRelic.htm":				loadHTMLFile("newRelic.htm"),
+		//"organisers.htm":				loadHTMLFile("organisers.htm"),
+		"scoreboard.htm":				loadHTMLFile("scoreboard.htm"),
+		"shooters.htm":				loadHTMLFile("shooters.htm"),
+		"start-shooting.htm":		loadHTMLFile("start-shooting.htm"),
+		"total-scores.htm":			loadHTMLFile("total-scores.htm"),
+		"_template_admin.htm":		loadHTMLFile("_template_admin.htm"),
+		"_template_empty.htm":		loadHTMLFile("_template_empty.htm"),
+		"_template_home.htm":		loadHTMLFile("_template_home.htm"),
 	}
 )
 //TODO eventually move these settings to a json or yaml file.
@@ -139,6 +160,17 @@ func loadHtmlSnippets(){
 	}else {
 		replaceChars["NewRelic"] = ""
 	}
+}
+
+func loadHTMLFile(fileName string)string{
+	fileContents, err := ioutil.ReadFile(fmt.Sprintf("C:/Users/Developer/EBrepo/src/eventbucketM/!/h/%v", fileName))
+	if err != nil{
+		fmt.Println("Unable to load "+fileName+" html contents")
+		fmt.Printf("\n#%v",err)
+		return ""
+	}
+	fileContents = replaceContents(replaceChars, fileContents)[:]
+	return fmt.Sprintf("%s", fileContents)
 }
 
 func exists(dict map[string]interface{}, key string) string {
