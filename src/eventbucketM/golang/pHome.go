@@ -70,10 +70,12 @@ func home() Page {
 func homeFormNewEvent(clubs []Club, event Event) Form {
 	title := "Event Details"
 	save := "Update Event"
+	var nameFocus bool
 	submitName := "eventid"
 	if event.ID == "" {
 		title = "New Event"
 		save = "Save Event"
+		nameFocus = true
 		submitName = ""
 		event.Date = time.Now().Format("2006-01-02")
 		event.Time = time.Now().Format("15:04")
@@ -100,8 +102,7 @@ func homeFormNewEvent(clubs []Club, event Event) Form {
 				minLength: v8MinStringInput,
 				required:  true,
 				value:     event.Name,
-				autofocus: true,
-				//autoComplete: "off",
+				autofocus: nameFocus,
 			}, {
 				name:         "club",
 				html:         "search",
