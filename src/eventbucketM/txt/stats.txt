@@ -113,3 +113,6 @@
 119 KB (122,394 bytes) Prod only
 Gofmt removed the option to remove comments
 
+16 Apr 2015
+144 KB (148,017 bytes) Go only
+138 KB (142,081 bytes) Prod only
