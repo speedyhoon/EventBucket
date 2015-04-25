@@ -255,9 +255,8 @@ func updateEventGrades(w http.ResponseWriter, r *http.Request) {
 
 func eventSettingsClassGrades(event Event) Form {
 	return Form{
-		action:  urlUpdateEventGrades,
-		title:   "Availalbe Classes &amp; Grades",
-		details: true,
+		action: urlUpdateEventGrades,
+		title:  "Availalbe Classes &amp; Grades",
 		inputs: []Inputs{
 			{
 				name:        "grades",

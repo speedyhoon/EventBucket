@@ -79,8 +79,11 @@ type Score struct {
 	Centres   int    `bson:"c,omitempty"`
 	Shots     string `bson:"s,omitempty"` //Don't include this in the scoreboard struct when using a different []EventShooter
 	CountBack string `bson:"v,omitempty"`
+	ShootOff  int    `bson:"h,omitempty"`
 	Position  int    `bson:"p,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
 	Warning   int    `bson:"y,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
+	Ordinal   string `bson:"o,omitempty"`
+	Info      string `bson:"i,omitempty"`
 }
 
 // EventShooter is exported
@@ -176,13 +179,12 @@ type Mound struct {
 
 // Form is exported
 type Form struct {
-	action  string
-	title   string
-	inputs  []Inputs
-	help    string
-	table   bool // empty string "" = normal form, "table" = data table
-	id      string
-	details bool
+	action string
+	title  string
+	inputs []Inputs
+	help   string
+	table  bool
+	id     string
 }
 
 // Inputs is exported
