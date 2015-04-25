@@ -402,9 +402,6 @@ func generateForm(form Form) string {
 		formElements[0] = fmt.Sprintf("<form%v action=%v method=post>%v</form>", formID, addQuotes(form.action), formElements[0])
 		return "<tr><td>" + strings.Join(formElements, "<td>")
 	}
-	if form.details {
-		return fmt.Sprintf("<form%v action=%v method=post><details><summary>%v</summary>%v</details></form>", formID, addQuotes(form.action), form.title, strings.Join(formElements, ""))
-	}
 	return fmt.Sprintf("<form%v action=%v method=post>%v%v</fieldset></form>", formID, addQuotes(form.action), fieldSet(form.title), strings.Join(formElements, ""))
 }
 
