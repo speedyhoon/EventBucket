@@ -124,8 +124,26 @@ p, ul
 +float-right()
 +form_layout()
 
-.developerTools a
-	padding: .35em
+
+.developerTools
+	text-align: center
+	a
+		$spriteWidth: 30
+		$spriteHeight: 30
+		background: url(/p/about) 0 0 no-repeat
+		width: #{$spriteWidth}px
+		height: #{$spriteHeight}px
+		margin: 0 .35em
+		display: inline-block
+
+		$counter: 1
+		@each $width in 22, 30, 30, 13, 27, 30, 40, 37, 30 //sprite image pixel widths
+			&:nth-child(#{$counter})
+				@if $spriteWidth != $width
+					width: #{$width}px
+				@if $counter > 1
+					background-position-y: -#{($spriteHeight * ($counter - 1))}px
+			$counter: $counter + 1
 
 @media print
 	.homeContainer
