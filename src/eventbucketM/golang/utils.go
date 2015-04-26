@@ -87,13 +87,17 @@ func dirExists(path string) bool {
 func hostnameIPAddresses() (string, []string) {
 	hostname, _ := os.Hostname()
 	var ipAddress []string
+	var address string
 	interfaces, err := net.Interfaces()
 	if err == nil {
 		for _, i := range interfaces {
 			addrs, err2 := i.Addrs()
 			if err2 == nil {
 				for _, addr := range addrs {
-					ipAddress = append(ipAddress, fmt.Sprintf("%v", addr))
+					address = fmt.Sprintf("%v", addr)
+					if address != "0.0.0.0" {
+						ipAddress = append(ipAddress, address)
+					}
 				}
 			}
 		}

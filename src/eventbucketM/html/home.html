@@ -10,18 +10,11 @@
 		{{range .}}
 			<div>
 				<time>
-					{{with.Day}}
-						{{.}}
-					{{else}}
-						&nbsp;
-					{{end}}<br>
-					{{with.Date}}
-						<b>{{.}}</b>
-					{{else}}&nbsp;{{end}}
-					{{with.Month}}
-						{{.}}
-					{{else}}&nbsp;{{end}} {{with.Year}}
-						{{.}}
+					{{with.Day}}{{.}}{{else}}&nbsp;{{end}}
+					<br>
+					{{if or .Date .Month .Year}}
+						{{with.Date}}<b>{{.}}</b>{{end}}
+						{{with.Month}}{{.}}{{end}} {{with.Year}}{{.}}{{end}}
 					{{else}}&nbsp;{{end}}
 				</time>
 				<p>
