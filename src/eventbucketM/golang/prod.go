@@ -16,38 +16,51 @@ var (
 	Warning = log.New(os.Stdout, "WARNING: ", log.Lshortfile)
 )
 
-func loadHTM(pageName string) []byte {
+func loadHTM(pageName string) string {
 	switch pageName {
-	case "about.htm":
+	case "about":
 		return `^^about.htm^^`
-	case "archive.htm":
+	case "archive":
 		return `^^archive.htm^^`
-	case "club.htm":
+	case "club":
 		return `^^club.htm^^`
-	case "clubs.htm":
+	case "clubs":
 		return `^^clubs.htm^^`
-	case "event.htm":
+	case "event":
 		return `^^event.htm^^`
-	case "eventSettings.htm":
+	case "eventSettings":
 		return `^^eventSettings.htm^^`
-	case "home.htm":
+	case "home":
 		return `^^home.htm^^`
-	case "licence.htm":
+	case "licence":
 		return `^^licence.htm^^`
-	case "scoreboard.htm":
+	case "scoreboard":
 		return `^^scoreboard.htm^^`
-	case "shooters.htm":
+	case "shooters":
 		return `^^shooters.htm^^`
-	case "start-shooting.htm":
+	case "start-shooting":
 		return `^^start-shooting.htm^^`
-	case "total-scores.htm":
+	case "total-scores":
 		return `^^total-scores.htm^^`
-	case "_template_admin.htm":
+	case templateAdmin:
 		return `^^_template_admin.htm^^`
-	case "_template_empty.htm":
+	case templateEmpty:
 		return `^^_template_empty.htm^^`
-	case "_template_home.htm":
+	case templateHome:
 		return `^^_template_home.htm^^`
+	}
+	return ""
+}
+
+func dump(input ...interface{}) {
+	for _, print := range input {
+		Error.Printf("%v", print)
+	}
+}
+
+func export(input ...interface{}) {
+	for _, print := range input {
+		Error.Printf("%#v", print) //can copy and declare new variable with it. Most ouput available
 	}
 }
 
