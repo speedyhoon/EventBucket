@@ -25,7 +25,7 @@ const (
 	dirWOF  = "/f/"
 	dirWOF2 = "/2/"
 
-	dbArguments = `mongod", "--dbpath", databasePath, "--port", "38888", "--nssize", "1", "--smallfiles", "--noscripting", `
+	dbArguments = `ebd", "--dbpath", databasePath, "--port", "38888", "--nssize", "1", "--smallfiles", "--noscripting", `
 )
 
 var (
