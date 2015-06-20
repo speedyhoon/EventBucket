@@ -1,13 +1,12 @@
 package main
 
 import (
-	"fmt"
-	"sort"
 	"strconv"
 	"strings"
 )
 
 func addShooterIDsToShooterObjects(eventShooters []EventShooter) []EventShooter {
+	//TODO this should be saved to the database & this function removed
 	for shooterID := range eventShooters {
 		eventShooters[shooterID].ID = shooterID
 	}
@@ -21,107 +20,15 @@ func scoreboard(url string) Page {
 	var sortByRange string
 	if event.SortScoreboard != "" {
 		sortByRange = event.SortScoreboard
-	} else if len(event.Ranges) >= 1 {
+	} else if len(event.Ranges) > 0 {
 		sortByRange = "0"
 	}
 
+	//TODO eventually remove this!
 	//Add shooter ids to the shooter objects
 	event.Shooters = addShooterIDsToShooterObjects(event.Shooters)
 
-	if sortByRange != "" {
-		//Closures that order the Change structure.
-		grade := func(c1, c2 *EventShooter) bool {
-			return c1.Grade < c2.Grade
-		}
-		total := func(c1, c2 *EventShooter) bool {
-			return c1.Scores[sortByRange].Total > c2.Scores[sortByRange].Total
-		}
-		centres := func(c1, c2 *EventShooter) bool {
-			return c1.Scores[sortByRange].Centres > c2.Scores[sortByRange].Centres
-		}
-		cb := func(c1, c2 *EventShooter) bool {
-			return c1.Scores[sortByRange].CountBack > c2.Scores[sortByRange].CountBack
-		}
-		orderedBy(grade, total, centres, cb).Sort(event.Shooters)
-	}
-
-	previousGrade := -1
-	shooterQty := len(event.Shooters)
-	var position, shouldBePosition int
-	var shootEqual, thisExists, nextExists bool
-	var positionEqual string
-	var nextShooter EventShooter
-	var thisShooterScore, nextShooterScore Score
-
-	//Loop through all the shooters
-	for index, shooter := range event.Shooters {
-		shouldBePosition++
-		positionEqual = ""
-		if shooter.Grade != previousGrade {
-			previousGrade = shooter.Grade
-			//reset position back to 1st when the grade has changed
-			position = 1
-			shouldBePosition = 1
-			shootEqual = false
-
-			//Add the grade separator row in the table
-			event.Shooters[index].GradeSeparator = true
-		} else if !shootEqual {
-			position = shouldBePosition
-		}
-
-		if shootEqual {
-			positionEqual = "="
-			shootEqual = false
-		}
-
-		//TODO possibly move all this shoot off code into the sub process save score calculations
-		thisShooterScore, thisExists = shooter.Scores[sortByRange]
-		//Calculate if there is a shoot off needed for the next shooter
-		if index+1 < shooterQty {
-			//Cache the next shooters details
-			nextShooter = event.Shooters[index+1]
-			nextShooterScore, nextExists = nextShooter.Scores[sortByRange]
-
-			//Check if the scores are exactly the same
-			thisShooterScore.Shots = ""
-			nextShooterScore.Shots = ""
-			if shooter.Grade == nextShooter.Grade && thisShooterScore == nextShooterScore {
-				positionEqual = "="
-				shootEqual = true
-				if thisShooterScore.Total != 0 {
-					event.Shooters[index].Warning = legendShootOff
-					event.Shooters[index+1].Warning = legendShootOff
-					//Set the colour for the cell as well
-					thisShooterScore.Warning = legendShootOff
-					if thisExists {
-						//TODO set to default somehow?
-						shooter.Scores[sortByRange] = thisShooterScore
-					} else {
-						event.Shooters[index].Scores = make(map[string]Score)
-						event.Shooters[index].Scores[sortByRange] = Score{
-							Warning: legendShootOff,
-						}
-					}
-					nextShooterScore.Warning = legendShootOff
-					if nextExists {
-						//TODO set to default somehow?
-						event.Shooters[index+1].Scores[sortByRange] = nextShooterScore
-					} else {
-						event.Shooters[index+1].Scores = make(map[string]Score)
-						event.Shooters[index+1].Scores[sortByRange] = Score{
-							Warning: legendShootOff,
-						}
-					}
-				}
-			}
-		}
-
-		//generate the shooters position e.g. "=33rd"
-		if position > 0 {
-			event.Shooters[index].Position = fmt.Sprintf("%v%v", positionEqual, ordinal(position))
-		}
-	}
+	sortShooters(sortByRange).Sort(event.Shooters)
 
 	intSortByRange, intErr := strconv.Atoi(sortByRange)
 	if intErr != nil {
@@ -144,46 +51,4 @@ func scoreboard(url string) Page {
 			"SortScoreboard": generateForm(eventSettingsSortScoreboard(event)),
 		},
 	}
-}
-
-type lessFunc func(p1, p2 *EventShooter) bool
-
-type multiSorter struct {
-	changes []EventShooter
-	less    []lessFunc
-}
-
-func (ms *multiSorter) Sort(changes []EventShooter) {
-	ms.changes = changes
-	sort.Sort(ms)
-}
-
-func orderedBy(less ...lessFunc) *multiSorter {
-	return &multiSorter{
-		less: less,
-	}
-}
-
-func (ms *multiSorter) Len() int {
-	return len(ms.changes)
-}
-
-func (ms *multiSorter) Swap(i, j int) {
-	ms.changes[i], ms.changes[j] = ms.changes[j], ms.changes[i]
-}
-
-func (ms *multiSorter) Less(i, j int) bool {
-	p, q := &ms.changes[i], &ms.changes[j]
-	// Try all but the last comparison.
-	var k int
-	for k = 0; k < len(ms.less)-1; k++ {
-		less := ms.less[k]
-		switch {
-		case less(p, q):
-			return true
-		case less(q, p):
-			return false
-		}
-	}
-	return ms.less[k](p, q)
 }

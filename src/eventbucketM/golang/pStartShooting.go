@@ -90,11 +90,11 @@ func startShootingData(data string, showAll bool) Page {
 		}
 		for i := 1; i <= sightersQty; i++ {
 			availableClassShots[index] = append(availableClassShots[index], fmt.Sprintf("S%v", i))
-			htmlAvailableClassShots[index] += fmt.Sprintf("<td>S%v</td>", i)
+			htmlAvailableClassShots[index] += fmt.Sprintf("<td>S%v", i)
 		}
 		for i := 1; i <= shotsQty; i++ {
 			availableClassShots[index] = append(availableClassShots[index], fmt.Sprintf("%v", i))
-			htmlAvailableClassShots[index] += fmt.Sprintf("<td>%v</td>", i)
+			htmlAvailableClassShots[index] += fmt.Sprintf("<td>%v", i)
 		}
 	}
 
@@ -132,14 +132,8 @@ func startShootingData(data string, showAll bool) Page {
 		break
 	}
 
-	//Sort the list of shooters by grade only
-	grade := func(c1, c2 *EventShooter) bool {
-		return c1.Grade < c2.Grade
-	}
-	name := func(c1, c2 *EventShooter) bool {
-		return c1.FirstName < c2.FirstName
-	}
-	orderedBy(grade, name).Sort(shooterList)
+	//Sort the list of shooters by grade, then first name
+	orderShooters("", sorterGrade, sorterFirstName)
 
 	linkName := "All"
 	pageLink := urlStartShootingAll
@@ -177,12 +171,16 @@ func startShootingData(data string, showAll bool) Page {
 	}
 }
 
+func hasShootFinished(shots string, grade int) bool {
+	classSettings := defaultClassSettings[grade2Class(grade)]
+	return len(strings.Replace(shots[classSettings.SightersQty:], "-", "", -1)) == classSettings.ShotsQty
+}
+
 func updateShotScores2(w http.ResponseWriter, r *http.Request) {
 	validatedValues := checkForm(startShootingForm("", "", "", "").inputs, r)
-	eventID := validatedValues["eventid"]
 	rangeID, rangeErr := strconv.Atoi(validatedValues["rangeid"])
 	shooterID, shooterErr := strconv.Atoi(validatedValues["shooterid"])
-	event, eventErr := getEvent(eventID)
+	event, eventErr := getEvent(validatedValues["eventid"])
 
 	//Check the score can be saved
 	if rangeErr != nil || shooterErr != nil || eventErr != nil || rangeID >= len(event.Ranges) || event.Ranges[rangeID].Locked || event.Ranges[rangeID].IsAgg {
@@ -193,12 +191,6 @@ func updateShotScores2(w http.ResponseWriter, r *http.Request) {
 	//Calculate the score based on the shots given
 	newScore := calcTotalCentres(validatedValues["shots"], grades()[event.Shooters[shooterID].Grade].ClassID)
 
-	//Update the shooters scores so the aggregates are added up properly
-	if event.Shooters[shooterID].Scores == nil {
-		event.Shooters[shooterID].Scores = make(map[string]Score)
-	}
-	event.Shooters[shooterID].Scores[validatedValues["rangeid"]] = newScore
-
 	//Return the score to the client
 	if newScore.Centres > 0 {
 		fmt.Fprintf(w, "%v<sup>%v</sup>", newScore.Total, newScore.Centres)
@@ -206,23 +198,7 @@ func updateShotScores2(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "%v", newScore.Total)
 	}
 
-	//TODO possibly save the imediatly but calculate the shooters aggregates after 8 seconds
-	//Save the score & work out if a shoot off is needed against another shooter
-	updateBson := M{dot(schemaSHOOTER, shooterID, rangeID): newScore}
-	shooterIDs := []int{shooterID}
-	//Add any linked shooters to this update
-	if event.Shooters[shooterID].LinkedID != nil {
-		shooterIDs = append(shooterIDs, *event.Shooters[shooterID].LinkedID)
-		updateBson[dot(schemaSHOOTER, event.Shooters[shooterID].LinkedID, rangeID)] = newScore
-	}
-	//Find all the aggs that this rangeID is in & update the scores
-	aggsFound := searchForAggs(event.Ranges, rangeID)
-	if len(aggsFound) > 0 {
-		for index, data := range calculateAggs(event.Shooters[shooterID].Scores, aggsFound, shooterIDs, event.Ranges) {
-			updateBson[index] = data
-		}
-	}
-	tableUpdateData(tblEvent, event.ID, updateBson)
+	go triggerScoreCalculation(newScore, rangeID, event.Shooters[shooterID], event)
 }
 
 //This function assumes all validation on input "shots" has at least been done!
@@ -250,18 +226,6 @@ func calcTotalCentres(shots string, classID int) Score {
 	}
 	return Score{Total: total, Centres: centres, Shots: shots, CountBack: countBack, Warning: warning}
 }
-
-//TODO off load the grade position and shoot off calculations into another process
-//TODO only calculate the grade positions once a shooter has finished the range
-/*	if light.value {
-	go func() {
-		flasherTicker = time.NewTicker(time.Second*1)
-		for _ = range flasherTicker.C {
-			light.toggle = !light.toggle
-			sendSingleProperty(index, light.toggle)
-		}
-	}()
-}*/
 
 func startShootingForm(eventID, rangeID, shooterID, shots string) Form {
 	temp1 := v8MaxIntegerID
