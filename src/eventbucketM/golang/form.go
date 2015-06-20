@@ -380,7 +380,6 @@ func generateForm(form Form) string {
 		} else if input.html == "submit" {
 			element += fmt.Sprintf("<button%v>%v</button>", attributes, input.inner)
 		} else if input.html != "" {
-			dump(input.html)
 			element += fmt.Sprintf("<%v%v>%v</%v>", input.html, attributes, input.inner, input.html)
 		}
 		if input.help != "" {
