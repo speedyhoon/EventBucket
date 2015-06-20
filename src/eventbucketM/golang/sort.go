@@ -212,11 +212,8 @@ func recalculateGradePositions(updates map[string]calculateGrade) {
 	for _, updateData := range updates {
 		//Only get the event when it is different
 		if updateData.eventID != previousEventID {
-			//dump("get event", updateData.eventID, previousEventID)
 			if updateRequired {
-				//dump("update required")
 				tableUpdateData(tblEvent, updateData.eventID, updateBson)
-				//				updateBson = M{}
 				updateRequired = false
 			}
 			updateBson = make(M)
@@ -239,7 +236,6 @@ func recalculateGradePositions(updates map[string]calculateGrade) {
 		shootEqual = false
 		positionEqual = ""
 		for index, shooter := range event.Shooters {
-			//dump("shooterID", shooter.ID)
 			if shooter.Grade == updateData.gradeID {
 				shouldBePosition++
 				if !shootEqual {
@@ -258,7 +254,6 @@ func recalculateGradePositions(updates map[string]calculateGrade) {
 				}
 				positionOrdinal = positionEqual + ordinal(position)
 				if shooter.Scores[updateData.strRangeID].Total != 0 && shooter.Scores[updateData.strRangeID].Centres != 0 && (shooter.Scores[updateData.strRangeID].Position != position || shooter.Scores[updateData.strRangeID].Ordinal != positionOrdinal) {
-					//dump("ordinal ", positionOrdinal)
 					//					temp := dot("^^schemaSHOOTER^^", shooter.ID, updateData.rangeID, "o")
 					/*if _, ok := updateBson[temp]; !ok {
 						updateBson = make(M)
@@ -269,7 +264,6 @@ func recalculateGradePositions(updates map[string]calculateGrade) {
 					updateBson[dot("^^schemaSHOOTER^^", shooter.ID, updateData.rangeID, "p")] = position
 				}
 				/*if shooter.Scores[updateData.strRangeID].Position != position{
-					dump("position ", positionOrdinal)
 					temp := dot("^^schemaSHOOTER^^", shooter.ID, updateData.rangeID)
 					if _, ok := updateBson[temp]; !ok {
 						updateBson = make(M)
