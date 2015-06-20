@@ -113,9 +113,11 @@ func searchShooterGrade(w http.ResponseWriter, r *http.Request) {
 	shooter := getNraaShooter(shooterID) //TODO change to getShooter after it is moved
 	output += fmt.Sprintf("%v %v", shooter.FirstName, shooter.Surname)
 	if len(shooter.Grades) == 0 {
+		//TODO put the div tag in the html template
 		output += "<div>No grades listed</div>"
 	}
 	for _, grade := range shooter.Grades {
+		//TODO remove the div tag and just join the text with <br>'s
 		output += fmt.Sprintf("<div>Class: %v, Grade: %v, Threshold: %v</div>", grade.Class, grade.Grade, grade.Threshold)
 	}
 	fmt.Fprint(w, output)
@@ -132,8 +134,4 @@ func searchShooterGradeForm() Form {
 			},
 		},
 	}
-}
-
-func updateShooterList(w http.ResponseWriter, r *http.Request) {
-
 }
