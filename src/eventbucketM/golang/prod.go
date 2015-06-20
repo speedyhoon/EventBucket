@@ -3,16 +3,15 @@
 package main
 
 import (
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-	"os/exec"
 	"strings"
 )
 
 var (
-	Info    = log.New(ioutil.Discard, "INFO:    ", log.Lshortfile)
+	//Trace   = log.New(ioutil.Discard, "TRACE:   ", log.Lshortfile)
+	Info    = log.New(os.Stdout, "INFO:    ", log.Lshortfile)
 	Warning = log.New(os.Stdout, "WARNING: ", log.Lshortfile)
 )
 
@@ -52,18 +51,6 @@ func loadHTM(pageName string) string {
 	return ""
 }
 
-func dump(input ...interface{}) {
-	for _, print := range input {
-		Error.Printf("%v", print)
-	}
-}
-
-func export(input ...interface{}) {
-	for _, print := range input {
-		Error.Printf("%#v", print) //can copy and declare new variable with it. Most ouput available
-	}
-}
-
 func serveDir(contentType string) {
 	http.Handle(contentType,
 		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -73,7 +60,7 @@ func serveDir(contentType string) {
 				return
 			}
 			httpHeaders(w, []string{"expire", "cache", contentType, "public"})
-			gzipper(http.FileServer(http.Dir("^^dirRoot^^")), w, r)
+			gzipper(http.FileServer(http.Dir(dirRoot)), w, r)
 		}))
 }
 
@@ -85,10 +72,8 @@ func serveHtml(h http.HandlerFunc) http.HandlerFunc {
 }
 
 func main() {
+	go startDatabase(true)
 	start()
-	url := "http://localhost"
-	if exec.Command(`rundll32.exe`, "url.dll,FileProtocolHandler", url).Start() != nil {
-		Warning.Printf("Unable to open a web browser for " + url)
-	}
+	Info.Println("EventBucket server starting...")
 	Warning.Println("ListenAndServe: %v", http.ListenAndServe(":80", nil))
 }
