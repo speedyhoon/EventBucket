@@ -10,7 +10,6 @@ import (
 )
 
 func start() {
-	go startDatabase()
 	serveDir(dirJS)
 	serveDir(dirCSS)
 	serveDir(dirPNG)
@@ -142,6 +141,7 @@ func httpHeaders(w http.ResponseWriter, setHeaders []string) {
 	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'") //TODO remove unsafe inline when start shooting gets its settings a different way
 	w.Header().Set("X-Frame-Options", "DENY")                                                                                                                                       //developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options
 	headers := map[string][2]string{
+		//TODO possibly set the time once every 3 minutes?
 		"expire":    {"Expires", time.Now().UTC().AddDate(1, 0, 0).Format(time.RFC1123)}, //RESEARCH should it return GMT time?  //Expiry date is in 1 year, 0 months & 0 days in the future
 		"cache":     {"Vary", "Accept-Encoding"},
 		"public":    {"Cache-Control", "public"},
