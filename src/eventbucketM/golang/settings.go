@@ -40,11 +40,12 @@ const (
 	urlUpdateIsPrizeMeet    = "/updateIsPrizeMeet"
 	urlClubMoundInsert      = "/clubMoundInsert/"
 	urlClubDetailsUpsert    = "/clubDetailsUpsert/"
-	urlUpdateShooterList    = "/updateShooterList"
 	urlEventShotsNSighters  = "/eventShotsNSighters/"
+	//urlUpdateShooterList    = "/updateShooterList"
 	//urlClubMoundUpdate      = "/clubMoundUpdate/"
 	//urlChampInsert          = "/champInsert"
 	//urlRangeReport          = "/rangeReport/"
+	urlMakeShooterList = "/makeShooterList/"
 
 	//Global program settings
 	versionNumber    = "^^VersionNumber^^"
@@ -57,6 +58,7 @@ const (
 	idCharset      = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!*()_-."
 	idCharsetRegex = `\w~!\*\(\)\-\.`
 	//Folder structure
+	dirRoot = "^^dirRoot^^"
 	dirCSS  = "^^dirCSS^^"
 	dirJPEG = "^^dirJPEG^^"
 	dirJS   = "^^dirJS^^"
