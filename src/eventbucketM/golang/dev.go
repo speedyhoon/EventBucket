@@ -18,9 +18,8 @@ import (
 )
 
 const (
-	newRelic           = false //Send logging data to New Relic
-	urlRandomData      = "/randomData/"
-	urlMakeShooterList = "/makeShooterList/"
+	newRelic      = false //Send logging data to New Relic
+	urlRandomData = "/randomData/"
 )
 
 var (
@@ -39,11 +38,11 @@ func main() {
 		agent.NewrelicLicense = "abf730f5454a9a1e78af7a75bfe04565e9e0d3f1"
 		agent.Run()
 	}
+	go startDatabase(false)
 	start()
 	post(urlRandomData, randomData)
 	//Nraa
 	post(urlMakeShooterList, postVia(nraaStartUpdateShooterList, urlShooters))
-	Info.Println("ready to go")
 	Warning.Println("ListenAndServe: %v", http.ListenAndServe(":81", nil))
 }
 
@@ -57,7 +56,7 @@ func serveDir(contentType string) {
 				return
 			}
 			httpHeaders(w, []string{"expire", "cache", contentType, "public"})
-			gzipper(http.FileServer(http.Dir("^^dirRoot^^")), w, r)
+			gzipper(http.FileServer(http.Dir(dirRoot)), w, r)
 		})))
 }
 

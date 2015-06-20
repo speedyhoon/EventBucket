@@ -27,7 +27,7 @@ const (
 
 var conn *mgo.Database
 
-func startDatabase() {
+func startDatabase(openBrowser bool) {
 	databasePath := os.Getenv("ProgramData") + "/EventBucket"
 	if !dirExists(databasePath) {
 		Error.Printf("Can't find folder %v", databasePath)
@@ -55,11 +55,10 @@ func startDatabase() {
 	dump(stderr)
 	fmt.Println("Result: stdn out")
 	dump(stdout)*/
-	//TODO is a new goroutine really needed for DB call?
-	go db()
+	go db(openBrowser)
 }
 
-func db() {
+func db(openBrowser bool) {
 	session, err := mgo.Dial("localhost:38888")
 	if err != nil {
 		//TODO it would be better to output the mongodb connection error
@@ -71,6 +70,15 @@ func db() {
 	conn = session.DB("local")
 	//TODO defer closing the session isn't working
 	//defer session.Close()
+
+	if openBrowser {
+		//Wait until the database has a connection & the http server is started before opening a browser
+		url := "http://localhost"
+		if exec.Command(`rundll32.exe`, "url.dll,FileProtocolHandler", url).Start() != nil {
+			Warning.Printf("Unable to open a web browser for " + url)
+		}
+	}
+	go startTicker()
 }
 
 func getClubs() []Club {
@@ -317,23 +325,46 @@ func eventShooterInsert(eventID string, shooter EventShooter) {
 }
 
 func eventTotalScoreUpdate(eventID string, rangeID int, shooterIDs []int, score Score) Event {
-	updateSetter := make(M)
-	for _, shooterID := range shooterIDs {
-		updateSetter[dot(schemaSHOOTER, shooterID, rangeID)] = score
-	}
-	change := mgo.Change{
-		Upsert: true,
-		Update: M{
-			"$set": updateSetter,
-		},
-	}
 	var event Event
-	_, err := conn.C(tblEvent).FindId(eventID).Apply(change, &event)
-	//TODO better error handling would be nice
-	if err != nil {
-		Warning.Println(err)
+	if conn != nil {
+		updateSetter := make(M)
+		for _, shooterID := range shooterIDs {
+			updateSetter[dot(schemaSHOOTER, shooterID, rangeID)] = score
+		}
+		change := mgo.Change{
+			Upsert: true,
+			Update: M{
+				"$set": updateSetter,
+			},
+		}
+		_, err := conn.C(tblEvent).FindId(eventID).Apply(change, &event)
+		//TODO better error handling would be nice
+		if err != nil {
+			Warning.Println(err)
+		}
 	}
 	return event
+}
+
+func eventTotalScoreUpdate2(eventID string, rangeID int, shooterIDs []int, score Score) {
+	var event Event
+	if conn != nil {
+		updateSetter := make(map[string]interface{})
+		for _, shooterID := range shooterIDs {
+			updateSetter[dot(schemaSHOOTER, shooterID, rangeID)] = score
+		}
+		_, err := conn.C(tblEvent).FindId(eventID).Apply(
+			mgo.Change{
+				Upsert: true,
+				Update: map[string]interface{}{
+					"$set": updateSetter,
+				},
+			}, &event)
+		//TODO better error handling would be nice
+		if err != nil {
+			Warning.Println(err)
+		}
+	}
 }
 
 func eventUpdateRangeData(eventID string, updateData M) {
@@ -364,11 +395,15 @@ func eventUpsertData(eventID string, data M) {
 }
 
 func tableUpdateData(collectionName, documentID string, data M) {
-	change := mgo.Change{
-		Upsert: false,
-		Update: M{"$set": data},
+	if conn != nil {
+		_, err := conn.C(collectionName).FindId(documentID).Apply(mgo.Change{
+			Upsert: true,
+			Update: M{"$set": data},
+		}, make(M))
+		if err != nil {
+			Warning.Printf("bugger! %v", err)
+		}
 	}
-	conn.C(collectionName).FindId(documentID).Apply(change, make(M))
 }
 func upsertDoc(collection string, ID interface{}, document interface{}) {
 	_, err := conn.C(collection).UpsertId(ID, document)
