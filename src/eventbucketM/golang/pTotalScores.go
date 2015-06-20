@@ -70,14 +70,6 @@ func totalScoresData(data string, showAll bool) Page {
 		}
 	}
 
-	//Sort the list of shooters by grade only
-	grade := func(c1, c2 *EventShooter) bool {
-		return c1.Grade < c2.Grade
-	}
-	name := func(c1, c2 *EventShooter) bool {
-		return c1.FirstName < c2.FirstName
-	}
-
 	var shooterList2 []EventShooter
 	var shootersForms2 []string
 	for shooterID, shooterData2 := range event.Shooters {
@@ -95,7 +87,7 @@ func totalScoresData(data string, showAll bool) Page {
 		}
 	}
 
-	orderedBy(grade, name).Sort(shooterList2)
+	orderShooters("", sorterGrade, sorterFirstName)
 
 	return Page{
 		TemplateFile: "total-scores",
@@ -107,7 +99,6 @@ func totalScoresData(data string, showAll bool) Page {
 			"RangeName":  currentRange.Name,
 			"RangeID":    rangeID,
 			"ListRanges": event.Ranges,
-			//"ListShooters": event.Shooters,
 			"ListShooters":    shooterList2,
 			"menu":            eventMenu(eventID, event.Ranges, urlTotalScores, event.IsPrizeMeet),
 			"FormTotalScores": shootersForms2,
@@ -117,7 +108,6 @@ func totalScoresData(data string, showAll bool) Page {
 }
 
 func updateTotalScores(w http.ResponseWriter, r *http.Request) {
-	//	validatedValues := checkForm(totalScoresForm("", "", "", "").inputs, r) //totalScoresForm(eventID, rangeID, shooterID, total, centres
 	validatedValues, passed := valid8(totalScoresForm("", "", -1, "").inputs, r)
 	if passed {
 		eventID := validatedValues["eventid"].(string)
@@ -151,7 +141,7 @@ func searchForAggs(ranges []Range, rangeID int) []int {
 	for indexRangeID, rangeObj := range ranges {
 		if len(rangeObj.Aggregate) > 0 {
 			for _, strRangeID := range strings.Split(rangeObj.Aggregate, ",") {
-				foundRangeID, err = strconv.Atoi(fmt.Sprintf("%v", strRangeID))
+				foundRangeID, err = strconv.Atoi(strRangeID)
 				if err == nil && foundRangeID == rangeID {
 					aggsFound = append(aggsFound, indexRangeID)
 				}
@@ -215,26 +205,12 @@ func totalScoresForm(eventID, rangeID string, shooterID int, score string) Form 
 			{
 				name: "score",
 				html: "tel",
-				//label:   "Total",
 				required: true,
 				value:    score,
 				//TODO add min and max for validation on fclass and target
-				//size: 4,
-				//min: 0,
-				//step: 0.01,
-				//max: 50,
 				pattern: "[0-9]{1,2}(.[0-9]{1,2}){0,1}",
-				//},
-				//"centres":Inputs{
-				//	html:      "number",
-				//	label:   "Centres",
-				//	required: true,
-				//	value: centres,
-				//	size: 4,
-				//	min: 0,
-				//	max: 10,
-				//	//TODO add html5 validation for centres based on total.
-				//	//TODO add min = 0, max = parseInt(  total / max(class_valid_shots) )
+				//TODO add html5 validation for centres based on total.
+				//TODO add min = 0, max = parseInt(  total / max(class_valid_shots) )
 			}, {
 				name: "shooterid",
 				html: "hidden",
