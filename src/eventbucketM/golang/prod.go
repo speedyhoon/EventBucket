@@ -74,6 +74,7 @@ func serveHtml(h http.HandlerFunc) http.HandlerFunc {
 func main() {
 	go startDatabase(true)
 	start()
+	//TODO move opening browser code back here & add code to wait for the server to connect to the DB & finish loading the http server
 	Info.Println("EventBucket server starting...")
 	Warning.Println("ListenAndServe: %v", http.ListenAndServe(":80", nil))
 }
