@@ -275,7 +275,6 @@ func recalculateGradePositions(updates map[string]calculateGrade) {
 		}
 	}
 	if updateRequired {
-		//export("update required", updateBson)
 		tableUpdateData(tblEvent, event.ID, updateBson)
 	}
 	Info.Println("finished grade recalculation")
