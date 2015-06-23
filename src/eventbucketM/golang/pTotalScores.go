@@ -94,11 +94,11 @@ func totalScoresData(data string, showAll bool) Page {
 		Title:        "Total Scores" + titleAll,
 		Theme:        templateAdmin,
 		Data: M{
-			"LinkToPage": totalScoresLink,
-			"EventID":    eventID,
-			"RangeName":  currentRange.Name,
-			"RangeID":    rangeID,
-			"ListRanges": event.Ranges,
+			"LinkToPage":      totalScoresLink,
+			"EventID":         eventID,
+			"RangeName":       currentRange.Name,
+			"RangeID":         rangeID,
+			"ListRanges":      event.Ranges,
 			"ListShooters":    shooterList2,
 			"menu":            eventMenu(eventID, event.Ranges, urlTotalScores, event.IsPrizeMeet),
 			"FormTotalScores": shootersForms2,
@@ -203,8 +203,8 @@ func totalScoresForm(eventID, rangeID string, shooterID int, score string) Form 
 		action: urlUpdateTotalScores,
 		inputs: []Inputs{
 			{
-				name: "score",
-				html: "tel",
+				name:     "score",
+				html:     "tel",
 				required: true,
 				value:    score,
 				//TODO add min and max for validation on fclass and target
