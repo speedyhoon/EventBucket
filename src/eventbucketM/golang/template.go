@@ -61,9 +61,10 @@ func generator(w http.ResponseWriter, fillin string, viewController Page) {
 			}
 			return template.HTMLAttr("")
 		},
-		"CSSclass": func(className1, className2 interface{}) template.HTMLAttr {
-			if className1 != "" && className2 != "" {
-				return template.HTMLAttr(fmt.Sprintf(" class=%v%v", className1, className2))
+		"ElementClass": func(className1, className2 interface{}) template.HTMLAttr {
+			className3 := fmt.Sprintf("%v", className2)
+			if className1 != "" && className3 != "" && className3 != "0" {
+				return template.HTMLAttr(fmt.Sprintf(" class=%v%v", className1, className3))
 			}
 			return template.HTMLAttr("")
 		},
