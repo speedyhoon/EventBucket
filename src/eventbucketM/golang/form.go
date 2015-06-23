@@ -583,7 +583,7 @@ func drawOnlyOptions(options []Option) string {
 	}
 	if form.table {
 		formElements[0] = fmt.Sprintf("<form%v action=%v method=post>%v</form>", formID, addQuotes(form.action), formElements[0])
-		output = "<tr><td>" + strings.Join(formElements, "</td><td>") + "</td></tr>"
+		output = "<tr><td>" + strings.Join(formElements, "<td>")
 		return output
 	}
 
