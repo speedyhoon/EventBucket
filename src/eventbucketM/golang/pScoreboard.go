@@ -13,6 +13,18 @@ func addShooterIDsToShooterObjects(eventShooters []EventShooter) []EventShooter 
 	return eventShooters
 }
 
+func addGradeSeparatorToShooterObject(eventShooters []EventShooter) []EventShooter {
+	//Add a boolean field to each shooter in a list of ordered shooters and is true for the first shooter that has a different grade than the last
+	var previousShooterGrade int
+	for shooterID := range eventShooters {
+		if eventShooters[shooterID].Grade != previousShooterGrade {
+			eventShooters[shooterID].GradeSeparator = true
+			previousShooterGrade = eventShooters[shooterID].Grade
+		}
+	}
+	return eventShooters
+}
+
 func scoreboard(url string) Page {
 	event, _ := getEvent(strings.Split(url, "/")[0])
 
@@ -29,6 +41,8 @@ func scoreboard(url string) Page {
 	event.Shooters = addShooterIDsToShooterObjects(event.Shooters)
 
 	sortShooters(sortByRange).Sort(event.Shooters)
+
+	event.Shooters = addGradeSeparatorToShooterObject(event.Shooters)
 
 	intSortByRange, intErr := strconv.Atoi(sortByRange)
 	if intErr != nil {
