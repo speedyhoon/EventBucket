@@ -230,8 +230,8 @@ func totalScoresForm(eventID, rangeID string, shooterID int, score string) Form 
 	}
 }
 
-func isTotalCentresCorrect(total, centres, grade int)bool{
+func isTotalCentresCorrect(total, centres, grade int) bool {
 	//checks if the centres specified can be within the total score
 	//50 >= 10 * 5, 46 >= 9 * 5, 40 >= 8 * 5, 35 >= 7 * 5, etc.
-	return total >= centres * grades()[grade].Settings.Maximum.Centres
+	return total >= centres*grades()[grade].settings.Maximum.Centres
 }

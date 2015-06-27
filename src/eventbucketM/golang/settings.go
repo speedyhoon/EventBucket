@@ -230,40 +230,26 @@ func isScoreHighestPossibleScore(classID, numberOdShots, total, centres int) boo
 
 // Grade is exported
 type Grade struct {
-	Name, LongName, ClassName string
-	ClassID                   int
-	Settings                  ClassSettings
+	name, longName, className string
+	classID                   int
+	settings                  ClassSettings
 }
 
 func gradeList() []int {
 	return []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
 }
-func grade2Class(grade int) int {
-	return []Grade{
-		0: {ClassID: 0},
-		1: {ClassID: 0},
-		2: {ClassID: 0},
-		3: {ClassID: 1},
-		4: {ClassID: 1},
-		5: {ClassID: 1},
-		6: {ClassID: 1},
-		7: {ClassID: 2},
-		8: {ClassID: 2},
-		9: {ClassID: 1},
-	}[grade].ClassID
-}
 func grades() []Grade {
 	return []Grade{
-		0: {Settings: defaultClassSettings[0], ClassID: 0, Name: "A", ClassName: "Target", LongName: "Target A"},
-		1: {Settings: defaultClassSettings[0], ClassID: 0, Name: "B", ClassName: "Target", LongName: "Target B"},
-		2: {Settings: defaultClassSettings[0], ClassID: 0, Name: "C", ClassName: "Target", LongName: "Target C"},
-		3: {Settings: defaultClassSettings[1], ClassID: 1, Name: "FA", ClassName: "F Class", LongName: "F Class A"},
-		4: {Settings: defaultClassSettings[1], ClassID: 1, Name: "FB", ClassName: "F Class", LongName: "F Class B"},
-		5: {Settings: defaultClassSettings[1], ClassID: 1, Name: "F Open", ClassName: "F Class", LongName: "F Class Open"},
-		6: {Settings: defaultClassSettings[1], ClassID: 1, Name: "F/TR", ClassName: "F Class", LongName: "F/TR"},
-		7: {Settings: defaultClassSettings[2], ClassID: 2, Name: "Open", ClassName: "Match", LongName: "Match Open"},
-		8: {Settings: defaultClassSettings[2], ClassID: 2, Name: "Reserve", ClassName: "Match", LongName: "Match Reserve"},
-		9: {Settings: defaultClassSettings[1], ClassID: 1, Name: "Rifle", ClassName: "303", LongName: "303 Rifle"},
+		0: {settings: defaultClassSettings[0], classID: 0, name: "A", className: "Target", longName: "Target A"},
+		1: {settings: defaultClassSettings[0], classID: 0, name: "B", className: "Target", longName: "Target B"},
+		2: {settings: defaultClassSettings[0], classID: 0, name: "C", className: "Target", longName: "Target C"},
+		3: {settings: defaultClassSettings[1], classID: 1, name: "FA", className: "F Class", longName: "F Class A"},
+		4: {settings: defaultClassSettings[1], classID: 1, name: "FB", className: "F Class", longName: "F Class B"},
+		5: {settings: defaultClassSettings[1], classID: 1, name: "F Open", className: "F Class", longName: "F Class Open"},
+		6: {settings: defaultClassSettings[1], classID: 1, name: "F/TR", className: "F Class", longName: "F/TR"},
+		7: {settings: defaultClassSettings[2], classID: 2, name: "Open", className: "Match", longName: "Match Open"},
+		8: {settings: defaultClassSettings[2], classID: 2, name: "Reserve", className: "Match", longName: "Match Reserve"},
+		9: {settings: defaultClassSettings[1], classID: 1, name: "Rifle", className: "303", longName: "303 Rifle"},
 	}
 }
 

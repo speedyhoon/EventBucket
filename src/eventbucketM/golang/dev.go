@@ -195,7 +195,7 @@ func randomDataShooterQty(shooterQty int, eventID string) {
 }
 
 func randomShooterScores(shooterGrade int) string {
-	shooterClass := grades()[shooterGrade].Settings
+	shooterClass := grades()[shooterGrade].settings
 	var shots string
 	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < shooterClass.SightersQty; i++ {

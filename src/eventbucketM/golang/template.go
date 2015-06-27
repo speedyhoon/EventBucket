@@ -38,16 +38,16 @@ func generator(w http.ResponseWriter, fillin string, viewController Page) {
 			return template.JS(x)
 		},
 		"CLASS": func(grade int) string {
-			return grades()[grade].ClassName
+			return grades()[grade].className
 		},
 		"CLASSLONG": func(grade int) string {
-			return grades()[grade].LongName
+			return grades()[grade].longName
 		},
 		"JSCLASS": func(grade int) string {
-			return fmt.Sprintf("%v", grades()[grade].ClassID)
+			return fmt.Sprintf("%v", grades()[grade].classID)
 		},
 		"GRADE": func(grade int) string {
-			return grades()[grade].Name
+			return grades()[grade].name
 		},
 		"Fieldset": func(title string) template.HTML {
 			return template.HTML(fieldSet(title))
