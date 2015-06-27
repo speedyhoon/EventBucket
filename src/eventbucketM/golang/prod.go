@@ -10,9 +10,10 @@ import (
 )
 
 var (
-	//Trace   = log.New(ioutil.Discard, "TRACE:   ", log.Lshortfile)
-	Info    = log.New(os.Stdout, "INFO:    ", log.Lshortfile)
-	Warning = log.New(os.Stdout, "WARNING: ", log.Lshortfile)
+	//TODO Move these to ONE location & make the build tags change these?
+	trace   = log.New(ioutil.Discard, "TRACE:   ", log.Lshortfile)
+	info    = log.New(os.Stdout, "INFO:    ", log.Lshortfile)
+	warning = log.New(os.Stderr, "ERROR: ", log.Lshortfile)
 )
 
 func loadHTM(pageName string) string {
@@ -75,6 +76,6 @@ func main() {
 	go startDatabase(true)
 	start()
 	//TODO move opening browser code back here & add code to wait for the server to connect to the DB & finish loading the http server
-	Info.Println("EventBucket server starting...")
-	Warning.Println("ListenAndServe: %v", http.ListenAndServe(":80", nil))
+	info.Println("EventBucket server starting...")
+	warning.Println("ListenAndServe: %v", http.ListenAndServe(":80", nil))
 }

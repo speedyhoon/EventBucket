@@ -36,7 +36,7 @@ func checkForm(options []Inputs, r *http.Request) map[string]string {
 						}*/
 					}
 				} else {
-					Warning.Printf("options[%v] is REQUIRED OR is not in array", option)
+					warning.Printf("options[%v] is REQUIRED OR is not in array", option)
 				}
 			}
 		}
@@ -122,14 +122,14 @@ func valid8(options []Inputs, r *http.Request) (M, bool) {
 					}
 				}
 			} else {
-				Warning.Printf("options[%v] is REQUIRED OR is not in array", option)
+				warning.Printf("options[%v] is REQUIRED OR is not in array", option)
 			}
 		}
 	}
 
 	if !testAllTrue(passedV8tion) {
 		//TODO output all these error messages to screen at once. A form might have several invalid fields at the same time
-		Info.Println("validation was not good")
+		info.Println("validation was not good")
 		return M{}, false
 	}
 
@@ -142,20 +142,20 @@ func valid8(options []Inputs, r *http.Request) (M, bool) {
 			if err == nil {
 				newValues["event"] = event
 			} else {
-				Warning.Printf("event with id '%v' doesn't exist", value2)
+				warning.Printf("event with id '%v' doesn't exist", value2)
 				return M{}, false
 			}
 		case "rangeid":
 			tempInt = value2.(int)
 			if tempInt < 0 || tempInt > len(event.Ranges) {
-				Warning.Printf("event with range id '%v' doesn't exist", value2)
+				warning.Printf("event with range id '%v' doesn't exist", value2)
 				return M{}, false
 			}
 		case "shooterid":
 			//TODO this might be better as a pointer to check that index is not null
 			tempInt = value2.(int)
 			if tempInt < 0 || tempInt > len(event.Shooters) {
-				Warning.Printf("event with shooter id '%v' doesn't exist", value2)
+				warning.Printf("event with shooter id '%v' doesn't exist", value2)
 				return M{}, false
 			}
 		}

@@ -31,7 +31,7 @@ func sorterFirstName(rangeID string, c1, c2 *EventShooter) bool {
 }
 func sorterShootOff(rangeID string, c1, c2 *EventShooter) bool {
 	if c1.Scores[rangeID].CountBack != "" && c1.Scores[rangeID].CountBack == c2.Scores[rangeID].CountBack {
-		Info.Printf("shooters scores are the same? c1= g:%v t:%v c:%v b:%v h:%v c2= g:%v t:%v c:%v b:%v h:%v", c1.Grade, c1.Scores[rangeID].Total, c1.Scores[rangeID].Centres, c1.Scores[rangeID].CountBack, c1.Scores[rangeID].ShootOff, c2.Grade, c2.Scores[rangeID].Total, c2.Scores[rangeID].Centres, c2.Scores[rangeID].CountBack, c2.Scores[rangeID].ShootOff)
+		info.Printf("shooters scores are the same? c1= g:%v t:%v c:%v b:%v h:%v c2= g:%v t:%v c:%v b:%v h:%v", c1.Grade, c1.Scores[rangeID].Total, c1.Scores[rangeID].Centres, c1.Scores[rangeID].CountBack, c1.Scores[rangeID].ShootOff, c2.Grade, c2.Scores[rangeID].Total, c2.Scores[rangeID].Centres, c2.Scores[rangeID].CountBack, c2.Scores[rangeID].ShootOff)
 		temp := c1.Scores[rangeID]
 		temp.Warning = legendShootOff
 		c1.Scores[rangeID] = temp
@@ -171,7 +171,7 @@ func startTicker() {
 }
 
 func recalculateShootersAggs(updates map[string]calculateShooter) {
-	Info.Println("executing recalculateShooterAggs")
+	info.Println("executing recalculateShooterAggs")
 	var event Event
 	var err error
 	var aggsFound []int
@@ -196,11 +196,11 @@ func recalculateShootersAggs(updates map[string]calculateShooter) {
 			}
 		}
 	}
-	Info.Println("finished recalculateShooterAggs")
+	info.Println("finished recalculateShooterAggs")
 }
 
 func recalculateGradePositions(updates map[string]calculateGrade) {
-	Info.Println("executing grade recalculation")
+	info.Println("executing grade recalculation")
 	var event Event
 	var err error
 	//	var aggsFound []int
@@ -277,5 +277,5 @@ func recalculateGradePositions(updates map[string]calculateGrade) {
 	if updateRequired {
 		tableUpdateData(tblEvent, event.ID, updateBson)
 	}
-	Info.Println("finished grade recalculation")
+	info.Println("finished grade recalculation")
 }

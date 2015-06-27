@@ -25,9 +25,9 @@ const (
 var (
 	agent = gorelic.NewAgent()
 	//Use io.Writer >>> ioutil.Discard to disable logging any output
-	Trace   = log.New(os.Stdout, "TRACE:   ", log.Lshortfile)
-	Info    = log.New(os.Stdout, "INFO:    ", log.Lshortfile)
-	Warning = log.New(os.Stderr, "WARNING: ", log.Lshortfile)
+	trace   = log.New(os.Stdout, "TRACE:   ", log.Lshortfile)
+	info    = log.New(os.Stdout, "INFO:    ", log.Lshortfile)
+	warning = log.New(os.Stderr, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
 	//shootersMakeList = generateForm(makeShooterList())
 )
 
@@ -43,7 +43,7 @@ func main() {
 	post(urlRandomData, randomData)
 	//Nraa
 	post(urlMakeShooterList, postVia(nraaStartUpdateShooterList, urlShooters))
-	Warning.Println("ListenAndServe: %v", http.ListenAndServe(":81", nil))
+	warning.Println("ListenAndServe: %v", http.ListenAndServe(":81", nil))
 }
 
 func serveDir(contentType string) {
@@ -70,35 +70,35 @@ func serveHtml(h http.HandlerFunc) http.HandlerFunc {
 
 func dump(input ...interface{}) {
 	for _, print := range input {
-		Trace.Printf("%v", print)
+		trace.Printf("%v", print)
 	}
 }
 
 /*func vardump(input ...interface{}) {
 	for _, print := range input {
-		Trace.Printf("\n%+v", print) //map field names included
+		trace.Printf("\n%+v", print) //map field names included
 	}
 }*/
 func export(input ...interface{}) {
 	for _, print := range input {
-		Trace.Printf("%#v", print) //can copy and declare new variable with it. Most ouput available
+		trace.Printf("%#v", print) //can copy and declare new variable with it. Most ouput available
 	}
 }
 
 /*func devModeTimeTrack(start time.Time, requestURI string) {
-	Trace.Printf("%s took %s", requestURI, time.Since(start))
+	trace.Printf("%s took %s", requestURI, time.Since(start))
 }
 
 func devModeCheckForm(check bool, message string) {
 	if !check {
-		Warning.Println(message)
+		warning.Println(message)
 	}
 }*/
 
 func loadHTM(pageName string) string {
 	bytes, err := ioutil.ReadFile(fmt.Sprintf(pathHTMLMinified, pageName))
 	if err != nil {
-		Error.Println(err)
+		warning.Println(err)
 	}
 	return string(bytes)
 }
@@ -127,7 +127,7 @@ func randomData(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if eventID == "" {
-		Error.Printf("Need a valid event ID to proceed.")
+		warning.Printf("Need a valid event ID to proceed.")
 	}
 	if shooterQty > 0 {
 		randomDataShooterQty(shooterQty, eventID)
@@ -183,7 +183,7 @@ func randomDataShooterQty(shooterQty int, eventID string) {
 	for counter < shooterQty {
 		//make some requests for x number of shooters
 		counter += 1
-		Trace.Printf("inserting shooter :%v", counter)
+		trace.Printf("inserting shooter :%v", counter)
 		eventShooterInsert(eventID, EventShooter{
 			FirstName: randomdata.FirstName(randomdata.RandomGender),
 			Surname:   randomdata.LastName(),

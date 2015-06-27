@@ -416,7 +416,7 @@ func drawOnlyOptions(options []Option) string {
 	for _, option := range options {
 		optionValue = fmt.Sprintf("%v", option.Value)
 		if optionValue == "" && option.Display == "" {
-			Info.Println("options contains an empty option")
+			info.Println("options contains an empty option")
 		}
 		output += "<option"
 		if option.Selected {
@@ -425,7 +425,7 @@ func drawOnlyOptions(options []Option) string {
 		if optionValue != option.Display {
 			output += " value=" + addQuotes(optionValue)
 		} else {
-			Info.Println("option.Value shouldn't be included when it has the save value as option.Display")
+			info.Println("option.Value shouldn't be included when it has the save value as option.Display")
 		}
 		output += ">" + option.Display
 	}
@@ -549,10 +549,10 @@ func drawOnlyOptions(options []Option) string {
 				}
 				if input.dataList && options != "" {
 					if input.id == "" {
-						Warning.Println("datalist needs a unique ID")
+						warning.Println("datalist needs a unique ID")
 					}
 					if input.html == "text" {
-						Warning.Println("datalist type should be search")
+						warning.Println("datalist type should be search")
 					}
 					attributes += " list=" + input.id
 				}

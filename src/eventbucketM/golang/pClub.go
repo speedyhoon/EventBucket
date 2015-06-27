@@ -127,7 +127,7 @@ func clubMoundInsert(w http.ResponseWriter, r *http.Request) {
 	//TODO instead return true/false as success/failure and on failure return a filled out form (bool, FormInvalid, error.Message as string)
 	//TODO FormInvalid.Inputs { Name: "", Html, "number, Message: "Number is greater than 9750", }...
 	if err != nil {
-		Error.Println("Unable to insert Mound")
+		warning.Println("Unable to insert Mound")
 		return
 	}
 	distance, _ := strconv.Atoi(validatedValues["distance"])
@@ -141,7 +141,7 @@ func clubMoundInsert(w http.ResponseWriter, r *http.Request) {
 	if moundID != "" {
 		newMound.ID, err = strconv.Atoi(moundID)
 		if err != nil {
-			Error.Println("Unable to update club")
+			warning.Println("Unable to update club")
 			return
 		}
 		for index, mound := range club.Mounds {
@@ -231,7 +231,7 @@ func clubDetailsUpsert(w http.ResponseWriter, r *http.Request) {
 	//TODO instead return true/false as success/failure and on failure return a filled out form (bool, FormInvalid, error.Message as string)
 	//TODO FormInvalid.Inputs { Name: "", Html, "number, Message: "Number is greater than 9750", }...
 	if err != nil {
-		Error.Println("Unable to update club details")
+		warning.Println("Unable to update club details")
 		http.Redirect(w, r, urlClubs, http.StatusSeeOther)
 		return
 	}

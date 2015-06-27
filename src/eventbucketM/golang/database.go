@@ -30,18 +30,18 @@ var conn *mgo.Database
 func startDatabase(openBrowser bool) {
 	databasePath := os.Getenv("ProgramData") + "/EventBucket"
 	if !dirExists(databasePath) {
-		Error.Printf("Can't find folder %v", databasePath)
+		warning.Printf("Can't find folder %v", databasePath)
 		os.Mkdir(databasePath, os.ModeDir)
 	}
 	cmd := exec.Command("^^DbArgs^^")
 	//TODO output mongodb errors/logs to stdOut
 	/*stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		Error.Println(err)
+		warning.Println(err)
 	}
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
-		Error.Println(err)
+		warning.Println(err)
 	}
 	err = cmd.Start()*/
 	cmd.Start()
@@ -62,7 +62,7 @@ func db(openBrowser bool) {
 	session, err := mgo.Dial("localhost:38888")
 	if err != nil {
 		//TODO it would be better to output the mongodb connection error
-		Error.Println("The database service is not available.", err)
+		warning.Println("The database service is not available.", err)
 		return
 	}
 	//session.SetMode(mgo.Eventual, true) //false = the consistency guarantees won't be reset
@@ -75,7 +75,7 @@ func db(openBrowser bool) {
 		//Wait until the database has a connection & the http server is started before opening a browser
 		url := "http://localhost"
 		if exec.Command(`rundll32.exe`, "url.dll,FileProtocolHandler", url).Start() != nil {
-			Warning.Printf("Unable to open a web browser for " + url)
+			warning.Printf("Unable to open a web browser for " + url)
 		}
 	}
 	fmt.Println("EventBucket server started.")
@@ -87,7 +87,7 @@ func getClubs() []Club {
 	if conn != nil {
 		err := conn.C(tblClub).Find(nil).All(&result)
 		if err != nil {
-			Warning.Println(err)
+			warning.Println(err)
 		}
 	}
 	return result
@@ -163,7 +163,7 @@ func nraaGetLastUpdated() string {
 func nraaUpsertShooter(shooter NraaShooter) {
 	_, err := conn.C(tblNraaShooter).UpsertId(shooter.SID, &shooter)
 	if err != nil {
-		Warning.Println(err)
+		warning.Println(err)
 	}
 }
 
@@ -175,7 +175,7 @@ func nraaUpdateGrading(shooterID int, grades map[string]NraaGrading) {
 		}
 		_, err := conn.C(tblNraaShooter).FindId(shooterID).Apply(change, make(M))
 		if err != nil {
-			Warning.Println(err)
+			warning.Println(err)
 		}
 	}
 }
@@ -187,7 +187,7 @@ func nraaLastUpdated() {
 			Update: M{"$set": M{"n": time.Now().Format("January 2, 2006")}},
 		}, make(M))
 		if err != nil {
-			Warning.Println(err)
+			warning.Println(err)
 		}
 	}
 }
@@ -211,7 +211,7 @@ func getNextID(collectionName string) (string, error) {
 		}
 		_, err := conn.C(tblAutoInc).FindId(collectionName).Apply(change, &result)
 		if err != nil {
-			Error.Println(err)
+			warning.Println(err)
 			return "", fmt.Errorf("Unable to generate the next ID: %v", err)
 		}
 		return idSuffix(result[schemaCounter].(int))
@@ -237,14 +237,14 @@ func idSuffix(ID int) (string, error) {
 func insertDoc(collectionName string, data interface{}) {
 	err := conn.C(collectionName).Insert(data)
 	if err != nil {
-		Error.Println(err)
+		warning.Println(err)
 	}
 }
 
 func updateDocByID(collectionName, docID string, data interface{}) {
 	err := conn.C(collectionName).UpdateId(docID, data)
 	if err != nil {
-		Error.Println(err)
+		warning.Println(err)
 	}
 }
 
@@ -341,7 +341,7 @@ func eventTotalScoreUpdate(eventID string, rangeID int, shooterIDs []int, score 
 		_, err := conn.C(tblEvent).FindId(eventID).Apply(change, &event)
 		//TODO better error handling would be nice
 		if err != nil {
-			Warning.Println(err)
+			warning.Println(err)
 		}
 	}
 	return event
@@ -363,7 +363,7 @@ func eventTotalScoreUpdate2(eventID string, rangeID int, shooterIDs []int, score
 			}, &event)
 		//TODO better error handling would be nice
 		if err != nil {
-			Warning.Println(err)
+			warning.Println(err)
 		}
 	}
 }
@@ -402,14 +402,14 @@ func tableUpdateData(collectionName, documentID string, data M) {
 			Update: M{"$set": data},
 		}, make(M))
 		if err != nil {
-			Warning.Printf("bugger! %v", err)
+			warning.Printf("bugger! %v", err)
 		}
 	}
 }
 func upsertDoc(collection string, ID interface{}, document interface{}) {
 	_, err := conn.C(collection).UpsertId(ID, document)
 	if err != nil {
-		Warning.Println(err)
+		warning.Println(err)
 	}
 }
 
@@ -418,7 +418,7 @@ func searchShooters(query M) []Shooter {
 	err := conn.C(tblNraaShooter).Find(query).All(&result) //TODO switch back to shooter
 	//	err := conn.C(tblShooter).Find(query).All(&result)
 	if err != nil {
-		Warning.Println(err)
+		warning.Println(err)
 	}
 	return result
 }

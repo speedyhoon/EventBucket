@@ -106,7 +106,7 @@ func generator(w http.ResponseWriter, fillin string, viewController Page) {
 	t := template.Must(html.Parse(fillin))
 	err := t.Execute(w, viewController.Data)
 	if err != nil {
-		Error.Println(err)
+		warning.Println(err)
 	}
 }
 

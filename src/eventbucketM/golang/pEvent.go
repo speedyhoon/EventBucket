@@ -70,7 +70,7 @@ func shooterListInsert(w http.ResponseWriter, r *http.Request) {
 
 	shooterID, err := strconv.Atoi(validatedValues["sid"])
 	if err != nil {
-		Error.Printf("shooter id %v is not valid", validatedValues["sid"])
+		warning.Printf("shooter id %v is not valid", validatedValues["sid"])
 		return
 	}
 	shooter := getShooterList(shooterID)

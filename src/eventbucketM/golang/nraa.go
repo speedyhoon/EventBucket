@@ -29,7 +29,7 @@ func nraaStartUpdateShooterList(w http.ResponseWriter, r *http.Request) {
 }
 
 func nraaUpdateShooterList() int {
-	Info.Println("Starting to download shooter list from website.")
+	info.Println("Starting to download shooter list from website.")
 	//TODO get the max number of pages <div class="pagination"><a href="http://www.nraa.com.au/nraa-shooter-list/?_p=524">Last</a>
 	var appendShooterIDs []int
 	var i int
@@ -46,7 +46,7 @@ func nraaUpdateShooterList() int {
 					case 1:
 						shooter.SID, err = strconv.Atoi(trimSpace)
 						if err != nil {
-							Error.Printf(fmt.Sprintf("Unable to convert shooter id %v to int", err))
+							warning.Printf(fmt.Sprintf("Unable to convert shooter id %v to int", err))
 							shooter = NraaShooter{} //Clear the NraaShooter so bad data doesn't get save to the DB
 							return
 						}
@@ -70,18 +70,19 @@ func nraaUpdateShooterList() int {
 
 	var findRows func(*html.Node)
 	findRows = func(n *html.Node) {
+		var id int
 		if n.Type == html.ElementNode && n.Data == "tr" {
 			for _, attr := range n.Attr {
 				if attr.Key == "data-shooter-id" && attr.Val != "" {
 					i = 0
-					id, err := strconv.Atoi(attr.Val)
+					id, err = strconv.Atoi(attr.Val)
 					if err == nil {
 						shooter = NraaShooter{NraaID: id}
 						findCells(n)
 						nraaUpsertShooter(shooter)
 						appendShooterIDs = append(appendShooterIDs, id)
 					} else {
-						Warning.Printf(fmt.Sprintf("Unable to convert shooter id %v to int", err))
+						warning.Printf(fmt.Sprintf("Unable to convert shooter id %v to int", err))
 					}
 				}
 			}
@@ -97,17 +98,17 @@ func nraaUpdateShooterList() int {
 		response, err = http.Get(fmt.Sprintf("%v%v", nraaShooterListURL, pageCount))
 		defer response.Body.Close()
 		if err != nil {
-			Warning.Printf("Unable to get page %v http.Get %v", pageCount, err) //TODO Improve the error framework with a helpful error message
+			warning.Printf("Unable to get page %v http.Get %v", pageCount, err) //TODO Improve the error framework with a helpful error message
 			break
 		}
 		htmlBody, err = html.Parse(response.Body)
 		if err != nil {
-			Warning.Printf("Unable to parse HTML response: %v", err)
+			warning.Printf("Unable to parse HTML response: %v", err)
 			break
 		}
 		findRows(htmlBody)
 	}
-	Info.Println("Finished downloading shooter list from website.")
+	info.Println("Finished downloading shooter list from website.")
 	nraaShooterGrades(appendShooterIDs)
 	nraaCopyShooters()
 	nraaLastUpdated()
@@ -115,14 +116,14 @@ func nraaUpdateShooterList() int {
 }
 
 func nraaShooterGrades(shooterIDList []int) {
-	Info.Println("Starting to download shooter grades from website.")
+	info.Println("Starting to download shooter grades from website.")
 	for _, shooterID := range shooterIDList {
 		//Query the server for shooterID's grades
 		response, err := http.Get(fmt.Sprintf("%v%v", nraaShooterListGradeURL, shooterID))
 		defer response.Body.Close()
 		if err != nil {
 			//Unable to contact the server
-			Warning.Printf("http.Get: %v", err)
+			warning.Printf("http.Get: %v", err)
 			break
 		}
 		//Decode the response to JSON
@@ -131,7 +132,7 @@ func nraaShooterGrades(shooterIDList []int) {
 		if err != nil || err == io.EOF {
 			//if err != nil : The JSON returned contained an error & couldn't be decoded
 			//if err == io.EOF : There was no JSON data in the returned string
-			Warning.Printf("json.Decode: %v", err)
+			warning.Printf("json.Decode: %v", err)
 			break
 		}
 		grades := map[string]NraaGrading{}
@@ -148,11 +149,11 @@ func nraaShooterGrades(shooterIDList []int) {
 		}
 		nraaUpdateGrading(shooterID, grades)
 	}
-	Info.Println("Finished downloading shooter grades from website.")
+	info.Println("Finished downloading shooter grades from website.")
 }
 
 func nraaCopyShooters() int {
-	Info.Println("Started inserting new shooters.")
+	info.Println("Started inserting new shooters.")
 	counter := 0
 	for _, nShooter := range getShooterLists() {
 		shooter := getShooterList(nShooter.SID)
@@ -161,6 +162,6 @@ func nraaCopyShooters() int {
 			counter++
 		}
 	}
-	Info.Println("Finished inserting new shooters.")
+	info.Println("Finished inserting new shooters.")
 	return counter
 }
