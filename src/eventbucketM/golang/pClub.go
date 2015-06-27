@@ -159,6 +159,10 @@ func clubMoundInsert(w http.ResponseWriter, r *http.Request) {
 }
 
 func clubDetailsForm(club Club) Form {
+	latitudeMin := -90
+	latitudeMax := 90
+	longitudeMin := -180
+	longitudeMax := 180
 	return Form{
 		action: urlClubDetailsUpsert,
 		title:  "Club Details",
