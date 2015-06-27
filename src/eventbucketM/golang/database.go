@@ -78,6 +78,7 @@ func db(openBrowser bool) {
 			Warning.Printf("Unable to open a web browser for " + url)
 		}
 	}
+	fmt.Println("EventBucket server started.")
 	go startTicker()
 }
 
