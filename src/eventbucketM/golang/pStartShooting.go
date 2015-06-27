@@ -107,7 +107,7 @@ func startShootingData(data string, showAll bool) Page {
 	for shooterID, shooterData := range event.Shooters {
 		if showAll || (!showAll && ((event.IsPrizeMeet && len(shooterData.Scores[fmt.Sprintf("%v", rangeID)].Shots) <= 0) || (!event.IsPrizeMeet && shooterData.Scores[fmt.Sprintf("%v", rangeID)].Total <= 0))) {
 			tempGrade = allGrades[shooterData.Grade]
-			classShots[tempGrade.ClassName] = availableClassShots[tempGrade.ClassID]
+			classShots[tempGrade.className] = availableClassShots[tempGrade.classID]
 			//TODO add ignore case here!!!!!!!!
 			shooterData.Club = strings.Replace(shooterData.Club, " Rifle Club Inc.", "", -1)
 			shooterData.Club = strings.Replace(shooterData.Club, " Rifle Club Inc", "", -1)
@@ -127,8 +127,8 @@ func startShootingData(data string, showAll bool) Page {
 	var firstClass string
 	var firstClassInt int
 	for _, shooter := range event.Shooters {
-		firstClass = allGrades[shooter.Grade].ClassName
-		firstClassInt = allGrades[shooter.Grade].ClassID
+		firstClass = allGrades[shooter.Grade].className
+		firstClassInt = allGrades[shooter.Grade].classID
 		break
 	}
 
@@ -172,7 +172,7 @@ func startShootingData(data string, showAll bool) Page {
 }
 
 func hasShootFinished(shots string, grade int) bool {
-	classSettings := defaultClassSettings[grade2Class(grade)]
+	classSettings := defaultClassSettings[grades()[grade].classID]
 	return len(strings.Replace(shots[classSettings.SightersQty:], "-", "", -1)) == classSettings.ShotsQty
 }
 
@@ -189,7 +189,7 @@ func updateShotScores2(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Calculate the score based on the shots given
-	newScore := calcTotalCentres(validatedValues["shots"], grades()[event.Shooters[shooterID].Grade].ClassID)
+	newScore := calcTotalCentres(validatedValues["shots"], grades()[event.Shooters[shooterID].Grade].classID)
 
 	//Return the score to the client
 	if newScore.Centres > 0 {

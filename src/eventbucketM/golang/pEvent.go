@@ -134,7 +134,7 @@ func eventGradeOptions(eventGrades []int) []Option {
 	for gradeID, grade := range grades() {
 		options = append(options, Option{ //TODO change Value to an interface so type conversion isn't needed
 			Value:    fmt.Sprintf("%v", gradeID),
-			Display:  grade.LongName,
+			Display:  grade.longName,
 			Selected: isValueInSlice(gradeID, eventGrades) || allSelected,
 		})
 	}
@@ -151,7 +151,7 @@ func eventGradeEntry(gradesToSelectFrom []int) []Option {
 	for _, gradeID := range gradesToSelectFrom {
 		options = append(options, Option{ //TODO change Value to an interface so type conversion isn't needed
 			Value:   fmt.Sprintf("%v", gradeID),
-			Display: allGrades[gradeID].LongName,
+			Display: allGrades[gradeID].longName,
 		})
 	}
 	return options
@@ -195,7 +195,7 @@ func eventUpdateShooterForm(event Event, shooter EventShooter, clubList []Option
 	}
 	for _, gradeID := range event.Grades {
 		options = append(options, Option{
-			Display:  allGrades[gradeID].LongName,
+			Display:  allGrades[gradeID].longName,
 			Value:    gradeID,
 			Selected: shooter.Grade == gradeID,
 		})
