@@ -278,15 +278,15 @@ func eventShotsNSighters(eventID string) Page {
 	//TODO Display a list of ranges and shooters scores as shots and total scores, ordered in descending order
 	event, err := getEvent(eventID)
 	if err != nil {
-		Error.Printf("Event with id %v doesn't exist", eventID)
+		warning.Printf("Event with id %v doesn't exist", eventID)
 	}
 	//TODO shooters scores not displayed for each range etc.
-	Warning.Println("shooters scores not displayed for each range etc.")
+	warning.Println("shooters scores not displayed for each range etc.")
 	/*for _, eventRange := range event.Ranges{
-		//Info.Printf("event Range: %v", eventRange.ID)
+		//info.Printf("event Range: %v", eventRange.ID)
 		for _, shooter := range event.Shooters{
 			//TODO check if shooters has this range
-			//Info.Printf("shooter: %v", shooter.ID)
+			//info.Printf("shooter: %v", shooter.ID)
 		}
 	}*/
 	return Page{

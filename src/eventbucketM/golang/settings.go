@@ -1,10 +1,5 @@
 package main
 
-import (
-	"log"
-	"os"
-)
-
 const (
 	//GET
 	urlHome     = "/"
@@ -101,8 +96,6 @@ type ClassSettings struct {
 }
 
 var (
-	// Error is exported
-	Error = log.New(os.Stderr, "ERROR:  ", log.Ldate|log.Ltime|log.Lshortfile)
 	//BARCODE_TYPE = QRCODE
 
 	homeMenuItems = []Menu{

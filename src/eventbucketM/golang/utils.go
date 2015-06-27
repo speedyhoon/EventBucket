@@ -79,7 +79,7 @@ func dirExists(path string) bool {
 		return true
 	}
 	if !os.IsNotExist(err) {
-		Error.Printf("folder does not exist: %v", err)
+		warning.Printf("folder does not exist: %v", err)
 	}
 	return false
 }
