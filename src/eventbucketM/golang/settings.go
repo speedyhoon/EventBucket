@@ -103,12 +103,6 @@ type ClassSettings struct {
 var (
 	// Error is exported
 	Error = log.New(os.Stderr, "ERROR:  ", log.Ldate|log.Ltime|log.Lshortfile)
-	//TODO move the below to a constant if possible
-	latitudeMin  = -90
-	latitudeMax  = 90
-	longitudeMin = -180
-	longitudeMax = 180
-
 	//BARCODE_TYPE = QRCODE
 
 	homeMenuItems = []Menu{
