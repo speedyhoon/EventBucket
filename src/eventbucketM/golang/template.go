@@ -88,7 +88,7 @@ func generator(w http.ResponseWriter, fillin string, viewController Page) {
 			return fmt.Sprintf("%v", input)
 		},
 		"AgeGroupDisplay": func(value string) string {
-			return AgeGroupDisplay(value)
+			return ageGroupDisplay(value)
 		},
 		"POSITION": func(score Score) template.HTMLAttr {
 			if score.Total == 0 && score.Centres == 0 {
