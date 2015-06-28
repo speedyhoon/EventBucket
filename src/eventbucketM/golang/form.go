@@ -419,7 +419,7 @@ func drawOnlyOptions(options []Option) string {
 	for _, option := range options {
 		optionValue = fmt.Sprintf("%v", option.Value)
 		if optionValue == "" && option.Display == "" {
-			info.Println("options contains an empty option")
+			trace.Println("options contains an empty option")
 		}
 		output += "<option"
 		if option.Selected {
@@ -428,7 +428,7 @@ func drawOnlyOptions(options []Option) string {
 		if optionValue != option.Display {
 			output += " value=" + addQuotes(optionValue)
 		} else {
-			info.Println("option.Value shouldn't be included when it has the save value as option.Display")
+			trace.Printf("option.Value shouldn't be included when it has the save value as option.Display %v\n%v", options, optionValue)
 		}
 		output += ">" + option.Display
 	}
