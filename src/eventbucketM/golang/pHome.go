@@ -184,7 +184,7 @@ func eventInsert(w http.ResponseWriter, r *http.Request) {
 			//http.Redirect(w, r, urlOrganisers, http.StatusSeeOther)
 		}
 	} else {
-		eventUpsertData(eventID, M{
+		tableUpdateData(tblEvent, eventID, M{
 			"n": validatedValues["name"],
 			"c": validatedValues["club"],
 			"d": validatedValues["date"],

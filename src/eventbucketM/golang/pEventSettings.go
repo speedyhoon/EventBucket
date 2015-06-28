@@ -308,7 +308,7 @@ func updateIsPrizeMeet(w http.ResponseWriter, r *http.Request) {
 		prizemeet = true
 	}
 	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
-	eventUpsertData(eventID, M{"p": prizemeet})
+	tableUpdateData(tblEvent, eventID, M{"p": prizemeet})
 }
 
 func eventSettingsIsPrizeMeet(eventID string, checked bool) Form {

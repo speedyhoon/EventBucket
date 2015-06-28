@@ -385,16 +385,6 @@ func eventUpdateSortScoreboard(eventID, sortByRange string) {
 	conn.C(tblEvent).FindId(eventID).Apply(change, make(M))
 }
 
-func eventUpsertData(eventID string, data M) {
-	change := mgo.Change{
-		Upsert: true,
-		Update: M{
-			"$set": data,
-		},
-	}
-	conn.C(tblEvent).FindId(eventID).Apply(change, make(M))
-}
-
 func tableUpdateData(collectionName, documentID string, data M) {
 	if conn != nil {
 		_, err := conn.C(collectionName).FindId(documentID).Apply(mgo.Change{
@@ -402,7 +392,7 @@ func tableUpdateData(collectionName, documentID string, data M) {
 			Update: M{"$set": data},
 		}, make(M))
 		if err != nil {
-			warning.Printf("bugger! %v", err)
+			warning.Println(err)
 		}
 	}
 }
