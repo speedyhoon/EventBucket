@@ -110,20 +110,20 @@ func randomData(w http.ResponseWriter, r *http.Request) {
 	var shooterQty int
 	for _, request := range strings.Split(strings.Replace(r.RequestURI, urlRandomData, "", -1), "&") {
 		properties = strings.Split(request, "=")
-		switch properties[0] {
-		case "eventID":
+		switch strings.ToLower(properties[0]) {
+		case "eventid":
 			eventID = properties[1]
 			break
-		case "rangeID":
+		case "rangeid":
 			rangeID = properties[1]
 			break
-		case "totalScores":
+		case "totalscores":
 			totalScores = true
 			break
-		case "startShooting":
+		case "startshooting":
 			startShooting = true
-		case "shooterQty":
-			shooterQty, _ = strconv.Atoi(properties[1])
+		case "shooterqty":
+			shooterQty = str2Int(properties[1])
 		}
 	}
 	if eventID == "" {
@@ -182,8 +182,8 @@ func randomDataShooterQty(shooterQty int, eventID string) {
 	counter := 0
 	for counter < shooterQty {
 		//make some requests for x number of shooters
-		counter += 1
-		trace.Printf("inserting shooter :%v", counter)
+		counter++
+		trace.Printf("inserting shooter #%v", counter)
 		eventShooterInsert(eventID, EventShooter{
 			FirstName: randomdata.FirstName(randomdata.RandomGender),
 			Surname:   randomdata.LastName(),
@@ -192,6 +192,7 @@ func randomDataShooterQty(shooterQty int, eventID string) {
 			Grade:     rand.Intn(8),
 		})
 	}
+	info.Println("Finished inserting shooters")
 }
 
 func randomShooterScores(shooterGrade int) string {

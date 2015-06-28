@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"sort"
+	"sync"
 	"time"
 )
 
@@ -97,19 +98,23 @@ func triggerScoreCalculation(newScore Score, rangeID int, shooter EventShooter, 
 		shooterIDs = append(shooterIDs, linkedShooterID)
 
 		//Add the linked shooter to the aggregate & grade update ticker
-		recalculateShooters[fmt.Sprintf("%v.%v.%v", event.ID, linkedShooterID, rangeID)] = calculateShooter{
+		recalculateShooters.mu.Lock()
+		recalculateShooters.values[fmt.Sprintf("%v.%v.%v", event.ID, linkedShooterID, rangeID)] = calculateShooter{
 			eventID:    event.ID,
 			shooterID:  linkedShooterID,
 			strRangeID: fmt.Sprintf("%v", rangeID),
 			rangeID:    rangeID,
 		}
+		recalculateShooters.mu.Unlock()
+
 		if shootFinished {
-			recalculateGrades[fmt.Sprintf("%v.%v.%v", event.ID, shooter.Grade, rangeID)] = calculateGrade{
-				eventID:    event.ID,
-				gradeID:    shooter.Grade,
-				rangeID:    rangeID,
-				strRangeID: fmt.Sprintf("%v", rangeID),
+			recalculateGrades.mu.Lock()
+			recalculateGrades.values[fmt.Sprintf("%v.%v.%v", event.ID, shooter.Grade, rangeID)] = calculateGrade{
+				eventID: event.ID,
+				gradeID: shooter.Grade,
+				rangeID: rangeID,
 			}
+			recalculateGrades.mu.Unlock()
 		}
 	}
 
@@ -118,21 +123,24 @@ func triggerScoreCalculation(newScore Score, rangeID int, shooter EventShooter, 
 	aggsFound := searchForAggs(event.Ranges, rangeID)
 	aggsFound = append(aggsFound, rangeID)
 
-	recalculateShooters[fmt.Sprintf("%v.%v.%v", event.ID, shooter.ID, rangeID)] = calculateShooter{
+	recalculateShooters.mu.Lock()
+	recalculateShooters.values[fmt.Sprintf("%v.%v.%v", event.ID, shooter.ID, rangeID)] = calculateShooter{
 		eventID:    event.ID,
 		shooterID:  shooter.ID,
 		strRangeID: fmt.Sprintf("%v", rangeID),
 		rangeID:    rangeID,
 	}
+	recalculateShooters.mu.Unlock()
 
 	for _, thisRangeID := range aggsFound {
 		if shootFinished {
-			recalculateGrades[fmt.Sprintf("%v.%v.%v", event.ID, shooter.Grade, thisRangeID)] = calculateGrade{
-				eventID:    event.ID,
-				gradeID:    shooter.Grade,
-				strRangeID: fmt.Sprintf("%v", thisRangeID),
-				rangeID:    thisRangeID,
+			recalculateGrades.mu.Lock()
+			recalculateGrades.values[fmt.Sprintf("%v.%v.%v", event.ID, shooter.Grade, thisRangeID)] = calculateGrade{
+				eventID: event.ID,
+				gradeID: shooter.Grade,
+				rangeID: thisRangeID,
 			}
+			recalculateGrades.mu.Unlock()
 		}
 	}
 }
@@ -142,13 +150,27 @@ type calculateShooter struct {
 	shooterID, rangeID  int
 }
 type calculateGrade struct {
-	eventID, strRangeID string
-	gradeID, rangeID    int
+	eventID          string
+	gradeID, rangeID int
+}
+
+type myShooterMutex struct {
+	mu     sync.Mutex
+	values map[string]calculateShooter
+}
+
+type myGradeMutex struct {
+	mu     sync.Mutex
+	values map[string]calculateGrade
 }
 
 var (
-	recalculateShooters = make(map[string]calculateShooter)
-	recalculateGrades   = make(map[string]calculateGrade)
+	recalculateShooters = myShooterMutex{
+		values: make(map[string]calculateShooter),
+	}
+	recalculateGrades = myGradeMutex{
+		values: make(map[string]calculateGrade),
+	}
 )
 
 func startTicker() {
@@ -156,22 +178,26 @@ func startTicker() {
 	//TODO only calculate the grade positions once a shooter has finished the range
 	var shooters map[string]calculateShooter
 	var grades map[string]calculateGrade
-	for range time.NewTicker(time.Second * 2).C {
-		if len(recalculateShooters) > 0 {
-			shooters = recalculateShooters
-			recalculateShooters = make(map[string]calculateShooter)
+	for range time.NewTicker(time.Second * 4).C {
+		recalculateShooters.mu.Lock()
+		if len(recalculateShooters.values) > 0 {
+			shooters = recalculateShooters.values
+			recalculateShooters.values = make(map[string]calculateShooter)
 			recalculateShootersAggs(shooters)
 		}
-		if len(recalculateGrades) > 0 {
-			grades = recalculateGrades
-			recalculateGrades = make(map[string]calculateGrade)
+		recalculateShooters.mu.Unlock()
+		recalculateGrades.mu.Lock()
+		if len(recalculateGrades.values) > 0 {
+			grades = recalculateGrades.values
+			recalculateGrades.values = make(map[string]calculateGrade)
 			recalculateGradePositions(grades)
 		}
+		recalculateGrades.mu.Unlock()
 	}
 }
 
 func recalculateShootersAggs(updates map[string]calculateShooter) {
-	info.Println("executing recalculateShooterAggs")
+	trace.Println("executing recalculateShooterAggs")
 	var event Event
 	var err error
 	var aggsFound []int
@@ -196,17 +222,17 @@ func recalculateShootersAggs(updates map[string]calculateShooter) {
 			}
 		}
 	}
-	info.Println("finished recalculateShooterAggs")
+	trace.Println("finished recalculateShooterAggs")
 }
 
 func recalculateGradePositions(updates map[string]calculateGrade) {
-	info.Println("executing grade recalculation")
+	trace.Println("executing grade recalculation")
 	var event Event
 	var err error
 	var updateBson M
 	var shooterQty, position, shouldBePosition int
 	var shootEqual, updateRequired bool
-	var previousEventID, positionEqual, positionOrdinal string
+	var previousEventID, positionEqual, positionOrdinal, strRangeID string
 
 	for _, updateData := range updates {
 		//Only get the event when it is different
@@ -219,6 +245,7 @@ func recalculateGradePositions(updates map[string]calculateGrade) {
 			event, err = getEvent(updateData.eventID)
 
 			if err != nil {
+				warning.Println(err)
 				break
 			}
 
@@ -228,8 +255,10 @@ func recalculateGradePositions(updates map[string]calculateGrade) {
 
 			shooterQty = len(event.Shooters)
 		}
+		strRangeID = fmt.Sprintf("%v", updateData.rangeID)
+
 		//sort shooters by the current rangeID
-		sortShooters(updateData.strRangeID).Sort(event.Shooters)
+		sortShooters(strRangeID).Sort(event.Shooters)
 
 		shouldBePosition = 0
 		shootEqual = false
@@ -244,15 +273,15 @@ func recalculateGradePositions(updates map[string]calculateGrade) {
 					positionEqual = "="
 					shootEqual = false
 				}
-				if shooter.Scores[updateData.strRangeID].ShootOff < 0 {
+				if shooter.Scores[strRangeID].ShootOff < 0 {
 					//Shooter has the same score as the previous shooter (index-1)
 					positionEqual = "="
-					if index+1 < shooterQty && shooter.Grade == event.Shooters[index+1].Grade && shooter.Scores[updateData.strRangeID] == event.Shooters[index+1].Scores[updateData.strRangeID] {
+					if index+1 < shooterQty && shooter.Grade == event.Shooters[index+1].Grade && shooter.Scores[strRangeID] == event.Shooters[index+1].Scores[strRangeID] {
 						shootEqual = true
 					}
 				}
 				positionOrdinal = positionEqual + ordinal(position)
-				if shooter.Scores[updateData.strRangeID].Total != 0 && shooter.Scores[updateData.strRangeID].Centres != 0 && (shooter.Scores[updateData.strRangeID].Position != position || shooter.Scores[updateData.strRangeID].Ordinal != positionOrdinal) {
+				if shooter.Scores[strRangeID].Total != 0 && (shooter.Scores[strRangeID].Position != position || shooter.Scores[strRangeID].Ordinal != positionOrdinal) {
 					updateRequired = true
 					updateBson[dot("^^schemaSHOOTER^^", shooter.ID, updateData.rangeID, "o")] = positionOrdinal
 					updateBson[dot("^^schemaSHOOTER^^", shooter.ID, updateData.rangeID, "p")] = position

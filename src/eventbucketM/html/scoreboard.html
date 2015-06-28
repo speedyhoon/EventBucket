@@ -30,11 +30,10 @@
 			{{range $rangeID, $rangeObj := $.ListRanges}}
 				{{if not .Hidden}}
 					{{$new_range_id := VAR2STR $rangeID}}
-					{{$now := index $shooter.Scores $new_range_id}}
-					<td{{POSITION $now}}>
-						{{with $now}}
+					{{with index $shooter.Scores $new_range_id}}
+						<td{{POSITION .}}>
 							{{with.Total}}{{.}}{{end}}{{with .Centres}}<sup>{{.}}{{end}}
-						{{end}}
+					{{end}}
 				{{end}}
 			{{end}}
 	{{end}}
