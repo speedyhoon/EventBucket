@@ -11,17 +11,17 @@ import (
 func str2Int(input interface{}) int {
 	number, err := strconv.Atoi(fmt.Sprintf("%v", input))
 	if err != nil {
-		return number
+		warning.Println(err)
 	}
-	return 0
+	return number
 }
 
 func str2float(input interface{}) float64 {
 	float, err := strconv.ParseFloat(fmt.Sprintf("%v", input), 64)
 	if err != nil {
-		return float
+		warning.Println(err)
 	}
-	return 0
+	return float
 }
 
 //research http://net.tutsplus.com/tutorials/client-side-security-best-practices/

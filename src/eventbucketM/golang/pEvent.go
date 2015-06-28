@@ -162,14 +162,14 @@ func eventUpdateShooter(w http.ResponseWriter, r *http.Request) {
 	shooterID := validatedValues["sid"]
 	if eventID != "" && shooterID != "" {
 		http.Redirect(w, r, urlEvent+eventID, http.StatusSeeOther)
-		updateData := M{dot(schemaSHOOTER, shooterID): M{
-			"f": validatedValues["first"],
-			"s": validatedValues["surname"],
-			"c": validatedValues["club"],
-			"g": str2Int(validatedValues["grade"]),
-			"b": validatedValues["disabled"] != "",
-			"a": validatedValues["age"],
-		}}
+		updateData := M{
+			dot(schemaSHOOTER, shooterID, "f"): validatedValues["first"],
+			dot(schemaSHOOTER, shooterID, "s"): validatedValues["surname"],
+			dot(schemaSHOOTER, shooterID, "c"): validatedValues["club"],
+			dot(schemaSHOOTER, shooterID, "g"): str2Int(validatedValues["grade"]),
+			dot(schemaSHOOTER, shooterID, "b"): validatedValues["disabled"] != "",
+			dot(schemaSHOOTER, shooterID, "a"): validatedValues["age"],
+		}
 		tableUpdateData(tblEvent, eventID, updateData)
 		return
 	}
@@ -190,10 +190,10 @@ func dataListShooterClubNames() []Option {
 
 func eventUpdateShooterForm(event Event, shooter EventShooter) Form {
 	var options []Option
-	allGrades := grades()
 	if len(event.Grades) == 0 {
 		event.Grades = gradeList()
 	}
+	allGrades := grades()
 	for _, gradeID := range event.Grades {
 		options = append(options, Option{
 			Display:  allGrades[gradeID].longName,
