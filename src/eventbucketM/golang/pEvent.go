@@ -33,10 +33,9 @@ func event(eventID string) Page {
 			},
 		}
 	}
-	clubList := dataListShooterClubNames()
 	var editShooterList string
 	for _, shooter := range event.Shooters {
-		editShooterList += generateForm(eventUpdateShooterForm(event, shooter, clubList))
+		editShooterList += generateForm(eventUpdateShooterForm(event, shooter))
 	}
 
 	//TODO add ClubOptions when club textbox is changed to a datalist
@@ -158,7 +157,7 @@ func eventGradeEntry(gradesToSelectFrom []int) []Option {
 }
 
 func eventUpdateShooter(w http.ResponseWriter, r *http.Request) {
-	validatedValues := checkForm(eventUpdateShooterForm(Event{}, EventShooter{}, []Option{}).inputs, r)
+	validatedValues := checkForm(eventUpdateShooterForm(Event{}, EventShooter{}).inputs, r)
 	eventID := validatedValues["eventid"]
 	shooterID := validatedValues["sid"]
 	if eventID != "" && shooterID != "" {
@@ -180,14 +179,16 @@ func eventUpdateShooter(w http.ResponseWriter, r *http.Request) {
 func dataListShooterClubNames() []Option {
 	var clubList []Option
 	for _, club := range getClubs() {
-		clubList = append(clubList, Option{
-			Value: club.Name,
-		})
+		if club.Name != "" {
+			clubList = append(clubList, Option{
+				Value: club.Name,
+			})
+		}
 	}
 	return clubList
 }
 
-func eventUpdateShooterForm(event Event, shooter EventShooter, clubList []Option) Form {
+func eventUpdateShooterForm(event Event, shooter EventShooter) Form {
 	var options []Option
 	allGrades := grades()
 	if len(event.Grades) == 0 {
@@ -214,36 +215,29 @@ func eventUpdateShooterForm(event Event, shooter EventShooter, clubList []Option
 				name:    "disabled",
 				html:    "checkbox",
 				checked: shooter.Disabled,
-				//accessKey: "d",
 			}, {
 				name:  "first",
-				html:  "search",
+				html:  "text",
 				value: shooter.FirstName,
-				//accessKey: "f",
 			}, {
 				name:  "surname",
-				html:  "search",
+				html:  "text",
 				value: shooter.Surname,
-				//accessKey: "s",
 			}, {
 				name:         "club",
-				html:         "search",
+				html:         "text",
 				dataList:     true,
 				autoComplete: "off",
-				id:           fmt.Sprintf("club%v%v", shooter.ID, event.ID),
+				id:           "clubSearch",
 				value:        shooter.Club,
-				options:      clubList,
-				//accessKey: "c",
 			}, {
 				name:    "grade",
 				html:    "select",
 				options: options,
-				//accessKey: "g",
 			}, {
 				name:    "age",
 				html:    "select",
 				options: shooterAgeGroupSelectbox(shooter),
-				//accessKey: "a",
 			}, {
 				html:  "submit",
 				inner: "Save",

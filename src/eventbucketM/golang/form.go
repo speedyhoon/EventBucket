@@ -293,7 +293,7 @@ func generateForm(form Form) string {
 	}
 	var formElements []string
 	var formID, attributes, element, options string
-	for _, input := range form.inputs {
+	for i, input := range form.inputs {
 		allowedAttrs := formAttrs[input.html]
 		if input.snippet != nil {
 			element = fmt.Sprintf("%v", input.snippet)
@@ -312,6 +312,9 @@ func generateForm(form Form) string {
 		}
 		if allowedAttrs.autofocus && input.autofocus {
 			attributes += " autofocus"
+		}
+		if form.table && form.id != "" && i > 0 {
+			attributes += " form=" + form.id
 		}
 		if allowedAttrs.checked && input.checked {
 			attributes += " checked"
