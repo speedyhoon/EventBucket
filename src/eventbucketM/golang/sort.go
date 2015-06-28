@@ -203,7 +203,6 @@ func recalculateGradePositions(updates map[string]calculateGrade) {
 	info.Println("executing grade recalculation")
 	var event Event
 	var err error
-	//	var aggsFound []int
 	var updateBson M
 	var shooterQty, position, shouldBePosition int
 	var shootEqual, updateRequired bool
@@ -254,23 +253,10 @@ func recalculateGradePositions(updates map[string]calculateGrade) {
 				}
 				positionOrdinal = positionEqual + ordinal(position)
 				if shooter.Scores[updateData.strRangeID].Total != 0 && shooter.Scores[updateData.strRangeID].Centres != 0 && (shooter.Scores[updateData.strRangeID].Position != position || shooter.Scores[updateData.strRangeID].Ordinal != positionOrdinal) {
-					//					temp := dot("^^schemaSHOOTER^^", shooter.ID, updateData.rangeID, "o")
-					/*if _, ok := updateBson[temp]; !ok {
-						updateBson = make(M)
-					}*/
 					updateRequired = true
-					//					updateBson[temp] = positionOrdinal
 					updateBson[dot("^^schemaSHOOTER^^", shooter.ID, updateData.rangeID, "o")] = positionOrdinal
 					updateBson[dot("^^schemaSHOOTER^^", shooter.ID, updateData.rangeID, "p")] = position
 				}
-				/*if shooter.Scores[updateData.strRangeID].Position != position{
-					temp := dot("^^schemaSHOOTER^^", shooter.ID, updateData.rangeID)
-					if _, ok := updateBson[temp]; !ok {
-						updateBson = make(M)
-					}
-					updateRequired = true
-					updateBson[temp] = positionOrdinal
-				}*/
 			}
 		}
 	}
