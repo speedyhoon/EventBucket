@@ -15,7 +15,7 @@ func addShooterIDsToShooterObjects(eventShooters []EventShooter) []EventShooter 
 
 func addGradeSeparatorToShooterObject(eventShooters []EventShooter) []EventShooter {
 	//Add a boolean field to each shooter in a list of ordered shooters and is true for the first shooter that has a different grade than the last
-	var previousShooterGrade int
+	previousShooterGrade := -1
 	for shooterID := range eventShooters {
 		if eventShooters[shooterID].Grade != previousShooterGrade {
 			eventShooters[shooterID].GradeSeparator = true

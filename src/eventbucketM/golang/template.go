@@ -61,10 +61,9 @@ func generator(w http.ResponseWriter, fillin string, viewController Page) {
 			}
 			return template.HTMLAttr("")
 		},
-		"ElementClass": func(className1, className2 interface{}) template.HTMLAttr {
-			className3 := fmt.Sprintf("%v", className2)
-			if className1 != "" && className3 != "" && className3 != "0" {
-				return template.HTMLAttr(fmt.Sprintf(" class=%v%v", className1, className3))
+		"warningClass": func(class interface{}) template.HTMLAttr {
+			if class != 0 {
+				return template.HTMLAttr(fmt.Sprintf(" class=w%v", class))
 			}
 			return template.HTMLAttr("")
 		},
@@ -90,7 +89,7 @@ func generator(w http.ResponseWriter, fillin string, viewController Page) {
 		"ageGroupDisplay": func(value string) string {
 			return ageGroupDisplay(value)
 		},
-		"POSITION": func(score Score) template.HTMLAttr {
+		"position": func(score Score) template.HTMLAttr {
 			if score.Total == 0 && score.Centres == 0 {
 				return template.HTMLAttr(fmt.Sprintf(" class=w%v", legendNoScore))
 			}

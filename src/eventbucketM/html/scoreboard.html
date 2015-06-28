@@ -4,26 +4,26 @@
 
 <h1>{{.EventName}}</h1>
 <table>
-	<tr>
-		<td>Pos
-		<td>Shooter
-		<td>Club
-		<td>Age Group
-		{{range $range_id, $range := .ListRanges}}
-			{{if not .Hidden}}
-				{{if eq $range_id $.SortByRange}}
-					<td class=SB>{{.Name}}
-				{{else}}
-					<td>{{.Name}}
-				{{end}}
-			{{end}}
-		{{end}}
 	{{range $shooter := .ListShooters}}
 		{{if .GradeSeparator}}
 			<tr><td colspan=99 class=classHeadingRow>{{CLASSLONG .Grade}}<a href=//eventbucket.com.au target=_blank class=r>EventBucket.com.au</a>
+			<tr>
+				<td>Pos
+				<td>Shooter
+				<td>Club
+				<td>Age Group
+				{{range $range_id, $range := $.ListRanges}}
+					{{if not .Hidden}}
+						{{if eq $range_id $.SortByRange}}
+							<td class=SB>{{.Name}}
+						{{else}}
+							<td>{{.Name}}
+						{{end}}
+					{{end}}
+				{{end}}
 		{{end}}
 		<tr>
-			<td{{ElementClass "w" .Warning}}>{{.Position}}
+			<td{{warningClass .Warning}}>{{.Position}}
 			<td class=tc>{{.FirstName}} {{.Surname}}
 			<td>{{.Club}}
 			<td>{{ageGroupDisplay .AgeGroup}}
@@ -31,16 +31,17 @@
 				{{if not .Hidden}}
 					{{$new_range_id := VAR2STR $rangeID}}
 					{{with index $shooter.Scores $new_range_id}}
-						<td{{POSITION .}}>
-							{{with.Total}}{{.}}{{end}}{{with .Centres}}<sup>{{.}}{{end}}
+						<td{{position .}}>
+							{{with.Total}}{{.}}{{end}}{{with.Centres}}<sup>{{.}}{{end}}
 					{{end}}
 				{{end}}
 			{{end}}
 	{{end}}
 	<tr>
 		<td colspan=99 class=legend>
+			Legend: <label class=SB>Sorted by</label>
 			{{with .Legend}}
-				Legend: {{range $index, $legend := .}}
+				{{range $index, $legend := .}}
 					<label class={{$legend.CSSClass}}>{{$legend.Name}}</label>
 				{{end}}
 			{{end}}
