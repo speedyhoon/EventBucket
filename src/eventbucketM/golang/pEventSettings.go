@@ -48,23 +48,24 @@ func rangeUpdate(w http.ResponseWriter, r *http.Request) {
 		},
 		"$unset": M{},
 	}
-	thingy := "$set"
+	mode := "$set"
 	if validatedValues["hide"] != "on" {
-		thingy = "$unset"
+		mode = "$unset"
 	}
-	update[thingy].(M)[dot("R", rangeID, "h")] = true
+	update[mode].(M)[dot("R", rangeID, "h")] = true
 
-	thingy = "$set"
+	mode = "$set"
 	if validatedValues["lock"] != "on" {
-		thingy = "$unset"
+		mode = "$unset"
 	}
-	update[thingy].(M)[dot("R", rangeID, "l")] = true
+	update[mode].(M)[dot("R", rangeID, "l")] = true
 
-	thingy = "$set"
+	mode = "$set"
 	if validatedValues["aggs"] == "" {
-		thingy = "$unset"
+		mode = "$unset"
 	}
-	update[thingy].(M)[dot("R", rangeID, "a")] = validatedValues["aggs"]
+	update[mode].(M)[dot("R", rangeID, "a")] = validatedValues["aggs"]
+
 	eventUpdateRangeData(eventID, update)
 	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
 }
