@@ -237,7 +237,7 @@ func eventUpdateShooterForm(event Event, shooter EventShooter) Form {
 			}, {
 				name:    "age",
 				html:    "select",
-				options: shooterAgeGroupSelectbox(shooter),
+				options: shooterAgeGroupSelect(shooter),
 			}, {
 				html:  "submit",
 				inner: "Save",

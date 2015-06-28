@@ -26,7 +26,7 @@
 			<td{{ElementClass "w" .Warning}}>{{.Position}}
 			<td class=tc>{{.FirstName}} {{.Surname}}
 			<td>{{.Club}}
-			<td>{{AgeGroupDisplay .AgeGroup}}
+			<td>{{ageGroupDisplay .AgeGroup}}
 			{{range $rangeID, $rangeObj := $.ListRanges}}
 				{{if not .Hidden}}
 					{{$new_range_id := VAR2STR $rangeID}}

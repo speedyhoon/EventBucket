@@ -1,7 +1,5 @@
 package main
 
-//import "fmt"
-
 const (
 	//GET
 	urlHome     = "/"
@@ -242,7 +240,6 @@ func grades() []Grade {
 	}
 }
 
-// AgeGroupDisplay is exported
 func ageGroupDisplay(value string) string {
 	if value != "N" {
 		for _, ageGroup := range ageGroups() {
@@ -277,7 +274,7 @@ func ageGroups() []Option {
 }
 
 //Return age group select box options with the shooters value selected
-func shooterAgeGroupSelectbox(shooter EventShooter) []Option {
+func shooterAgeGroupSelect(shooter EventShooter) []Option {
 	options := ageGroups()
 	for i, ageGroup := range options {
 		options[i].Selected = shooter.AgeGroup == ageGroup.Value
