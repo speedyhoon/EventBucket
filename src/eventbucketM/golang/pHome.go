@@ -159,8 +159,10 @@ func eventInsert(w http.ResponseWriter, r *http.Request) {
 		if ok {
 			newEvent.Club = club.ID
 		} else {
-			clubID, _ := insertClub(validatedValues["club"])
-			newEvent.Club = clubID
+			clubID, isClub := insertClub(validatedValues["club"])
+			if isClub != nil {
+				newEvent.Club = clubID
+			}
 		}
 
 		if validatedValues["date"] != "" {
