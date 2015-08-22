@@ -102,19 +102,17 @@ func getClub(ID string) (Club, error) {
 	return result, errors.New("Unable to get club with ID: '" + ID + "'")
 }
 
-func getClubByName(clubName string) (Club, bool) {
+func getClubByName(clubName string) (Club, error) {
 	var result Club
 	if conn != nil {
 		//remove double spaces
 		clubName = strings.Join(strings.Fields(clubName), " ")
 		if clubName != "" {
 			err := conn.C(tblClub).Find(M{"n": M{"$regex": fmt.Sprintf(`^%v$`, clubName), "$options": "i"}}).One(&result)
-			if err == nil {
-				return result, true
-			}
+			return result, err
 		}
 	}
-	return result, false
+	return result, errors.New("can't find that club")
 }
 
 func getEvents() []Event {
