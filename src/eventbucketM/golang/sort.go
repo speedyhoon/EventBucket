@@ -178,7 +178,7 @@ func startTicker() {
 	//TODO only calculate the grade positions once a shooter has finished the range
 	var shooters map[string]calculateShooter
 	var grades map[string]calculateGrade
-	for range time.NewTicker(time.Second * 4).C {
+	for range time.NewTicker(time.Second * 10).C {
 		recalculateShooters.mu.Lock()
 		if len(recalculateShooters.values) > 0 {
 			shooters = recalculateShooters.values
