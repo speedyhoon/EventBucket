@@ -264,12 +264,12 @@ func eventSettingsClassGrades(event Event) Form {
 				html:        "select",
 				multiSelect: true,
 				options:     eventGradeOptions(event.Grades),
-				help:        "Select the available classes &amp; grades for this event.",
 			}, {
 				html:  "submit",
 				inner: "Save",
 				name:  "eventid",
 				value: event.ID,
+				help:  "Select the available classes &amp; grades for this event.",
 			},
 		},
 	}

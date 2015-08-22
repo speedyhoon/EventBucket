@@ -386,7 +386,7 @@ func generateForm(form Form) string {
 			element += fmt.Sprintf("<%v%v>%v</%v>", input.html, attributes, input.inner, input.html)
 		}
 		if input.help != "" {
-			element += "<abbr class=help title=\"" + input.help + "\">?</abbr>"
+			element += "<img src=/p/help alt=? title='" + input.help + "'>"
 		}
 		if input.label != "" {
 			element = "<label>" + input.label + element + "</label>"
