@@ -148,7 +148,7 @@ func eventInsert(w http.ResponseWriter, r *http.Request) {
 		return
 	}*/
 	//TODO merge this database functionality into an upsert
-	validatedValues := checkForm(homeFormNewEvent([]Club{}, Event{}).inputs, r)
+	validatedValues := checkForm(homeFormNewEvent([]Club{}, Event{ID: "0"}).inputs, r)
 	//TODO one day change validated values to return the schema compatible data so it can be directly used add constants would by used more often to access the map items
 	eventID := validatedValues["eventid"]
 	if eventID == "" {
