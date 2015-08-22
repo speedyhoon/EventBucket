@@ -151,18 +151,21 @@ func eventInsert(w http.ResponseWriter, r *http.Request) {
 	validatedValues := checkForm(homeFormNewEvent([]Club{}, Event{ID: "0"}).inputs, r)
 	//TODO one day change validated values to return the schema compatible data so it can be directly used add constants would by used more often to access the map items
 	eventID := validatedValues["eventid"]
+
+	var clubID string
+	club, err := getClubByName(validatedValues["club"])
+	if err == nil {
+		clubID = club.ID
+	} else {
+		clubID, err = insertClub(validatedValues["club"])
+	}
+
 	if eventID == "" {
 		newEvent := Event{
 			Name: validatedValues["name"],
 		}
-		club, ok := getClubByName(validatedValues["club"])
-		if ok {
-			newEvent.Club = club.ID
-		} else {
-			clubID, isClub := insertClub(validatedValues["club"])
-			if isClub != nil {
-				newEvent.Club = clubID
-			}
+		if len(clubID) >= 1 {
+			newEvent.Club = clubID
 		}
 
 		if validatedValues["date"] != "" {
@@ -174,7 +177,6 @@ func eventInsert(w http.ResponseWriter, r *http.Request) {
 		}
 
 		//Add default ranges and aggregate ranges
-		var err error
 		newEvent.ID, err = getNextID(tblEvent)
 		newEvent.AutoInc.Range = 1
 		if err == nil {
@@ -182,17 +184,21 @@ func eventInsert(w http.ResponseWriter, r *http.Request) {
 			//redirect user to event settings
 			http.Redirect(w, r, urlEventSettings+newEvent.ID, http.StatusSeeOther)
 		} else {
-			//TODO go to previous referer page (home or organisers both have the form)
-			//http.Redirect(w, r, urlOrganisers, http.StatusSeeOther)
+			//TODO go to previous referer page -- home page
+			//http.Redirect(w, r, urlHome, http.StatusSeeOther)
 		}
 	} else {
-		tableUpdateData(tblEvent, eventID, M{
+		updateData := M{
 			"n": validatedValues["name"],
-			"c": validatedValues["club"],
 			"d": validatedValues["date"],
 			"t": validatedValues["time"],
-		})
+		}
+		if len(clubID) >= 1 {
+			updateData["c"] = clubID
+		}
+		tableUpdateData(tblEvent, eventID, updateData)
 		http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
+		//TODO display any form errors on event settings page
 	}
 }
 
