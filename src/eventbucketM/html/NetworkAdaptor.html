@@ -1,7 +1,7 @@
 <p>To access EventBucket from multiple devices within your local network, the following links might be available:<br>
 	<strong>Hostname</strong> (Windows devices): <a href=//{{.Hostname}} target=_blank>{{.Hostname}}</a><br>
 	{{with .IpAddresses}}
-		<strong>Ip Address</strong> (Apple &amp; Android devices):
-		{{range $index, $address := .}}<a href=//{{$address}} target=_blank>{{$address}}</a>{{end}}
+		<strong>Ip Address</strong>:
+		{{range $index, $address := .}} <a href=//{{$address}} target=_blank>{{$address}}</a>{{end}}
 	{{end}}
 </p>
