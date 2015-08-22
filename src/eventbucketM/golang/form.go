@@ -322,6 +322,9 @@ func generateForm(form Form) string {
 		if allowedAttrs.action != "" && input.action != "" {
 			attributes += " formaction=" + input.action
 		}
+		if input.class != "" {
+			attributes += " class=" + input.class
+		}
 		if allowedAttrs.dataList && input.dataList && input.id != "" {
 			attributes += " list=" + input.id
 			if len(input.options) > 0 {

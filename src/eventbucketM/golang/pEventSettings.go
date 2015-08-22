@@ -257,7 +257,7 @@ func updateEventGrades(w http.ResponseWriter, r *http.Request) {
 func eventSettingsClassGrades(event Event) Form {
 	return Form{
 		action: urlUpdateEventGrades,
-		title:  "Availalbe Classes &amp; Grades",
+		title:  "Available Classes &amp; Grades",
 		inputs: []Inputs{
 			{
 				name:        "grades",
@@ -270,6 +270,7 @@ func eventSettingsClassGrades(event Event) Form {
 				name:  "eventid",
 				value: event.ID,
 				help:  "Select the available classes &amp; grades for this event.",
+				class: "nm",
 			},
 		},
 	}

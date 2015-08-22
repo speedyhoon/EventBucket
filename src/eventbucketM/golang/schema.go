@@ -204,6 +204,7 @@ type Inputs struct {
 	value                                                       interface{}
 	accessKey, inner, id                                        string
 	dataList                                                    bool
+	class                                                       string
 }
 
 // Option is exported
