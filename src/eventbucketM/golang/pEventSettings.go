@@ -79,6 +79,7 @@ func eventSettingsUpdateRange(eventID, rangeID string) Form {
 				html:     "text",
 				label:    "Range Name",
 				required: true,
+				help:     "A set distance that shooters fire from and scores are recored shot by shot. If you are shooting from more than one range, use \"Create new Agg\" to calculate the totals.",
 			}, {
 				name:  "rangeid",
 				html:  "hidden",
@@ -205,6 +206,7 @@ func eventSettingsSortScoreboard(event Event) Form {
 				inner: "Save",
 				name:  "eventid",
 				value: event.ID,
+				help:  "Sort the Scoreboard is normally set to an aggregate range to sort each shooters scores. This is generally a \"Grand Total\" range. Daily aggregate ranges can also be used for different days. Just change it here each day. By default the scoreboard is not sorted at all.",
 			},
 		},
 	}
@@ -220,6 +222,7 @@ func eventSettingsAddAggForm(eventID string, eventRanges []Option) Form {
 				html:     "text",
 				label:    "Aggregate Name",
 				required: true,
+				help:     "An Aggregate column (or agg for short) is used to sum up each shooters range scores. These are great as Total columns, Day Aggs and Prizemeeting Grand Aggregates. You can select which ranges and/or other aggs to add together with the \"Agg Ranges\" options. Championships can be setup by using several aggs and disabling previous ranges on the scoreboard that you no longer wish to display.",
 			}, {
 				name:        "agg",
 				html:        "select",
@@ -269,7 +272,7 @@ func eventSettingsClassGrades(event Event) Form {
 				inner: "Save",
 				name:  "eventid",
 				value: event.ID,
-				help:  "Select the available classes &amp; grades for this event.",
+				help:  "Select the available classes &amp; grades for this event. This limits the classes that shooters are able to enter.",
 				class: "nm",
 			},
 		},
@@ -321,13 +324,16 @@ func eventSettingsIsPrizeMeet(eventID string, checked bool) Form {
 			{
 				name:    "prizemeet",
 				html:    "checkbox",
-				label:   "Is this Event a Prize Meeting?",
+				label:   "Disable Total Scores page",
 				checked: checked,
+				class:   "il", //change checkbox to initial style
 			}, {
 				html:  "submit",
 				inner: "Save",
 				name:  "eventid",
 				value: eventID,
+				help:  "Disabling Total Scores page can help with calculating countbacks and discovering incorrect scorecards",
+				class: "nm",
 			},
 		},
 	}
