@@ -128,6 +128,7 @@ func homeFormNewEvent(clubs []Club, event Event) Form {
 				html:  "time",
 				label: "Time",
 				value: event.Time,
+				help:  "Select the date and time that your shooting event starts. Each clubs event page will show events in ascending date order like a calendar. Multiple dates and times may be added in the future for prizemeetings and championships that span over several days, weeks or months",
 			}, {
 				html:      "submit",
 				inner:     save,
