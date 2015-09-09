@@ -1,3 +1,13 @@
+$black: #000
+$white: #fff
+$grey: #888
+$IEgrey: '#888888'
+$IEblack: '#000000'
+$darkGrey: #444
+$orange: #f70
+$darkGrey2: #333
+$lightGrey: #ddd
+
 @import util
 
 @font-face
@@ -5,21 +15,21 @@
 	src: url(/2/a) format('woff2'), url(/f/a) format('woff')
 
 body
-	background: #000
+	background: $black
 	font-family: Arial, sans-serif
 	margin: 0
 
 .homeContainer
-	background: url(/e/a) no-repeat #fff
+	background: url(/e/a) no-repeat $white
 	padding: 0 15px
-	box-shadow: 0 0 3px 3px #888
+	box-shadow: 0 0 3px 3px $grey
 h1
 	font: 66px/58px han, Verdana, sans-serif
 	margin: 0
 
 	a
 		text-decoration: none
-		color: #000
+		color: $black
 
 h2
 	margin-bottom: 0
@@ -33,7 +43,7 @@ span
 legend
 	font-weight: 700
 
-.error
+//.error    //TODO conflicts with form label error messages
 	//TODO add red cross icon or something
 	border: 1px solid red
 	display: inline-block
@@ -47,14 +57,14 @@ legend
 
 .homeMenu
 	//TODO use an import for background gradient here
-	background: #444
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#888888', GradientType=0)
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(7%, #000), color-stop(7%, #888), color-stop(80%, #000), color-stop(99%, #888))
-	background: -moz-linear-gradient(top, #000 7%, #888 7%, #000 80%, #888 99%)
-	background: -webkit-linear-gradient(top, #000 7%, #888 7%, #000 80%, #888 99%)
-	background: -o-linear-gradient(top, #000 7%, #888 7%, #000 80%, #888 99%)
-	background: -ms-linear-gradient(top, #000 7%, #888 7%, #000 80%, #888 99%)
-	background: linear-gradient(to bottom, #000 7%, #888 7%, #000 80%, #888 99%)
+	background: $darkGrey
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=$IEblack, endColorstr=$IEgrey, GradientType=0)
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(7%, $black), color-stop(7%, $grey), color-stop(80%, $black), color-stop(99%, $grey))
+	background: -moz-linear-gradient(top, $black 7%, $grey 7%, $black 80%, $grey 99%)
+	background: -webkit-linear-gradient(top, $black 7%, $grey 7%, $black 80%, $grey 99%)
+	background: -o-linear-gradient(top, $black 7%, $grey 7%, $black 80%, $grey 99%)
+	background: -ms-linear-gradient(top, $black 7%, $grey 7%, $black 80%, $grey 99%)
+	background: linear-gradient(to bottom, $black 7%, $grey 7%, $black 80%, $grey 99%)
 	margin: 0 -15px 15px
 
 	li
@@ -62,25 +72,25 @@ legend
 
 	a, .v
 		padding: 5px 30px
-		color: #fff
+		color: $white
 		text-decoration: none
 		display: inline-block
 
 	a:hover
-		color: #f70
+		color: $orange
 		text-decoration: underline
 
 	.v
 		//The current visited page
-		+background-linear-gradient(#F70, 7%, #FFF, 7%, #888, 80%, #333, 99%)
+		+background-linear-gradient($orange, 7%, $white, 7%, $grey, 80%, $darkGrey2, 99%)
 		font-weight: 700
-		color: #000
+		color: $black
 
 p, ul
 	margin-top: 0
 
 .homeFooter
-	border-top: 1px solid #000
+	border-top: 1px solid $black
 	margin: 0 -15px
 	padding: 3px 60px
 
@@ -89,7 +99,7 @@ p, ul
 		text-decoration: none
 
 	div
-		background: #DDD
+		background: $lightGrey
 		display: inline-block
 		width: 100%
 		margin-bottom: 5px
@@ -97,7 +107,7 @@ p, ul
 	p
 		padding: 0 5px 0 5px
 		text-decoration: none
-		border-bottom: 1px solid #000
+		border-bottom: 1px solid $black
 		margin: 0
 
 		a
@@ -105,8 +115,8 @@ p, ul
 			font-style: italic
 
 	time
-		background: #888
-		border: 1px solid #000
+		background: $grey
+		border: 1px solid $black
 		font-weight: 900
 		text-align: center
 		width: 130px
@@ -148,7 +158,7 @@ p, ul
 @media print
 	.homeContainer
 		box-shadow: none
-		background: #fff
+		background: $white
 	span
 		margin: 0 0 0 168px
 
