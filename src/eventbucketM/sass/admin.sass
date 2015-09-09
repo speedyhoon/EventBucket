@@ -1,3 +1,15 @@
+$backgroundGrey: #495154
+$lightGrey: #ccc
+$black: #000
+$white: #fff
+$blue: #07f
+$mediumGrey: #777
+$deepGrey: #222
+$orange: #f70
+$lightBlue: #09f
+$green: #088
+$red: red
+
 @import util
 
 $border-style: solid #000
@@ -11,17 +23,17 @@ $border-style: solid #000
 +float-right()
 
 body
-	background: #495154
-	color: #ccc
+	background: $backgroundGrey
+	color: #lightGrey
 
 h1, legend, summary
-	text-shadow: #000 1px 2px 0px, #07F 3px 4px 3px, #000 4px 5px 3px
+	text-shadow: $black 1px 2px 0px, $blue 3px 4px 3px, $black 4px 5px 3px
 
 fieldset
 	border-radius: 8px
 	margin: 5px 0
-	background: #222
-	border-color: #777
+	background: $deepGrey
+	border-color: $mediumGrey
 
 legend, summary
 	font-size: 24px
@@ -80,27 +92,27 @@ select
 	width: 100%
 	font-family: Courier New
 
-	background: #fff
-	color: #000
+	background: $white
+	color: $black
 
 	a:hover,th.name:hover
-		color: #f70
+		color: $orange
 
 	tr[data-selected="1"] td
-		border-right:  2px solid #000
+		border-right:  2px solid $black
 
 	.B,tr[data-selected="1"] .B
-		border-right: 2px solid #09f
+		border-right: 2px solid $lightBlue
 
 	button
 		font-weight: 900
-		background: #000
+		background: $black
 		font-size: 32px
 		height: 75px
 		margin: 0 1% 1% 0
 		width: 11.5%
 		border: none
-		color: #fff
+		color: $white
 
 		&:last-child
 			margin-right: 0
@@ -116,7 +128,7 @@ select
 		font-weight: bold
 
 		&[data-selected="1"]
-			background: #088
+			background: $green
 
 	.name
 		cursor: pointer
@@ -136,15 +148,15 @@ select
 		padding: 0
 
 	tr:nth-child(odd)
-		background: #ccc
+		background: #lightGrey
 
 	//tr
 	//	border: 0 solid red
 	//	border-width: 5px 0
 
 	td[data-selected="1"]
-		color: #fff
+		color: $white
 
 	tr[data-selected="1"] td, tr[data-selected="1"] th
-		border: 0 solid red
+		border: 0 solid $red
 		border-width: 5px 0
