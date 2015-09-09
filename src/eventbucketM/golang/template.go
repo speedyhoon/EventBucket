@@ -114,10 +114,10 @@ var eventMenuItems = []Menu{
 		Name: "Home",
 		Link: "/",
 	}, {
-		Name: "Event",
+		Name: "Entries",
 		Link: urlEvent,
 	}, {
-		Name: "Event Settings",
+		Name: "Settings",
 		Link: urlEventSettings,
 	}, {
 		Name: "Scoreboard",
