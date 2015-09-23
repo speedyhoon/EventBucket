@@ -1,0 +1,74 @@
+<p>EventBucket is designed to assist with collecting scores during shooting events. Has your rifle club ever had difficulty keeping up with scoring for weekly matches, pennants or even prize meetings? EventBucket will solve these issues. It does not require electronic targets and can complement existing scoring and check scoring using cards and blackboards.</p>
+
+<p>To access EventBucket from multiple devices within your local network, the following links might be available:<br>
+	<strong>Hostname</strong> (Windows devices): <a href=//{{.Hostname}} target=_blank>{{.Hostname}}</a><br>
+	<strong>Ip Address</strong> (Apple &amp; Android devices):
+	{{range $index, $address := .IpAddresses}}<a href=//{{$address}} target=_blank>{{$address}}</a>{{end}}
+</p>
+
+{{HTM .FormNewEvent}}
+
+<br>
+
+<details>
+	<summary>New Event</summary>
+	<form action="/eventInsert" method="post">
+		<label>Event Name: <input name="name" required="" autofocus="" maxlength="100"></label> <label>Club Name: <input name="club" required="" autocomplete="off" maxlength="100" type="search" list="clubSearch"><datalist id="clubSearch"><option value="Long Tree Name"></option></datalist></label> <label>Date: <input name="date" value="2015-03-31" required="" type="date"></label> <label>Time: <input name="time" value="19:57" type="time"></label> <button maxlength="100">Save Event</button>
+	</form>
+</details>
+
+<br>
+
+<div id=proto>
+	<details>
+		<summary>Fuel Consumption</summary>
+		fuel gauges go here.
+	</details>
+	<details>
+		<summary class=margin7>Engine info</summary>
+		<ul>
+			<li>Oil Temp</li>
+			<li>Oil Level</li>
+			<li>Water Temp</li>
+			<li>Water Level</li>
+		</ul>
+	</details>
+</div>
+
+<h2>Open Events</h2>
+{{with .FutureEvents}}
+	<div class=events>
+		{{range .}}
+			<div>
+				<time>
+					{{with.Day}}
+						{{.}}
+					{{else}}
+						&nbsp;
+					{{end}}<br>
+					{{with.Date}}
+						<b>{{.}}</b>
+					{{else}}&nbsp;{{end}}
+					{{with.Month}}
+						{{.}}
+					{{else}}&nbsp;{{end}} {{with.Year}}
+						{{.}}
+					{{else}}&nbsp;{{end}}
+				</time>
+				<p>
+					{{if.ID}}
+						<a href=/event/{{.ID}}>{{.Name}}</a> {{with.Time}}
+							starts at {{.}}
+						{{end}}
+					{{end}}
+				</p>
+				{{if.Club}}
+					<a href=/club/{{.ClubID}}>{{.Club}}</a><br>
+				{{end}}
+				{{with.Ranges}}{{.}}{{end}}
+			</div>
+		{{end}}
+	</div>
+{{else}}
+	No events listed. <a href={{$.ArchiveLink}}>Archive</a>
+{{end}}

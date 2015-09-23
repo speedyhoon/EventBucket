@@ -1,0 +1,335 @@
+package main
+
+const (
+	//GET
+	urlHome     = "/"
+	urlAbout    = "/about"
+	urlClubs    = "/clubs"
+	urlLicence  = "/licence"
+	urlArchive  = "/archive"
+	urlShooters = "/shooters"
+	//GET with PARAMETERS
+	urlEvent            = "/event/" //eventID
+	urlClub             = "/club/"
+	urlEventSettings    = "/eventSettings/"
+	urlScoreboard       = "/scoreboard/" //eventID/rangeID
+	urlTotalScores      = "/totalScores/"
+	urlTotalScoresAll   = "/totalScoresAll/"
+	urlStartShooting    = "/startShooting/"
+	urlStartShootingAll = "/startShootingAll/"
+	//POST
+	urlQueryShooterList     = "/queryShooterList"
+	urlQueryShooterGrade    = "/queryShooterGrade"
+	urlEventUpdateShooter   = "/eventUpdateShooter"
+	urlClubInsert           = "/clubInsert"
+	urlEventInsert          = "/eventInsert"
+	urlEventRangeInsert     = "/rangeInsert"
+	urlEventAggInsert       = "/aggInsert"
+	urlShooterInsert        = "/shooterInsert"
+	urlShooterListInsert    = "/shooterListInsert"
+	urlUpdateSortScoreBoard = "/updateSortScoreBoard"
+	urlUpdateTotalScores    = "/updateTotalScores"
+	urlUpdateShotScores     = "/updateShotScores"
+	urlUpdateEventGrades    = "/updateEventGrades"
+	urlUpdateRange          = "/updateRange"
+	urlUpdateIsPrizeMeet    = "/updateIsPrizeMeet"
+	urlClubMoundInsert      = "/clubMoundInsert/"
+	urlClubDetailsUpsert    = "/clubDetailsUpsert/"
+	urlEventShotsNSighters  = "/eventShotsNSighters/"
+	//urlUpdateShooterList    = "/updateShooterList"
+	//urlClubMoundUpdate      = "/clubMoundUpdate/"
+	//urlChampInsert          = "/champInsert"
+	//urlRangeReport          = "/rangeReport/"
+	urlMakeShooterList = "/makeShooterList/"
+
+	//Global program settings
+	versionNumber    = "58"
+	buildDate        = "September 22, 2015"
+	pathHTMLMinified = "h/%v.htm"
+	//Main template html files
+	templateHome   = "_template_home"
+	templateAdmin  = "_template_admin"
+	templateEmpty  = "_template_empty"
+	idCharset      = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!*()_-."
+	idCharsetRegex = `\w~!\*\(\)\-\.`
+	//Folder structure
+	dirRoot = ""
+	dirCSS  = "/c/"
+	dirJPEG = "/e/"
+	dirJS   = "/j/"
+	dirPNG  = "/p/"
+	dirSVG  = "/v/"
+	dirWOF  = "/f/"
+	dirWOF2 = "/2/"
+	//Barcodes
+	//QRCODE     = "qr"
+	//DATAMATRIX = "dm"
+
+	//Scoreboard Settings
+	//SCOREBOARD_IGNORE_POSITION_FOR_ZERO_SCORES = true //true = Don't award shooters a place if they haven't submitted a score, false = shooter without a score is awarded last place (gets 5th when beaten by 4 other shooters)
+
+	//Total Scores Settings
+	errorEnterScoresInAgg = "<p>This range is an aggregate. Can't enter scores!</p>"
+
+	v8MaxEventID     = 100
+	v8MinEventID     = 1
+	v8MaxStringInput = 100
+	v8MinStringInput = 1
+	v8MinShots       = 90
+	v8Minhots        = 1
+	v8MaxIntegerID   = 999
+	v8MinIntegerID   = 0
+)
+
+// ClassSettings is exported
+type ClassSettings struct {
+	Name                  string
+	Display               string
+	DisplayValue          int
+	Buttons               string
+	SightersQty, ShotsQty int
+	ValidShots            map[string]Score
+	ValidSighters         []string
+	GradeQty              int
+	Grades                []int
+	Maximum               Score
+}
+
+var (
+	//BARCODE_TYPE = QRCODE
+
+	homeMenuItems = []Menu{
+		{
+			Name: "Home",
+			Link: urlHome,
+		}, {
+			Name: "Archive",
+			Link: urlArchive,
+		}, {
+			Name: "Clubs",
+			Link: urlClubs,
+		}, {
+			Name: "About",
+			Link: urlAbout,
+		}, {
+			Name: "Shooters",
+			Link: urlShooters,
+		}, {
+			Name:   "Licence",
+			Link:   urlLicence,
+			Hidden: true,
+		},
+	}
+
+	defaultClassSettings = []ClassSettings{
+		{
+			Name:         "target",
+			Display:      "Target",
+			DisplayValue: 0,
+			Buttons:      "012345VX",
+			SightersQty:  2,
+			ShotsQty:     10,
+			Maximum:      Score{Total: 5, Centres: 1},
+			ValidShots: map[string]Score{
+				"-": {Total: 0, Centres: 0, CountBack: "0"},
+				"0": {Total: 0, Centres: 0, CountBack: "0"},
+				"1": {Total: 1, Centres: 0, CountBack: "1"},
+				"2": {Total: 2, Centres: 0, CountBack: "2"},
+				"3": {Total: 3, Centres: 0, CountBack: "3"},
+				"4": {Total: 4, Centres: 0, CountBack: "4"},
+				"5": {Total: 5, Centres: 0, CountBack: "5"},
+				"V": {Total: 5, Centres: 1, CountBack: "6"},
+				"6": {Total: 5, Centres: 1, CountBack: "6"},
+				"X": {Total: 5, Centres: 1, CountBack: "6"},
+			},
+			ValidSighters: []string{")", "!", "@", "#", "$", "%", "v", "^", "x"},
+			GradeQty:      3,
+			Grades:        []int{0, 1, 2},
+		},
+		{
+			Name:         "fclass",
+			Display:      "F Class",
+			DisplayValue: 1,
+			Buttons:      "0123456X",
+			SightersQty:  2,
+			ShotsQty:     10,
+			Maximum:      Score{Total: 6, Centres: 1},
+			ValidShots: map[string]Score{
+				"-": {Total: 0, Centres: 0, CountBack: "0"},
+				"0": {Total: 0, Centres: 0, CountBack: "0"},
+				"1": {Total: 1, Centres: 0, CountBack: "1"},
+				"2": {Total: 2, Centres: 0, CountBack: "2"},
+				"3": {Total: 3, Centres: 0, CountBack: "3"},
+				"4": {Total: 4, Centres: 0, CountBack: "4"},
+				"5": {Total: 5, Centres: 0, CountBack: "5"},
+				"V": {Total: 5, Centres: 0, CountBack: "6"},
+				"6": {Total: 6, Centres: 0, CountBack: "6"},
+				"X": {Total: 6, Centres: 1, CountBack: "7"},
+			},
+			ValidSighters: []string{")", "!", "@", "#", "$", "%", "v", "^", "x"},
+			GradeQty:      4,
+			Grades:        []int{3, 4, 5, 6, 9},
+		},
+		{
+			Name:         "match",
+			Display:      "Match",
+			DisplayValue: 2,
+			Buttons:      "012345VX",
+			SightersQty:  3,
+			ShotsQty:     15,
+			Maximum:      Score{Total: 5, Centres: 1},
+			ValidShots: map[string]Score{
+				"-": {Total: 0, Centres: 0, CountBack: "0"},
+				"0": {Total: 0, Centres: 0, CountBack: "0"},
+				"1": {Total: 1, Centres: 0, CountBack: "1"},
+				"2": {Total: 2, Centres: 0, CountBack: "2"},
+				"3": {Total: 3, Centres: 0, CountBack: "3"},
+				"4": {Total: 4, Centres: 0, CountBack: "4"},
+				"5": {Total: 5, Centres: 0, CountBack: "5"},
+				"V": {Total: 5, Centres: 1, CountBack: "6"},
+				"6": {Total: 5, Centres: 1, CountBack: "6"},
+				"X": {Total: 5, Centres: 1, CountBack: "6"},
+			},
+			ValidSighters: []string{")", "!", "@", "#", "$", "%", "v", "^", "x"},
+			GradeQty:      2,
+			Grades:        []int{7, 8},
+		},
+	}
+
+	// ClassNamesList is exported
+	ClassNamesList = []string{
+		0: "Target A",
+		1: "Target B",
+		2: "Target C",
+		3: "F Class A",
+		4: "F Class B",
+		5: "F Class Open",
+		6: "F/TR",
+		7: "Match Open",
+		8: "Match Reserve",
+		9: "303 Rifle",
+	}
+)
+
+func isScoreHighestPossibleScore(classID, numberOdShots, total, centres int) bool {
+	return defaultClassSettings[classID].Maximum.Total*numberOdShots == total && defaultClassSettings[classID].Maximum.Centres*numberOdShots == centres
+}
+
+// Grade is exported
+type Grade struct {
+	name, longName, className string
+	classID                   int
+	settings                  ClassSettings
+}
+
+func gradeList() []int {
+	return []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+}
+func grades() []Grade {
+	return []Grade{
+		0: {settings: defaultClassSettings[0], classID: 0, name: "A", className: "Target", longName: "Target A"},
+		1: {settings: defaultClassSettings[0], classID: 0, name: "B", className: "Target", longName: "Target B"},
+		2: {settings: defaultClassSettings[0], classID: 0, name: "C", className: "Target", longName: "Target C"},
+		3: {settings: defaultClassSettings[1], classID: 1, name: "FA", className: "F Class", longName: "F Class A"},
+		4: {settings: defaultClassSettings[1], classID: 1, name: "FB", className: "F Class", longName: "F Class B"},
+		5: {settings: defaultClassSettings[1], classID: 1, name: "F Open", className: "F Class", longName: "F Class Open"},
+		6: {settings: defaultClassSettings[1], classID: 1, name: "F/TR", className: "F Class", longName: "F/TR"},
+		7: {settings: defaultClassSettings[2], classID: 2, name: "Open", className: "Match", longName: "Match Open"},
+		8: {settings: defaultClassSettings[2], classID: 2, name: "Reserve", className: "Match", longName: "Match Reserve"},
+		9: {settings: defaultClassSettings[1], classID: 1, name: "Rifle", className: "303", longName: "303 Rifle"},
+	}
+}
+
+func ageGroupDisplay(value string) string {
+	if value != "N" {
+		for _, ageGroup := range ageGroups() {
+			if value == ageGroup.Value {
+				return ageGroup.Display
+			}
+		}
+	}
+	return ""
+}
+
+func ageGroups() []Option {
+	return []Option{
+		{
+			Display:  "None",
+			Value:    "N",
+			Selected: true,
+		}, {
+			Display: "Junior (U21)",
+			Value:   "U21",
+		}, {
+			Display: "Junior (U25)",
+			Value:   "U25",
+		}, {
+			Display: "Veteran",
+			Value:   "V",
+		}, {
+			Display: "Super Veteran",
+			Value:   "SV",
+		},
+	}
+}
+
+//Return age group select box options with the shooters value selected
+func shooterAgeGroupSelect(shooter EventShooter) []Option {
+	options := ageGroups()
+	for i, ageGroup := range options {
+		options[i].Selected = shooter.AgeGroup == ageGroup.Value
+	}
+	return options
+}
+
+// Legend is exported
+type Legend struct {
+	//To access a field in HTML a struct, it must start with an uppercase letter. Other wise it will output error: xxx is an unexported field of struct type main.Legend
+	CSSClass, Name string
+}
+
+const (
+	legendShootOff             = 1
+	legendNoScore              = 2
+	legendIncompleteScore      = 3
+	legendHighestPossibleScore = 4
+	//LEGEND_FIRST               = 5
+	//LEGEND_SECOND              = 6
+	//LEGEND_THIRD               = 7
+)
+
+func scoreBoardLegend() []Legend {
+	return []Legend{
+		{CSSClass: "w4", Name: "Highest Possible Score"},
+		{CSSClass: "w1", Name: "Shoot Off"},
+		{CSSClass: "w3", Name: "Incomplete Score"},
+		{CSSClass: "w2", Name: "No Score"},
+		{CSSClass: "p1", Name: "1st"},
+		{CSSClass: "p2", Name: "2nd"},
+		{CSSClass: "p3", Name: "3rd"},
+	}
+}
+
+func shotsToValue(shot string) string {
+	return map[string]string{
+		"-": "",
+		"0": "0",
+		"1": "1",
+		"2": "2",
+		"3": "3",
+		"4": "4",
+		"5": "5",
+		"V": "V",
+		"6": "6",
+		"X": "X",
+		")": "0",
+		"!": "1",
+		"@": "2",
+		"#": "3",
+		"$": "4",
+		"%": "5",
+		"v": "V",
+		"^": "6",
+		"x": "X",
+	}[shot]
+}
