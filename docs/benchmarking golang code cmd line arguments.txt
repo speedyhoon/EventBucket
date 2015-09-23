@@ -1,0 +1,40 @@
+-benchmem -covermode count -coverprofile cover.out -v
+
+
+go test
+-race
+-bench
+-benchmem
+-benchtime 1m
+-blockprofile blockprofile.txt
+-covermode count
+-coverprofile coverage.txt
+-cpuprofile cpu.out
+-memprofile mem.out
+-parallel 4
+-v
+pStartShooting_test.go
+
+
+
+
+
+
+        pStartShooting_test.go:54: boo <!doctype html><link rel=stylesheet href=/c/admin.css><link rel=icon type=ima
+ge/png href=/p/a><title>EventBucket - Event Settings</title><h1>Event Settings - Tree</h1><ul><li><a href=/>Home</a>
+<li><a href=/event/Mq>Event</a><li class=v><a href=/eventSettings/Mq>Event Settings</a><li><a href=/scoreboard/Mq>Sc
+oreboard</a></ul><form action=/eventInsert method=post><fieldset><legend>Event Details</legend><label>Event Name<inp
+ut name=name maxlength=100 required value=Tree></label><label>Club Name<input type=search name=club autocomplete=off
+ list=clubSearch maxlength=100 required value=Goose><datalist id=clubSearch><option value="Long Tree Name"><option v
+alue=Activists><option value="Kill It"><option value=e><option value=d><option><option value=Goose></datalist></labe
+l><label>Date<input type=date name=date required value=12.12.2016></label><label>Time<input type=time name=time></la
+bel><button name=eventid value=Mq>Update Event</button></fieldset></form><fieldset><legend>Ranges &amp; Aggregates</
+legend><form action=/rangeInsert method=post><fieldset><legend>Add Range</legend><label>Range Name<input name=name a
+utofocus required></label><button name=eventid value=Mq>Create Range</button></fieldset></form></fieldset><form acti
+on=/updateIsPrizeMeet method=post><fieldset><legend>Prize Meeting Event</legend><label>Is this Event a Prize Meeting
+?<input type=checkbox name=prizemeet></label><button name=eventid value=Mq>Save</button></fieldset></form><script sr
+c=/j/admin.js></script>
+FAIL
+
+
+go test -race -bench -benchmem -benchtime 1m -blockprofile blockprofile.txt -covermode count -coverprofile coverage.txt -cpuprofile cpu.out -memprofile mem.out -parallel 4 -v __GO__files_here.go

@@ -1,4 +1,0 @@
-TYPE \\Server\Share\Folder\*.go >> C:\Folder\ConcatenatedFile.go
-
-
-http://stackoverflow.com/questions/2477271/concatenate-text-files-with-windows-command-line-dropping-leading-lines

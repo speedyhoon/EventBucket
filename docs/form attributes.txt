@@ -1,0 +1,194 @@
+
+
+<button>
+	+autofocus
+	+disabled
+	+form 
+	+formaction
+	-formenctype 
+		application/x-www-form-urlencoded	default
+		multipart/form-data		form contains a file
+		text/plain
+	-formmethod 
+		get			default
+		post
+	-formnovalidate
+	-formtarget 
+	+name
+	type
+		submit		default
+		reset
+		button
+	value
+
+datalist
+	id
+	
+fieldset
+	disabled
+	form
+	name
+	
+form
+	accept
+	action
+	enctype
+		application/x-www-form-urlencoded	default
+		multipart/form-data		form contains a file
+		text/plain
+	method
+		get			default
+		post
+	novalidate
+	target
+		_self		default 
+		_blank
+		_parent
+		_top
+		iframename
+		
+input
+	type
+		text	default
+		button
+		checkbox
+			checked
+		color
+		date
+		datetime
+		datetime-local
+		email
+		file
+		hidden
+		image
+			height
+			src
+			width
+		month
+		number
+			min
+			max
+			step
+		password
+		radio
+			checked
+		range
+			min
+			max
+			step
+		reset
+		search
+		submit
+		tel
+		time
+		url
+		week
+	accept
+		A file extension starting with the STOP character (U+002E). (E.g.: ".jpg,.png,.doc")
+		A valid MIME type with no extensions
+		audio/* representing sound files HTML5
+		video/* representing video files HTML5
+		image/* representing image files HTML5
+	autocomplete 
+		on
+		off
+	autofocus 
+	autosave 
+	checked
+		only applies to: radio, checkbox
+	disabled
+	form 
+	formaction
+	formmethod
+	formnovalidate
+	formtarget
+	inputmode 
+		verbatim: Alphanumeric, non-prose content such as usernames and passwords.
+		latin: Latin-script input in the user's preferred language with typing aids such as text prediction enabled. For human-to-computer communication such as search boxes.
+		latin-name: As latin, but for human names.
+		latin-prose: As latin, but with more aggressive typing aids. For human-to-human communication such as instant messaging for email.
+		full-width-latin: As latin-prose, but for the user's secondary languages.
+		kana: Kana or romaji input, typically hiragana input, using full-width characters, with support for converting to kanji. Intended for Japanese text input.
+		katakana: Katakana input, using full-width characters, with support for converting to kanji. Intended for Japanese text input.
+		numeric: Numeric input, including keys for the digits 0 to 9, the user's preferred thousands separator character, and the character for indicating negative numbers. Intended for numeric codes, e.g. credit card numbers. For actual numbers, prefer using <input type="number">
+		tel: Telephone input, including asterisk and pound key. Use <input type="tel"> if possible instead.
+		email: Email input. Use <input type="email"> if possible instead.
+		url: URL input. Use <input type="url"> if possible instead.
+	list 
+		doesn't apply to: hidden, checkbox, radio, file, submit, reset, button
+	maxlength
+		only applies to: text, email, search, password, tel, url
+	minlength
+		only applies to: text, email, search, password, tel, url
+	multiple 
+		only applies to: email, file
+	name
+	pattern
+		should use a title to help the user
+		only applies to: text, search, tel, url or email
+	placeholder
+		applies to: text, search, tel, url, email
+	readonly
+		doesn't apply to: hidden, range, color, checkbox, radio, file, submit, reset, button
+	required
+		doesn't apply to: hidden, image, submit, reset, button
+	size
+		default = 20
+		only applies to: text, search, tel, url, email, password
+	spellcheck 
+		default
+		false
+	value
+		(required with radio or checkbox)
+		
+label
+	for
+	form
+	
+legend
+	NONE
+
+meter
+	value
+	min
+	max
+	low
+	high
+	optimum
+	form
+
+output
+	-for
+	-form
+	+name
+	
+select
+	+autofocus
+	-disabled
+	-form
+	+multiple
+	+name
+	+required
+	+size
+	
+textarea
+	+autocomplete 
+		on		default
+		off
+	+cols
+	+disabled
+	+form
+	+maxlength
+	+minlength
+	+name
+	+placeholder
+	+readonly
+	+required
+	+rows
+	-selectionDirection
+	-selectionEnd
+	-selectionStart
+	-spellcheck
+	-wrap 
+		hard
+		soft

@@ -1,0 +1,95 @@
+
+licence summary page
+	Feature  copy licence lamens terms from CC
+	Feature  change footer licence logo to simpler svg one from google images
+
+OPTIMISATION POTENTIAL:
+scoreboard
+	remove styles from triangle sort by svg and put them in the css fill:red;stroke:#000;
+code
+	find a way to output a trace of previous code to stdout so checkErr can be put back in and output the error from the previous executed line - this would improve code re-usability (DRY)
+	remove html folder from install package
+	move htm folder into core source code -- could this be an automatic thing?
+	separate html from data - try to cache html for ever and send AJAX/Websockets for additional data.
+	cache all AJAX/Websocket requests in local storage if the response flag is set to cache
+		each page would have a single request with several tables that needed data like event-settings has many bits of data.
+
+server
+	add a far-future expiration date headers for favicon http://localhost/o/a
+	move sortby.svg into css as base64
+
+Installer
+	Setup icon  - Also use as the favicon
+	test that you can uninstall everything
+	test that you can install over the top of an old folder!
+	change eb.exe to run in minimized mode so it doesn't appear or show the logs
+	add eb.exe to the task bar notifications
+	maybe add uninstall old version?
+	Add uninstall option to delete database
+
+about page
+	convert about icons to a sprite
+
+settings
+	add ability to change the default port number for EventBucket
+
+Un-important optimisations or features:
+all templates
+	tidy up html templates and remove variables for globals and replace with $.SortRange http://stackoverflow.com/questions/16734503/access-out-of-loop-value-inside-golang-templates-loop
+	set a formatting rule for variable names
+all forms
+	on submit redirect to form location id on form with #my_form_name to <fieldset id=my_form_name><h2>Heading</h2><form action=... etc
+	decide if submit buttons should be on a new line or be next to the last element
+validation
+	if no grade specified. set to the first one in the list. e.g. Target A or F CLass B
+event show
+	add edit button to edit existing shooter entries. Eventually change this to just onclick so no edit button is needed. And add a help logo with tooltips
+installer
+	change installer to 64bit if possible
+scoreboard
+	reduce the number of DOM elements 4962 > 4602 > 2837
+		- join equal position cells together if they are equal
+		grade separators should only have one element with fancy borders etc, not <tr><td colspan=99 class=cnr>{{CLASSLONG .Grade}} {{.Grade}}</td></tr><tr><td colspan=99 class=rS></td></tr>
+		automatically don't show the ranges if they don't  have any scores for them.
+		try to join teble cells between ranges where shooters don't have any scores.
+	change the colspan quantity to the actual number required. so the pages validate properly
+Event Ranges
+	instead of having several properties for different statuses - locked, hidden, is on scoreboard, in progress, finished -- it might be better to save that info on a single attribute to save database space like
+		int ( locked = 0|1, hidden = 0|2, scoreboard = 4|0, progress = 8|0, finished = 16|0 ) so locked && hidden && finished = 19
+		string ( use initials)  so locked && hidden && finished = "LHF"
+	change event grades from a string to a struct so that each grade can have their own shots quantity and sighters quantity set uniquely
+http
+	make a custom http.HandleFunc for each controller instead of the current setup http.ResponseWriter
+		have one function per page listed in main()
+		controller should know what it's own url is
+		the controller should know what kind of page it is to automatically add menus and select templates.
+		too much code is needed to setup a new page.
+
+//TODO add all html sources to []byte constant in a new go file?
+
+open archive event
+	copy event
+
+Additional Features:
+forms
+	Add generic button in set position for help and description. Display it by default for the first 90 days or so. Take the date from the mongo database as a global bool - show help by default = on or off.
+	auto focus back on the edited previous field when pressing [Enter] ---- use ajax update instead
+	Add red error message when a save failed -- ajax
+	Add green message when form saved correctly --- generic ajax handler of some kind listening to database update didn't fail!
+
+event page
+	if the event id doesn't match anything - doesn't exist display a create event page
+event entry
+	add gender to event entry
+
+all pages
+	better support for displaying errors on screen and database errors
+
+Update
+	Feature check for updates on startup
+
+
+General
+	Feature  set autofocus on every page that has a form
+	Feature  set autofocus to last form modified on post events
+	Research Use html imports, HTML templates and maybe JS code to load network adaptor. this would remove the need to use BuildBot to load NetworkAdaptor
