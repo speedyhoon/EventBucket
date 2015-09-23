@@ -1,0 +1,445 @@
+package main
+
+import (
+	"net/http"
+	"sort"
+	"strings"
+	"time"
+)
+
+func home() Page {
+	//Sort the list of shooters by grade only
+	sortByDate := func(c1, c2 *Event) bool {
+		return c1.Date < c2.Date
+	}
+	sortByTime := func(c1, c2 *Event) bool {
+		return c1.Time < c2.Time
+	}
+	sortByName := func(c1, c2 *Event) bool {
+		return strings.ToLower(c1.Name) < strings.ToLower(c2.Name)
+	}
+	events := getEvents() //TODO make custom select
+	orderedByEvent(sortByDate, sortByTime, sortByName).Sort(events)
+	openEvents := []homeCalendar{}
+	for _, event := range events {
+		if !event.Closed {
+			var listRanges []string
+			for _, rangeObj := range event.Ranges {
+				listRanges = append(listRanges, rangeObj.Name)
+			}
+			club, _ := getClub(event.Club)
+			calendarEvent := homeCalendar{
+				ID:     event.ID,
+				Name:   event.Name,
+				ClubID: event.Club,
+				Club:   club.Name,
+				Time:   event.Time,
+				Ranges: strings.Join(listRanges, ", "),
+			}
+			if event.Date != "" {
+				dateObj, err := time.Parse("2006-01-02", event.Date)
+				if err == nil {
+					calendarEvent.Day = dateObj.Weekday().String()
+					calendarEvent.Date = ordinal(dateObj.Day())
+					calendarEvent.Month = dateObj.Month()
+					calendarEvent.Year = dateObj.Year()
+				}
+			}
+			openEvents = append(openEvents, calendarEvent)
+		}
+	}
+	hostname, ipAddresses := hostnameIPAddresses()
+	//TODO change getClubs to simpler DB lookup getClubNames
+	clubs := getClubs()
+	return Page{
+		TemplateFile: "home",
+		Theme:        templateHome,
+		Title:        "Home",
+		Data: M{
+			"FutureEvents": openEvents,
+			"PageName":     "Calendar",
+			"ArchiveLink":  urlArchive,
+			"FormNewEvent": makeForm(homeFormNewEvent2(clubs, (Event{}))),
+			"Hostname":     hostname,
+			"IpAddresses":  ipAddresses,
+		},
+		v8Url: vURLHome,
+	}
+}
+
+func homeFormNewEvent(clubs []Club, event Event) Form {
+	title := "Event Details"
+	save := "Update Event"
+	var nameFocus bool
+	submitName := "eventid"
+	if event.ID == "" {
+		title = "New Event"
+		save = "Save Event"
+		nameFocus = true
+		submitName = ""
+		event.Date = time.Now().Format("2006-01-02")
+		event.Time = time.Now().Format("15:04")
+	}
+	var clubList []Option
+	for _, clubData := range clubs {
+		if event.Club != "" && clubData.ID == event.Club {
+			event.Club = clubData.Name
+		}
+		clubList = append(clubList, Option{
+			Value: clubData.Name,
+		})
+	}
+	return Form{
+		action: urlEventInsert,
+		title:  title,
+		inputs: []Inputs{
+			{
+				name:      "name",
+				html:      "text",
+				label:     "Event Name",
+				varType:   "string",
+				maxLength: v8MaxStringInput,
+				minLength: v8MinStringInput,
+				required:  true,
+				value:     event.Name,
+				autofocus: nameFocus,
+			}, {
+				name:         "club",
+				html:         "search",
+				dataList:     true,
+				id:           "clubSearch",
+				autoComplete: "off",
+				label:        "Club Name",
+				//TODO auto set the club name to X if there is only one available
+				options:   clubList,
+				required:  true,
+				value:     event.Club,
+				varType:   "string",
+				maxLength: v8MaxStringInput,
+				minLength: v8MinStringInput,
+			}, {
+				name:     "date",
+				html:     "date",
+				label:    "Date",
+				required: true,
+				value:    event.Date,
+			}, {
+				name:  "time",
+				html:  "time",
+				label: "Time",
+				value: event.Time,
+				help:  "Select the date and time that your shooting event starts. Each clubs event page will show events in ascending date order like a calendar. Multiple dates and times may be added in the future for prizemeetings and championships that span over several days, weeks or months",
+			}, {
+				html:      "submit",
+				inner:     save,
+				name:      submitName,
+				value:     event.ID,
+				varType:   "string",
+				maxLength: v8MaxEventID,
+				minLength: v8MinEventID,
+			},
+		},
+	}
+}
+
+func homeFormNewEvent2(clubs []Club, event Event) Form2 {
+	title := "Event Details"
+	save := "Update Event"
+	var nameFocus bool
+	submitName := "eventid"
+	if event.ID == "" {
+		title = "New Event"
+		save = "Save Event"
+		nameFocus = true
+		submitName = ""
+		event.Date = time.Now().Format("2006-01-02")
+		event.Time = time.Now().Format("15:04")
+	}
+	var clubList []Option
+	for _, clubData := range clubs {
+		if event.Club != "" && clubData.ID == event.Club {
+			event.Club = clubData.Name
+		}
+		clubList = append(clubList, Option{
+			Value: clubData.Name,
+		})
+	}
+	return Form2{
+		action: urlEventInsert,
+		title:  title,
+		fields: []Field{
+			{
+				name:      "name",
+				html:      "text",
+				label:     "Event Name",
+				varType:   "string",
+				maxLength: v8MaxStringInput,
+				minLength: v8MinStringInput,
+				required:  true,
+				value:     event.Name,
+				autofocus: nameFocus,
+				//				error:     "whoops this seems to be an unexpected error :(",
+			}, {
+				name:         "club",
+				html:         "search",
+				dataList:     true,
+				id:           "clubSearch",
+				autoComplete: "off",
+				label:        "Club Name",
+				//TODO auto set the club name to X if there is only one available
+				options:   clubList,
+				required:  true,
+				value:     event.Club,
+				varType:   "string",
+				maxLength: v8MaxStringInput,
+				minLength: v8MinStringInput,
+				//				error:     "whoops this seems to be an unexpected error :(",
+			}, {
+				name:     "date",
+				html:     "date",
+				label:    "Date",
+				required: true,
+				value:    event.Date,
+				//				error:    "whoops this seems to be an unexpected error :(",
+			}, {
+				name:  "time",
+				html:  "time",
+				label: "Time",
+				value: event.Time,
+				//				error: "whoops this seems to be an unexpected error :(",
+				help: "Select the date and time that your shooting event starts. Each clubs event page will show events in ascending date order like a calendar. Multiple dates and times may be added in the future for prizemeetings and championships that span over several days, weeks or months",
+			}, {
+				html:      "submit",
+				inner:     save,
+				name:      submitName,
+				value:     event.ID,
+				varType:   "string",
+				maxLength: v8MaxEventID,
+				minLength: v8MinEventID,
+				//				error:     "whoops this seems to be an unexpected error :(",
+			},
+		},
+	}
+}
+
+func eventInsert_old_backup(w http.ResponseWriter, r *http.Request) {
+	/*validatedValues, ok := v8(homeFormNewEvent([]Club{}, Event{}).inputs, r)
+	if !ok {
+		http.Error(w, "Invalid request form data", 400)
+		return
+	}*/
+	//TODO merge this database functionality into an upsert
+	validatedValues := checkForm(homeFormNewEvent([]Club{}, Event{ID: "0"}).inputs, r)
+	//TODO one day change validated values to return the schema compatible data so it can be directly used add constants would by used more often to access the map items
+	eventID := validatedValues["eventid"]
+
+	var clubID string
+	club, err := getClubByName(validatedValues["club"])
+	if err == nil {
+		clubID = club.ID
+	} else {
+		clubID, err = insertClub(validatedValues["club"])
+	}
+
+	if eventID == "" {
+		newEvent := Event{
+			Name: validatedValues["name"],
+		}
+		if len(clubID) >= 1 {
+			newEvent.Club = clubID
+		}
+
+		if validatedValues["date"] != "" {
+			newEvent.Date = validatedValues["date"]
+		}
+
+		if validatedValues["time"] != "" {
+			newEvent.Time = validatedValues["time"]
+		}
+
+		//Add default ranges and aggregate ranges
+		newEvent.ID, err = getNextID(tblEvent)
+		newEvent.AutoInc.Range = 1
+		if err == nil {
+			insertDoc(tblEvent, newEvent)
+			//redirect user to event settings
+			http.Redirect(w, r, urlEventSettings+newEvent.ID, http.StatusSeeOther)
+		} else {
+			//TODO go to previous referer page -- home page
+			//http.Redirect(w, r, urlHome, http.StatusSeeOther)
+		}
+	} else {
+		updateData := M{
+			"n": validatedValues["name"],
+			"d": validatedValues["date"],
+			"t": validatedValues["time"],
+		}
+		if len(clubID) >= 1 {
+			updateData["c"] = clubID
+		}
+		tableUpdateData(tblEvent, eventID, updateData)
+		http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
+		//TODO display any form errors on event settings page
+	}
+}
+
+func homeToEvent(field []Field) Event {
+	return Event{
+		ID:   field[0].value.(string),
+		Name: field[1].value.(string),
+		Club: field[2].value.(string),
+		Date: field[3].value.(string),
+		Time: field[4].value.(string),
+	}
+}
+
+func eventInsert(w http.ResponseWriter, r *http.Request) {
+	var clubID, clubName, eventID string
+	var newEvent Event
+	var club Club
+	var err error
+	var ok bool
+	var fields []Field
+	fields, ok = isValid(homeFormNewEvent2([]Club{}, Event{ID: "0"}).fields, r)
+	if !ok {
+		//TODO return form errors
+		return
+	}
+	newEvent = homeToEvent(fields)
+	clubName = newEvent.Club
+
+	club, err = getClubByName(clubName)
+	if err == nil {
+		clubID = club.ID
+	} else {
+		clubID, err = insertClub(clubName)
+	}
+
+	eventID = newEvent.ID    // validatedValues[4].value.(string)
+	clubName = newEvent.Club // validatedValues[1].value.(string)
+
+	club, err = getClubByName(clubName)
+	if err == nil {
+		clubID = club.ID
+	} else {
+		clubID, err = insertClub(clubName)
+	}
+
+	/*validatedValues, ok := v8(homeFormNewEvent([]Club{}, Event{}).inputs, r)
+	if !ok {
+		http.Error(w, "Invalid request form data", 400)
+		return
+	}*/
+	//TODO merge this database functionality into an upsert
+	//validatedValues := checkForm(homeFormNewEvent([]Club{}, Event{ID: "0"}).inputs, r)
+	//TODO one day change validated values to return the schema compatible data so it can be directly used add constants would by used more often to access the map items
+	//	eventID := validatedValues["eventid"]
+	//
+	//	var clubID string
+	//	club, err := getClubByName(validatedValues["club"])
+	//	if err == nil {
+	//		clubID = club.ID
+	//	} else {
+	//		clubID, err = insertClub(validatedValues["club"])
+	//	}
+
+	if eventID == "" {
+		//		newEvent := Event{
+		//			Name: validatedValues[0].value.(string),
+		//			Date: validatedValues[2].value.(string),
+		//			Time: validatedValues[3].value.(string),
+		//			//	ID: validatedValues[4].value.(string),
+		//		}
+
+		//		newEvent := Event{
+		//			Name: validatedValues["name"],
+		//		}
+		if len(clubID) >= 1 {
+			newEvent.Club = clubID
+		}
+
+		//		if validatedValues["date"] != "" {
+		//			newEvent.Date = validatedValues["date"]
+		//		}
+
+		//		if validatedValues["time"] != "" {
+		//			newEvent.Time = validatedValues["time"]
+		//		}
+
+		//Add default ranges and aggregate ranges
+		newEvent.ID, err = getNextID(tblEvent)
+		newEvent.AutoInc.Range = 1
+		if err == nil {
+			insertDoc(tblEvent, newEvent)
+			//redirect user to event settings
+			http.Redirect(w, r, urlEventSettings+newEvent.ID, http.StatusSeeOther)
+		} else {
+			//TODO go to previous referer page -- home page
+			//http.Redirect(w, r, urlHome, http.StatusSeeOther)
+		}
+	} else {
+		updateData := M{
+			"n": "tree",
+			//			"n": validatedValues[0].value.(string),
+			//			"d": validatedValues[2].value.(string),
+			//			"t": validatedValues[3].value.(string),
+		}
+		if len(clubID) >= 1 {
+			updateData["c"] = clubID
+		}
+		tableUpdateData(tblEvent, eventID, updateData)
+		http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
+		//TODO display any form errors on event settings page
+	}
+}
+
+//Home and archive pages
+type homeCalendar struct {
+	ID, Name, Club, ClubID, Time string
+	Day                          string
+	Date, Ranges                 string
+	Month                        time.Month
+	Year                         int
+}
+
+type lessFunc2 func(p1, p2 *Event) bool
+
+type multiSorter2 struct {
+	changes []Event
+	less    []lessFunc2
+}
+
+func (ms *multiSorter2) Sort(changes []Event) {
+	ms.changes = changes
+	sort.Sort(ms)
+}
+
+func (ms *multiSorter2) Len() int {
+	return len(ms.changes)
+}
+
+func (ms *multiSorter2) Swap(i, j int) {
+	ms.changes[i], ms.changes[j] = ms.changes[j], ms.changes[i]
+}
+
+func (ms *multiSorter2) Less(i, j int) bool {
+	p, q := &ms.changes[i], &ms.changes[j]
+	// Try all but the last comparison.
+	var k int
+	for k = 0; k < len(ms.less)-1; k++ {
+		less := ms.less[k]
+		switch {
+		case less(p, q):
+			return true
+		case less(q, p):
+			return false
+		}
+	}
+	return ms.less[k](p, q)
+}
+
+func orderedByEvent(less ...lessFunc2) *multiSorter2 {
+	return &multiSorter2{
+		less: less,
+	}
+}

@@ -1,0 +1,18 @@
+
+
+
+
+on save shoot
+	add up aggregate
+	set warning level
+	calculate positions in grade
+	calculate if there is a shoot off in grade
+	
+	
+java -jar closure-stylesheets.jar \
+    --pretty-print \
+    --output-file dialog.css \
+    --output-renaming-map-format CLOSURE_UNCOMPILED \
+    --rename CLOSURE \
+    --output-renaming-map renaming_map.js \
+    dialog.gss
