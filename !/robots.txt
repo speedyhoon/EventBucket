@@ -1,0 +1,12 @@
+User-agent: *
+Disallow: /event/
+Disallow: /startShooting/
+Disallow: /totalScores/
+Disallow: /2/
+Disallow: /c/
+Disallow: /e/
+Disallow: /f/
+Disallow: /h/
+Disallow: /j/
+Disallow: /p/
+Disallow: /v/
