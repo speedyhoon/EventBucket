@@ -1,0 +1,28 @@
+EventBucket Mission Satement:
+	Build the simplest website possible
+	Only add frameworks/packages where it will safe significant time/resources.
+	Target audience: "outback" Australia with limited internet connection & speed (if available)
+		Before the National Broadband Network scheme north western Victoria farms had available
+			poor ADSL - 100km from the closest node no ADSL2+ 35% packet loss
+			satelite - running at 150% capacity. Peek periods averaged 1.76KB/s download
+			3G wifi - not available - next door neibour erected a 4m tall arial ~ 40+dB - erratic connectivity in windy, super hot(mirages) rain, stormy weather, lighting,
+			dialup - two phone lines required - billed on time rather than traffic.
+
+
+Javascript
+	CoffeeScript
+	The idea of simplifying Javascript and writing less code to do more is a good one. However I disagree on a few of the default behavior implementations.
+	functions return the last written. Often handy but also a pain if you have to write return undefined everywhere
+
+	the amount of javascript code it generates is more than hand coded javascript.
+
+	code can be confusing/difficult to read without parenthesis
+
+	It doesn't assist with dynamic typing
+
+	more complex & slower build server
+
+	jQuery
+	When EventBucket was first prototyped in 2012, jquery was a 81KB minified download. That was 76KB larger than the rest of the home page combined.
+	Often when jquery seemed handy to use I knew I was doing something wrong or too complicated & it could be written better.
+
