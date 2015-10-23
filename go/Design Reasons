@@ -7,7 +7,18 @@ EventBucket Mission Satement:
 			satelite - running at 150% capacity. Peek periods averaged 1.76KB/s download
 			3G wifi - not available - next door neibour erected a 4m tall arial ~ 40+dB - erratic connectivity in windy, super hot(mirages) rain, stormy weather, lighting,
 			dialup - two phone lines required - billed on time rather than traffic.
+	Serve each file within 1KB gzipped - 1 second download time.
+	removed internet connection requirement and went with local connection
 
+Offline website was considered
+	a mesh like network would be hard to maintain information in, on a javascript front end environment.
+	node js wasn't abot to be compiled and 3rd party code was difficult to use in 2013.
+	callback nightmare
+	early days for the offline website technology.
+	indexedDB was suited and scored could be saved to browser easily and transfered to server once finished.
+		difficult to determine status of shoot from the server point of view. Has the scores for shooter X been recorded or missed.
+		many nodes of failure instead of a single node of failure. - battery life & needing to retrieve scores.
+		the first iPad had poor javascript performance & wasn't suitable. the page needed to be simplified significantly.
 
 Javascript
 	CoffeeScript
@@ -26,3 +37,43 @@ Javascript
 	When EventBucket was first prototyped in 2012, jquery was a 81KB minified download. That was 76KB larger than the rest of the home page combined.
 	Often when jquery seemed handy to use I knew I was doing something wrong or too complicated & it could be written better.
 
+favicon
+	it would be nice if browsers supported svg favicons. It would save having to specify different images & multiple sizes for each device.
+	Firefox has started supporting svg but chrome still fall behind.
+
+combine resources
+	IE supports combining javascript & css into the same file by wrapping each in html and javascript comment tags.
+	at best it
+		downloaded the file once for CSS and was cached never to ask again
+		ask for the file again
+			and the server at best could respond with NOT MODIFIED.
+
+	Chrome didn't support the odd parsing.
+		chrome instead supports spdy which I never got running and didn't really need it in golang
+	Firefox did support but the server must respond with a complete new file. NOT MODIFIED didn't work.
+
+HTML optimisation:
+	replace html tags with sorter ones <input => <x, <h1 => <h, etc.
+	worked with browsers although additional css needed to be downloaded.
+	render time was slightly slower since the CSS needed to be ungzipped, parsed and applied.
+	an extra round trip time was needed to retrieve the css. - although CSS would be needed any way the page would be completely unusable if CSS wasn't downloaded.
+
+SVG sprite reuse
+	one svg file - many objects. apply one class to get the object you need.
+	insert svg within CSS without base64 - but needed the setup costs of svg element, viewbox etc
+	make svg external and larger - makes css appear faster to render
+	icons are slower to appear.
+	one one request for an svg and you have them all
+
+	javascript to insert just the object you needed was extra cost for no real benifit except making the code look nicer. slightly less browser resource consumption for hiding unused svgs.
+	reduced the amount of svgs used and the javascript became completly redundant for less than 3-7 objects??
+
+No javascript on home page.
+	unable to add helpful things like textarea Ctrl + Enter shortcuts. single page app, browser html caching
+	browser html caching isn't really needed as most pages require a fresh view on most visits and would be come more complex to distinguish between needing to update local browser cache and using the existing cache. what if user didn't recieve notification that update was needed and they wern't able to update page anymore.
+	Keep It Simple Stupid.
+
+
+Programing methodologies:
+	KISS - lockheed martin
+	no code, no bugs - Andrew & Ash @ Smalldog Design.
