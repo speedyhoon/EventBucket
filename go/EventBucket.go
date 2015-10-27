@@ -7,9 +7,10 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	//"os/signal"
 	"path/filepath"
 	"time"
-	//	"fmt"
+	"fmt"
 )
 
 const (
@@ -40,9 +41,9 @@ var (
 	tempPath    = os.Getenv("temp") + subDir
 	logFileName = filepath.Join(tempPath, time.Now().Format("20060102")+".log")
 	//Logging destinations are os.Stdout, os.Stderr, ioutil.Discard
-	trace   = log.New(os.Stdout, "TRACE:   ", log.Lshortfile)
-	info    = log.New(os.Stdout, "INFO:    ", log.Lshortfile|log.Ltime)
-	warning = log.New(os.Stderr, "WARNING: ", log.Lshortfile|log.Ltime)
+	trace = log.New(os.Stdout, "TRACE: ", log.Lshortfile)
+	info  = log.New(os.Stdout, "INFO:  ", log.Lshortfile|log.Ltime)
+	warn  = log.New(os.Stderr, "WARN:  ", log.Lshortfile|log.Ltime)
 
 	//EventBucket database
 	databasePath = os.Getenv("ProgramData") + subDir
@@ -53,6 +54,19 @@ func init() {
 	go maintainExpiresTime()
 	go mkDir(databasePath)
 	setExpiresTime()
+
+	//Display message during shutdown.
+	/*osChan := make(chan os.Signal, 1)
+	signal.Notify(osChan, os.Interrupt)
+	go func(){
+		for _ = range osChan{
+			fmt.Println("Shutting down EventBucket")
+			<- osChan
+			signal.Stop(osChan)
+			break
+		}
+		os.Exit(0)
+	}()*/
 }
 
 func main() {
@@ -60,12 +74,18 @@ func main() {
 	serveFile(favicon)
 	serveFile(robots)
 	serveDir(dirJS)
+	http.HandleFunc("/", HomeHandler)
 
 	if !debug && exec.Command("rundll32.exe", "url.dll,FileProtocolHandler", address).Start() != nil {
-		warning.Print("Unable to open a web browser for " + address)
+		warn.Print("Unable to open a web browser for " + address)
 	}
 	info.Print("Starting EventBucket server...")
-	warning.Printf("ListenAndServe: %v", http.ListenAndServe(":"+port, nil))
+	warn.Printf("ListenAndServe: %v", http.ListenAndServe(":"+port, nil))
+	info.Println("EvenBucket stopped.")
+}
+
+func HomeHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "boo thai chii soy milk and cheese")
 }
 
 //Setup logging into temp directory
@@ -77,7 +97,7 @@ func startLogging() {
 		if err == nil {
 			trace.SetOutput(f)
 			info.SetOutput(f)
-			warning.SetOutput(f)
+			warn.SetOutput(f)
 		}
 		//Not calling defer to close file pointer "f" because we need it open after init has finished. Not witnessing any adverse affects keeping the file open.
 	}
@@ -89,7 +109,7 @@ func mkDir(path string) error {
 	if err != nil || !stat.IsDir() {
 		err = os.Mkdir(path, os.ModeDir)
 		if err != nil {
-			warning.Printf("Unable to create directory %v %v", path, err)
+			warn.Printf("Unable to create directory %v %v", path, err)
 		}
 	}
 	return err

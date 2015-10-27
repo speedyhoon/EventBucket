@@ -37,6 +37,7 @@ func serveDir(contentType string) {
 		}))
 }
 
+//Check if the request contains accept gzip encoding header & execute the appropriate function
 func serveGzip(w http.ResponseWriter, r *http.Request, ungzipped, gzipped func()){
 	if strings.Contains(r.Header.Get(acceptEncoding), gzip) {
 		headers(w, []string{gzip})
@@ -57,6 +58,7 @@ const (
 	acceptEncoding = "Accept-Encoding"
 )
 
+//research //net.tutsplus.com/tutorials/client-side-security-best-practices/
 func headers(w http.ResponseWriter, setHeaders []string) {
 	//w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'")
 	w.Header().Set("Content-Security-Policy", "default-src 'none'")

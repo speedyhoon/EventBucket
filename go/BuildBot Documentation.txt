@@ -1,0 +1,45 @@
+EventBucket server starts:
+	Production:
+		Log Errors:
+			Check that %ProgramData% exists
+			Try to create a log file in %temp%\EventBucket
+			Try to create a log file in the current folder
+				Limit log file size to 32KB
+
+		Start Server:
+			Create handler for pages, issue warning if request for non-gzip:
+				Home
+				Clubs
+?			Create handler for resources:
+?				js
+?				css
+?				favicon.ico
+			Create a gzip handler for resources, issue warning if request for non-gzip:
+				js
+				css
+				favicon.ico
+
+?			Create a rotbots.txt
+?			Create a sitemap.xml
+
+
+
+One page app
+Form validation
+fsnotify directory watchers
+JS test spider
+Log errors to files
+serve gzipped static files
+go fuzz testing
+
+
+camtop = the build server.
+	Auto builds new server when source code is updated
+	Auto builds resources for server
+
+
+EBpaq = th test server
+	Builds the current checked out code as a Production server with DB & EB logging
+	Runs the JS auto tester
+	Records any errors
+	Records response times?
