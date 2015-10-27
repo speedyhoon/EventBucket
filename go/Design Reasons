@@ -77,3 +77,10 @@ No javascript on home page.
 Programing methodologies:
 	KISS - lockheed martin
 	no code, no bugs - Andrew & Ash @ Smalldog Design.
+
+
+Internationalisation:
+	why wasn't this done. Lack of TIME!!
+	github.com/nicksnyder/go-i18n is a good package to translate and has support from pulrals.
+	but it doesn't have support for ordinals (1st, 2nd, 3rd, ...) at the first time of investigation as at Oct 2015.
+	seems time consuming to create key value pairs. would prefer django style where translator translates the actual text.
