@@ -84,3 +84,63 @@ Internationalisation:
 	github.com/nicksnyder/go-i18n is a good package to translate and has support from pulrals.
 	but it doesn't have support for ordinals (1st, 2nd, 3rd, ...) at the first time of investigation as at Oct 2015.
 	seems time consuming to create key value pairs. would prefer django style where translator translates the actual text.
+
+
+
+
+
+
+
+
+
+
+Code style:
+I tried to use Golang code style for Javascript but it didn't go so well.
+
+Instead of if else, used if !not, return.
+
+Positives
+found that the main code was easier to read. most used code was all on the same indentation.
+
+Negatives:
+Harder to where a function is returned as errors are indented
+There is more than one return for each function.
+lots of negation used to return function early. Not using simple if err != nil. but change
+	xhr.status === 200 && xhr.readyState === 4 ){
+	to
+	xhr.status !== 200 || xhr.readyState !== 4) retrun;
+
+
+
+
+Reducing network traffic:
+Returning html response after a POST consists of mostly html characters and less "information"
+
+Expermented with pure.js and transparency.js.
+Problems:
+	Parsing the html rather than simply adding the values to the template html
+	Pure.js has a key/value pair and a directive/selector pair to maintain.
+	Have to maintain a normal request response and a "optimised" response chain. If returning only "optimised" templating then the page won't work without Javascript enabled.
+	Javascript is disabled on 1% of browsers.
+	extra JS complexity and download added to the project for ajax/websocket endpoints. - How much browsing would be required to overcome the initial boilerplate load?
+	Would need additional backend code to generate the key/value pairs.
+	Browser would utilise more memory to execute extra javascript code.
+	Introducing more points of failure in the app.
+	Longer time needed to test in different browsers.
+	One more request will be required to load the page. HTML + CSS + JS. + JSON
+	Adding a dynamic JSON minifyer + gzip to the chain would make the response slightly slower to generte.
+	Templating invalid forms from back end would be more complex to toggle error messages.
+	Complex to cahce html template response but not the full html generated with data.
+	Slower to develop, more code to maintain
+http://www.workingsoftware.com.au/page/Your_templating_engine_sucks_and_everything_you_have_ever_written_is_spaghetti_code_yes_you
+
+
+Positives:
+	Traffic (after inital load) is smaller and faster to transfer across a very slow network connection.
+	Extremely responsive/snappy experience loading/updating existing tables that are already loaded. Potential to load/alter only rows that have been added, updated or deleted
+	HTML templtes could be cached for 1 year. the JSON response changes instead.
+	Seems like the current trendy thing to do. Traditional response with limited or no javascript is becoming rarer.
+
+
+
+Above scenario is a modern take on parsing the old xhtml and XSLT with xml data. At least the browser would translate the data into XHTML. However XSLT was very complex and that flexible.
