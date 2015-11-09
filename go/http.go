@@ -6,16 +6,16 @@ import (
 )
 
 func serveFile(fileName string) {
-	http.HandleFunc("/" + fileName, func(w http.ResponseWriter, r *http.Request) {
-			headers(w, []string{cache})
-			serveGzip(w, r,
-				func(){
-					http.ServeFile(w, r, "./gz/"+fileName)
-				},
-				func(){
-					http.ServeFile(w, r, "./"+fileName)
-				})
-		})
+	http.HandleFunc("/"+fileName, func(w http.ResponseWriter, r *http.Request) {
+		headers(w, []string{cache})
+		serveGzip(w, r,
+			func() {
+				http.ServeFile(w, r, "./gz/"+fileName)
+			},
+			func() {
+				http.ServeFile(w, r, "./"+fileName)
+			})
+	})
 }
 
 func serveDir(contentType string) {
@@ -28,17 +28,17 @@ func serveDir(contentType string) {
 			}
 			headers(w, []string{cache})
 			serveGzip(w, r,
-				func(){
+				func() {
 					http.StripPrefix(contentType, http.FileServer(http.Dir("./gz/"))).ServeHTTP(w, r)
 				},
-				func(){
+				func() {
 					http.FileServer(http.Dir(dirRoot)).ServeHTTP(w, r)
 				})
 		}))
 }
 
 //Check if the request contains accept gzip encoding header & execute the appropriate function
-func serveGzip(w http.ResponseWriter, r *http.Request, ungzipped, gzipped func()){
+func serveGzip(w http.ResponseWriter, r *http.Request, ungzipped, gzipped func()) {
 	if strings.Contains(r.Header.Get(acceptEncoding), gzip) {
 		headers(w, []string{gzip})
 		gzipped()
@@ -49,12 +49,12 @@ func serveGzip(w http.ResponseWriter, r *http.Request, ungzipped, gzipped func()
 }
 
 const (
-	contentType = "Content-Type"
-	cacheControl = "Cache-Control"
-	expires = "Expires"
-	cache   = "cache"
-	nocache = "nocache"
-	gzip = "gzip"
+	contentType    = "Content-Type"
+	cacheControl   = "Cache-Control"
+	expires        = "Expires"
+	cache          = "cache"
+	nocache        = "nocache"
+	gzip           = "gzip"
 	acceptEncoding = "Accept-Encoding"
 )
 
@@ -66,9 +66,9 @@ func headers(w http.ResponseWriter, setHeaders []string) {
 	//The page cannot be displayed in a frame, regardless of the site attempting to do so. //developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options
 	w.Header().Set("X-Frame-Options", "DENY")
 	headers := map[string][2]string{
-		gzip:      {"Content-Encoding", "gzip"},
-		"html":      {contentType, "text/html; charset=utf-8"},
-		dirJS:       {contentType, "text/javascript"},
+		gzip:   {"Content-Encoding", "gzip"},
+		"html": {contentType, "text/html; charset=utf-8"},
+		dirJS:  {contentType, "text/javascript"},
 		//dirCSS:      {contentType, "text/css; charset=utf-8"},
 		//dirSVG:      {contentType, "image/svg+xml"},
 		//dirWOF2:     {contentType, "application/font-woff2"},
@@ -77,7 +77,7 @@ func headers(w http.ResponseWriter, setHeaders []string) {
 		//dirWOF:      {contentType, "application/font-woff"},
 	}
 	for _, lookup := range setHeaders {
-		switch lookup{
+		switch lookup {
 		case cache:
 			w.Header().Set(cacheControl, "public")
 			w.Header().Set(expires, expiresTime)
