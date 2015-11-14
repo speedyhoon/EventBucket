@@ -5,15 +5,29 @@ import (
 	"strings"
 )
 
+const (
+	urlHome     = "/"
+	urlAbout    = "/about"
+	urlArchive  = "/archive"
+	urlClubs    = "/clubs"
+	urlEvents   = "/events"
+	urlLicence  = "/licence"
+	urlShooters = "/shooters"
+	//GET with PARAMETERS
+	urlEvent = "/event/" //eventID
+
+	dirGzip = "dirGzip"
+)
+
 func serveFile(fileName string) {
 	http.HandleFunc("/"+fileName, func(w http.ResponseWriter, r *http.Request) {
 		headers(w, []string{cache})
 		serveGzip(w, r,
 			func() {
-				http.ServeFile(w, r, "./gz/"+fileName)
+				http.ServeFile(w, r, dirGzip+fileName)
 			},
 			func() {
-				http.ServeFile(w, r, "./"+fileName)
+				http.ServeFile(w, r, dirRoot+fileName)
 			})
 	})
 }
@@ -29,7 +43,7 @@ func serveDir(contentType string) {
 			headers(w, []string{cache})
 			serveGzip(w, r,
 				func() {
-					http.StripPrefix(contentType, http.FileServer(http.Dir("./gz/"))).ServeHTTP(w, r)
+					http.StripPrefix(contentType, http.FileServer(http.Dir(dirGzip))).ServeHTTP(w, r)
 				},
 				func() {
 					http.FileServer(http.Dir(dirRoot)).ServeHTTP(w, r)
