@@ -6,13 +6,18 @@ import (
 	"strings"
 )
 
-const titleSeperator = " - "
-const masterTemplate = "../htm/master.htm"
+const (
+	titleSeparator     = " - "
+	masterTemplatePath = "../htm/master.htm"
+)
 
 var (
-	templates     = make(map[string]*template.Template)
-	homeMenuItems = []menu{
-		{
+	templates      = make(map[string]*template.Template)
+	masterTemplate = Template{
+		CSS:         "dirCss",
+		CurrentYear: currentYear,
+		JS:          "dirJS",
+		Menu: []menu{{
 			Name: "Home",
 			Link: urlHome,
 		}, {
@@ -33,7 +38,8 @@ var (
 		}, {
 			Name: "Licence",
 			Link: urlLicence,
-		},
+		}},
+		PNG: "dirPNG",
 	}
 )
 
@@ -41,30 +47,27 @@ type menu struct {
 	Name, Link string
 }
 
-type Page struct {
-	Title       string
-	Data        M
-	Menu        []menu
-	CurrentYear string
+type page struct {
+	Title string
+	Data  M
 }
 
-func templater(page Page, w http.ResponseWriter) {
-	pageName := strings.Split(strings.ToLower(page.Title), titleSeperator)[0]
-	//	page.data["Menu"] = homeMenuItems
-	page.Menu = homeMenuItems
-	page.CurrentYear = currentYear
-	stuff, ok := templates[pageName]
-	if !ok {
-		templates[pageName] = template.Must(template.ParseFiles("../htm/"+pageName+".htm", masterTemplate))
-		stuff = templates[pageName]
+type Template struct {
+	JS, CurrentYear, CSS, PNG string
+	Page                      page
+	Menu                      []menu
+}
+
+func templater(w http.ResponseWriter, page page) {
+	pageName := strings.Split(strings.ToLower(page.Title), titleSeparator)[0]
+	masterTemplate.Page = page
+	html, ok := templates[pageName]
+	if !ok || debug { //debug is for dynamically reloading templates on every request
+		templates[pageName] = template.Must(template.ParseFiles("../htm/"+pageName+".htm", masterTemplatePath))
+		html = templates[pageName]
 	}
 
-	//TODO remove below line to dynamically reload templates
-	if debug {
-		templates[pageName] = template.Must(template.ParseFiles("../htm/"+pageName+".htm", masterTemplate))
-	}
-
-	err := stuff.ExecuteTemplate(w, "master", page)
+	err := html.ExecuteTemplate(w, "master", masterTemplate)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

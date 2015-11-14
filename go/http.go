@@ -2,10 +2,12 @@ package main
 
 import (
 	"net/http"
+	"regexp"
 	"strings"
 )
 
 const (
+	dirGzip     = "dirGzip"
 	urlHome     = "/"
 	urlAbout    = "/about"
 	urlArchive  = "/archive"
@@ -15,8 +17,6 @@ const (
 	urlShooters = "/shooters"
 	//GET with PARAMETERS
 	urlEvent = "/event/" //eventID
-
-	dirGzip = "dirGzip"
 )
 
 func serveFile(fileName string) {
@@ -76,12 +76,12 @@ var headerOptions = map[string][2]string{
 	gzip:   {"Content-Encoding", "gzip"},
 	"html": {contentType, "text/html; charset=utf-8"},
 	dirJS:  {contentType, "text/javascript"},
-	//dirCSS:      {contentType, "text/css; charset=utf-8"},
-	//dirSVG:      {contentType, "image/svg+xml"},
-	//dirWOF2:     {contentType, "application/font-woff2"},
-	//dirPNG:      {contentType, "image/png"},
-	//dirJPEG:     {contentType, "image/jpeg"},
-	//dirWOF:      {contentType, "application/font-woff"},
+	//dirCSS:    {contentType, "text/css; charset=utf-8"},
+	//dirSVG:    {contentType, "image/svg+xml"},
+	//dirWOF2:   {contentType, "application/font-woff2"},
+	//dirPNG:    {contentType, "image/png"},
+	//dirJPEG:   {contentType, "image/jpeg"},
+	//dirWOF:    {contentType, "application/font-woff"},
 }
 
 //research //net.tutsplus.com/tutorials/client-side-security-best-practices/
@@ -109,19 +109,41 @@ func headers(w http.ResponseWriter, setHeaders []string) {
 	}
 }
 
-/*
-
-func get(url string, runner func() Page) {
-	//Setup url as a subdirectory path. e.g. if url = "foobar" then "http://localhost/foobar" is available
-	http.Handle(url, serveHtml(func(w http.ResponseWriter, r *http.Request) { templater(runner(), w, r) }))
+func get404(url string, pageFunc func(http.ResponseWriter, *http.Request)) {
+	http.HandleFunc(url,
+		func(w http.ResponseWriter, r *http.Request) {
+			if r.URL.Path != url {
+				errorHandler(w, r, http.StatusNotFound)
+				return
+			}
+			pageFunc(w, r)
+		})
 }
 
-func serveHtml(h http.HandlerFunc) http.HandlerFunc {
-	//	return http.HandlerFunc(agent.WrapHTTPHandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		//defer devModeTimeTrack(time.Now(), r.RequestURI)
-		headers(w, []string{"html", nocache})
-		//		gzipper(h, w, r)
-	})
+func getRedirectPermanent(url string, pageFunc func(http.ResponseWriter, *http.Request)) {
+	http.HandleFunc(url, pageFunc)
+	//Redirects back to subdirectory "url". Needed when url parameters are not wanted or needed.
+	//e.g. if url = "foobar" then "http://localhost/foobar/fdsa" will redirect to "http://localhost/foobar"
+	http.Handle(url+"/", http.RedirectHandler(url, http.StatusMovedPermanently))
 }
-*/
+
+func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request, string), regex, regexWeak *regexp.Regexp) {
+	var parameters string
+	http.HandleFunc(url,
+		func(w http.ResponseWriter, r *http.Request) {
+			parameters = strings.TrimPrefix(r.URL.Path, url)
+			info.Println("getParameters", parameters)
+			if !regex.MatchString(parameters) {
+				info.Println("failed regex", `"`, r.URL.Path, `"`, "url=", url)
+				if regexWeak.MatchString(parameters) {
+					info.Println("passed Weak")
+					http.Redirect(w, r, strings.ToLower(r.URL.Path), http.StatusSeeOther)
+				} else {
+					info.Println("failed ALL")
+					errorHandler(w, r, http.StatusNotFound)
+				}
+				return
+			}
+			pageFunc(w, r, parameters)
+		})
+}
