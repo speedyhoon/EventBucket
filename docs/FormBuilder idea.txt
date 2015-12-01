@@ -1,0 +1,26 @@
+
+
+
+
+
+form struct in EB 
+	lots of data
+add struct to global var
+add go file to BB?
+execute file and generate the output?
+
+	
+build the form template - BuildBot
+build the form validation struct - BB
+build the form template details map[string]interface - BB
+
+
+
+
+
+run	time
+	form struct
+	populate only the dynamic data
+	retrieve the existing form template
+	populate the template
+	serve to client
