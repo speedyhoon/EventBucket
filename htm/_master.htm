@@ -1,6 +1,37 @@
 {{define "master"}}<!DOCTYPE html>
-<!--<link rel=stylesheet href=^^dirCSS^^home.css>-->
-<!--<link rel=icon type=image/png href=^^favicon^^>-->
+<style>
+	body{
+		background: black;
+		color: white;
+	}
+	a{
+		color: #0af;
+	}
+	label {
+		display: inline-block;
+		margin-right: 2em;
+	}
+	input {
+		display: block;
+	}
+	label samp{
+		display: block;
+		background-color: red;
+		color: black;
+		border-radius: 0 0.5em 0.5em 0.5em;
+		padding: 0.25em 0.25em;
+	}
+	.error input{
+		border-color: red;
+		color: black;
+		border-bottom-width: 0;
+		background-color: pink;
+	}
+	.right{
+		float: right
+	}
+</style>
+<link rel=stylesheet href=dirCSShome>
 <title>EventBucket{{with .Page.Title}} - {{.}}{{end}}</title>
 <div class=homeContainer>
 	<h1><a href=/>EventBucket</a></h1>
@@ -8,13 +39,14 @@
 	<ul class=homeMenu>
 		{{range .Menu}}
 			{{if eq $.Page.Title .Name}}
-				<li class=v>{{.Name}}
+				<li class=visited>{{.Name}}
 			{{else}}
 				<li><a href={{.Link}}>{{.Name}}</a>
 			{{end}}
 		{{end}}
 	</ul>
 	{{template "page" .Page.Data}}
-	<p class=homeFooter>Copyright &copy; 2011-{{.CurrentYear}} EventBucket<a href=/licence class=r title="View licence"><img src=/p/cc alt=Licence height=15 width=80></a>
+	<p class=homeFooter>Copyright &copy; 2011-{{.CurrentYear}} EventBucket <a href=/licence class=right title="View licence"><!--<img src=/p/cc alt=Licence height=15 width=80>-->Licence</a>
 </div>
+<script defer src=dirJStest></script>
 {{end}}

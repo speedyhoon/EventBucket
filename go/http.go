@@ -1,9 +1,11 @@
 package main
 
 import (
+	"math/rand"
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 )
 
 const (
@@ -21,14 +23,16 @@ const (
 
 func serveFile(fileName string) {
 	http.HandleFunc("/"+fileName, func(w http.ResponseWriter, r *http.Request) {
-		headers(w, []string{cache})
-		serveGzip(w, r,
-			func() {
-				http.ServeFile(w, r, dirGzip+fileName)
-			},
-			func() {
-				http.ServeFile(w, r, dirRoot+fileName)
-			})
+		if strings.Contains(r.Header.Get(acceptEncoding), gzip) {
+			headers(w, []string{cache, gzip})
+			warn.Println("Gzipper", dirGzip+fileName)
+			http.ServeFile(w, r, dirGzip+fileName)
+		} else {
+			headers(w, []string{cache})
+			warn.Println("no Gzip", dirRoot+fileName)
+			http.ServeFile(w, r, dirRoot+fileName)
+			warn.Print("The current browser does not support gzip")
+		}
 	})
 }
 
@@ -52,6 +56,9 @@ func serveDir(contentType string) {
 }
 
 //Check if the request contains accept gzip encoding header & execute the appropriate function
+// unfortunatly uncompressed responces may still be required even though all modern browsers support gzip
+// http://webmasters.stackexchange.com/questions/22217/which-browsers-handle-content-encoding-gzip-and-which-of-them-has-any-special
+// https://www.stevesouders.com/blog/2009/11/11/whos-not-getting-gzip/
 func serveGzip(w http.ResponseWriter, r *http.Request, ungzipped, gzipped func()) {
 	if strings.Contains(r.Header.Get(acceptEncoding), gzip) {
 		headers(w, []string{gzip})
@@ -75,19 +82,19 @@ const (
 var headerOptions = map[string][2]string{
 	gzip:   {"Content-Encoding", "gzip"},
 	"html": {contentType, "text/html; charset=utf-8"},
-	dirJS:  {contentType, "text/javascript"},
+	//dirJS:  {contentType, "text/javascript"},
 	//dirCSS:    {contentType, "text/css; charset=utf-8"},
 	//dirSVG:    {contentType, "image/svg+xml"},
 	//dirWOF2:   {contentType, "application/font-woff2"},
-	//dirPNG:    {contentType, "image/png"},
+	dirPNG: {contentType, "image/png"},
 	//dirJPEG:   {contentType, "image/jpeg"},
 	//dirWOF:    {contentType, "application/font-woff"},
 }
 
 //research //net.tutsplus.com/tutorials/client-side-security-best-practices/
 func headers(w http.ResponseWriter, setHeaders []string) {
-	//w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'")
-	w.Header().Set("Content-Security-Policy", "default-src 'none'")
+	//w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src 'self'; font-src 'self'")
+	//	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'")
 
 	//The page cannot be displayed in a frame, regardless of the site attempting to do so. //developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options
 	w.Header().Set("X-Frame-Options", "DENY")
@@ -147,3 +154,27 @@ func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request,
 			pageFunc(w, r, parameters)
 		})
 }
+
+//SessionID's can't have space or semicolon
+//should be 16 characters
+//stackoverflow.com/questions/1969232/allowed-characters-in-cookies
+func newSessionID() string {
+	var newSessionId string
+	var i, randInt int
+	for i < 24 {
+		randInt = 33 + rand.Intn(93)
+		if randInt != 59 { //ignore semicolons ;
+			i++
+			newSessionId += string(randInt)
+		}
+	}
+	return "z=" + newSessionId
+}
+
+func sessionError(error string) string {
+	sessionID := newSessionID()
+	globalSessions[sessionID] = error
+	return sessionID + "; Expires=" + time.Now().Add(1*time.Minute).Format("Mon, Jan 2 2006 15:04:05 GMT")
+}
+
+var globalSessions map[string]string
