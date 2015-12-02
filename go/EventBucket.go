@@ -29,8 +29,6 @@ const (
 	robots  = "robots.txt"
 	favicon = "favicon.ico"
 
-//	sitemap = "sitemap.xml"
-
 //dirHTML = "/html/"
 //dirSVG  = "/svg/"
 //dirWOF2 = "/woff2/"

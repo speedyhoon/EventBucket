@@ -1,4 +1,4 @@
-EventBucket Mission Satement:
+EventBucket Mission Statement:
 	Build the simplest website possible
 	Only add frameworks/packages where it will safe significant time/resources.
 	Target audience: "outback" Australia with limited internet connection & speed (if available)

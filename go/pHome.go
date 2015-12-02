@@ -3,7 +3,6 @@ package main
 import "net/http"
 
 func insertEvent(w http.ResponseWriter, r *http.Request) {
-
 	if r.Method == "GET" {
 		/*405 Method Not Allowed
 		A request was made of a resource using a request method not supported by that resource; for example,
@@ -33,8 +32,8 @@ func home(w http.ResponseWriter, r *http.Request) {
 		Title: "Home",
 		Data: M{
 			"Stuff": "Hommmer page!",
-			"MyForm": []Field{
-				Search{
+			"MyForm": []input{
+				{
 					Error: "This is error on a search bar.",
 					//					Options: []Option{
 					//						{Label: "label", Value: "2 3"},
@@ -42,18 +41,18 @@ func home(w http.ResponseWriter, r *http.Request) {
 					//						{Label: "Search", Value: ">S"},
 					//					},
 				},
-				Search{
+				{
 					Error: "Another error on club input.",
-					Options: []Option{
+					Options: []option{
 						{Label: "Warrack", Value: "R23"},
 						{Label: "Horsham", Value: "T52"},
 						{Label: "Stawell", Value: "S82"},
 					},
 				},
-				Search{
+				{
 					Error: "Error on date field!",
 				},
-				Search{
+				{
 					Error: "Error on time field!",
 				},
 			},
@@ -106,30 +105,21 @@ func all(w http.ResponseWriter, r *http.Request) {
 			},
 			"Shooters": M{
 				"Stuff": "SHOOTERS page!",
-				"Fds": []Field{
-					Search{
-						Error: "I caused an error!@",
-						Options: []Option{
+				"Fds": []input{
+					{
+						Error: "i caused an error!@",
+						Options: []option{
 							{Label: "label", Value: "2 3"},
-							{Label: "text", Value: `"T`},
-							{Label: "Search", Value: ">S"},
+							{Label: "text", Value: `"t`},
+							{Label: "search", Value: ">s"},
 						},
 					},
-					Search{
-						Options: []Option{
-							{Label: "Warrack", Value: "R23"},
-							{Label: "Horsham", Value: "T52"},
-							{Label: "Stawell", Value: "S82"},
+					{
+						Options: []option{
+							{Label: "warrack", Value: "r23"},
+							{Label: "horsham", Value: "t52"},
+							{Label: "stawell", Value: "s82"},
 						},
-					},
-					//			Date{},
-					//			Time{},
-					//			Check{},
-					//			Hidden{},
-					Submit{
-						Name:  "eventId",
-						Value: "3",
-						Label: "Save",
 					},
 				},
 			},
@@ -160,17 +150,17 @@ func shooters(w http.ResponseWriter, r *http.Request) {
 		Title: "Shooters",
 		Data: M{
 			"Stuff": "SHOOTERS page!",
-			"Fds": []Field{
-				Search{
-					Error: "I caused an error!@",
-					Options: []Option{
+			"Fds": []field{
+				{
+					error: "I caused an error!@",
+					options: []option{
 						{Label: "label", Value: "2 3"},
 						{Label: "text", Value: `"T`},
-						{Label: "Search", Value: ">S"},
+						{Label: "search", Value: ">S"},
 					},
 				},
-				Search{
-					Options: []Option{
+				{
+					options: []option{
 						{Label: "Warrack", Value: "R23"},
 						{Label: "Horsham", Value: "T52"},
 						{Label: "Stawell", Value: "S82"},
@@ -180,11 +170,6 @@ func shooters(w http.ResponseWriter, r *http.Request) {
 				//			Time{},
 				//			Check{},
 				//			Hidden{},
-				Submit{
-					Name:  "eventId",
-					Value: "3",
-					Label: "Save",
-				},
 			},
 		},
 	})
@@ -259,8 +244,10 @@ func about(w http.ResponseWriter, r *http.Request) {
 	//			//				hidden{Value: "hidden_element!"},
 	//		}})
 
-	templater2(w, page2{
+	templater(w, page{
 		Title: "About",
+		Data: M{
+			"Stuff": "About page!"},
 		//				Data: Temp{
 		//			Its: []string{"1", "2", "3"},
 		//			J:   []Jjj{{Her: "ee"}, {Her: "rr"}},
@@ -284,13 +271,13 @@ type Temp struct {
 	Its []string
 	J   []Jjj
 }*/
-
+/*
 var GlobalForms = []Form{
 	{
 		Action: "fds",
 		Title:  "Insert Shooter",
 		Fields: []Field{
-			Search{
+			{
 				Name:      "schemaName",
 				Label:     "Event Name",
 				AutoFocus: true,
@@ -301,7 +288,7 @@ var GlobalForms = []Form{
 					{Label: "Search", Value: "S"},
 				},
 			},
-			Search{
+			{
 				Name:     "schemaClub",
 				Label:    "Club Name",
 				Required: true,
@@ -323,15 +310,15 @@ var GlobalForms = []Form{
 			},
 		},
 	},
-}
+}*/
 
 func licence(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
 		Title: "Licence",
 		Data: M{
-			"Stuff":    "Licence page!",
-			"Text":     "Other copy stuff goes here!",
-			"HtmlForm": GlobalForms[0].Html(),
+			"Stuff": "Licence page!",
+			"Text":  "Other copy stuff goes here!",
+			//			"HtmlForm": GlobalForms[0].Html(),
 			/*"Form": []Field{
 				{Option: []string{"2", "4", "6"}, },
 				{Value: "321 field"},

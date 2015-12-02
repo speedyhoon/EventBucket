@@ -23,6 +23,10 @@ const (
 
 func serveFile(fileName string) {
 	http.HandleFunc("/"+fileName, func(w http.ResponseWriter, r *http.Request) {
+		// Check if the request contains accept gzip encoding header & return the appropriate resource
+		// Unfortunately uncompressed responses may still be required even though all modern browsers support gzip
+		//webmasters.stackexchange.com/questions/22217/which-browsers-handle-content-encoding-gzip-and-which-of-them-has-any-special
+		//www.stevesouders.com/blog/2009/11/11/whos-not-getting-gzip/
 		if strings.Contains(r.Header.Get(acceptEncoding), gzip) {
 			headers(w, []string{cache, gzip})
 			warn.Println("Gzipper", dirGzip+fileName)
@@ -31,7 +35,7 @@ func serveFile(fileName string) {
 			headers(w, []string{cache})
 			warn.Println("no Gzip", dirRoot+fileName)
 			http.ServeFile(w, r, dirRoot+fileName)
-			warn.Print("The current browser does not support gzip")
+			warn.Print("The request didn't contain gzip")
 		}
 	})
 }
@@ -44,29 +48,15 @@ func serveDir(contentType string) {
 				http.NotFound(w, r)
 				return
 			}
-			headers(w, []string{cache})
-			serveGzip(w, r,
-				func() {
-					http.StripPrefix(contentType, http.FileServer(http.Dir(dirGzip))).ServeHTTP(w, r)
-				},
-				func() {
-					http.FileServer(http.Dir(dirRoot)).ServeHTTP(w, r)
-				})
+			if strings.Contains(r.Header.Get(acceptEncoding), gzip) {
+				headers(w, []string{gzip, cache})
+				http.StripPrefix(contentType, http.FileServer(http.Dir(dirGzip))).ServeHTTP(w, r)
+			} else {
+				headers(w, []string{cache})
+				http.FileServer(http.Dir(dirRoot)).ServeHTTP(w, r)
+				warn.Print("The request didn't contain gzip")
+			}
 		}))
-}
-
-//Check if the request contains accept gzip encoding header & execute the appropriate function
-// unfortunatly uncompressed responces may still be required even though all modern browsers support gzip
-// http://webmasters.stackexchange.com/questions/22217/which-browsers-handle-content-encoding-gzip-and-which-of-them-has-any-special
-// https://www.stevesouders.com/blog/2009/11/11/whos-not-getting-gzip/
-func serveGzip(w http.ResponseWriter, r *http.Request, ungzipped, gzipped func()) {
-	if strings.Contains(r.Header.Get(acceptEncoding), gzip) {
-		headers(w, []string{gzip})
-		gzipped()
-	} else {
-		ungzipped()
-		warn.Print("The current browser does not support gzip")
-	}
 }
 
 const (

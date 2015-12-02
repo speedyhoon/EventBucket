@@ -133,8 +133,8 @@ func templater(w http.ResponseWriter, page page) {
 				switch t.(type) {
 				default:
 					fmt.Printf("unexpected type %T", t) // %T prints whatever type t has
-				case []Option:
-					hasValue = len(t.([]Option)) >= 1
+				case []option:
+					hasValue = len(t.([]option)) >= 1
 				case string:
 					hasValue = t.(string) != ""
 					//fmt.Printf("boolean %t\n", t) // t has type bool
@@ -163,7 +163,7 @@ func templater(w http.ResponseWriter, page page) {
 			//			"nice": func(inp Jjj) string {
 			//				return "fdfd"
 			//			},
-		}).ParseFiles("../htm/"+pageName+".htm", formsTemplatePath, masterTemplatePath))
+		}).ParseFiles("./h/"+pageName, formsTemplatePath, masterTemplatePath))
 		html = templates[pageName]
 	}
 
