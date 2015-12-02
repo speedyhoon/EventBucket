@@ -1,27 +1,31 @@
 package main
 
 import (
+	"errors"
+	"fmt"
+	"net/http"
+	"strconv"
 )
 
-func isValidInt (strNum string, input Input)(int, error){
+func isValidInt(strNum string, field field) (int, error) {
 	num, err := strconv.Atoi(strNum)
 	if err != nil {
 		return num, err
 	}
-	if num >= int(input.min) && num <= int(input.max) && (input.step == 0 || input.step != 0 && num % int(input.step) == 0)  || !input.required && num == 0 {
+	if num >= int(field.min) && num <= int(field.max) && (field.step == 0 || field.step != 0 && num%int(field.step) == 0) || !field.required && num == 0 {
 		return num, nil
 	}
-	return num, errors.New("input integer doesn't pass validation")
+	return num, errors.New("field integer doesn't pass validation")
 }
-func isValidStr (str string, input Input)(string, error){
+func isValidStr(str string, field field) (string, error) {
 	length := len(str)
-	if length >= input.minLen && length <= input.maxLen || !input.required && str == ""{
+	if length >= field.minLen && length <= field.maxLen || !field.required && str == "" {
 		return str, nil
 	}
-	return str, errors.New("input string doesn't pass validation")
+	return str, errors.New("field string doesn't pass validation")
 }
 
-func isValid(fields []Input, r *http.Request) ([]Input, bool) {
+func isValid(fields []field, r *http.Request) ([]field, bool) {
 	r.ParseForm()
 	if len(r.Form) < 1 {
 		return fields, false
@@ -35,28 +39,28 @@ func isValid(fields []Input, r *http.Request) ([]Input, bool) {
 		fieldValue, ok = r.Form[field.name]
 		if !ok {
 			valid = false
-			continue  //Skip to the next loop iteration.
+			continue //Skip to the next loop iteration.
 		}
 
 		switch field.kind.(type) {
 		case bool:
 			fmt.Printf("boolean %t\n", field.kind)
 		case int:
-			fields[i].value, err = isValidInt(strings.TrimSpace(fieldValue[0]), field)
+			//			fields[i].value, err = isValidInt(strings.TrimSpace(fieldValue[0]), field)
 			if err == nil {
-				fields[i].isValid = true
-			}else {
+				//				fields[i].isValid = true
+			} else {
 				valid = false
-				fields[i].errMsg = "integer supplied was wrong"
+				fields[i].error = "integer supplied was wrong"
 				fmt.Println(field.name + "integer supplied was wrong")
 			}
 		case string:
-			fields[i].value, fields[i].err = isValidStr(strings.TrimSpace(fieldValue[0]), field)
-			fields[i].isValid = fields[i].err == nil
-			fields[i].errMsg = fmt.Sprintf("%v", fields[i].err)
-			if !fields[i].isValid {
+			//			fields[i].value, fields[i].error = isValidStr(strings.TrimSpace(fieldValue[0]), field)
+			//			fields[i].isValid = fields[i].error == ""
+			fields[i].error = fmt.Sprintf("%v", fields[i].error)
+			if fields[i].error != "" {
 				valid = false
-				fields[i].errMsg = "string doesn't match"
+				fields[i].error = "string doesn't match"
 				fmt.Println(field.name + "string doesn't match")
 			}
 		case []string:
@@ -64,9 +68,9 @@ func isValid(fields []Input, r *http.Request) ([]Input, bool) {
 			for key, thingy := range fieldValue {
 				fmt.Println(key, thingy)
 			}
-			fields[i].value = fieldValue
+			//			fields[i].value = fieldValue
 		default:
-			fmt.Printf("unexpected type %T", field.kind)		// %T prints whatever type t is
+			fmt.Printf("unexpected type %T", field.kind) // %T prints whatever type t is
 		}
 	}
 	return fields, valid
