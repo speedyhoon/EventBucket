@@ -1,6 +1,9 @@
 package main
 
-import "strings"
+import (
+	"net"
+	"strings"
+)
 
 //AddQuotes returns value with or without surrounding single or double quote characters suitable for a [[//dev.w3.org/html5/html-author/#attributes][HTML5 attribute]] value.
 func addQuotes(value string) string {
@@ -35,4 +38,22 @@ func addQuotes(value string) string {
 		return "'" + value + "'"
 	}*/
 	return value
+}
+
+// localIP returns the non loopback local IPv4 of the host
+func localIPs() []string {
+	var localIPs []string
+	addrs, err := net.InterfaceAddrs()
+	if err == nil {
+		var ipnet *net.IPNet
+		var ok bool
+		for _, address := range addrs {
+			// check the address type and if it is not a loopback the display it
+			ipnet, ok = address.(*net.IPNet)
+			if ok && !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil {
+				localIPs = append(localIPs, ipnet.IP.String())
+			}
+		}
+	}
+	return localIPs
 }

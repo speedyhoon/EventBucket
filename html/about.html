@@ -1,9 +1,46 @@
+{{define "networkAdapters"}}{{end}}
+
 {{define "page"}}
+	EventBucket version: versionNumber
+	<p>Compiled by Cam Webb, on buildDate.</p>
 
-	{{.Stuff}}
+	{{/*template "networkAdaptors" .Hostname*/}}
+	<p>To access EventBucket from multiple devices within your local network, the following links might be available,<br>
+		<strong>Hostname</strong> (Windows devices): <a href=//{{.Hostname}}>{{.Hostname}}</a><br>
+		<strong>IP Address</strong> (Apple &amp; Android devices):{{range .IpAddresses}} <a href=//{{.}}>{{.}}</a>{{end}}
+	</p>
 
-	About ! page---
-	Hello there mate!!!! How are ya going mate?
-BOO!
-	What else hey ? there? hows it going??????
+	<h2 class=center>
+		Built with:
+		<a title="The Go Programming Language" href=//golang.org>
+			<img alt=Go  src=dirPNG_ height=30>
+		</a>
+		<a title="Chrome Browser" href=//google.com.au/chrome>
+			<img alt="Chrome Browser"  src=dirPNG_ height=30>
+		</a>
+		<a title="IntelliJ IDEA" href=//jetbrains.com/idea>
+			<img alt="IntelliJ IDEA"  src=dirPNG_ height=30>
+		</a>
+		<a title=MongoDB href=//mongodb.org>
+			<img alt=MongoDB  src=dirPNG_ height=30>
+		</a>
+		<a title="Robomongo ? shell-centric MongoDB management tool" href=//robomongo.org>
+			<img alt=Robomongo  src=dirPNG_ height=30>
+		</a>
+		<a title=Git href=//git-scm.com>
+			<img alt=Git  src=dirPNG_ height=30>
+		</a>
+		<a title="Sass: Syntactically Awesome Style Sheets" href=//sass-lang.com>
+			<img alt=Sass  src=dirPNG_ height=30>
+		</a>
+		<a title="Closure Tools" href=//developers.google.com/closure>
+			<img alt="Closure Tools"  src=dirPNG_ height=30>
+		</a>
+		<a title="New Relic | Application Performance Management &amp; Monitoring" href=//newrelic.com>
+			<img alt="New Relic"  src=dirPNG_ height=30>
+		</a>
+		<a title=Inkscape href=//inkscape.org>
+			<img alt=Inkscape  src=dirPNG_ height=30>
+		</a>
+	</h2>
 {{end}}
