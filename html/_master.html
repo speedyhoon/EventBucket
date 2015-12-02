@@ -16,19 +16,22 @@
 	}
 	label samp{
 		display: block;
-		background-color: red;
+		background: red;
 		color: black;
-		border-radius: 0 0.5em 0.5em 0.5em;
-		padding: 0.25em 0.25em;
+		border-radius: 0 0.5em 0.5em;
+		padding: 0.25em;
 	}
 	.error input{
 		border-color: red;
 		color: black;
 		border-bottom-width: 0;
-		background-color: pink;
+		background: pink;
 	}
 	.right{
 		float: right
+	}
+	.center{
+		text-align: center;
 	}
 </style>
 <link rel=stylesheet href=dirCSShome>
@@ -47,7 +50,8 @@
 	</ul>
 	<h1>{{.Page.Title}}</h1>
 	{{template "page" .Page.Data}}
-	<p class=homeFooter>Copyright &copy; 2011-{{.CurrentYear}} EventBucket <a href=/licence class=right title="View licence"><!--<img src=/p/cc alt=Licence height=15 width=80>-->Licence</a>
+	<p class=homeFooter>
+		Copyright &copy; 2011-{{.CurrentYear}} EventBucket | vversionNumber <a href=/licence class=right title="View licence"><img src=dirPNGcc alt=Licence height=15 width=80></a>
 </div>
 <script defer src=dirJStest></script>
 {{end}}

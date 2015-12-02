@@ -1,6 +1,9 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+	"os"
+)
 
 func insertEvent(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
@@ -228,89 +231,15 @@ var globalForm = map[string]func(string) form3{
 }*/
 
 func about(w http.ResponseWriter, r *http.Request) {
-	//	templater(w, page{
-	//		Title: "About",
-	//		Data: M{
-	//			"Stuff": "About page!",
-	//			//			"NewForm2": map[string]Field2{
-	//			//				"Map": Submit{Value: "eventId-23"},
-	//			//			},
-	//			//			"NewForm3": submit{
-	//			//				Value: "eventId-23",
-	//			//			},
-	//			"NewForm4": []Input{
-	//				{Value: "eventId-25"},
-	//			},
-	//			//				hidden{Value: "hidden_element!"},
-	//		}})
-
+	hostname, _ := os.Hostname()
 	templater(w, page{
 		Title: "About",
 		Data: M{
-			"Stuff": "About page!"},
-		//				Data: Temp{
-		//			Its: []string{"1", "2", "3"},
-		//			J:   []Jjj{{Her: "ee"}, {Her: "rr"}},
-		//		},
-		/*Data: struct {
-			Something string
-			Else      []Input
-		}{
-			"hello worlds!",
-			[]Input{{Value: "String sers"}, {Value: "98222 9999"}},
-		},*/
+			"Hostname":    hostname,
+			"IpAddresses": getLocalIP(),
+		},
 	})
 }
-
-/*
-type Jjj struct {
-	Her string
-}
-
-type Temp struct {
-	Its []string
-	J   []Jjj
-}*/
-/*
-var GlobalForms = []Form{
-	{
-		Action: "fds",
-		Title:  "Insert Shooter",
-		Fields: []Field{
-			{
-				Name:      "schemaName",
-				Label:     "Event Name",
-				AutoFocus: true,
-				Required:  true,
-				Options: []Option{
-					{Label: "label", Value: "23"},
-					{Label: "text", Value: "T"},
-					{Label: "Search", Value: "S"},
-				},
-			},
-			{
-				Name:     "schemaClub",
-				Label:    "Club Name",
-				Required: true,
-				MaxLen:   50,
-				Options: []Option{
-					{Label: "Warrack", Value: "R23"},
-					{Label: "Horsham", Value: "T52"},
-					{Label: "Stawell", Value: "S82"},
-				},
-			},
-			//			Date{},
-			//			Time{},
-			//			Check{},
-			//			Hidden{},
-			Submit{
-				Name:  "eventId",
-				Value: "3",
-				Label: "Save",
-			},
-		},
-	},
-}*/
 
 func licence(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
@@ -318,19 +247,6 @@ func licence(w http.ResponseWriter, r *http.Request) {
 		Data: M{
 			"Stuff": "Licence page!",
 			"Text":  "Other copy stuff goes here!",
-			//			"HtmlForm": GlobalForms[0].Html(),
-			/*"Form": []Field{
-				{Option: []string{"2", "4", "6"}, },
-				{Value: "321 field"},
-				{Value: "ttttt_field", Error: "Nothing special here just didn't put in the right number!"},
-				{Value: "5555  > field"},
-				{Options: []Option{
-						{Label: "label", Value: "23"},
-						{Label: "text", Value: "T"},
-						{Label: "Search", Value: "S"},
-					},
-				},
-			}*/
 		},
 	})
 }
