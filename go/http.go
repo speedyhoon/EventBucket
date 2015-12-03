@@ -19,6 +19,14 @@ const (
 	urlShooters = "/shooters"
 	//GET with PARAMETERS
 	urlEvent = "/event/" //eventID
+
+	contentType    = "Content-Type"
+	cacheControl   = "Cache-Control"
+	expires        = "Expires"
+	cache          = "cache"
+	nocache        = "nocache"
+	gzip           = "gzip"
+	acceptEncoding = "Accept-Encoding"
 )
 
 func serveFile(fileName string) {
@@ -40,7 +48,7 @@ func serveFile(fileName string) {
 	})
 }
 
-func serveDir(contentType string) {
+func serveDir(contentType string, allowGzip bool) {
 	http.Handle(contentType,
 		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			//If url is a directory return a 404 to prevent displaying a directory listing.
@@ -48,7 +56,7 @@ func serveDir(contentType string) {
 				http.NotFound(w, r)
 				return
 			}
-			if strings.Contains(r.Header.Get(acceptEncoding), gzip) {
+			if allowGzip && strings.Contains(r.Header.Get(acceptEncoding), gzip) {
 				headers(w, []string{gzip, cache})
 				http.StripPrefix(contentType, http.FileServer(http.Dir(dirGzip))).ServeHTTP(w, r)
 			} else {
@@ -58,16 +66,6 @@ func serveDir(contentType string) {
 			}
 		}))
 }
-
-const (
-	contentType    = "Content-Type"
-	cacheControl   = "Cache-Control"
-	expires        = "Expires"
-	cache          = "cache"
-	nocache        = "nocache"
-	gzip           = "gzip"
-	acceptEncoding = "Accept-Encoding"
-)
 
 var headerOptions = map[string][2]string{
 	gzip:   {"Content-Encoding", "gzip"},
