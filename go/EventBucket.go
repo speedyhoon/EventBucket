@@ -26,6 +26,8 @@ const (
 	//	dirCSS  = "/css/"
 	//dirJS   = "dirJS"
 	dirPNG  = "dirPNG"
+	dirJS   = "dirJS"
+	dirCSS  = "dirCSS"
 	robots  = "robots.txt"
 	favicon = "favicon.ico"
 
@@ -138,7 +140,9 @@ func tempers(eventID string) form3 {
 func main() {
 	serveFile(favicon)
 	serveFile(robots)
-	serveDir(dirPNG)
+	serveDir(dirJS, true)
+	serveDir(dirCSS, true)
+	serveDir(dirPNG, false)
 	//BUG any url breaks when appending "&*((&*%"
 	get404(urlHome, home)
 	getParameters(urlEvent, event, regexEventId, regexWeakEventId)
