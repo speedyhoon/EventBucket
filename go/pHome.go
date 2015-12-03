@@ -236,7 +236,7 @@ func about(w http.ResponseWriter, r *http.Request) {
 		Title: "About",
 		Data: M{
 			"Hostname":    hostname,
-			"IpAddresses": getLocalIP(),
+			"IpAddresses": localIPs(),
 		},
 	})
 }
@@ -244,10 +244,6 @@ func about(w http.ResponseWriter, r *http.Request) {
 func licence(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
 		Title: "Licence",
-		Data: M{
-			"Stuff": "Licence page!",
-			"Text":  "Other copy stuff goes here!",
-		},
 	})
 }
 
