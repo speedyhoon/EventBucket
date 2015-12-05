@@ -143,7 +143,23 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
 		Title: "Clubs",
 		Data: M{
-			"Stuff": "CLUBS page!",
+			"Default": []input{
+				{
+					Error:   "hey hey!",
+					Value:   "true",
+					Options: []option{},
+				}, {
+					Error: "I caused an error!@",
+					Value: "fds",
+					Options: []option{
+						{Label: "label", Value: "2 3"},
+						{Label: "text", Value: `"T`},
+						{Label: "search", Value: ">S"},
+					},
+				}, {
+					Value: "AbC",
+				},
+			},
 		},
 	})
 }
