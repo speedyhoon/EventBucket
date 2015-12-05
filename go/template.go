@@ -121,11 +121,11 @@ func templater(w http.ResponseWriter, page page) {
 		templates[pageName] = template.Must(template.New("main").Funcs(template.FuncMap{
 
 			"attr": func(attribute, value string) template.HTMLAttr {
-				//				if value == "" {
-				//					return template.HTMLAttr("")
-				//				}
-				return template.HTMLAttr(attribute + "=" + addQuotes(value))
-				//				return template.HTMLAttr(value)
+				var output string
+				if value != "" {
+					output = attribute + "=" + addQuotes(value)
+				}
+				return template.HTMLAttr(output)
 			},
 			"has": func(t interface{}, value string) template.HTMLAttr {
 				//				t = functionOfSomeType()
@@ -136,7 +136,7 @@ func templater(w http.ResponseWriter, page page) {
 				case []option:
 					hasValue = len(t.([]option)) >= 1
 				case string:
-					hasValue = t.(string) != ""
+					hasValue = t != ""
 					//fmt.Printf("boolean %t\n", t) // t has type bool
 				}
 

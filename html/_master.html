@@ -33,13 +33,30 @@
 	.center{
 		text-align: center;
 	}
+	/*Main menu*/
+	.mainMenu {
+		border-bottom: 2px solid #888;
+	}
+	.mainMenu li{
+		display: inline-block;
+	}
+	.mainMenu a, .visited{
+		padding: 5px 30px;
+		display: inline-block;
+	}
+	.mainMenu a:hover{
+		background-color:#ccc;
+	}
+	.visited{
+		background: #888;
+	}
 </style>
 <link rel=stylesheet href=dirCSShome>
 <title>EventBucket{{with .Page.Title}} - {{.}}{{end}}</title>
 <div class=homeContainer>
 	<h1><a href=/>EventBucket</a></h1>
 	<span>Making scoring easier for rifle clubs!</span>
-	<ul class=homeMenu>
+	<ul class=mainMenu>
 		{{range .Menu}}
 			{{if eq $.Page.Title .Name}}
 				<li class=visited>{{.Name}}
@@ -48,7 +65,6 @@
 			{{end}}
 		{{end}}
 	</ul>
-	<h1>{{.Page.Title}}</h1>
 	{{template "page" .Page.Data}}
 	<p class=homeFooter>
 		Copyright &copy; 2011-{{.CurrentYear}} EventBucket | vversionNumber <a href=/licence class=right title="View licence"><img src=dirPNGcc80x15 alt=Licence height=15 width=80></a>

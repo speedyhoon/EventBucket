@@ -15,7 +15,7 @@ type field struct {
 }
 
 type input struct {
-	name, Error, value string
+	name, Error, Value string
 	required           bool
 	Options            []option
 	maxLen, minLen     int
