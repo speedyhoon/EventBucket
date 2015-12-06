@@ -49,9 +49,8 @@ var (
 	warn  = log.New(os.Stderr, "WARN:  ", log.Lshortfile|log.Ltime)
 
 	//EventBucket database
-	databasePath     = os.Getenv("ProgramData") + subDir
-	regexWeakEventId = regexp.MustCompile(`^[[:alnum:]]+$`)
-	regexEventId     = regexp.MustCompile(`^[a-z0-9]+$`)
+	databasePath = os.Getenv("ProgramData") + subDir
+	regexEventId = regexp.MustCompile(`^[a-z0-9]+$`)
 )
 
 type M map[string]interface{}
@@ -145,7 +144,7 @@ func main() {
 	serveDir(dirPNG, false)
 	//BUG any url breaks when appending "&*((&*%"
 	get404(urlHome, home)
-	getParameters(urlEvent, event, regexEventId, regexWeakEventId)
+	getParameters(urlEvent, event, regexEventId)
 	getRedirectPermanent(urlClubs, clubs)
 	getRedirectPermanent(urlAbout, about)
 	getRedirectPermanent(urlArchive, eventArchive)
