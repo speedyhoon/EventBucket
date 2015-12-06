@@ -1,10 +1,13 @@
 {{define "master"}}<!DOCTYPE html>
 <style>
-	body{
+	.dark{
 		background: black;
 		color: white;
 	}
 	a{
+		color: #07f;
+	}
+	.dark a{
 		color: #0af;
 	}
 	label {
@@ -47,12 +50,21 @@
 	.mainMenu a:hover{
 		background-color:#ccc;
 	}
+	.dark .mainMenu a:hover{
+		background-color:#333;
+	}
 	.visited{
 		background: #888;
+	}
+	.emptyBucket{
+		height: 100px;
+		display: block;
+		margin: 30px auto;
 	}
 </style>
 <link rel=stylesheet href=dirCSShome>
 <title>EventBucket{{with .Page.Title}} - {{.}}{{end}}</title>
+<body class=dark>
 <div class=homeContainer>
 	<h1><a href=/>EventBucket</a></h1>
 	<span>Making scoring easier for rifle clubs!</span>

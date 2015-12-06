@@ -122,21 +122,18 @@ func getRedirectPermanent(url string, pageFunc func(http.ResponseWriter, *http.R
 	http.Handle(url+"/", http.RedirectHandler(url, http.StatusMovedPermanently))
 }
 
-func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request, string), regex, regexWeak *regexp.Regexp) {
-	var parameters string
+func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request, string), regex *regexp.Regexp) {
+	var parameters, lowerParams string
 	http.HandleFunc(url,
 		func(w http.ResponseWriter, r *http.Request) {
 			parameters = strings.TrimPrefix(r.URL.Path, url)
-			info.Println("getParameters", parameters)
-			if !regex.MatchString(parameters) {
-				info.Println("failed regex", `"`, r.URL.Path, `"`, "url=", url)
-				if regexWeak.MatchString(parameters) {
-					info.Println("passed Weak")
-					http.Redirect(w, r, strings.ToLower(r.URL.Path), http.StatusSeeOther)
-				} else {
-					info.Println("failed ALL")
-					errorHandler(w, r, http.StatusNotFound)
-				}
+			lowerParams = strings.ToLower(parameters)
+			if !regex.MatchString(lowerParams) {
+				errorHandler(w, r, http.StatusNotFound)
+				return
+			}
+			if parameters != lowerParams {
+				http.Redirect(w, r, url+lowerParams, http.StatusSeeOther)
 				return
 			}
 			pageFunc(w, r, parameters)

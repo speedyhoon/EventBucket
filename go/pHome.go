@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"os"
+	"strings"
 )
 
 func insertEvent(w http.ResponseWriter, r *http.Request) {
@@ -264,10 +265,26 @@ func licence(w http.ResponseWriter, r *http.Request) {
 }
 
 func errorHandler(w http.ResponseWriter, r *http.Request, status int) {
+	//All EventBucket page urls and ids are lowercase
+	lowerURL := strings.ToLower(strings.TrimSuffix(r.URL.Path, "/"))
+
+	//prevents a redirect loop if url is already in lowercase letters.
+	if r.URL.Path != lowerURL {
+
+		//check if the request matches any of the pages that don't require parameters
+		if strings.Count(lowerURL, "/") >= 2 {
+			for _, page := range []string{urlAbout, urlArchive, urlClubs /*urlEvent,*/, urlEvents, urlLicence, urlShooters} {
+				if strings.HasPrefix(lowerURL, page) {
+					//redirect to page without parameters
+					http.Redirect(w, r, page, http.StatusSeeOther)
+					return
+				}
+			}
+		}
+		http.Redirect(w, r, lowerURL, http.StatusSeeOther)
+		return
+	}
 	w.WriteHeader(status)
-	//if status == http.StatusNotFound {
-	//	fmt.Fprint(w, "custom 404")
-	//}
 	templater(w, page{
 		Title: "Error",
 		Data: M{
