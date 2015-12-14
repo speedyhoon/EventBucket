@@ -1,68 +1,5 @@
 {{define "master"}}<!DOCTYPE html>
-<style>
-	.dark{
-		background: black;
-		color: white;
-	}
-	a{
-		color: #07f;
-	}
-	.dark a{
-		color: #0af;
-	}
-	label {
-		display: inline-block;
-		margin-right: 2em;
-	}
-	input {
-		display: block;
-	}
-	label samp{
-		display: block;
-		background: red;
-		color: black;
-		border-radius: 0 0 .5em .5em;
-		padding: 0.25em;
-	}
-	.error input{
-		border-color: red;
-		color: black;
-		border-bottom-width: 0;
-		background: pink;
-	}
-	.right{
-		float: right
-	}
-	.center{
-		text-align: center;
-	}
-	/*Main menu*/
-	.mainMenu {
-		border-bottom: 2px solid #888;
-	}
-	.mainMenu li{
-		display: inline-block;
-	}
-	.mainMenu a, .visited{
-		padding: 5px 30px;
-		display: inline-block;
-	}
-	.mainMenu a:hover{
-		background-color:#ccc;
-	}
-	.dark .mainMenu a:hover{
-		background-color:#333;
-	}
-	.visited{
-		background: #888;
-	}
-	.emptyBucket{
-		height: 100px;
-		display: block;
-		margin: 30px auto;
-	}
-</style>
-<link rel=stylesheet href=dirCSShome>
+<link rel=stylesheet href=dirCSSmain>
 <title>EventBucket{{with .Page.Title}} - {{.}}{{end}}</title>
 <body class=dark>
 <div class=homeContainer>
@@ -79,7 +16,7 @@
 	</ul>
 	{{template "page" .Page.Data}}
 	<p class=homeFooter>
-		Copyright &copy; 2011-{{.CurrentYear}} EventBucket | vversionNumber <a href=/licence class=right title="View licence"><img src=dirPNGcc80x15 alt=Licence height=15 width=80></a>
+		Copyright &copy; 2011-{{.CurrentYear}} EventBucket | vversionNumber <a href=/licence class=right title="View licence"><img src=dirPNGcc80x15 alt="Creative Commons Licence" height=15 width=80></a>
 </div>
 <script defer src=dirJStest></script>
 {{end}}
