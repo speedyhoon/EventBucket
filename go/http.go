@@ -7,6 +7,7 @@ import (
 )
 
 const (
+	dirRoot     = "./"
 	dirGzip     = "dirGzip"
 	urlHome     = "/"
 	urlAbout    = "/about"
@@ -33,16 +34,17 @@ func serveFile(fileName string) {
 		// Unfortunately uncompressed responses may still be required even though all modern browsers support gzip
 		//webmasters.stackexchange.com/questions/22217/which-browsers-handle-content-encoding-gzip-and-which-of-them-has-any-special
 		//www.stevesouders.com/blog/2009/11/11/whos-not-getting-gzip/
-		if strings.Contains(r.Header.Get(acceptEncoding), gzip) {
+		//BUG gzip serving isn't working
+		/*if strings.Contains(r.Header.Get(acceptEncoding), gzip) {
 			headers(w, []string{cache, gzip})
 			warn.Println("Gzipper", dirGzip+fileName)
 			http.ServeFile(w, r, dirGzip+fileName)
-		} else {
-			headers(w, []string{cache})
-			warn.Println("no Gzip", dirRoot+fileName)
-			http.ServeFile(w, r, dirRoot+fileName)
-			warn.Print("The request didn't contain gzip")
-		}
+		} else {*/
+		headers(w, []string{cache})
+		warn.Println("no Gzip", dirRoot+fileName)
+		http.ServeFile(w, r, dirRoot+fileName)
+		warn.Print("The request didn't contain gzip")
+		//		}
 	})
 }
 
@@ -68,19 +70,18 @@ func serveDir(contentType string, allowGzip bool) {
 var headerOptions = map[string][2]string{
 	gzip:   {"Content-Encoding", "gzip"},
 	"html": {contentType, "text/html; charset=utf-8"},
-	//dirJS:  {contentType, "text/javascript"},
-	//dirCSS:    {contentType, "text/css; charset=utf-8"},
+	dirCSS: {contentType, "text/css; charset=utf-8"},
+	dirJS:  {contentType, "text/javascript"},
+	dirPNG: {contentType, "image/png"},
 	//dirSVG:    {contentType, "image/svg+xml"},
 	//dirWOF2:   {contentType, "application/font-woff2"},
-	dirPNG: {contentType, "image/png"},
 	//dirJPEG:   {contentType, "image/jpeg"},
-	//dirWOF:    {contentType, "application/font-woff"},
 }
 
 //research //net.tutsplus.com/tutorials/client-side-security-best-practices/
 func headers(w http.ResponseWriter, setHeaders []string) {
 	//w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src 'self'; font-src 'self'")
-	//	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'")
+	w.Header().Set("Content-Security-Policy", "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'")
 
 	//The page cannot be displayed in a frame, regardless of the site attempting to do so. //developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options
 	w.Header().Set("X-Frame-Options", "DENY")
