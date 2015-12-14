@@ -6,37 +6,56 @@ import (
 	"strings"
 )
 
-func insertEvent(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
-		/*405 Method Not Allowed
-		A request was made of a resource using a request method not supported by that resource; for example,
-		using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
-		//en.wikipedia.org/wiki/List_of_HTTP_status_codes*/
-		http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
-	} else {
-		r.ParseForm()
-		if len(r.Form) != 4 {
-			info.Println("invalid number of form items")
-
-			w.Header().Add("Set-Cookie", sessionError("invalid number of form items"))
-
-			http.Redirect(w, r, "/", http.StatusSeeOther)
-			return
-		}
-
-		http.Redirect(w, r, "/event/1a", http.StatusSeeOther)
-	}
-}
 func home(w http.ResponseWriter, r *http.Request) {
+	var myForm []input
 	info.Println("globalSessions", globalSessions)
-	cookies := r.Cookies()
-	info.Println("cookies", cookies)
+	cookies, err := r.Cookie("z")
+	if err != nil {
+
+		warn.Println("cookiw error", err)
+
+		myForm = []input{
+			{}, {}, {}, {},
+		}
+	} else {
+		info.Println("cookies", cookies.Name)
+		info.Println("cookies", cookies.Value)
+
+		myForm = []input{
+			{
+				Error: "1",
+			}, {
+				Error: "2",
+			}, {
+				Error: "3",
+			}, {
+				Error: "4",
+			},
+		}
+	}
+	//	var errorForm []input
+
+	//	var ok bool
+
+	//	for index, cookie := range cookies {
+	//		cookie = strings.TrimPrefix(cookie, "z=")
+	//		if cookie != cookies[index] {
+	//			errorForm, ok = globalSessions[cookie]
+	//			if !ok {
+	//				warn.Println("oops con't find that one :(")
+	//			}
+	//			return
+	//		}
+	//	}
+	//
 
 	templater(w, page{
 		Title: "Home",
 		Data: M{
 			"Stuff": "Hommmer page!",
-			"MyForm": []input{
+			//			"MyForm": errorForm,
+			"MyForm": myForm,
+			/*"MyForm": []input{
 				{
 					Error: "This is error on a search bar.",
 					//					Options: []Option{
@@ -59,36 +78,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 				{
 					Error: "Error on time field!",
 				},
-			},
-		},
-	})
-}
-
-func event(w http.ResponseWriter, r *http.Request, eventId string) {
-
-	pageURL := "/event/"
-	if r.URL.Path[len(pageURL):] != "1a" {
-		errorHandler(w, r, http.StatusNotFound)
-		return
-	}
-	eventId = "1A"
-	templater(w, page{
-		Title: "Event",
-		Data: M{
-			"Stuff":   "EVENT page!",
-			"EventId": eventId,
-		},
-	})
-}
-
-func events(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" {
-		http.Redirect(w, r, "/events", http.StatusSeeOther)
-	}
-	templater(w, page{
-		Title: "Events",
-		Data: M{
-			"Stuff": "EVENTS page!",
+			},*/
 		},
 	})
 }
