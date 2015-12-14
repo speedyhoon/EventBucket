@@ -1,11 +1,9 @@
 package main
 
 import (
-	"math/rand"
 	"net/http"
 	"regexp"
 	"strings"
-	"time"
 )
 
 const (
@@ -128,38 +126,24 @@ func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request,
 		func(w http.ResponseWriter, r *http.Request) {
 			parameters = strings.TrimPrefix(r.URL.Path, url)
 			lowerParams = strings.ToLower(parameters)
-			if !regex.MatchString(lowerParams) {
-				errorHandler(w, r, http.StatusNotFound)
+			if regex.MatchString(lowerParams) {
+				//normal event id specified
+				pageFunc(w, r, lowerParams)
+				return
+			}
+
+			if parameters == "" || !strings.HasPrefix(r.URL.Path, url) {
+				//no prefix - redirect to + 's':", strings.TrimSuffix(url, "/")+"s")
+				http.Redirect(w, r, strings.TrimSuffix(url, "/")+"s", http.StatusNotFound)
 				return
 			}
 			if parameters != lowerParams {
+				//redirect to lowercase event page
 				http.Redirect(w, r, url+lowerParams, http.StatusSeeOther)
 				return
 			}
-			pageFunc(w, r, parameters)
+
+			//parameters don't match the regex string - 404 enent id not found
+			errorHandler(w, r, http.StatusNotFound)
 		})
 }
-
-//SessionID's can't have space or semicolon
-//should be 16 characters
-//stackoverflow.com/questions/1969232/allowed-characters-in-cookies
-func newSessionID() string {
-	var newSessionId string
-	var i, randInt int
-	for i < 24 {
-		randInt = 33 + rand.Intn(93)
-		if randInt != 59 { //ignore semicolons ;
-			i++
-			newSessionId += string(randInt)
-		}
-	}
-	return "z=" + newSessionId
-}
-
-func sessionError(error string) string {
-	sessionID := newSessionID()
-	globalSessions[sessionID] = error
-	return sessionID + "; Expires=" + time.Now().Add(1*time.Minute).Format("Mon, Jan 2 2006 15:04:05 GMT")
-}
-
-var globalSessions map[string]string

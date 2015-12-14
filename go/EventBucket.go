@@ -3,7 +3,10 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"os/exec"
@@ -14,14 +17,11 @@ import (
 )
 
 const (
-	debug = true
-
 	//Logging & Database directory name
 	subDir = "/EventBucket"
 
 	//HTTP settings
 	address = "http://localhost"
-	port    = "80"
 	dirRoot = "./"
 	//	dirCSS  = "/css/"
 	//dirJS   = "dirJS"
@@ -31,14 +31,43 @@ const (
 	robots  = "robots.txt"
 	favicon = "favicon.ico"
 
-//dirHTML = "/html/"
-//dirSVG  = "/svg/"
-//dirWOF2 = "/woff2/"
+	//dirHTML = "/html/"
+	//dirSVG  = "/svg/"
+	//dirWOF2 = "/woff2/"
+
+	schemaClub        = "schemaClub"
+	schemaEvent       = "schemaEvent"
+	schemaMound       = "schemaMound"
+	schemaRange       = "schemaRange"
+	schemaShooter     = "schemaShooter"
+	schemaAutoInc     = "schemaAutoInc"
+	schemaID          = "schemaID"
+	schemaAddress     = "schemaAddress"
+	schemaClubDefault = "schemaClubDefault"
+	schemaClose       = "schemaClose"
+	schemaDate        = "schemaDate"
+
+	schemaGrade          = "schemaGrade"
+	schemaIsPrizeMeet    = "schemaIsPrizeMeet"
+	schemaLongName       = "schemaLongName"
+	schemaName           = "schemaName"
+	schemaSortScoreboard = "schemaSortScoreboard"
+	schemaPostcode       = "schemaPostcode"
+	schemaSort           = "schemaSort"
+	schemaTime           = "schemaTime"
+	schemaURL            = "schemaURL"
+
+	schemaTown      = "schemaTown"
+	schemaLatitude  = "schemaLatitude"
+	schemaLongitude = "schemaLongitude"
 )
 
 var (
+	debug bool
+
 	//HTTP settings
 	expiresTime, currentYear string
+	portAddr                 string
 
 	//Logging
 	tempPath    = os.Getenv("temp") + subDir
@@ -56,6 +85,26 @@ var (
 type M map[string]interface{}
 
 func init() {
+	port := flag.Uint("port", 80, "Assign a differnet port number for the http server. Range: 0 through 65535.")
+	flag.BoolVar(&debug, "debug", false, "Turn on debugging.")
+	flag.Parse()
+
+	if *port > math.MaxUint16 || *port < 0 {
+		info.Println("Port number must be between 0 and", math.MaxUint16)
+		return
+	}
+
+	if !debug && exec.Command("rundll32.exe", "url.dll,FileProtocolHandler", address).Start() != nil {
+		warn.Print("Unable to open a web browser for " + address)
+	}
+
+	portAddr := fmt.Sprintf(":%v", *port)
+	if *port == 80 {
+		info.Println(address)
+	} else {
+		info.Println(address + portAddr)
+	}
+
 	startLogging()
 	go maintainExpiresTime()
 	go mkDir(databasePath)
@@ -144,7 +193,6 @@ func main() {
 	serveDir(dirPNG, false)
 	//BUG any url breaks when appending "&*((&*%"
 	get404(urlHome, home)
-	getParameters(urlEvent, event, regexEventId)
 	getRedirectPermanent(urlClubs, clubs)
 	getRedirectPermanent(urlAbout, about)
 	getRedirectPermanent(urlArchive, eventArchive)
@@ -152,23 +200,11 @@ func main() {
 	getRedirectPermanent(urlLicence, licence)
 	getRedirectPermanent(urlEvents, events)
 	getRedirectPermanent("/all", all)
-
+	getParameters(urlEvent, event, regexEventId)
 	http.HandleFunc("/0", insertEvent)
 
-	//	fmt.Println(tempers("4"))
-	//	fmt.Printf("\n\n\n\n%#v", tempers("4"))
-	//	fmt.Printf("\n\n\n\n%+v", tempers("4"))
-	//	fmt.Printf("\n\n\n\n%T", tempers("4"))
-	//	my_temp := tempers("4")
-	//	for i, t := range my_temp.fields {
-	//		fmt.Println(i, t, "\n\n")
-	//	}
-
-	if !debug && exec.Command("rundll32.exe", "url.dll,FileProtocolHandler", address).Start() != nil {
-		warn.Print("Unable to open a web browser for " + address)
-	}
-	info.Print("Starting EventBucket server...")
-	warn.Printf("ListenAndServe: %v", http.ListenAndServe(":"+port, nil))
+	info.Print("Starting EventBucket HTTP server...")
+	warn.Printf("ListenAndServe: %v", http.ListenAndServe(portAddr, nil))
 	info.Println("EvenBucket stopped.")
 }
 
@@ -179,7 +215,9 @@ func startLogging() {
 		var f *os.File
 		f, err = os.OpenFile(logFileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 		if err == nil {
-			trace.SetOutput(f)
+			if debug {
+				trace.SetOutput(f)
+			}
 			info.SetOutput(f)
 			warn.SetOutput(f)
 		}

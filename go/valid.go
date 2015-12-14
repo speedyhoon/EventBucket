@@ -25,7 +25,7 @@ func isValidStr(str string, field field) (string, error) {
 	return str, errors.New("field string doesn't pass validation")
 }
 
-func isValid(fields []field, r *http.Request) ([]field, bool) {
+func isValid(r *http.Request, fields []field) ([]field, bool) {
 	r.ParseForm()
 	if len(r.Form) < 1 {
 		return fields, false
