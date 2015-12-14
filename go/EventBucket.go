@@ -5,6 +5,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"math"
 	"net/http"
@@ -22,18 +23,11 @@ const (
 
 	//HTTP settings
 	address = "http://localhost"
-	dirRoot = "./"
-	//	dirCSS  = "/css/"
-	//dirJS   = "dirJS"
 	dirPNG  = "dirPNG"
 	dirJS   = "dirJS"
 	dirCSS  = "dirCSS"
 	robots  = "robots.txt"
 	favicon = "favicon.ico"
-
-	//dirHTML = "/html/"
-	//dirSVG  = "/svg/"
-	//dirWOF2 = "/woff2/"
 
 	schemaClub        = "schemaClub"
 	schemaEvent       = "schemaEvent"
@@ -66,19 +60,20 @@ var (
 	debug bool
 
 	//HTTP settings
-	expiresTime, currentYear string
-	portAddr                 string
+	expiresTime, currentYear, portAddr string
 
 	//Logging
 	tempPath    = os.Getenv("temp") + subDir
 	logFileName = filepath.Join(tempPath, time.Now().Format("20060102")+".log")
 	//Logging destinations are os.Stdout, os.Stderr, ioutil.Discard
-	trace = log.New(os.Stdout, "TRACE: ", log.Lshortfile)
+	trace = log.New(ioutil.Discard, "TRACE: ", log.Lshortfile)
 	info  = log.New(os.Stdout, "INFO:  ", log.Lshortfile|log.Ltime)
 	warn  = log.New(os.Stderr, "WARN:  ", log.Lshortfile|log.Ltime)
 
 	//EventBucket database
 	databasePath = os.Getenv("ProgramData") + subDir
+
+	//URL validation matching
 	regexEventId = regexp.MustCompile(`^[a-z0-9]+$`)
 )
 
@@ -94,15 +89,15 @@ func init() {
 		return
 	}
 
-	if !debug && exec.Command("rundll32.exe", "url.dll,FileProtocolHandler", address).Start() != nil {
-		warn.Print("Unable to open a web browser for " + address)
+	portAddr = fmt.Sprintf(":%v", *port)
+	fullAddr := address
+	if *port != 80 {
+		fullAddr += portAddr
 	}
+	info.Println(fullAddr)
 
-	portAddr := fmt.Sprintf(":%v", *port)
-	if *port == 80 {
-		info.Println(address)
-	} else {
-		info.Println(address + portAddr)
+	if !debug && exec.Command("rundll32.exe", "url.dll,FileProtocolHandler", fullAddr).Start() != nil {
+		warn.Print("Unable to open a web browser for " + fullAddr)
 	}
 
 	startLogging()
@@ -122,74 +117,13 @@ func init() {
 		}
 		os.Exit(0)
 	}()*/
-
-	/*my_temp := map[string]Field2{
-		"eventId": submit{
-			//				name:      ,
-			autoFocus: true,
-			Value:     "9",
-			label:     "Button!",
-		},
-		"shooterId": selectBox{
-			//				name:     ,
-			required: true,
-			options: []option{
-				{Label: "5"},
-				{Label: "6"},
-			},
-			label: "selectBox",
-		},
-
-		"moundId": multiSelect{
-			//				name:     ,
-			required: true,
-			options: []option{
-				{Label: "500"},
-				{Label: "600"},
-			},
-			size:  4,
-			label: "multiSelect",
-		},
-		"grren": hidden{
-			//				name:  ,
-			Value: "3t3",
-		},
-	}
-
-	myForm := form2{
-		action: "startshooting",
-		title:  "Start shooting FOrm",
-		fields: my_temp,
-	}
-	fmt.Println(myForm.html(""))*/
 }
-
-/*
-func tempers(eventID string) form3 {
-	return form3{
-		action: "/EventRangeInsert",
-		title:  "Add Range",
-		fields: []Field2{
-			textbox{
-				name:      "name",
-				label:     "Range Name",
-				error:     "whoops this seems to be an unexpected error :(",
-				autoFocus: true,
-				required:  true,
-			}, submit{
-				label: "Create Range",
-				name:  "eventid",
-				Value: eventID,
-			},
-		},
-	}
-}*/
 
 func main() {
 	serveFile(favicon)
 	serveFile(robots)
-	serveDir(dirJS, true)
-	serveDir(dirCSS, true)
+	serveDir(dirCSS, false)
+	serveDir(dirJS, false)
 	serveDir(dirPNG, false)
 	//BUG any url breaks when appending "&*((&*%"
 	get404(urlHome, home)
