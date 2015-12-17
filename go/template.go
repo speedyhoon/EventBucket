@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
 	"strings"
@@ -119,7 +118,12 @@ func templater(w http.ResponseWriter, page page) {
 		//		templ, err := template.ParseFiles("../htm/"+pageName+".htm", masterTemplatePath)
 
 		templates[pageName] = template.Must(template.New("main").Funcs(template.FuncMap{
-
+			"hasindex": func(inputs []field, index int) *field {
+				if index < len(inputs) && index >= 0 {
+					return &inputs[index]
+				}
+				return nil
+			},
 			"attr": func(attribute, value string) template.HTMLAttr {
 				var output string
 				if value != "" {
@@ -127,16 +131,30 @@ func templater(w http.ResponseWriter, page page) {
 				}
 				return template.HTMLAttr(output)
 			},
+			/*"in": func(t interface{}) bool {
+				switch t.(type) {
+				default:
+					warn.Printf("unexpected type %T", t) // %T prints whatever type t has
+					return false
+				case []option:
+					return len(t.([]option)) >= 1
+				case string:
+					return t != ""
+				}
+			},*/
+
 			"has": func(t interface{}, value string) template.HTMLAttr {
 				//				t = functionOfSomeType()
 				var hasValue bool
 				switch t.(type) {
 				default:
-					fmt.Printf("unexpected type %T", t) // %T prints whatever type t has
+					warn.Printf("unexpected type %T", t) // %T prints whatever type t has
 				case []option:
 					hasValue = len(t.([]option)) >= 1
 				case string:
 					hasValue = t != ""
+				case bool:
+					hasValue = t.(bool)
 					//fmt.Printf("boolean %t\n", t) // t has type bool
 				}
 
@@ -150,16 +168,74 @@ func templater(w http.ResponseWriter, page page) {
 				return template.HTMLAttr("")
 				//				return template.HTMLAttr(value)
 			},
-			"D": func(value string) template.HTMLAttr {
-				return template.HTMLAttr(addQuotes(value))
+
+			"withhas": func(t interface{}, value string) template.HTMLAttr {
+				//				t = functionOfSomeType()
+				var hasValue bool
+				switch t.(type) {
+				default:
+					warn.Printf("unexpected type %T", t) // %T prints whatever type t has
+				case []option:
+					hasValue = len(t.([]option)) >= 1
+				case string:
+					hasValue = t != ""
+				case int:
+					hasValue = t.(int) > 0
+					//fmt.Printf("boolean %t\n", t) // t has type bool
+				}
+
+				//				if len(condition) > 0 {
+				if hasValue {
+					//				if value == "" {
+					//					return template.HTMLAttr("")
+					//				}
+					return template.HTMLAttr(value)
+				}
+				return template.HTMLAttr("")
+				//				return template.HTMLAttr(value)
 			},
+			/*"might": func(value string, inputs []input, index int, t interface{}) template.HTMLAttr {
+				//				var hasValue bool
+				if len(inputs) <= index {
+					//					variable := item[t]
+					return template.HTMLAttr(value)
+				}
+				return template.HTMLAttr("")
+
+				/*	for _, variable := range t {
+					switch variable.(type) {
+					default:
+						warn.Printf("unexpected type %T", t) // %T prints whatever type t has
+					case []option:
+						hasValue = len(variable.([]option)) >= 1
+					case string:
+						hasValue = variable != ""
+						//fmt.Printf("boolean %t\n", t) // t has type bool
+					}
+					if !hasValue {
+						return template.HTMLAttr("")
+					}
+				}* /
+				//				if len(condition) > 0 {
+				//				if hasValue {
+				//				if value == "" {
+				//					return template.HTMLAttr("")
+				//				}
+				//				return template.HTMLAttr(value)
+				//				}
+				//				return template.HTMLAttr("")
+				//				return template.HTMLAttr(value)
+			},*/
+			/*"D": func(value string) template.HTMLAttr {
+				return template.HTMLAttr(addQuotes(value))
+			},*/
 			//			"field": func(fields []Field, index int) Field {
 			//				fmt.Println(fields[index])
 			//				return fields[index]
 			//			},
-			"HTM": func(inner string) template.HTML {
+			/*"HTM": func(inner string) template.HTML {
 				return template.HTML(inner)
-			},
+			},*/
 			//			"nice": func(inp Jjj) string {
 			//				return "fdfd"
 			//			},

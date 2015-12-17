@@ -4,13 +4,67 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
+)
+
+const (
+	formatYMD  = "2006-01-02"
+	formatTime = "15:04"
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
-	var myForm []input
-	info.Println("globalSessions", globalSessions)
-	cookies, err := r.Cookie("z")
-	if err != nil {
+
+	myForm := getSessionForm2(w, r)
+	existingFields := myForm.fields
+
+	if len(existingFields) <= 0 {
+		warn.Println("no fields present")
+		var noEvents bool
+		noEvents = true
+		existingFields = []field{
+			{},
+			{Required: noEvents},
+			{Value: time.Now().Format(formatYMD)},
+			{Value: time.Now().Format(formatTime)},
+			/*{
+				Error: "This is error on a search bar.",
+				Options: []option{
+					{Label: "label", Value: "2 3"},
+					{Label: "text", Value: `"T`},
+					{Label: "Search", Value: ">S"},
+				},
+			},
+			{
+				Error: "Another error on club input.",
+				Options: []option{
+					{Label: "Warrack", Value: "R23"},
+					{Label: "Horsham", Value: "T52"},
+					{Label: "Stawell", Value: "S82"},
+				},
+			},
+			{
+				Error: "Error on date field!",
+			},
+			{
+				Error: "Error on time field!",
+			},*/
+		}
+	} else {
+		info.Println("found something")
+	}
+
+	//	var myForm []input
+	//	info.Println("sessionForm", sessionForm)
+	//	cookies, err := r.Cookie("z")
+	//	info.Println("r.Cookie=", cookies, err)
+
+	//	w.Header().Del("z=fdsa")
+
+	//	w.Header().Set("Set-Cookie", fmt.Sprintf("z=; path=/; expires=%v", time.Now().UTC().Add(-5*time.Minute).Format(gmtFormat)))
+
+	/*if err != nil {
+
+
 
 		warn.Println("cookiw error", err)
 
@@ -32,7 +86,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 				Error: "4",
 			},
 		}
-	}
+	}*/
 	//	var errorForm []input
 
 	//	var ok bool
@@ -52,33 +106,9 @@ func home(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
 		Title: "Home",
 		Data: M{
-			"Stuff": "Hommmer page!",
 			//			"MyForm": errorForm,
-			"MyForm": myForm,
-			/*"MyForm": []input{
-				{
-					Error: "This is error on a search bar.",
-					//					Options: []Option{
-					//						{Label: "label", Value: "2 3"},
-					//						{Label: "text", Value: `"T`},
-					//						{Label: "Search", Value: ">S"},
-					//					},
-				},
-				{
-					Error: "Another error on club input.",
-					Options: []option{
-						{Label: "Warrack", Value: "R23"},
-						{Label: "Horsham", Value: "T52"},
-						{Label: "Stawell", Value: "S82"},
-					},
-				},
-				{
-					Error: "Error on date field!",
-				},
-				{
-					Error: "Error on time field!",
-				},
-			},*/
+			//"MyForm": myForm,
+			"MyForm": existingFields,
 		},
 	})
 }
@@ -99,7 +129,7 @@ func all(w http.ResponseWriter, r *http.Request) {
 			},
 			"Shooters": M{
 				"Stuff": "SHOOTERS page!",
-				"Fds": []input{
+				"Fds": []field{
 					{
 						Error: "i caused an error!@",
 						Options: []option{
@@ -134,7 +164,7 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
 		Title: "Clubs",
 		Data: M{
-			"Default": []input{
+			"Default": []field{
 				{
 					Error:   "hey hey!",
 					Value:   "true",
@@ -162,15 +192,15 @@ func shooters(w http.ResponseWriter, r *http.Request) {
 			"Stuff": "SHOOTERS page!",
 			"Fds": []field{
 				{
-					error: "I caused an error!@",
-					options: []option{
+					Error: "I caused an error!@",
+					Options: []option{
 						{Label: "label", Value: "2 3"},
 						{Label: "text", Value: `"T`},
 						{Label: "search", Value: ">S"},
 					},
 				},
 				{
-					options: []option{
+					Options: []option{
 						{Label: "Warrack", Value: "R23"},
 						{Label: "Horsham", Value: "T52"},
 						{Label: "Stawell", Value: "S82"},

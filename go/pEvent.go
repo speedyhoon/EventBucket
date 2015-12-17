@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 )
@@ -48,52 +49,57 @@ func insertEvent(w http.ResponseWriter, r *http.Request) {
 		using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
 		//en.wikipedia.org/wiki/List_of_HTTP_status_codes*/
 
-		globalSessions["fdsa"] = sessionInfo{inputs: []input{
-			{Error: "0"},
-			{Error: "1"},
-			{Error: "2"},
-			{Error: "3"},
-		},
-			expiry: time.Now(),
-		}
-		w.Header().Add("Set-Cookie", "z=fdsa; Expires="+time.Now().Add(1*time.Minute).Format("Mon, Jan 2 2006 15:04:05 GMT"))
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		//		globalSessions["fdsa"] = sessionInfo{inputs: []input{
+		//			{Error: "0"},
+		//			{Error: "1"},
+		//			{Error: "2"},
+		//			{Error: "3"},
+		//		},
+		//			expiry: time.Now(),
+		//		}
+		//		w.Header().Add("Set-Cookie", "z=fdsa; expires="+time.Now().Add(2*time.Minute).Format(gmtFormat))
+
+		//		globalSessions["fdsa"] = sessionInfo{
+		//			form: form{
+		//				inputs: []input{
+		//					{Error: "0"},
+		//					{Required: true, Error: "1"},
+		//					{Value: time.Now().Format("2006-01-02"), Error: "2"},
+		//					{Value: time.Now().Format("15:04"), Error: "3"},
+		//				},
+		//			},
+		//		}
+
+		//		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
 
 		//redirect to home page
-		//		errorHandler(w, r, http.StatusMethodNotAllowed)
+		//				errorHandler(w, r, http.StatusMethodNotAllowed)
 		return
 	}
-	_, err := isValid(r, []field{
-		{
-			name:     schemaName,
-			required: true,
-			maxLen:   99,
-			kind:     "1",
-		},
-		{
-			name:   schemaClub,
-			maxLen: 99,
-			kind:   "1",
-		},
-		{
-			name: schemaDate,
-			kind: "date",
-		},
-		{
-			name: schemaTime,
-			kind: "time",
-		},
-	})
-	if err {
-		info.Println("invalid number of form items")
+	submittedFields, isValid := isValid(r, GlobalForms[0].fields)
+	if !isValid {
+		//		info.Println(err)
+
+		sesId := newSessionID()
+		expiry := time.Now().Add(2 * time.Minute)
 
 		w.Header().Add("Set-Cookie", sessionError("invalid number of form items"))
 		//
 		//		http.Redirect(w, r, "/", http.StatusSeeOther)
 		//		return
-	}
 
-	w.Header().Add("Set-Cookie", "z=fdsa; Expires="+time.Now().Add(1*time.Minute).Format("Mon, Jan 2 2006 15:04:05 GMT"))
+		globalSessions[sesId] = sessionInfo{
+			expiry: expiry,
+			form: form{
+				action: "0",
+				fields: submittedFields,
+			},
+		}
+		w.Header().Add("Set-Cookie", fmt.Sprintf("z=%v; expires=%v", sesId, expiry.Format(gmtFormat)))
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
 
 	http.Redirect(w, r, "/event/1a", http.StatusSeeOther)
 

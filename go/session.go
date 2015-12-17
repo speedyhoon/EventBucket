@@ -1,8 +1,9 @@
 package main
 
 import (
-	"errors"
+	"fmt"
 	"math/rand"
+	"net/http"
 	"time"
 )
 
@@ -15,7 +16,7 @@ const (
 
 //TODO leave only one of these global variables
 var sessionForm = make(map[string]form, 1)
-var globalSessions map[string]sessionInfo
+var globalSessions = make(map[string]sessionInfo, 1)
 
 //TODO will possibly need a chanel here to prevent locks occurring
 func setSession(returns form) {
@@ -39,14 +40,17 @@ func setSession(returns form) {
 }
 
 //When a previous session id is used remove it.
-func getSession(id string) (form, error) {
+//func getSession(id string) (form, error) {
+func getSession(id string) form {
 	contents, ok := sessionForm[id]
 	if ok {
 		//Clear the session contents as it has been returned to the user.
 		delete(sessionForm, id)
-		return contents, nil
+		//		return contents, nil
+		return contents
 	}
-	return form{}, errors.New("Couldn't find a session with id " + id)
+	//	return form{}, errors.New("Couldn't find a session with id " + id)
+	return form{}
 }
 
 //SessionID's can't have space or semicolon
@@ -72,10 +76,56 @@ func sessionError(error string) string {
 }
 
 type sessionInfo struct {
-	inputs []input
+	inputs []field
+	form   form
 	expiry time.Time
 }
 
 /* TODO
 create a ticker that checks the saved sessions every 90 seconds. If the session is older than 1 minute, delete it.
 */
+
+const cookieToken = "s"
+
+func getSessionForm2(w http.ResponseWriter, r *http.Request) form {
+	cookies, err := r.Cookie("z")
+	if err != nil || cookies.Value == "" {
+		return form{}
+	}
+
+	contents, ok := globalSessions[cookies.Value]
+	if ok {
+		//Clear the session contents as it has been returned to the user.
+		delete(globalSessions, cookies.Value)
+		//		return contents, nil
+		w.Header().Set("Set-Cookie", fmt.Sprintf("z=; expires=%v", time.Now().UTC().Add(-5*time.Minute).Format(gmtFormat)))
+		return contents.form
+	}
+	//	return form{}, errors.New("Couldn't find a session with id " + id)
+	return form{}
+}
+
+func sessionExpire(w http.ResponseWriter, r *http.Request) {
+	//	var myForm []field
+	//	info.Println("globalSessions", globalSessions)
+	cookies, err := r.Cookie("z")
+	info.Println("r.Cookie=", cookies, err)
+
+	//	w.Header().Del("z=fdsa")
+
+	//	w.Header().Set("Set-Cookie", fmt.Sprintf("z=; path=/; expires=%v", time.Now().UTC().Add(-5*time.Minute).Format(gmtFormat)))
+	w.Header().Set("Set-Cookie", fmt.Sprintf("z=; expires=%v", time.Now().UTC().Add(-5*time.Minute).Format(gmtFormat)))
+}
+
+func newSessionForm(w http.ResponseWriter, r *http.Request) {
+	globalSessions["fdsa"] = sessionInfo{
+		expiry: time.Now(),
+		form: form{fields: []field{
+			{Error: "-----0"},
+			{Error: "-----1"},
+			{Error: "-----2"},
+			{Error: "-----3"},
+		}},
+	}
+	w.Header().Add("Set-Cookie", "z=fdsa; expires="+time.Now().Add(2*time.Minute).Format(gmtFormat))
+}
