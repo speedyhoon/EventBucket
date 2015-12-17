@@ -144,3 +144,16 @@ Positives:
 
 
 Above scenario is a modern take on parsing the old xhtml and XSLT with xml data. At least the browser would translate the data into XHTML. However XSLT was very complex and that flexible.
+
+
+
+datalists:
+there is inconsistant implementations for the datalist element.
+Chrome & Opera show the option value & label
+Firefox & IE 11 show only the option label
+http://stackoverflow.com/questions/29882361/show-datalist-labels-but-submit-the-actual-value
+
+how can this be fixed?
+simple: don't use id in this case and only provide Label.
+use Label in the backend as an additional case insensitive unique identifier, but also have an id
+return label as normal
