@@ -7,6 +7,8 @@ import (
 )
 
 const (
+	gmtFormat = "Mon, 02 Jan 2006 15:04:05 GMT"
+
 	dirRoot     = "./"
 	dirGzip     = "dirGzip"
 	urlHome     = "/"
@@ -41,9 +43,9 @@ func serveFile(fileName string) {
 			http.ServeFile(w, r, dirGzip+fileName)
 		} else {*/
 		headers(w, []string{cache})
-		warn.Println("no Gzip", dirRoot+fileName)
+		//		warn.Println("no Gzip", dirRoot+fileName)
 		http.ServeFile(w, r, dirRoot+fileName)
-		warn.Print("The request didn't contain gzip")
+		//		warn.Print("The request didn't contain gzip")
 		//		}
 	})
 }
@@ -57,10 +59,10 @@ func serveDir(contentType string, allowGzip bool) {
 				return
 			}
 			if allowGzip && strings.Contains(r.Header.Get(acceptEncoding), gzip) {
-				headers(w, []string{gzip, cache})
+				headers(w, []string{contentType, gzip, cache})
 				http.StripPrefix(contentType, http.FileServer(http.Dir(dirGzip))).ServeHTTP(w, r)
 			} else {
-				headers(w, []string{cache})
+				headers(w, []string{contentType, cache})
 				http.FileServer(http.Dir(dirRoot)).ServeHTTP(w, r)
 				warn.Print("The request didn't contain gzip")
 			}
