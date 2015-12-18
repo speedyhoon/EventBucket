@@ -14,8 +14,12 @@ type field struct {
 	Options            []option
 	maxLen, minLen     int
 	min, max, step     int
-	kind               interface{}
-	defValue           func() []string
+	//	kind               interface{}
+	internalValue interface{}
+	kind          interface{}
+	//	v8 string
+	v8       func(string, field) (interface{}, string)
+	defValue func() []string
 }
 
 type input struct {
@@ -49,17 +53,20 @@ var GlobalForms = []form{
 				name:     schemaClub,
 				Required: true,
 				//				autoFocus: true,
-				maxLen: 50,
+				maxLen: 64,
 				minLen: 1,
 				kind:   "",
+				v8:     isValidStr,
 				//				options: true,
 			},
 			{
 				name:     schemaName,
 				Required: true,
-				maxLen:   50,
+				maxLen:   64,
 				minLen:   1,
 				kind:     "",
+				//				kind: isValidStr,
+				v8: isValidStr,
 				//				options: true,
 			},
 			{
@@ -68,10 +75,12 @@ var GlobalForms = []form{
 				minLen:   10,
 				maxLen:   10,
 				kind:     "",
+				v8:       isValidStr,
 			},
 			{
 
 				kind:     "",
+				v8:       isValidStr,
 				name:     schemaTime,
 				defValue: defaultTime,
 				minLen:   5,
@@ -123,7 +132,7 @@ var GlobalForms = []form{
 			},
 			{
 				name: schemaClub,
-				kind: "_id",
+				//				kind: "_id",
 			},
 		},
 	},
