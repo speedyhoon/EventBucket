@@ -1,15 +1,7 @@
-{{define "networkAdapters"}}{{end}}
-
 {{define "page"}}
 	EventBucket version: versionNumber
-	<p>Compiled by Cam Webb, on buildDate.</p>
-
-	{{/*template "networkAdaptors" .Hostname*/}}
-	<p>To access EventBucket from multiple devices within your local network, the following links might be available,<br>
-		<strong>Hostname</strong> (Windows devices): <a href=//{{.Hostname}}>{{.Hostname}}</a><br>
-		<strong>IP Address</strong> (Apple &amp; Android devices):{{range .IpAddresses}} <a href=//{{.}}>{{.}}</a>{{end}}
-	</p>
-
+	<p>Compiled by Cam Webb using goVersion, on buildDate.</p>
+	{{template "networkAdapters" .}}
 	<h2 class=center>
 		Built with:
 		<a title="The Go Programming Language" href=//golang.org><img alt=Go src=dirPNGgo height=30></a>
