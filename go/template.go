@@ -7,9 +7,10 @@ import (
 )
 
 const (
-	titleSeparator     = " - "
-	masterTemplatePath = "./h/_master"
-	formsTemplatePath  = "./h/forms"
+	titleSeparator              = " - "
+	masterTemplatePath          = "./h/_master"
+	formsTemplatePath           = "./h/forms"
+	networkAdaptersTemplatePath = "./h/networkAdapters"
 )
 
 var (
@@ -239,7 +240,7 @@ func templater(w http.ResponseWriter, page page) {
 			//			"nice": func(inp Jjj) string {
 			//				return "fdfd"
 			//			},
-		}).ParseFiles("./h/"+pageName, formsTemplatePath, masterTemplatePath))
+		}).ParseFiles("./h/"+pageName, formsTemplatePath, networkAdaptersTemplatePath, masterTemplatePath))
 		html = templates[pageName]
 	}
 
