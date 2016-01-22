@@ -10,11 +10,12 @@ import (
 const (
 	formatYMD  = "2006-01-02"
 	formatTime = "15:04"
+	formatGMT  = "Mon, 02 Jan 2006 15:04:05 GMT"
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
 
-	myForm := getSessionForm2(w, r)
+	myForm := getSession(w, r)
 	existingFields := myForm.fields
 
 	if len(existingFields) <= 0 {
