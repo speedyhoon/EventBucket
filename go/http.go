@@ -7,17 +7,19 @@ import (
 )
 
 const (
-	dirRoot     = "./"
-	dirGzip     = "dirGzip"
-	urlHome     = "/"
-	urlAbout    = "/about"
-	urlArchive  = "/archive"
-	urlClubs    = "/clubs"
-	urlEvents   = "/events"
-	urlLicence  = "/licence"
-	urlShooters = "/shooters"
+	dirRoot         = "./"
+	dirGzip         = "dirGzip"
+	urlHome         = "/"
+	urlAbout        = "/about"
+	urlArchive      = "/archive"
+	urlClubs        = "/clubs"
+	urlClubSettings = "/club-settings/"
+	urlEvents       = "/events"
+	urlLicence      = "/licence"
+	urlShooters     = "/shooters"
 	//GET with PARAMETERS
-	urlEvent = "/event/" //eventID
+	urlEvent         = "/event/"          //eventID
+	urlEventSettings = "/event-settings/" //eventID
 
 	contentType    = "Content-Type"
 	cacheControl   = "Cache-Control"
@@ -121,30 +123,27 @@ func getRedirectPermanent(url string, pageFunc func(http.ResponseWriter, *http.R
 	http.Handle(url+"/", http.RedirectHandler(url, http.StatusMovedPermanently))
 }
 
+/*TODO if no parameters provided, keep user on the same page but didplay when they need to provide in order for the page to work.
+not doing this may frustrate some users who want to get to the club settings page but can't remember the club id.
+then display a list of clubs and status code 404
+*/
 func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request, string), regex *regexp.Regexp) {
 	var parameters, lowerParams string
 	http.HandleFunc(url,
 		func(w http.ResponseWriter, r *http.Request) {
 			parameters = strings.TrimPrefix(r.URL.Path, url)
 			lowerParams = strings.ToLower(parameters)
-			if regex.MatchString(lowerParams) {
-				//normal event id specified
-				pageFunc(w, r, lowerParams)
-				return
-			}
 
-			if parameters == "" || !strings.HasPrefix(r.URL.Path, url) {
-				//no prefix - redirect to + 's':", strings.TrimSuffix(url, "/")+"s")
-				http.Redirect(w, r, strings.TrimSuffix(url, "/")+"s", http.StatusNotFound)
-				return
-			}
 			if parameters != lowerParams {
-				//redirect to lowercase event page
+				//Redirect to page with lowercase parameters.
 				http.Redirect(w, r, url+lowerParams, http.StatusSeeOther)
 				return
 			}
 
-			//parameters don't match the regex string - 404 enent id not found
-			errorHandler(w, r, http.StatusNotFound)
+			if regex.MatchString(lowerParams) {
+				pageFunc(w, r, lowerParams)
+				return
+			}
+			whoops(w, r, url)
 		})
 }
