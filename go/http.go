@@ -20,6 +20,7 @@ const (
 	//GET with PARAMETERS
 	urlEvent         = "/event/"          //eventID
 	urlEventSettings = "/event-settings/" //eventID
+	urlClub          = "/club/"           //clubID
 
 	contentType    = "Content-Type"
 	cacheControl   = "Cache-Control"
@@ -146,4 +147,34 @@ func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request,
 			}
 			whoops(w, r, url)
 		})
+}
+
+func errorHandler(w http.ResponseWriter, r *http.Request, status int) {
+	//All EventBucket page urls and ids are lowercase
+	lowerURL := strings.ToLower(strings.TrimSuffix(r.URL.Path, "/"))
+
+	//prevents a redirect loop if url is already in lowercase letters.
+	if r.URL.Path != lowerURL {
+
+		//check if the request matches any of the pages that don't require parameters
+		if strings.Count(lowerURL, "/") >= 2 {
+			for _, page := range []string{urlAbout, urlArchive, urlClubs /*urlEvent,*/, urlEvents, urlLicence, urlShooters} {
+				if strings.HasPrefix(lowerURL, page) {
+					//redirect to page without parameters
+					http.Redirect(w, r, page, http.StatusSeeOther)
+					return
+				}
+			}
+		}
+		http.Redirect(w, r, lowerURL, http.StatusSeeOther)
+		return
+	}
+	w.WriteHeader(status)
+	templater(w, page{
+		Title: "Error",
+		Data: M{
+			//		"Status": "404 Page Not Found",
+			"Status": status,
+		},
+	})
 }

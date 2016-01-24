@@ -3,14 +3,7 @@ package main
 import (
 	"net/http"
 	"os"
-	"strings"
 	"time"
-)
-
-const (
-	formatYMD  = "2006-01-02"
-	formatTime = "15:04"
-	formatGMT  = "Mon, 02 Jan 2006 15:04:05 GMT"
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
@@ -167,61 +160,6 @@ func eventArchive(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func clubs(w http.ResponseWriter, r *http.Request) {
-	templater(w, page{
-		Title: "Clubs",
-		Data: M{
-			"Default": []field{
-				{
-					Error:   "hey hey!",
-					Value:   "true",
-					Options: []option{},
-				}, {
-					Error: "I caused an error!@",
-					Value: "fds",
-					Options: []option{
-						{Label: "label", Value: "2 3"},
-						{Label: "text", Value: `"T`},
-						{Label: "search", Value: ">S"},
-					},
-				}, {
-					Value: "AbC",
-				},
-			},
-		},
-	})
-}
-
-func shooters(w http.ResponseWriter, r *http.Request) {
-	templater(w, page{
-		Title: "Shooters",
-		Data: M{
-			"Stuff": "SHOOTERS page!",
-			"Fds": []field{
-				{
-					Error: "I caused an error!@",
-					Options: []option{
-						{Label: "label", Value: "2 3"},
-						{Label: "text", Value: `"T`},
-						{Label: "search", Value: ">S"},
-					},
-				},
-				{
-					Options: []option{
-						{Label: "Warrack", Value: "R23"},
-						{Label: "Horsham", Value: "T52"},
-						{Label: "Stawell", Value: "S82"},
-					},
-				},
-				//			Date{},
-				//			Time{},
-				//			Check{},
-				//			Hidden{},
-			},
-		},
-	})
-}
-
 /*
 type form struct {
 	Action string
@@ -288,36 +226,6 @@ func about(w http.ResponseWriter, r *http.Request) {
 func licence(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
 		Title: "Licence",
-	})
-}
-
-func errorHandler(w http.ResponseWriter, r *http.Request, status int) {
-	//All EventBucket page urls and ids are lowercase
-	lowerURL := strings.ToLower(strings.TrimSuffix(r.URL.Path, "/"))
-
-	//prevents a redirect loop if url is already in lowercase letters.
-	if r.URL.Path != lowerURL {
-
-		//check if the request matches any of the pages that don't require parameters
-		if strings.Count(lowerURL, "/") >= 2 {
-			for _, page := range []string{urlAbout, urlArchive, urlClubs /*urlEvent,*/, urlEvents, urlLicence, urlShooters} {
-				if strings.HasPrefix(lowerURL, page) {
-					//redirect to page without parameters
-					http.Redirect(w, r, page, http.StatusSeeOther)
-					return
-				}
-			}
-		}
-		http.Redirect(w, r, lowerURL, http.StatusSeeOther)
-		return
-	}
-	w.WriteHeader(status)
-	templater(w, page{
-		Title: "Error",
-		Data: M{
-			//		"Status": "404 Page Not Found",
-			"Status": status,
-		},
 	})
 }
 

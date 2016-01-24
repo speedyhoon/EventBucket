@@ -39,23 +39,29 @@ var (
 			Name: "Home",
 			Link: urlHome,
 		}, {
-			Name: "Archive",
-			Link: urlArchive,
+			Name: "Events",
+			Link: urlEvents,
 		}, {
 			Name: "Clubs",
 			Link: urlClubs,
 		}, {
-			Name: "Events",
-			Link: urlEvents,
+			Name: "Shooters",
+			Link: urlShooters,
 		}, {
 			Name: "About",
 			Link: urlAbout,
 		}, {
-			Name: "Shooters",
-			Link: urlShooters,
-		}, {
 			Name: "Licence",
 			Link: urlLicence,
+		}, {
+			Name: "Club",
+			Link: urlClub + "3",
+		}, {
+			Name: "Event",
+			Link: urlEvent + "3",
+		}, {
+			Name: "Archive",
+			Link: urlArchive,
 		}, {
 			Name: "Report",
 			Link: "/report/",
