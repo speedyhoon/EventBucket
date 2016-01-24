@@ -56,6 +56,9 @@ var (
 		}, {
 			Name: "Licence",
 			Link: urlLicence,
+		}, {
+			Name: "Report",
+			Link: "/report/",
 		}},
 		PNG: dirPNG,
 	}

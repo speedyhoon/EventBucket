@@ -114,6 +114,12 @@ func home(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func report(w http.ResponseWriter, r *http.Request) {
+	templater(w, page{
+		Title: "Report",
+	})
+}
+
 func all(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
 		Title: "_All",
