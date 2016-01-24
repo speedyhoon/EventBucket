@@ -2,7 +2,7 @@ package main
 
 import "net/http"
 
-func event(w http.ResponseWriter, r *http.Request, eventId string) {
+func event(w http.ResponseWriter, r *http.Request, eventID string) {
 	//	eventID := strings.TrimPrefix(r.URL.Path, urlEvent)
 	//	if eventID == "" {
 	//		http.Redirect(w, r, urlEvents, http.StatusNotFound)
@@ -16,9 +16,11 @@ func event(w http.ResponseWriter, r *http.Request, eventId string) {
 		return
 	}
 	templater(w, page{
-		Title: "Event",
+		Title:  "Event",
+		menu:   urlEvent,
+		MenuID: eventID,
 		Data: M{
-			"EventId": eventId,
+			"EventId": eventID,
 		},
 	})
 }

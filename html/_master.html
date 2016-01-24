@@ -14,6 +14,17 @@
 			{{end}}
 		{{end}}
 	</ul>
+	{{with .SubMenu}}
+		<ul class=mainMenu>
+			{{range .}}
+				{{if eq $.Page.Title .Name}}
+					<li class=visited>{{.Name}}
+				{{else}}
+					<li><a href={{.Link}}{{$.Page.MenuID}}>{{.Name}}</a>
+				{{end}}
+			{{end}}
+		</ul>
+	{{end}}
 	{{template "page" .Page.Data}}
 	<p class=homeFooter>
 		Copyright &copy; 2011-{{.CurrentYear}} EventBucket | vversionNumber <a href=/licence class=right title="View licence"><img src=dirPNG/cc80x15 alt="Creative Commons Licence" height=15 width=80></a>

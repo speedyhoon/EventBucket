@@ -7,7 +7,9 @@ func club(w http.ResponseWriter, r *http.Request, clubID string) {
 	//	sessionFields := sessionForm.fields
 
 	templater(w, page{
-		Title: "Club",
+		Title:  "Club",
+		MenuID: clubID,
+		menu:   urlClub,
 		//		Data: M{
 		//			"NewClub": sessionFields,
 		/*[]field{

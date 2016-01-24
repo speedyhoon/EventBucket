@@ -11,14 +11,15 @@ type menu struct {
 }
 
 type page struct {
-	Title string
-	Data  M
+	Title, menu, MenuID string
+	Data                M
 }
 
 type markupEnv struct {
 	JS, CurrentYear, CSS, PNG string
 	Page                      page
 	Menu                      []menu
+	SubMenu                   []menu
 }
 
 const (
@@ -46,6 +47,12 @@ func templater(w http.ResponseWriter, page page) {
 
 	//Add page content just generated to the default page environment (which has CSS and JS, etc).
 	masterTemplate.Page = page
+	subMenu, ok := subMenus[page.menu]
+	if ok {
+		masterTemplate.SubMenu = subMenu
+	} else {
+		masterTemplate.SubMenu = []menu{}
+	}
 
 	//Convert page.Title to the HTML template file name (located within htmlDirectory), e.g. Events > events, Club Settings > clubSettings
 	pageName := strings.Split(page.Title, titleSeparator)[0]

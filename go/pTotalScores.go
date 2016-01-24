@@ -2,7 +2,7 @@ package main
 
 import "net/http"
 
-func totalScores(w http.ResponseWriter, r *http.Request, eventId string) {
+func totalScores(w http.ResponseWriter, r *http.Request, eventID string) {
 	//	eventID := strings.TrimPrefix(r.URL.Path, urlEvent)
 	//	if eventID == "" {
 	//		http.Redirect(w, r, urlEvents, http.StatusNotFound)
@@ -16,9 +16,11 @@ func totalScores(w http.ResponseWriter, r *http.Request, eventId string) {
 		return
 	}*/
 	templater(w, page{
-		Title: "Total Scores",
+		Title:  "Total Scores",
+		menu:   urlEvent,
+		MenuID: eventID,
 		Data: M{
-			"EventId": eventId,
+			"EventId": eventID,
 		},
 	})
 }
