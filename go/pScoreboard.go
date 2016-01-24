@@ -2,7 +2,7 @@ package main
 
 import "net/http"
 
-func scoreboard(w http.ResponseWriter, r *http.Request, eventId string) {
+func scoreboard(w http.ResponseWriter, r *http.Request, eventID string) {
 	//	eventID := strings.TrimPrefix(r.URL.Path, urlEvent)
 	//	if eventID == "" {
 	//		http.Redirect(w, r, urlEvents, http.StatusNotFound)
@@ -16,9 +16,11 @@ func scoreboard(w http.ResponseWriter, r *http.Request, eventId string) {
 		return
 	}*/
 	templater(w, page{
-		Title: "Scoreboard",
+		Title:  "Scoreboard",
+		menu:   urlEvent,
+		MenuID: eventID,
 		Data: M{
-			"EventId": eventId,
+			"EventId": eventID,
 			"Hi":      "boo",
 		},
 	})

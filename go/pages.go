@@ -69,31 +69,39 @@ var (
 		Name: "Licence",
 		Link: urlLicence,
 	}, {
-		Name: "Club",
-		Link: urlClub + "3",
-	}, {
-		Name: "Event",
-		Link: urlEvent + "3",
-	}, {
-		Name: "Event Report",
-		Link: urlEventReport + "3",
-	}, {
-		Name: "Event Settings",
-		Link: urlEventSettings + "3",
-	}, {
-		Name: "Scoreboard",
-		Link: urlScoreboard + "3",
-	}, {
-		Name: "Scorecards",
-		Link: urlScorecards + "3",
-	}, {
-		Name: "Total Scores",
-		Link: urlTotalScores + "3",
-	}, {
 		Name: "Archive",
 		Link: urlArchive,
 	}, {
 		Name: "Report",
 		Link: "/report/",
 	}}
+	subMenus = map[string][]menu{
+		urlEvent: {{
+			Name: "Event",
+			Link: urlEvent,
+		}, {
+			Name: "Scoreboard",
+			Link: urlScoreboard,
+		}, {
+			Name: "Scorecards",
+			Link: urlScorecards,
+		}, {
+			Name: "Total Scores",
+			Link: urlTotalScores,
+		}, {
+			Name: "Event Settings",
+			Link: urlEventSettings,
+		}, {
+			Name: "Event Report",
+			Link: urlEventReport,
+		},
+		},
+		urlClub: {{
+			Name: "Club",
+			Link: urlClub,
+		}, {
+			Name: "Club Settings",
+			Link: urlClubSettings,
+		}},
+	}
 )

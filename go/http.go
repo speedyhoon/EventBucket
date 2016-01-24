@@ -163,3 +163,34 @@ func errorHandler(w http.ResponseWriter, r *http.Request, status int) {
 		},
 	})
 }
+
+//parameters don't match the regex string - 404 enent id not found
+//			errorHandler(w, r, http.StatusNotFound)
+
+//whoops an error occured
+// that club id you supplied doesn't match anything
+//here is a list of valid clubs - that link to the clubsettings page.
+func whoops(w http.ResponseWriter, r *http.Request, url string) {
+	var pageName, pageType string
+	parameterType := "ID"
+	switch url {
+	case urlClubSettings:
+		pageName = "Club Settings"
+		pageType = "club"
+	case urlEvent:
+		pageName = "Event"
+		pageType = "event"
+	case urlEventSettings:
+		pageName = "Event Settings"
+		pageType = "event"
+	}
+	templater(w, page{
+		Title: "noId",
+		Data: M{
+			"PageName":      pageName,
+			"PageType":      pageType,
+			"ParameterType": parameterType,
+			"List":          "no data available right now",
+		},
+	})
+}
