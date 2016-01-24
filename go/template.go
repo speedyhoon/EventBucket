@@ -35,38 +35,8 @@ var (
 		CSS:         dirCSS,
 		CurrentYear: currentYear,
 		JS:          dirJS,
-		Menu: []menu{{
-			Name: "Home",
-			Link: urlHome,
-		}, {
-			Name: "Events",
-			Link: urlEvents,
-		}, {
-			Name: "Clubs",
-			Link: urlClubs,
-		}, {
-			Name: "Shooters",
-			Link: urlShooters,
-		}, {
-			Name: "About",
-			Link: urlAbout,
-		}, {
-			Name: "Licence",
-			Link: urlLicence,
-		}, {
-			Name: "Club",
-			Link: urlClub + "3",
-		}, {
-			Name: "Event",
-			Link: urlEvent + "3",
-		}, {
-			Name: "Archive",
-			Link: urlArchive,
-		}, {
-			Name: "Report",
-			Link: "/report/",
-		}},
-		PNG: dirPNG,
+		Menu:        mainMenu,
+		PNG:         dirPNG,
 	}
 )
 

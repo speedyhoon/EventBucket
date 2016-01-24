@@ -7,21 +7,6 @@ import (
 )
 
 const (
-	dirRoot         = "./"
-	dirGzip         = "dirGzip"
-	urlHome         = "/"
-	urlAbout        = "/about"
-	urlArchive      = "/archive"
-	urlClubs        = "/clubs"
-	urlClubSettings = "/club-settings/"
-	urlEvents       = "/events"
-	urlLicence      = "/licence"
-	urlShooters     = "/shooters"
-	//GET with PARAMETERS
-	urlEvent         = "/event/"          //eventID
-	urlEventSettings = "/event-settings/" //eventID
-	urlClub          = "/club/"           //clubID
-
 	contentType    = "Content-Type"
 	cacheControl   = "Cache-Control"
 	expires        = "Expires"

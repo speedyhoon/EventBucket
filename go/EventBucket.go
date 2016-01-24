@@ -10,6 +10,7 @@ import (
 	"math"
 	"net/http"
 	"os"
+	"os/exec"
 	"regexp"
 	//"os/signal"
 	"path/filepath"
@@ -22,37 +23,18 @@ const (
 
 	//HTTP settings
 	address = "http://localhost"
-	dirPNG  = "dirPNG"
-	dirJS   = "dirJS"
+	dirRoot = "./"
 	dirCSS  = "dirCSS"
+	dirJS   = "dirJS"
+	dirGzip = "dirGzip"
+	dirPNG  = "dirPNG"
 	robots  = "robots.txt"
 	favicon = "favicon.ico"
 
-	schemaClub        = "schemaClub"
-	schemaEvent       = "schemaEvent"
-	schemaMound       = "schemaMound"
-	schemaRange       = "schemaRange"
-	schemaShooter     = "schemaShooter"
-	schemaAutoInc     = "schemaAutoInc"
-	schemaID          = "schemaID"
-	schemaAddress     = "schemaAddress"
-	schemaClubDefault = "schemaClubDefault"
-	schemaClose       = "schemaClose"
-	schemaDate        = "schemaDate"
-
-	schemaGrade          = "schemaGrade"
-	schemaIsPrizeMeet    = "schemaIsPrizeMeet"
-	schemaLongName       = "schemaLongName"
-	schemaName           = "schemaName"
-	schemaSortScoreboard = "schemaSortScoreboard"
-	schemaPostcode       = "schemaPostcode"
-	schemaSort           = "schemaSort"
-	schemaTime           = "schemaTime"
-	schemaURL            = "schemaURL"
-
-	schemaTown      = "schemaTown"
-	schemaLatitude  = "schemaLatitude"
-	schemaLongitude = "schemaLongitude"
+	//Date formats
+	formatYMD  = "2006-01-02"
+	formatTime = "15:04"
+	formatGMT  = "Mon, 02 Jan 2006 15:04:05 GMT"
 )
 
 var (
@@ -94,9 +76,12 @@ func init() {
 		fullAddr += portAddr
 	}
 
-	/*if !debug && exec.Command("rundll32.exe", "url.dll,FileProtocolHandler", fullAddr).Start() != nil {
+	if debug {
+
+	}
+	if !debug && exec.Command("rundll32.exe", "url.dll,FileProtocolHandler", fullAddr).Start() != nil {
 		warn.Print("Unable to open a web browser for " + fullAddr)
-	}*/
+	}
 
 	startLogging()
 	go maintainExpiresTime()
@@ -118,26 +103,7 @@ func init() {
 }
 
 func main() {
-	serveFile(favicon)
-	serveFile(robots)
-	serveDir(dirCSS, false)
-	serveDir(dirJS, false)
-	serveDir(dirPNG, false)
-	getRedirectPermanent(urlClubs, clubs)
-	getRedirectPermanent(urlAbout, about)
-	getRedirectPermanent(urlArchive, eventArchive)
-	getRedirectPermanent(urlShooters, shooters)
-	getRedirectPermanent(urlLicence, licence)
-	getRedirectPermanent(urlEvents, events)
-	getRedirectPermanent("/all", all)
-	getRedirectPermanent("/report", report)
-	getParameters(urlEvent, event, regexId)
-	getParameters(urlClubSettings, clubSettings, regexId)
-	http.HandleFunc("/0", insertEvent)
-
-	//BUG any url breaks when appending "&*((&*%"
-	get404(urlHome, home)
-
+	pages()
 	info.Print("Starting EventBucket HTTP server...")
 	warn.Printf("ListenAndServe: %v", http.ListenAndServe(portAddr, nil))
 	info.Println("EvenBucket stopped.")

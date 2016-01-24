@@ -1,5 +1,5 @@
 {{define "master"}}<!DOCTYPE html>
-<link rel=stylesheet href=dirCSSmain>
+<link rel=stylesheet href=dirCSS/main>
 <title>EventBucket{{with .Page.Title}} - {{.}}{{end}}</title>
 <body class=dark>
 <div class=homeContainer>
@@ -16,7 +16,7 @@
 	</ul>
 	{{template "page" .Page.Data}}
 	<p class=homeFooter>
-		Copyright &copy; 2011-{{.CurrentYear}} EventBucket | vversionNumber <a href=/licence class=right title="View licence"><img src=dirPNGcc80x15 alt="Creative Commons Licence" height=15 width=80></a>
+		Copyright &copy; 2011-{{.CurrentYear}} EventBucket | vversionNumber <a href=/licence class=right title="View licence"><img src=dirPNG/cc80x15 alt="Creative Commons Licence" height=15 width=80></a>
 </div>
-<script defer src=dirJStest></script>
+<!--<script defer src=dirJS/test></script>-->
 {{end}}
