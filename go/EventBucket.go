@@ -5,7 +5,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"math"
 	"net/http"
@@ -47,9 +46,12 @@ var (
 	tempPath    = os.Getenv("temp") + subDir
 	logFileName = filepath.Join(tempPath, time.Now().Format("20060102")+".log")
 	//Logging destinations are os.Stdout, os.Stderr, ioutil.Discard
-	trace = log.New(ioutil.Discard, "TRACE: ", log.Lshortfile)
-	info  = log.New(os.Stdout, "INFO:  ", log.Lshortfile|log.Ltime)
-	warn  = log.New(os.Stderr, "WARN:  ", log.Lshortfile|log.Ltime)
+	//trace = log.New(ioutil.Discard, "TRACE: ", log.Lshortfile)
+	trace = log.New(os.Stdout, "TRACE: ", log.Lshortfile)
+	//	info  = log.New(os.Stdout, "INFO:  ", log.Lshortfile|log.Ltime)
+	info = log.New(os.Stdout, "INFO:  ", log.Lshortfile)
+	//	warn  = log.New(os.Stderr, "WARN:  ", log.Lshortfile|log.Ltime)
+	warn = log.New(os.Stderr, "WARN:  ", log.Lshortfile)
 
 	//EventBucket database
 	databasePath = os.Getenv("ProgramData") + subDir
@@ -61,6 +63,7 @@ var (
 type M map[string]interface{}
 
 func init() {
+	go startDB()
 	port := flag.Uint("port", 80, "Assign a differnet port number for the http server. Range: 0 through 65535.")
 	flag.BoolVar(&debug, "debug", false, "Turn on debugging.")
 	flag.Parse()
@@ -76,14 +79,11 @@ func init() {
 		fullAddr += portAddr
 	}
 
-	if debug {
-
-	}
 	if !debug && exec.Command("rundll32.exe", "url.dll,FileProtocolHandler", fullAddr).Start() != nil {
 		warn.Print("Unable to open a web browser for " + fullAddr)
 	}
 
-	startLogging()
+	//	startLogging()
 	go maintainExpiresTime()
 	go mkDir(databasePath)
 	setExpiresTime()

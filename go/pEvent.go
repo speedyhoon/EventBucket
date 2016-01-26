@@ -38,15 +38,6 @@ func events(w http.ResponseWriter, r *http.Request) {
 }
 
 func insertEvent(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		/*405 Method Not Allowed
-		A request was made of a resource using a request method not supported by that resource; for example,
-		using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
-		//en.wikipedia.org/wiki/List_of_HTTP_status_codes*/
-
-		http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
-		return
-	}
 	submittedFields, isValid := isValid(r, GlobalForms[0].fields)
 	if !isValid {
 		setSession(w, form{
