@@ -43,10 +43,29 @@ func pages() {
 	getParameters(urlScoreboard, scoreboard, regexId)
 	getParameters(urlScorecards, scorecards, regexId)
 	getParameters(urlTotalScores, totalScores, regexId)
-	http.HandleFunc("/0", insertEvent)
+	post("/0", insertEvent)
+	//	http.HandleFunc("/1", insertEvent)
+	post("/2", insertClub)
 
 	//BUG any url breaks when appending "&*((&*%"
 	get404(urlHome, home)
+}
+
+func post(url string, runner http.HandlerFunc) {
+	h := func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "POST" {
+			/*405 Method Not Allowed
+			A request was made of a resource using a request method not supported by that resource; for example,
+			using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
+			//en.wikipedia.org/wiki/List_of_HTTP_status_codes*/
+			//TODO redirect back to referer address
+			http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
+			return
+		}
+		runner(w, r)
+	}
+	//	http.Handle(url, serveHtml(h))
+	http.HandleFunc(url, h)
 }
 
 var (

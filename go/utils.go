@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net"
 	"strings"
 )
@@ -56,4 +57,22 @@ func localIPs() []string {
 		}
 	}
 	return localIPs
+}
+
+func idSuffix(ID int) (string, error) {
+	const (
+		//		idCharset     = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!*()_-."
+		idCharset     = "abcdefghijklmnopqrstuvwxyz0123456789"
+		charsetLength = len(idCharset)
+	)
+	if ID < 0 {
+		return "", fmt.Errorf("Invalid ID number supplied. ID \"%v\" is less than 0", ID)
+	}
+	ID--
+	var newID string
+	for ID >= charsetLength {
+		newID = fmt.Sprintf("%c%v", idCharset[ID%charsetLength], newID)
+		ID = ID/charsetLength - 1
+	}
+	return fmt.Sprintf("%c%v", idCharset[ID%charsetLength], newID), nil
 }

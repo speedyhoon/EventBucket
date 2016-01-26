@@ -44,7 +44,6 @@ func defaultTime() []string {
 	return []string{time.Now().Format(formatTime)}
 }
 
-//250
 var GlobalForms = []form{
 	{
 		title: "Insert Event",
@@ -88,8 +87,38 @@ var GlobalForms = []form{
 			},
 		},
 	},
+	{
+		title: "Club Settings",
+		fields: []field{
+			{
+				name:     schemaName,
+				Required: true,
+			},
+			{
+				name: schemaIsDefault,
+			},
+			{
+				name: schemaClub,
+				//				kind: "_id",
+			},
+		},
+	},
+	{
+		title: "New Club",
+		fields: []field{
+			{
+				name:     schemaName,
+				Required: true,
+				v8:       isValidStr,
+			},
+			{
+				name: schemaIsDefault,
+				v8:   isValidBool,
+			},
+		},
+	},
 	/*{
-		title:  "Insert Shooter",
+		title:   "Insert Shooter",
 		display: vertical,
 		fields: []field{
 			search{
@@ -97,15 +126,15 @@ var GlobalForms = []form{
 				label:     "Event Name",
 				autoFocus: true,
 				required:  true,
-				options: true,
+				options:   true,
 			},
 			search{
-				name:     schemaClub,
-				label:    "Club Name",
-				required: true,
+				name:      schemaClub,
+				label:     "Club Name",
+				required:  true,
 				autoFocus: true,
-				maxLen:   50,
-				options: true,
+				maxLen:    50,
+				options:   true,
 			},
 			dateTime{},
 			dateTime{
@@ -120,20 +149,4 @@ var GlobalForms = []form{
 			},
 		},
 	},*/
-	{
-		title: "Club Settings",
-		fields: []field{
-			{
-				name:     schemaName,
-				Required: true,
-			},
-			{
-				name: schemaClubDefault,
-			},
-			{
-				name: schemaClub,
-				//				kind: "_id",
-			},
-		},
-	},
 }

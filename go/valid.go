@@ -7,6 +7,10 @@ import (
 	"strings"
 )
 
+const (
+	fieldMaxLen = 64
+)
+
 func isValidInt(strNum string, field field) (interface{}, string) {
 	num, err := strconv.Atoi(strNum)
 	if err != nil {
@@ -19,18 +23,23 @@ func isValidInt(strNum string, field field) (interface{}, string) {
 	return num, "field integer doesn't pass validation"
 }
 func isValidStr(str string, field field) (interface{}, string) {
+	info.Println(field.name, "r=", field.Required)
 	//	info.Println(field.minLen, field.maxLen, field.Required, `"`+str+`"`)
 	length := len(str)
-	if length >= field.minLen && length <= field.maxLen || !field.Required && str == "" {
-		//		info.Println(str, "ok")
-		return str, ""
-	}
-	//	warn.Println(str, "fail")
-	//	return str, errors.New("field string doesn't pass validation")
-
-	if length == 0 {
+	if field.Required && length == 0 {
 		return str, "Please fill in this field"
+	}
 
+	if !field.Required && length == 0 {
+		return "", ""
+	}
+
+	if field.maxLen == 0 {
+		field.maxLen = fieldMaxLen
+	}
+
+	if length >= field.minLen && length <= field.maxLen {
+		return str, ""
 	}
 
 	if length < field.minLen || length > field.maxLen {
@@ -45,9 +54,19 @@ func isValidStr(str string, field field) (interface{}, string) {
 	//}
 }
 
+func isValidBool(str string, field field) (interface{}, string) {
+	info.Println("__________________________________value='" + str + "'")
+	checked := len(str) >= 1
+	if field.Required && !checked {
+		return false, "Please check this field"
+	}
+	return checked, ""
+}
+
+//Is it worth while to auto add failed forms to session so it doesn't have to be done in each http handler?
 func isValid(r *http.Request, fields []field) ([]field, bool) {
 	r.ParseForm()
-	if len(r.Form) < 1 {
+	if len(r.Form) == 0 {
 		return fields, false
 	}
 	//Process the post request as normal if len(r.Form) > len(fields)
@@ -56,19 +75,37 @@ func isValid(r *http.Request, fields []field) ([]field, bool) {
 	//	var err error
 	valid := true
 	for i, field := range fields {
+		//TODO remove developer message
+		if field.v8 == nil {
+			field.Error = "No v8 function setup!"
+			warn.Println("No v8 function setup!")
+			continue
+		}
+
 		fieldValue, ok = r.Form[field.name]
+		trace.Println(field.name, "ok=", ok, "req=", field.Required)
 		if !ok {
+			trace.Println("!ok", field.name)
+
 			if field.Required && field.defValue != nil {
 				fieldValue = field.defValue()
+				trace.Println("err0")
+				//			} else if field.Required {
+				//				valid = false
+				//				fields[i].Error = "Missing value"
+				//				trace.Println("err1")
+				//				continue //Skip to the next loop iteration.
 			} else {
-				valid = false
-				field.Error = "Missing value"
-				continue //Skip to the next loop iteration.
+				fieldValue = []string{""}
+				trace.Println("err2")
+				//				continue //Skip to the next loop iteration.
 			}
 		}
 
 		fields[i].internalValue, fields[i].Error = field.v8(strings.TrimSpace(fieldValue[0]), field)
+		info.Println("\n\n", field.name, "\nval=", fieldValue[0], "\nErr=", fields[i].Error)
 		if fields[i].Error != "" {
+			warn.Println("err2")
 			valid = false
 			//		}else{
 			//			temp := field.kind.(type)
