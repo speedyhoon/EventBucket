@@ -9,6 +9,7 @@ func club(w http.ResponseWriter, r *http.Request, clubID string) {
 	if err != nil {
 		warn.Println(err)
 	}
+	//TODO redirect to clubs page if clubid doesn't exist in the database
 
 	templater(w, page{
 		Title:  "Club",
@@ -44,38 +45,38 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 }
 
 func insertClub(w http.ResponseWriter, r *http.Request) {
-	trace.Println("\n\n\ninsertClub START")
-	submittedFields, isValid := isValid(r, GlobalForms[2].fields)
-	trace.Println(submittedFields)
-	trace.Println("---")
-	trace.Println(isValid)
-	for _, n := range submittedFields {
+	formID := 2
+	submittedFields, isValid := isValid(r, GlobalForms[formID].fields)
+	name := submittedFields[0].Value
+	isDefault := submittedFields[1].internalValue.(bool)
 
-		trace.Println("name=", n.name)
-		trace.Println("err=", n.Error)
-		trace.Println("val=", n.Value)
-		trace.Println("int=", n.internalValue)
-	}
 	goToClubsPage := func() { http.Redirect(w, r, "/clubs", http.StatusSeeOther) }
 	if !isValid {
 		setSession(w, form{
-			action: "2",
+			action: formID,
 			fields: submittedFields,
 		})
 		goToClubsPage()
 		return
 	}
 
+	//TODO these several db calls are not atomic.
 	ID, err := getNextID(tblClub)
 	if err != nil {
 		//TODO add error problems to form.
 		goToClubsPage()
 		return
 	}
+	if collectionQty(tblClub) == 0 {
+		isDefault = true
+	} else if isDefault {
+		//update all clubs isDefault to be false
+		updateAll(tblClub, M{schemaIsDefault: true}, M{"$unset": M{schemaIsDefault: ""}})
+	}
 	err = upsertDoc(tblClub, "", Club{
 		ID:        ID,
-		Name:      submittedFields[0].Value,
-		IsDefault: submittedFields[1].internalValue.(bool),
+		Name:      name,
+		IsDefault: isDefault,
 	})
 	if err != nil {
 		//TODO add error problems to form.

@@ -60,11 +60,6 @@ func localIPs() []string {
 }
 
 func idSuffix(ID int) (string, error) {
-	const (
-		//		idCharset     = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!*()_-."
-		idCharset     = "abcdefghijklmnopqrstuvwxyz0123456789"
-		charsetLength = len(idCharset)
-	)
 	if ID < 0 {
 		return "", fmt.Errorf("Invalid ID number supplied. ID \"%v\" is less than 0", ID)
 	}

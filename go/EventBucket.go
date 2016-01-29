@@ -34,6 +34,10 @@ const (
 	formatYMD  = "2006-01-02"
 	formatTime = "15:04"
 	formatGMT  = "Mon, 02 Jan 2006 15:04:05 GMT"
+
+	//idCharset     = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!*()_-."
+	idCharset     = "abcdefghijklmnopqrstuvwxyz0123456789"
+	charsetLength = len(idCharset)
 )
 
 var (
