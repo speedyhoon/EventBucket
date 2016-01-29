@@ -120,7 +120,22 @@ func getCollection(collectionName string, result []interface{}) ([]interface{}, 
 	return result, err
 }
 
-func getCollectionByID(collectionName, ID string) (interface{}, error) {
+func updateAll(collectionName string, query, update M) {
+	_, err := conn.C(collectionName).UpdateAll(query, update)
+	if err != nil {
+		warn.Println(err)
+	}
+}
+
+func collectionQty(collectionName string) int {
+	qty, err := conn.C(collectionName).Count()
+	if err != nil {
+		warn.Println(err)
+	}
+	return qty
+}
+
+/*func getCollectionByID(collectionName, ID string) (interface{}, error) {
 	var result interface{}
 	if conn != nil {
 		err := conn.C(collectionName).FindId(ID).One(&result)
@@ -128,3 +143,12 @@ func getCollectionByID(collectionName, ID string) (interface{}, error) {
 	}
 	return result, fmt.Errorf("Unable to get %v with ID: '%v'", collectionName, ID)
 }
+
+func getDocumentByID(collectionName, ID string, result interface{}) (interface{}, error) {
+	//	var result interface{}
+	if conn != nil {
+		err := conn.C(collectionName).FindId(ID).One(result)
+		return result, err
+	}
+	return result, fmt.Errorf("Unable to get %v with ID: '%v'", collectionName, ID)
+}*/
