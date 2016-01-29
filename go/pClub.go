@@ -22,23 +22,14 @@ func club(w http.ResponseWriter, r *http.Request, clubID string) {
 }
 
 func clubs(w http.ResponseWriter, r *http.Request) {
-	//	var listClubs []Club
-	//	var err error
-	//	listClubs, err = getCollection(tblClub, listClubs)
 	listClubs, err := getClubs()
 	if err != nil {
 		warn.Println(err)
 	}
-	temp := getSession(w, r).fields
-	if len(temp) >= 2 {
-		info.Println(temp[1].Value)
-	} else {
-		info.Println("checkbox has no value")
-	}
 	templater(w, page{
 		Title: "Clubs",
 		Data: M{
-			"NewClub":   temp,
+			"NewClub":   getSession(w, r).fields,
 			"ListClubs": listClubs,
 		},
 	})
