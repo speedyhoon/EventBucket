@@ -3,9 +3,10 @@ package main
 import "time"
 
 type form struct {
-	action, title string
-	fields        []field
-	inputs        []input
+	title  string
+	action int
+	fields []field
+	inputs []input
 }
 
 type field struct {

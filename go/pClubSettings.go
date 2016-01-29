@@ -3,24 +3,23 @@ package main
 import "net/http"
 
 func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
-	//	eventID := strings.TrimPrefix(r.URL.Path, urlEvent)
-	//	if eventID == "" {
-	//		http.Redirect(w, r, urlEvents, http.StatusNotFound)
-	//	}
 	cookie := r.Header.Get("Set-Cookie")
 	if cookie != "" {
-
 	}
-	if r.URL.Path[len(urlEvent):] == "3C" {
+
+	club, err := getClub(clubID)
+	if err != nil {
+		warn.Println("club id", clubID, "not found.")
 		errorHandler(w, r, http.StatusNotFound)
 		return
 	}
+
 	templater(w, page{
 		Title:  "Club Settings",
 		menu:   urlClub,
-		MenuID: clubID,
+		MenuID: club.ID,
 		Data: M{
-			"ClubId": clubID,
+			"Club": club,
 		},
 	})
 }

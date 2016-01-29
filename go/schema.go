@@ -49,3 +49,10 @@ type Club struct {
 	//	PostCode  string  `bson:"p,omitempty"`
 	//	AutoInc   AutoInc `bson:"^^schemaAutoInc^^,omitempty"`
 }
+
+// Event is exported
+type Event struct {
+	ID   string `bson:"schemaID"`
+	Name string `bson:"schemaName"`
+	Club string `bson:"schemaClub"`
+}

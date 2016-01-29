@@ -38,14 +38,32 @@ func events(w http.ResponseWriter, r *http.Request) {
 }
 
 func insertEvent(w http.ResponseWriter, r *http.Request) {
-	submittedFields, isValid := isValid(r, GlobalForms[0].fields)
+	formID := 0
+	submittedFields, isValid := isValid(r, GlobalForms[formID].fields)
+	goToPage := func() { http.Redirect(w, r, "/", http.StatusSeeOther) }
 	if !isValid {
 		setSession(w, form{
-			action: "0",
+			action: formID,
 			fields: submittedFields,
 		})
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		goToPage()
 		return
 	}
-	http.Redirect(w, r, "/event/1a", http.StatusSeeOther)
+
+	ID, err := getNextID(tblEvent)
+	if err != nil {
+		//TODO add error problems to form.
+		goToPage()
+		return
+	}
+	err = upsertDoc(tblEvent, "", Event{
+		ID: ID,
+		//		Name: name,
+	})
+	if err != nil {
+		//TODO add error problems to form.
+		goToPage()
+		return
+	}
+	http.Redirect(w, r, "/event/"+ID, http.StatusSeeOther)
 }
