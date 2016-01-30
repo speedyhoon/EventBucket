@@ -36,15 +36,14 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 }
 
 func insertClub(w http.ResponseWriter, r *http.Request) {
-	formID := 2
-	submittedFields, isValid := isValid(r, GlobalForms[formID].fields)
+	submittedFields, isValid := isValid(r, GlobalForms[clubNew].fields)
 	name := submittedFields[0].Value
 	isDefault := submittedFields[1].internalValue.(bool)
 
 	goToClubsPage := func() { http.Redirect(w, r, "/clubs", http.StatusSeeOther) }
 	if !isValid {
 		setSession(w, form{
-			action: formID,
+			action: clubNew,
 			fields: submittedFields,
 		})
 		goToClubsPage()
