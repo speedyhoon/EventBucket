@@ -46,14 +46,14 @@ func pages() {
 	getParameters(urlScoreboard, scoreboard, regexId)
 	getParameters(urlScorecards, scorecards, regexId)
 	getParameters(urlTotalScores, totalScores, regexId)
-	post(clubNew, insertClub)
-	post(eventNew, insertEvent)
+	post(clubNew, clubInsert)
+	post(eventNew, eventInsert)
 
 	//BUG any url breaks when appending "&*((&*%"
 	get404(urlHome, home)
 }
 
-func post(formID int, runner http.HandlerFunc) {
+func post(formID int, runner func(http.ResponseWriter, *http.Request, []field, func())) {
 	h := func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
 			/*405 Method Not Allowed
@@ -64,7 +64,17 @@ func post(formID int, runner http.HandlerFunc) {
 			http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
 			return
 		}
-		runner(w, r)
+		submittedFields, isValid := isValid(r, GlobalForms[formID].fields)
+		redirect := func() { http.Redirect(w, r, r.Referer(), http.StatusSeeOther) }
+		if !isValid {
+			setSession(w, form{
+				action: formID,
+				fields: submittedFields,
+			})
+			redirect()
+			return
+		}
+		runner(w, r, submittedFields, redirect)
 	}
 	http.HandleFunc(fmt.Sprintf("/%d", formID), h)
 }

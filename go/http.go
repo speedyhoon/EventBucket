@@ -95,7 +95,7 @@ func get404(url string, pageFunc func(http.ResponseWriter, *http.Request)) {
 	http.HandleFunc(url,
 		func(w http.ResponseWriter, r *http.Request) {
 			if r.URL.Path != url {
-				errorHandler(w, r, http.StatusNotFound)
+				errorHandler(w, r, http.StatusNotFound, "")
 				return
 			}
 			pageFunc(w, r)
@@ -103,7 +103,14 @@ func get404(url string, pageFunc func(http.ResponseWriter, *http.Request)) {
 }
 
 func getRedirectPermanent(url string, pageFunc func(http.ResponseWriter, *http.Request)) {
-	http.HandleFunc(url, pageFunc)
+	http.HandleFunc(url,
+		func(w http.ResponseWriter, r *http.Request) {
+			//Don't accept post or put requests
+			if r.Method != "GET" {
+				http.Redirect(w, r, url, http.StatusSeeOther)
+			}
+			pageFunc(w, r)
+		})
 	//Redirects back to subdirectory "url". Needed when url parameters are not wanted or needed.
 	//e.g. if url = "foobar" then "http://localhost/foobar/fdsa" will redirect to "http://localhost/foobar"
 	http.Handle(url+"/", http.RedirectHandler(url, http.StatusMovedPermanently))
@@ -118,6 +125,11 @@ func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request,
 	var parameters, lowerParams string
 	http.HandleFunc(url,
 		func(w http.ResponseWriter, r *http.Request) {
+			//Don't accept post or put requests
+			if r.Method != "GET" {
+				http.Redirect(w, r, url, http.StatusSeeOther)
+			}
+
 			parameters = strings.TrimPrefix(r.URL.Path, url)
 			lowerParams = strings.ToLower(parameters)
 
@@ -135,7 +147,7 @@ func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request,
 		})
 }
 
-func errorHandler(w http.ResponseWriter, r *http.Request, status int) {
+func errorHandler(w http.ResponseWriter, r *http.Request, status int, errorType string) {
 	//All EventBucket page urls and ids are lowercase
 	lowerURL := strings.ToLower(strings.TrimSuffix(r.URL.Path, "/"))
 
@@ -159,8 +171,7 @@ func errorHandler(w http.ResponseWriter, r *http.Request, status int) {
 	templater(w, page{
 		Title: "Error",
 		Data: M{
-			//		"Status": "404 Page Not Found",
-			"Status": status,
+			"Type": errorType,
 		},
 	})
 }

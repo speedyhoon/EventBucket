@@ -43,7 +43,6 @@ func setSession(w http.ResponseWriter, returns form) {
 		}
 	}
 	//	}
-	info.Println(sessionID)
 	expiry := time.Now().Add(sessionExpiryTime)
 	globalSessions[sessionID] = sessionInfo{
 		expiry: expiry,

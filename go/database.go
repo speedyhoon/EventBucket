@@ -152,3 +152,20 @@ func getDocumentByID(collectionName, ID string, result interface{}) (interface{}
 	}
 	return result, fmt.Errorf("Unable to get %v with ID: '%v'", collectionName, ID)
 }*/
+
+/*func getDefaultClub() (Club, error) {
+	var result Club
+	if conn != nil {
+		err := conn.C(tblClub).Find(M{schemaIsDefault: true}).One(&result)
+		return result, err
+	}
+	return result, errors.New("Unable to get event with ID: '" + ID + "'")
+}*/
+
+func hasDefaultClub() bool {
+	if conn != nil {
+		qty, err := conn.C(tblClub).Find(M{schemaIsDefault: true}).Count()
+		return qty > 0 && err == nil
+	}
+	return false
+}
