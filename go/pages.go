@@ -1,6 +1,9 @@
 package main
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 const (
 	urlHome     = "/"
@@ -43,15 +46,14 @@ func pages() {
 	getParameters(urlScoreboard, scoreboard, regexId)
 	getParameters(urlScorecards, scorecards, regexId)
 	getParameters(urlTotalScores, totalScores, regexId)
-	post("/0", insertEvent)
-	//	http.HandleFunc("/1", insertEvent)
-	post("/2", insertClub)
+	post(clubNew, insertClub)
+	post(eventNew, insertEvent)
 
 	//BUG any url breaks when appending "&*((&*%"
 	get404(urlHome, home)
 }
 
-func post(url string, runner http.HandlerFunc) {
+func post(formID int, runner http.HandlerFunc) {
 	h := func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
 			/*405 Method Not Allowed
@@ -64,8 +66,7 @@ func post(url string, runner http.HandlerFunc) {
 		}
 		runner(w, r)
 	}
-	//	http.Handle(url, serveHtml(h))
-	http.HandleFunc(url, h)
+	http.HandleFunc(fmt.Sprintf("/%d", formID), h)
 }
 
 var (

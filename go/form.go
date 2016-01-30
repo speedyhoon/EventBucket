@@ -45,9 +45,66 @@ func defaultTime() []string {
 	return []string{time.Now().Format(formatTime)}
 }
 
+const (
+	clubNew           = 0
+	clubDetailsUpsert = 1
+	clubMoundNew      = 2
+	eventNew          = 3
+)
+
 var GlobalForms = []form{
-	{
-		title: "Insert Event",
+	clubNew: {
+		fields: []field{
+			{
+				name:     schemaName,
+				Required: true,
+				v8:       isValidStr,
+			},
+			{
+				name: schemaIsDefault,
+				v8:   isValidBool,
+			},
+		},
+	},
+	clubDetailsUpsert: {
+		fields: []field{
+			{
+				name:     schemaName,
+				Required: true,
+				v8:       isValidStr,
+			},
+			{
+				name: schemaIsDefault,
+				v8:   isValidBool,
+			},
+			{
+				name: schemaClub,
+				v8:   isValidStr,
+			},
+		},
+	},
+	clubMoundNew: {
+		fields: []field{
+			{
+				name: schemaName,
+				v8:   isValidStr,
+			},
+			{
+				name: schemaDistance,
+				v8:   isValidStr,
+			},
+			{
+				name: schemaUnit,
+				v8:   isValidStr,
+			},
+			{
+				//submit - Club ID
+				name: schemaID,
+				v8:   isValidStr,
+			},
+		},
+	},
+	eventNew: {
 		fields: []field{
 			{
 				name:     schemaClub,
@@ -85,36 +142,6 @@ var GlobalForms = []form{
 				defValue: defaultTime,
 				minLen:   5,
 				maxLen:   5,
-			},
-		},
-	},
-	{
-		title: "Club Settings",
-		fields: []field{
-			{
-				name:     schemaName,
-				Required: true,
-			},
-			{
-				name: schemaIsDefault,
-			},
-			{
-				name: schemaClub,
-				//				kind: "_id",
-			},
-		},
-	},
-	{
-		title: "New Club",
-		fields: []field{
-			{
-				name:     schemaName,
-				Required: true,
-				v8:       isValidStr,
-			},
-			{
-				name: schemaIsDefault,
-				v8:   isValidBool,
 			},
 		},
 	},
