@@ -66,9 +66,7 @@ func newSessionID() string {
 	return sessionToken + "=" + sessionId
 }
 
-/* TODO
-create a ticker that checks the saved sessions every 90 seconds. If the session is older than 1 minute, delete it.
-*/
+//TODO create a ticker that checks the saved sessions every 90 seconds. If the session is older than 1 minute, delete it.
 
 //When a session id is used remove it.
 func getSession(w http.ResponseWriter, r *http.Request) form {
