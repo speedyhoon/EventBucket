@@ -10,7 +10,7 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 	club, err := getClub(clubID)
 	if err != nil {
 		warn.Println("club id", clubID, "not found.")
-		errorHandler(w, r, http.StatusNotFound)
+		errorHandler(w, r, http.StatusNotFound, "club")
 		return
 	}
 

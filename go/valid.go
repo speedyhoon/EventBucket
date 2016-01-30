@@ -23,7 +23,7 @@ func isValidInt(strNum string, field field) (interface{}, string) {
 	return num, "field integer doesn't pass validation"
 }
 func isValidStr(str string, field field) (interface{}, string) {
-	info.Println(field.name, "r=", field.Required)
+	//	info.Println(field.name, "r=", field.Required)
 	//	info.Println(field.minLen, field.maxLen, field.Required, `"`+str+`"`)
 	length := len(str)
 	if field.Required && length == 0 {
@@ -55,7 +55,7 @@ func isValidStr(str string, field field) (interface{}, string) {
 }
 
 func isValidBool(str string, field field) (interface{}, string) {
-	info.Println("__________________________________value='" + str + "'")
+	//	info.Println("__________________________________value='" + str + "'")
 	checked := len(str) >= 1
 	if field.Required && !checked {
 		return false, "Please check this field"
@@ -72,7 +72,6 @@ func isValid(r *http.Request, fields []field) ([]field, bool) {
 	//Process the post request as normal if len(r.Form) > len(fields)
 	var fieldValue []string
 	var ok bool
-	//	var err error
 	valid := true
 	for i, field := range fields {
 		//TODO remove developer message
@@ -82,28 +81,42 @@ func isValid(r *http.Request, fields []field) ([]field, bool) {
 			continue
 		}
 
+		//TODO change fieldValue to a string instead of slice of strings. Almost all fields submit a string instead of an array.
 		fieldValue, ok = r.Form[field.name]
-		trace.Println(field.name, "ok=", ok, "req=", field.Required)
-		if !ok {
-			trace.Println("!ok", field.name)
 
-			if field.Required && field.defValue != nil {
-				fieldValue = field.defValue()
-				trace.Println("err0")
-				//			} else if field.Required {
-				//				valid = false
-				//				fields[i].Error = "Missing value"
-				//				trace.Println("err1")
-				//				continue //Skip to the next loop iteration.
-			} else {
-				fieldValue = []string{""}
-				trace.Println("err2")
-				//				continue //Skip to the next loop iteration.
-			}
+		//trace.Println(field.name, "ok=", ok, "req=", field.Required, "value=", fieldValue)
+		/*	if !ok {
+						trace.Println("!ok", field.name)
+
+				//		if field.Required && field.defValue != nil {
+					//		fieldValue = field.defValue()
+						//	trace.Println("err0")
+							//			} else if field.Required {
+							//				valid = false
+							//				fields[i].Error = "Missing value"
+							//				trace.Println("err1")
+							//				continue //Skip to the next loop iteration.
+					//	} else {
+							fieldValue = []string{""}
+			//				trace.Println("err2")
+							//				continue //Skip to the next loop iteration.
+						//}
+					}*/
+
+		//trace.Println("check", field.defValue != nil, !ok, fieldValue == nil, len(fieldValue))
+		if len(fieldValue) > 0 {
+			//trace.Println("contents: ", fieldValue[0], fieldValue[0] == "")
+		}
+		if field.defValue != nil && (!ok || fieldValue == nil || len(fieldValue) == 0 || (len(fieldValue) == 1 && fieldValue[0] == "")) {
+			//			trace.Println("set default value")
+			fieldValue = field.defValue()
+		} else if !ok {
+			//			trace.Println("set empty string")
+			fieldValue = []string{""}
 		}
 
 		fields[i].internalValue, fields[i].Error = field.v8(strings.TrimSpace(fieldValue[0]), field)
-		info.Println("\n\n", field.name, "\nval=", fieldValue[0], "\nErr=", fields[i].Error)
+		//		info.Println("\n\n", field.name, "\nval=", fieldValue[0], "\nErr=", fields[i].Error)
 		if fields[i].Error != "" {
 			warn.Println("err2")
 			valid = false
@@ -113,48 +126,17 @@ func isValid(r *http.Request, fields []field) ([]field, bool) {
 			//		} else {
 			//			switch field.kind.(type) {
 			//			case string:
-			//
-			//			}
 		}
 		fields[i].Value = fmt.Sprintf("%v", fields[i].internalValue)
-		/*switch field.kind.(type) {
+		switch fields[i].internalValue.(type) {
+		//		case string, int:
+		//			fields[i].Value = fmt.Sprintf("%v", fields[i].internalValue)
 		case bool:
-			fmt.Printf("boolean %t\n", field.kind)
-		case int:
-			//			fields[i].Value, err = isValidInt(strings.TrimSpace(fieldValue[0]), field)
-			if err == nil {
-				//				fields[i].isValid = true
-			} else {
-				valid = false
-				fields[i].Error = "integer supplied was wrong"
-				fmt.Println(field.name + "integer supplied was wrong")
+			if !fields[i].internalValue.(bool) {
+				fields[i].Value = ""
 			}
-		case string:
-			if len(fieldValue) > 0 {
-				fields[i].Value, err = isValidStr(strings.TrimSpace(fieldValue[0]), field)
-			} else {
-				fields[i].Value, err = isValidStr("", field)
-			}
-			//			fields[i].isValid = fields[i].Error == ""
-			if err != nil {
-				//				fields[i].Error = fmt.Sprintf("%v", err)
-				fields[i].Error = err.Error()
-				valid = false
-			}
-			//			if fields[i].Error != "" {
-			//				valid = false
-			//				fields[i].Error = "string doesn't match"
-			//				fmt.Println(field.name + "string doesn't match")
-			//			}
-		case []string:
-			fmt.Println("within string slice")
-			for key, thingy := range fieldValue {
-				fmt.Println(key, thingy)
-			}
-			//			fields[i].Value = fieldValue
-		default:
-			warn.Printf("unexpected type %T", field.kind) // %T prints whatever type t is
-		}*/
+		}
+		//		trace.Println("mmm", fields[i].internalValue, fields[i].internalValue, "v=", fields[i].Value)
 	}
 	return fields, valid
 }

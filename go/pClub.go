@@ -3,14 +3,15 @@ package main
 import "net/http"
 
 func club(w http.ResponseWriter, r *http.Request, clubID string) {
-	//	sessionForm := getSession(w, r)
-	//	sessionFields := sessionForm.fields
+	//TODO disable checkbox when isDefault == true. Only non default clubs can steal the isDefault flag.
+
 	club, err := getClub(clubID)
+	//If club not found in the database return error club not found (404).
 	if err != nil {
 		warn.Println(err)
+		errorHandler(w, r, http.StatusNotFound, "club")
+		return
 	}
-	//TODO redirect to clubs page if clubid doesn't exist in the database
-
 	templater(w, page{
 		Title:  "Club",
 		MenuID: clubID,
@@ -35,26 +36,15 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func insertClub(w http.ResponseWriter, r *http.Request) {
-	submittedFields, isValid := isValid(r, GlobalForms[clubNew].fields)
+func clubInsert(w http.ResponseWriter, r *http.Request, submittedFields []field, redirect func()) {
 	name := submittedFields[0].Value
 	isDefault := submittedFields[1].internalValue.(bool)
-
-	goToClubsPage := func() { http.Redirect(w, r, "/clubs", http.StatusSeeOther) }
-	if !isValid {
-		setSession(w, form{
-			action: clubNew,
-			fields: submittedFields,
-		})
-		goToClubsPage()
-		return
-	}
 
 	//TODO these several db calls are not atomic.
 	ID, err := getNextID(tblClub)
 	if err != nil {
 		//TODO add error problems to form.
-		goToClubsPage()
+		redirect()
 		return
 	}
 	if collectionQty(tblClub) == 0 {
@@ -70,8 +60,16 @@ func insertClub(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		//TODO add error problems to form.
-		goToClubsPage()
+		redirect()
 		return
 	}
 	http.Redirect(w, r, "/club/"+ID, http.StatusSeeOther)
+}
+
+func clubDetails(w http.ResponseWriter, r *http.Request, submittedFields []field, redirect func()) {
+
+}
+
+func clubMoundInsert(w http.ResponseWriter, r *http.Request, submittedFields []field, redirect func()) {
+
 }

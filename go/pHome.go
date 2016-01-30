@@ -3,106 +3,14 @@ package main
 import (
 	"net/http"
 	"os"
-	"time"
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
-
-	myForm := getSession(w, r)
-	existingFields := myForm.fields
-
-	if len(existingFields) <= 0 {
-		warn.Println("no fields present")
-		var noEvents bool
-		noEvents = true
-		existingFields = []field{
-			{},
-			{Required: noEvents},
-			{Value: time.Now().Format(formatYMD)},
-			{Value: time.Now().Format(formatTime)},
-			/*{
-				Error: "This is error on a search bar.",
-				Options: []option{
-					{Label: "label", Value: "2 3"},
-					{Label: "text", Value: `"T`},
-					{Label: "Search", Value: ">S"},
-				},
-			},
-			{
-				Error: "Another error on club input.",
-				Options: []option{
-					{Label: "Warrack", Value: "R23"},
-					{Label: "Horsham", Value: "T52"},
-					{Label: "Stawell", Value: "S82"},
-				},
-			},
-			{
-				Error: "Error on date field!",
-			},
-			{
-				Error: "Error on time field!",
-			},*/
-		}
-	} else {
-		info.Println("found something")
-	}
-
-	//	var myForm []input
-	//	info.Println("sessionForm", sessionForm)
-	//	cookies, err := r.Cookie("z")
-	//	info.Println("r.Cookie=", cookies, err)
-
-	//	w.Header().Del("z=fdsa")
-
-	//	w.Header().Set("Set-Cookie", fmt.Sprintf("z=; path=/; expires=%v", time.Now().UTC().Add(-5*time.Minute).Format(gmtFormat)))
-
-	/*if err != nil {
-
-
-
-		warn.Println("cookiw error", err)
-
-		myForm = []input{
-			{}, {}, {}, {},
-		}
-	} else {
-		info.Println("cookies", cookies.Name)
-		info.Println("cookies", cookies.Value)
-
-		myForm = []input{
-			{
-				Error: "1",
-			}, {
-				Error: "2",
-			}, {
-				Error: "3",
-			}, {
-				Error: "4",
-			},
-		}
-	}*/
-	//	var errorForm []input
-
-	//	var ok bool
-
-	//	for index, cookie := range cookies {
-	//		cookie = strings.TrimPrefix(cookie, "z=")
-	//		if cookie != cookies[index] {
-	//			errorForm, ok = globalSessions[cookie]
-	//			if !ok {
-	//				warn.Println("oops con't find that one :(")
-	//			}
-	//			return
-	//		}
-	//	}
-	//
-
+	sessionForm := getSession(w, r)
 	templater(w, page{
 		Title: "Home",
 		Data: M{
-			//			"MyForm": errorForm,
-			//"MyForm": myForm,
-			"MyForm": existingFields,
+			"NewEvent": eventNewDefaultValues(sessionForm),
 		},
 	})
 }

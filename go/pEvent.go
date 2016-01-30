@@ -1,18 +1,15 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+)
 
 func event(w http.ResponseWriter, r *http.Request, eventID string) {
-	//	eventID := strings.TrimPrefix(r.URL.Path, urlEvent)
-	//	if eventID == "" {
-	//		http.Redirect(w, r, urlEvents, http.StatusNotFound)
-	//	}
-	cookie := r.Header.Get("Set-Cookie")
-	if cookie != "" {
-
-	}
-	if r.URL.Path[len(urlEvent):] == "3C" {
-		errorHandler(w, r, http.StatusNotFound)
+	event, err := getClub(eventID)
+	//If club not found in the database return error club not found (404).
+	if err != nil {
+		warn.Println(err)
+		errorHandler(w, r, http.StatusNotFound, "event")
 		return
 	}
 	templater(w, page{
@@ -20,40 +17,26 @@ func event(w http.ResponseWriter, r *http.Request, eventID string) {
 		menu:   urlEvent,
 		MenuID: eventID,
 		Data: M{
-			"EventId": eventID,
+			"Event": event,
 		},
 	})
 }
 
 func events(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" {
-		http.Redirect(w, r, "/events", http.StatusSeeOther)
-	}
+	sessionForm := getSession(w, r)
 	templater(w, page{
 		Title: "Events",
 		Data: M{
-			"Stuff": "EVENTS page!",
+			"NewEvent": eventNewDefaultValues(sessionForm),
 		},
 	})
 }
 
-func insertEvent(w http.ResponseWriter, r *http.Request) {
-	formID := 0
-	submittedFields, isValid := isValid(r, GlobalForms[formID].fields)
-	goToPage := func() { http.Redirect(w, r, "/", http.StatusSeeOther) }
-	if !isValid {
-		setSession(w, form{
-			action: formID,
-			fields: submittedFields,
-		})
-		goToPage()
-		return
-	}
-
+func eventInsert(w http.ResponseWriter, r *http.Request, submittedFields []field, redirect func()) {
 	ID, err := getNextID(tblEvent)
 	if err != nil {
 		//TODO add error problems to form.
-		goToPage()
+		redirect()
 		return
 	}
 	err = upsertDoc(tblEvent, "", Event{
@@ -62,8 +45,20 @@ func insertEvent(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		//TODO add error problems to form.
-		goToPage()
+		redirect()
 		return
 	}
-	http.Redirect(w, r, "/event/"+ID, http.StatusSeeOther)
+	http.Redirect(w, r, urlEvent+ID, http.StatusSeeOther)
+}
+
+func eventNewDefaultValues(form form) []field {
+	if form.action != eventNew && len(form.fields) == 0 {
+		form.fields = []field{
+			{Required: hasDefaultClub()},
+			{},
+			{Value: defaultDate()[0]},
+			{Value: defaultTime()[0]},
+		}
+	}
+	return form.fields
 }
