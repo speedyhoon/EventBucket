@@ -38,14 +38,14 @@ func pages() {
 	getRedirectPermanent(urlShooters, shooters)
 	getRedirectPermanent("/all", all)
 	getRedirectPermanent("/report", report)
-	getParameters(urlClub, club, regexId)
-	getParameters(urlClubSettings, clubSettings, regexId)
-	getParameters(urlEvent, event, regexId)
-	getParameters(urlEventSettings, eventSettings, regexId)
-	getParameters(urlEventReport, eventReport, regexId)
-	getParameters(urlScoreboard, scoreboard, regexId)
-	getParameters(urlScorecards, scorecards, regexId)
-	getParameters(urlTotalScores, totalScores, regexId)
+	getParameters(urlClub, club)
+	getParameters(urlClubSettings, clubSettings)
+	getParameters(urlEvent, event)
+	getParameters(urlEventSettings, eventSettings)
+	getParameters(urlEventReport, eventReport)
+	getParameters(urlScoreboard, scoreboard)
+	getParameters(urlScorecards, scorecards)
+	getParameters(urlTotalScores, totalScores)
 	post(clubNew, clubInsert)
 	post(eventNew, eventInsert)
 
@@ -60,7 +60,6 @@ func post(formID int, runner func(http.ResponseWriter, *http.Request, []field, f
 			A request was made of a resource using a request method not supported by that resource; for example,
 			using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
 			//en.wikipedia.org/wiki/List_of_HTTP_status_codes*/
-			//TODO redirect back to referer address
 			http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
 			return
 		}
