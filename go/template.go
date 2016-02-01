@@ -60,10 +60,8 @@ func templater(w http.ResponseWriter, page page) {
 	pageName = strings.ToLower(string([]rune(pageName)[0])) + string([]rune(pageName)[1:])
 
 	html, ok := templates[pageName]
-	if !ok || debug { //debug is for dynamically re-parsing (reloading) templates on every request
-		//TODO delete the following:
-		//tpl := template.Must(template.New("main").Funcs(funcMap).ParseGlob("*.html"))
-		//templ, err := template.ParseFiles("../htm/"+pageName+".htm", masterTemplatePath)
+	//debug is for dynamically re-parsing (reloading) templates on every request
+	if !ok || debug {
 		templates[pageName] = template.Must(template.New("main").Funcs(template.FuncMap{
 			"hasindex": func(inputs []field, index int) *field {
 				if index < len(inputs) && index >= 0 {
