@@ -46,10 +46,10 @@ func defaultTime() []string {
 }
 
 const (
-	clubNew           = 0
-	clubDetailsUpsert = 1
-	clubMoundNew      = 2
-	eventNew          = 3
+	clubNew      = 0
+	clubDetails  = 1
+	clubMoundNew = 2
+	eventNew     = 3
 )
 
 var GlobalForms = []form{
@@ -66,40 +66,41 @@ var GlobalForms = []form{
 			},
 		},
 	},
-	clubDetailsUpsert: {
+	clubDetails: {
 		fields: []field{
+			{
+				name: schemaID,
+				v8:   isValidStr,
+			},
 			{
 				name:     schemaName,
 				Required: true,
 				v8:       isValidStr,
 			},
-			{
-				name: schemaIsDefault,
-				v8:   isValidBool,
-			},
-			{
-				name: schemaClub,
-				v8:   isValidStr,
-			},
+			{name: schemaAddress, v8: isValidStr},
+			{name: schemaTown, v8: isValidStr},
+			{name: schemaPostCode, v8: isValidStr},
+			{name: schemaLatitude, v8: isValidStr},
+			{name: schemaLongitude, v8: isValidStr},
 		},
 	},
 	clubMoundNew: {
 		fields: []field{
+			{
+				//submit - Club ID
+				name: schemaID,
+				v8:   isValidStr,
+			},
 			{
 				name: schemaName,
 				v8:   isValidStr,
 			},
 			{
 				name: schemaDistance,
-				v8:   isValidStr,
+				v8:   isValidInt,
 			},
 			{
 				name: schemaUnit,
-				v8:   isValidStr,
-			},
-			{
-				//submit - Club ID
-				name: schemaID,
 				v8:   isValidStr,
 			},
 		},

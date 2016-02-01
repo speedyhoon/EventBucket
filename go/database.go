@@ -65,6 +65,13 @@ func upsertDoc(collectionName string, ID string, document interface{}) error {
 	}
 	return err
 }
+func updateDoc(collectionName string, ID string, document interface{}) error {
+	err := conn.C(collectionName).UpdateId(ID, document)
+	if err != nil {
+		warn.Println(err)
+	}
+	return err
+}
 
 func getNextID(collectionName string) (string, error) {
 	var result M

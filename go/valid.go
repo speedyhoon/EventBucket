@@ -12,14 +12,19 @@ const (
 )
 
 func isValidInt(strNum string, field field) (interface{}, string) {
-	num, err := strconv.Atoi(strNum)
+	num := 0
+	var err error
+	if strNum != "" {
+		num, err = strconv.Atoi(strNum)
+	} else if field.Required {
+		return num, "Please fill in this field"
+	}
 	if err != nil {
 		return num, err.Error()
 	}
 	if num >= field.min && num <= field.max && (field.step == 0 || field.step != 0 && num%field.step == 0) || !field.Required && num == 0 {
 		return num, ""
 	}
-	//		return num, errors.New("field integer doesn't pass validation")
 	return num, "field integer doesn't pass validation"
 }
 func isValidStr(str string, field field) (interface{}, string) {
@@ -118,7 +123,7 @@ func isValid(r *http.Request, fields []field) ([]field, bool) {
 		fields[i].internalValue, fields[i].Error = field.v8(strings.TrimSpace(fieldValue[0]), field)
 		//		info.Println("\n\n", field.name, "\nval=", fieldValue[0], "\nErr=", fields[i].Error)
 		if fields[i].Error != "" {
-			warn.Println("err2")
+			warn.Println("err2", fields[i].Error, field.name)
 			valid = false
 			//		}else{
 			//			temp := field.kind.(type)

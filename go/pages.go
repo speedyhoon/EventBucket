@@ -47,6 +47,8 @@ func pages() {
 	getParameters(urlScorecards, scorecards)
 	getParameters(urlTotalScores, totalScores)
 	post(clubNew, clubInsert)
+	post(clubDetails, clubDetailsUpsert)
+	post(clubMoundNew, clubMoundInsert)
 	post(eventNew, eventInsert)
 
 	//BUG any url breaks when appending "&*((&*%"
@@ -64,6 +66,8 @@ func post(formID int, runner func(http.ResponseWriter, *http.Request, []field, f
 			return
 		}
 		submittedFields, isValid := isValid(r, GlobalForms[formID].fields)
+
+		fmt.Println("submittedFields", submittedFields)
 		redirect := func() { http.Redirect(w, r, r.Referer(), http.StatusSeeOther) }
 		if !isValid {
 			setSession(w, form{

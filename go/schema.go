@@ -24,7 +24,7 @@ const (
 	schemaLongName       = "schemaLongName"
 	schemaName           = "schemaName"
 	schemaSortScoreboard = "schemaSortScoreboard"
-	schemaPostcode       = "schemaPostcode"
+	schemaPostCode       = "schemaPostCode"
 	schemaSort           = "schemaSort"
 	schemaTime           = "schemaTime"
 	schemaURL            = "schemaURL"
@@ -36,18 +36,34 @@ const (
 
 // Club is exported
 type Club struct {
-	ID        string `bson:"schemaID"`
-	Name      string `bson:"schemaName"`
-	IsDefault bool   `bson:"schemaIsDefault,omitempty"`
-	//	LongName  string  `bson:"l,omitempty"`
-	//	Mounds    []Mound `bson:"M,omitempty"`
-	//	Latitude  string  `bson:"t,omitempty"`
-	//	Longitude string  `bson:"g,omitempty"`
-	//	URL       string  `bson:"u,omitempty"`
-	//	Address   string  `bson:"a,omitempty"`
-	//	Town      string  `bson:"w,omitempty"`
-	//	PostCode  string  `bson:"p,omitempty"`
-	//	AutoInc   AutoInc `bson:"^^schemaAutoInc^^,omitempty"`
+	ID        string  `bson:"schemaID"`
+	Name      string  `bson:"schemaName"`
+	IsDefault bool    `bson:"schemaIsDefault,omitempty"`
+	Mounds    []Mound `bson:"schemaMound,omitempty"`
+	Latitude  string  `bson:"schemaLatitude,omitempty"`
+	Longitude string  `bson:"schemaLongitude,omitempty"`
+	URL       string  `bson:"schemaURL,omitempty"`
+	Address   string  `bson:"schemaAddress,omitempty"`
+	Town      string  `bson:"schemaTown,omitempty"`
+	PostCode  string  `bson:"schemaPostCode,omitempty"`
+	AutoInc   AutoInc `bson:"schemaAutoInc,omitempty"`
+}
+
+// AutoInc is a auto increment counter
+type AutoInc struct {
+	Mound   int `bson:"schemaMound,omitempty"`
+	Event   int `bson:"schemaEvent,omitempty"`
+	Club    int `bson:"schemaClub,omitempty"`
+	Range   int `bson:"schemaRange,omitempty"`
+	Shooter int `bson:"schemaShooter,omitempty"`
+}
+
+// Mound is exported
+type Mound struct {
+	ID       int    `bson:"schemaID"`
+	Distance int    `bson:"schemaDistance,omitempty"`
+	Unit     string `bson:"schemaUnit,omitempty"`
+	Name     string `bson:"schemaName,omitempty"`
 }
 
 // Event is exported
