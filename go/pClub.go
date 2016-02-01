@@ -57,6 +57,9 @@ func clubInsert(w http.ResponseWriter, r *http.Request, submittedFields []field,
 		ID:        ID,
 		Name:      name,
 		IsDefault: isDefault,
+		AutoInc: AutoInc{
+			Mound: 1,
+		},
 	})
 	if err != nil {
 		//TODO add error problems to form.
@@ -66,10 +69,43 @@ func clubInsert(w http.ResponseWriter, r *http.Request, submittedFields []field,
 	http.Redirect(w, r, "/club/"+ID, http.StatusSeeOther)
 }
 
-func clubDetails(w http.ResponseWriter, r *http.Request, submittedFields []field, redirect func()) {
-
+func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedFields []field, redirect func()) {
+	clubID := submittedFields[0].Value
+	err := updateDoc(tblClub, clubID, M{
+		schemaName:      submittedFields[1].Value,
+		schemaAddress:   submittedFields[2].Value,
+		schemaTown:      submittedFields[3].Value,
+		schemaPostCode:  submittedFields[4].Value,
+		schemaLatitude:  submittedFields[5].Value,
+		schemaLongitude: submittedFields[6].Value,
+	})
+	if err != nil {
+		//TODO add error problems to form.
+		redirect()
+		return
+	}
+	http.Redirect(w, r, urlClubSettings+clubID, http.StatusSeeOther)
 }
 
 func clubMoundInsert(w http.ResponseWriter, r *http.Request, submittedFields []field, redirect func()) {
+	clubID := submittedFields[0].Value
 
+	info.Println(clubID)
+	info.Println(submittedFields[1].Value)
+	info.Println(submittedFields[2].internalValue.(int))
+	info.Println(submittedFields[3].Value)
+
+	err := updateDoc(tblClub, clubID, M{"$push": M{
+		schemaMound: Mound{
+			Name:     submittedFields[1].Value,
+			Distance: submittedFields[2].internalValue.(int),
+			Unit:     submittedFields[3].Value,
+		},
+	}})
+	if err != nil {
+		//TODO add error problems to form.
+		redirect()
+		return
+	}
+	http.Redirect(w, r, urlClubSettings+clubID, http.StatusSeeOther)
 }
