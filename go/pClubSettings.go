@@ -10,27 +10,40 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 		return
 	}
 
+	var invalidForm, detailsForm, newMoundForm form
+	invalidForm = getSession(w, r)
+	if invalidForm.action == clubDetails {
+		detailsForm = invalidForm
+	} else {
+		detailsForm = form{Fields: []field{
+			{Value: club.Name},
+			{Value: club.Address},
+			{Value: club.Town},
+			{Value: club.Postcode},
+			{Value: club.Latitude},
+			{Value: club.Longitude},
+			{Value: club.ID},
+		}}
+	}
+	if invalidForm.action == clubMoundNew {
+		newMoundForm = invalidForm
+	} else {
+		newMoundForm = form{Fields: []field{
+			{},
+			{},
+			{},
+			{Value: club.ID},
+		}}
+	}
+
 	templater(w, page{
 		Title:  "Club Settings",
 		menu:   urlClub,
 		MenuID: club.ID,
 		Data: M{
-			"Club": club,
-			"ClubDetails": []field{
-				{Value: club.Name},
-				{Value: club.Address},
-				{Value: club.Town},
-				{Value: club.PostCode},
-				{Value: club.Latitude},
-				{Value: club.Longitude},
-				{Value: club.ID},
-			},
-			"ClubMound": []field{
-				{},
-				{},
-				{},
-				{Value: club.ID},
-			},
+			"Club":        club,
+			"ClubDetails": detailsForm,
+			"ClubMound":   newMoundForm,
 		},
 	})
 }

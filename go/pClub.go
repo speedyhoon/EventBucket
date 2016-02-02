@@ -67,14 +67,14 @@ func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redi
 }
 
 func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
-	clubID := submittedForm.Fields[0].Value
+	clubID := submittedForm.Fields[6].Value
 	err := updateDoc(tblClub, clubID, M{
-		schemaName:      submittedForm.Fields[1].Value,
-		schemaAddress:   submittedForm.Fields[2].Value,
-		schemaTown:      submittedForm.Fields[3].Value,
-		schemaPostCode:  submittedForm.Fields[4].Value,
-		schemaLatitude:  submittedForm.Fields[5].Value,
-		schemaLongitude: submittedForm.Fields[6].Value,
+		schemaName:      submittedForm.Fields[0].Value,
+		schemaAddress:   submittedForm.Fields[1].Value,
+		schemaTown:      submittedForm.Fields[2].Value,
+		schemaPostcode:  submittedForm.Fields[3].Value,
+		schemaLatitude:  submittedForm.Fields[4].Value,
+		schemaLongitude: submittedForm.Fields[5].Value,
 	})
 	if err != nil {
 		//TODO add error problems to form.
@@ -85,12 +85,12 @@ func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm for
 }
 
 func clubMoundInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
-	clubID := submittedForm.Fields[0].Value
+	clubID := submittedForm.Fields[3].Value
 	err := updateDoc(tblClub, clubID, M{"$push": M{
 		schemaMound: Mound{
-			Name:     submittedForm.Fields[1].Value,
-			Distance: submittedForm.Fields[2].internalValue.(int),
-			Unit:     submittedForm.Fields[3].Value,
+			Name:     submittedForm.Fields[0].Value,
+			Distance: submittedForm.Fields[1].internalValue.(int),
+			Unit:     submittedForm.Fields[2].Value,
 		},
 	}})
 	if err != nil {

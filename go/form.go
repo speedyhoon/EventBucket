@@ -56,26 +56,18 @@ var GlobalForms = [][]field{
 	},
 	clubDetails: {
 		{
-			name: schemaID,
-			v8:   isValidStr,
-		},
-		{
 			name:     schemaName,
 			Required: true,
 			v8:       isValidStr,
 		},
 		{name: schemaAddress, v8: isValidStr},
 		{name: schemaTown, v8: isValidStr},
-		{name: schemaPostCode, v8: isValidStr},
+		{name: schemaPostcode, v8: isValidStr},
 		{name: schemaLatitude, v8: isValidStr},
 		{name: schemaLongitude, v8: isValidStr},
+		{name: schemaID, v8: isValidID},
 	},
 	clubMoundNew: {
-		{
-			//submit - Club ID
-			name: schemaID,
-			v8:   isValidStr,
-		},
 		{
 			name: schemaName,
 			v8:   isValidStr,
@@ -87,6 +79,11 @@ var GlobalForms = [][]field{
 		{
 			name: schemaUnit,
 			v8:   isValidStr,
+		},
+		{
+			//submit - Club ID
+			name: schemaID,
+			v8:   isValidID,
 		},
 	},
 	eventNew: {

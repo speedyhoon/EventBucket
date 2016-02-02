@@ -24,7 +24,7 @@ const (
 	schemaLongName       = "schemaLongName"
 	schemaName           = "schemaName"
 	schemaSortScoreboard = "schemaSortScoreboard"
-	schemaPostCode       = "schemaPostCode"
+	schemaPostcode       = "schemaPostcode"
 	schemaSort           = "schemaSort"
 	schemaTime           = "schemaTime"
 	schemaURL            = "schemaURL"
@@ -45,7 +45,7 @@ type Club struct {
 	URL       string  `bson:"schemaURL,omitempty"`
 	Address   string  `bson:"schemaAddress,omitempty"`
 	Town      string  `bson:"schemaTown,omitempty"`
-	PostCode  string  `bson:"schemaPostCode,omitempty"`
+	Postcode  string  `bson:"schemaPostcode,omitempty"`
 	AutoInc   AutoInc `bson:"schemaAutoInc,omitempty"`
 }
 
