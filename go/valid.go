@@ -54,13 +54,16 @@ func isValidStr(str string, field field) (interface{}, string) {
 		}
 		return str, fmt.Sprintf("Please change this text be between %v & %v characters long (you are currently using %v character%v).", field.minLen, field.maxLen, length, plural)
 	}
-	//if field.Required {
 	return str, "Please fill in this field"
-	//}
+}
+func isValidID(str string, field field) (interface{}, string) {
+	if regexId.MatchString(str) {
+		return str, ""
+	}
+	return str, "ID supplied is incorrect"
 }
 
 func isValidBool(str string, field field) (interface{}, string) {
-	//	info.Println("__________________________________value='" + str + "'")
 	checked := len(str) >= 1
 	if field.Required && !checked {
 		return false, "Please check this field"
