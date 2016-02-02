@@ -3,10 +3,9 @@ package main
 import "time"
 
 type form struct {
-	title  string
 	action int
-	fields []field
-	inputs []input
+	Fields []field
+	Error  string
 }
 
 type field struct {
@@ -21,15 +20,6 @@ type field struct {
 	//	v8 string
 	v8       func(string, field) (interface{}, string)
 	defValue func() []string
-}
-
-type input struct {
-	name, Error, Value string
-	Required           bool
-	Options            []option
-	maxLen, minLen     int
-	min, max, step     int
-	kind               interface{}
 }
 
 type option struct {
@@ -52,98 +42,90 @@ const (
 	eventNew     = 3
 )
 
-var GlobalForms = []form{
+var GlobalForms = [][]field{
 	clubNew: {
-		fields: []field{
-			{
-				name:     schemaName,
-				Required: true,
-				v8:       isValidStr,
-			},
-			{
-				name: schemaIsDefault,
-				v8:   isValidBool,
-			},
+		{
+			name:     schemaName,
+			Required: true,
+			v8:       isValidStr,
+		},
+		{
+			name: schemaIsDefault,
+			v8:   isValidBool,
 		},
 	},
 	clubDetails: {
-		fields: []field{
-			{
-				name: schemaID,
-				v8:   isValidStr,
-			},
-			{
-				name:     schemaName,
-				Required: true,
-				v8:       isValidStr,
-			},
-			{name: schemaAddress, v8: isValidStr},
-			{name: schemaTown, v8: isValidStr},
-			{name: schemaPostCode, v8: isValidStr},
-			{name: schemaLatitude, v8: isValidStr},
-			{name: schemaLongitude, v8: isValidStr},
+		{
+			name: schemaID,
+			v8:   isValidStr,
 		},
+		{
+			name:     schemaName,
+			Required: true,
+			v8:       isValidStr,
+		},
+		{name: schemaAddress, v8: isValidStr},
+		{name: schemaTown, v8: isValidStr},
+		{name: schemaPostCode, v8: isValidStr},
+		{name: schemaLatitude, v8: isValidStr},
+		{name: schemaLongitude, v8: isValidStr},
 	},
 	clubMoundNew: {
-		fields: []field{
-			{
-				//submit - Club ID
-				name: schemaID,
-				v8:   isValidStr,
-			},
-			{
-				name: schemaName,
-				v8:   isValidStr,
-			},
-			{
-				name: schemaDistance,
-				v8:   isValidInt,
-			},
-			{
-				name: schemaUnit,
-				v8:   isValidStr,
-			},
+		{
+			//submit - Club ID
+			name: schemaID,
+			v8:   isValidStr,
+		},
+		{
+			name: schemaName,
+			v8:   isValidStr,
+		},
+		{
+			name: schemaDistance,
+			v8:   isValidInt,
+		},
+		{
+			name: schemaUnit,
+			v8:   isValidStr,
 		},
 	},
 	eventNew: {
-		fields: []field{
-			{
-				name:     schemaClub,
-				Required: true,
-				//				autoFocus: true,
-				maxLen: 64,
-				minLen: 1,
-				kind:   "",
-				v8:     isValidStr,
-				//				options: true,
-			},
-			{
-				name:     schemaName,
-				Required: true,
-				maxLen:   64,
-				minLen:   1,
-				kind:     "",
-				//				kind: isValidStr,
-				v8: isValidStr,
-				//				options: true,
-			},
-			{
-				name:     schemaDate,
-				defValue: defaultDate,
-				minLen:   10,
-				maxLen:   10,
-				kind:     "",
-				v8:       isValidStr,
-			},
-			{
+		{
+			name:     schemaClub,
+			Required: true,
+			//				autoFocus: true,
+			maxLen: 64,
+			minLen: 1,
+			kind:   "",
+			v8:     isValidStr,
+			//				options: true,
+		},
+		{
+			name:     schemaName,
+			Required: true,
+			maxLen:   64,
+			minLen:   1,
+			kind:     "",
+			//				kind: isValidStr,
+			v8: isValidStr,
+			//				options: true,
+		},
+		{
+			name:     schemaDate,
+			defValue: defaultDate,
+			minLen:   10,
+			maxLen:   10,
+			kind:     "",
+			v8:       isValidStr,
+		},
+		{
 
-				kind:     "",
-				v8:       isValidStr,
-				name:     schemaTime,
-				defValue: defaultTime,
-				minLen:   5,
-				maxLen:   5,
-			},
+			kind:     "",
+			v8:       isValidStr,
+			name:     schemaTime,
+			defValue: defaultTime,
+			minLen:   5,
+			maxLen:   5,
 		},
 	},
 	/*{

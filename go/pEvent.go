@@ -1,8 +1,6 @@
 package main
 
-import (
-	"net/http"
-)
+import "net/http"
 
 func event(w http.ResponseWriter, r *http.Request, eventID string) {
 	event, err := getClub(eventID)
@@ -32,33 +30,38 @@ func events(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func eventInsert(w http.ResponseWriter, r *http.Request, submittedFields []field, redirect func()) {
+func eventInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	ID, err := getNextID(tblEvent)
 	if err != nil {
-		//TODO add error problems to form.
-		redirect()
+		formError(w, submittedForm, redirect, err)
 		return
 	}
+
+	//Insert new event into database.
 	err = upsertDoc(tblEvent, "", Event{
-		ID: ID,
-		//		Name: name,
+		ID:   ID,
+		Club: submittedForm.Fields[0].Value,
+		Name: submittedForm.Fields[1].Value,
+		Date: submittedForm.Fields[2].Value,
+		Time: submittedForm.Fields[3].Value,
 	})
+
+	//Display any insert errors onscreen.
 	if err != nil {
-		//TODO add error problems to form.
-		redirect()
+		formError(w, submittedForm, redirect, err)
 		return
 	}
 	http.Redirect(w, r, urlEvent+ID, http.StatusSeeOther)
 }
 
-func eventNewDefaultValues(form form) []field {
-	if form.action != eventNew && len(form.fields) == 0 {
-		form.fields = []field{
+func eventNewDefaultValues(form form) form {
+	if form.action != eventNew && len(form.Fields) == 0 {
+		form.Fields = []field{
 			{Required: hasDefaultClub()},
 			{},
 			{Value: defaultDate()[0]},
 			{Value: defaultTime()[0]},
 		}
 	}
-	return form.fields
+	return form
 }

@@ -55,7 +55,7 @@ func pages() {
 	get404(urlHome, home)
 }
 
-func post(formID int, runner func(http.ResponseWriter, *http.Request, []field, func())) {
+func post(formID int, runner func(http.ResponseWriter, *http.Request, form, func())) {
 	h := func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
 			/*405 Method Not Allowed
@@ -65,19 +65,18 @@ func post(formID int, runner func(http.ResponseWriter, *http.Request, []field, f
 			http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
 			return
 		}
-		submittedFields, isValid := isValid(r, GlobalForms[formID].fields)
-
-		fmt.Println("submittedFields", submittedFields)
+		submittedFields, isValid := isValid(r, GlobalForms[formID])
 		redirect := func() { http.Redirect(w, r, r.Referer(), http.StatusSeeOther) }
+		newForm := form{
+			action: formID,
+			Fields: submittedFields,
+		}
 		if !isValid {
-			setSession(w, form{
-				action: formID,
-				fields: submittedFields,
-			})
+			setSession(w, newForm)
 			redirect()
 			return
 		}
-		runner(w, r, submittedFields, redirect)
+		runner(w, r, newForm, redirect)
 	}
 	http.HandleFunc(fmt.Sprintf("/%d", formID), h)
 }
