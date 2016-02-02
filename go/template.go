@@ -27,7 +27,7 @@ const (
 	htmlDirectory               = "./h/"
 	masterTemplatePath          = htmlDirectory + "_master"
 	formsTemplatePath           = htmlDirectory + "forms"
-	networkAdaptersTemplatePath = htmlDirectory + "networkAdapters"
+	networkAdaptersTemplatePath = htmlDirectory + "_networkAdapters"
 )
 
 var (

@@ -6,7 +6,6 @@ func shooters(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
 		Title: "Shooters",
 		Data: M{
-			"Stuff": "SHOOTERS page!",
 			"Fds": []field{
 				{
 					Error: "I caused an error!@",

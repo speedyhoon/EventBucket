@@ -21,44 +21,6 @@ func report(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func all(w http.ResponseWriter, r *http.Request) {
-	templater(w, page{
-		Title: "_All",
-		Data: M{
-			"Event": M{
-				"Stuff":   "EVENT page!",
-				"EventId": "eventId",
-			},
-			"About": M{
-				"Stuff": "EVENTS page!",
-			},
-			"Clubs": M{
-				"Stuff": "CLUBS page!",
-			},
-			"Shooters": M{
-				"Stuff": "SHOOTERS page!",
-				"Fds": []field{
-					{
-						Error: "i caused an error!@",
-						Options: []option{
-							{Label: "label", Value: "2 3"},
-							{Label: "text", Value: `"t`},
-							{Label: "search", Value: ">s"},
-						},
-					},
-					{
-						Options: []option{
-							{Label: "warrack", Value: "r23"},
-							{Label: "horsham", Value: "t52"},
-							{Label: "stawell", Value: "s82"},
-						},
-					},
-				},
-			},
-		},
-	})
-}
-
 func eventArchive(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
 		Title: "Archive",
@@ -67,58 +29,6 @@ func eventArchive(w http.ResponseWriter, r *http.Request) {
 		},
 	})
 }
-
-/*
-type form struct {
-	Action string
-	Title  string
-	Field  []field
-	Help   string
-	Table  bool
-	Id     string
-}
-
-type field struct {
-	Name, Html, Label, Help, Pattern, Placeholder, AutoComplete string //AutoComplete values can be: "on" or "off"
-	Checked, MultiSelect, Required                              bool
-	Min, Max                                                    *int
-	Size                                                        int
-	//	Options                                                     []option
-	Step                 float64
-	VarType              string //the type of variable to return
-	MaxLength, MinLength int    //the length of variable to return
-	Error                string
-	Snippet              interface{}
-	Autofocus            bool
-	Action               string //Way to switch the forms action to a different purpose
-	Value                interface{}
-	AccessKey, Inner, Id string
-	DataList             bool
-	Class                string
-}*/
-
-/*
-var globalForm = map[string]func(string) form3{
-	"eventSettingsAddRangeForm": func(eventID string) form3 {
-		return form3{
-			action: "/EventRangeInsert",
-			title:  "Add Range",
-			fields: []Field2{
-				searchbox{
-					name:      "name",
-					label:     "Range Name",
-					error:     "whoops this seems to be an unexpected error :(",
-					autoFocus: true,
-					required:  true,
-				}, submit{
-					label: "Create Range",
-					name:  "eventid",
-					Value: eventID,
-				},
-			},
-		}
-	},
-}*/
 
 func about(w http.ResponseWriter, r *http.Request) {
 	hostname, _ := os.Hostname()
@@ -153,6 +63,4 @@ Adding forms to a page:
 create the HTML
 add validation struct
 add population data - map[string]interface OR anonymous struct
-
-
 */
