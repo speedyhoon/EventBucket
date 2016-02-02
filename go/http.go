@@ -204,3 +204,9 @@ func whoops(w http.ResponseWriter, r *http.Request, url string) {
 		},
 	})
 }
+
+func formError(w http.ResponseWriter, submittedForm form, redirect func(), err error) {
+	submittedForm.Error = err.Error()
+	setSession(w, submittedForm)
+	redirect()
+}

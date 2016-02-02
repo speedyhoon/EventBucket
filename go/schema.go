@@ -71,4 +71,6 @@ type Event struct {
 	ID   string `bson:"schemaID"`
 	Name string `bson:"schemaName"`
 	Club string `bson:"schemaClub"`
+	Date string `bson:"schemaDate"`
+	Time string `bson:"schemaTime"`
 }
