@@ -82,8 +82,9 @@ var GlobalForms = [][]field{
 		},
 		{
 			//submit - Club ID
-			name: schemaID,
-			v8:   isValidID,
+			name:     schemaID,
+			v8:       isValidID,
+			Required: true,
 		},
 	},
 	eventNew: {
