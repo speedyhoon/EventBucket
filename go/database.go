@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"os"
 	"os/exec"
 
 	"gopkg.in/mgo.v2"
@@ -16,7 +15,6 @@ func startDB() {
 		mgoPort = "38888"
 		mgoDial = "localhost:" + mgoPort
 	)
-	databasePath := os.Getenv("ProgramData") + subDir
 	mkDir(databasePath)
 	cmd := exec.Command("mongod", "--dbpath", databasePath, "--port", mgoPort, "--nssize", "1", "--smallfiles", "--noscripting", "--nohttpinterface")
 	//TODO output mongodb errors/logs to stdOut
