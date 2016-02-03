@@ -10,15 +10,14 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"regexp"
-	//"os/signal"
 	"path/filepath"
+	"regexp"
 	"time"
 )
 
 const (
 	//Logging & Database directory name
-	subDir = "/EventBucket"
+	subDir = `\EventBucket`
 
 	//HTTP settings
 	address = "http://localhost"
@@ -47,18 +46,11 @@ var (
 	expiresTime, currentYear, portAddr string
 
 	//Logging
-	tempPath    = os.Getenv("temp") + subDir
-	logFileName = filepath.Join(tempPath, time.Now().Format("20060102")+".log")
-	//Logging destinations are os.Stdout, os.Stderr, ioutil.Discard
-	//trace = log.New(ioutil.Discard, "TRACE: ", log.Lshortfile)
+	//Output destinations can be os.Stdout, os.Stderr, ioutil.Discard.
+	//Flags can be log.Lshortfile|log.Ltime
 	trace = log.New(os.Stdout, "TRACE: ", log.Lshortfile)
-	//	info  = log.New(os.Stdout, "INFO:  ", log.Lshortfile|log.Ltime)
-	info = log.New(os.Stdout, "INFO:  ", log.Lshortfile)
-	//	warn  = log.New(os.Stderr, "WARN:  ", log.Lshortfile|log.Ltime)
-	warn = log.New(os.Stderr, "WARN:  ", log.Lshortfile)
-
-	//EventBucket database
-	databasePath = os.Getenv("ProgramData") + subDir
+	info  = log.New(os.Stdout, "INFO:  ", log.Lshortfile)
+	warn  = log.New(os.Stderr, "WARN:  ", log.Lshortfile)
 
 	//URL validation matching
 	regexId = regexp.MustCompile(`^[a-z0-9]+$`)
@@ -68,6 +60,8 @@ type M map[string]interface{}
 
 func init() {
 	go startDB()
+	go maintainExpiresTime()
+
 	port := flag.Uint("port", 80, "Assign a differnet port number for the http server. Range: 0 through 65535.")
 	flag.BoolVar(&debug, "debug", false, "Turn on debugging.")
 	flag.Parse()
@@ -88,8 +82,6 @@ func init() {
 	}
 
 	//	startLogging()
-	go maintainExpiresTime()
-	go mkDir(databasePath)
 	setExpiresTime()
 
 	//Display message during shutdown.
@@ -110,14 +102,16 @@ func main() {
 	pages()
 	info.Print("Starting EventBucket HTTP server...")
 	warn.Printf("ListenAndServe: %v", http.ListenAndServe(portAddr, nil))
-	info.Println("EvenBucket stopped.")
+	info.Println("EvenBucket server stopped.")
 }
 
 //Setup logging into temp directory
 func startLogging() {
+	tempPath := os.Getenv("temp") + subDir
 	err := mkDir(tempPath)
 	if err == nil {
 		var f *os.File
+		logFileName := filepath.Join(tempPath, time.Now().Format("20060102")+".log")
 		f, err = os.OpenFile(logFileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 		if err == nil {
 			if debug {
