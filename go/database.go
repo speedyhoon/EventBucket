@@ -20,6 +20,7 @@ func startDB() {
 	mkDir(databasePath)
 	//TODO remove db args after comment tag once profiling is finished.
 	cmd := exec.Command("mongod", "--dbpath", databasePath, "--port", mgoPort, "--nssize", "1", "--smallfiles", "--noscripting", "--nohttpinterface", "--quiet" /**/, "--notablescan", "--slowms", "25", "--profile", "1")
+	//Combine standard output of command into EventBucket standard output source://stackoverflow.com/questions/8875038/redirect-stdout-pipe-of-child-process-in-golang
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Start()

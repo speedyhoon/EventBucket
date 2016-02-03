@@ -77,8 +77,7 @@ func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm for
 		schemaLongitude: submittedForm.Fields[5].Value,
 	})
 	if err != nil {
-		//TODO add error problems to form.
-		redirect()
+		formError(w, submittedForm, redirect, err)
 		return
 	}
 	http.Redirect(w, r, urlClubSettings+clubID, http.StatusSeeOther)
