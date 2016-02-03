@@ -1,0 +1,13 @@
+{{define "page"}}
+	<h1>Clubs</h1>
+	{{template "NewClub" .NewClub}}
+	{{with .ListClubs}}
+		<ul>
+			{{range .}}
+				<li><a href=/club/{{.ID}}>{{.Name}}</a>
+			{{end}}
+		</ul>
+	{{else}}
+		<p>No Clubs found</p>
+	{{end}}
+{{end}}

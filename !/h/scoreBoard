@@ -1,0 +1,3 @@
+{{define "page"}}
+<h1>Scoreboard</h1>
+{{end}}

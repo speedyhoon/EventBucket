@@ -1,0 +1,3 @@
+{{define "page"}}
+<h1>Score Cards</h1>
+{{end}}

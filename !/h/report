@@ -1,0 +1,37 @@
+{{define "page"}}
+<h1>Report</h1>
+<h2>What is target rifle shooting?</h2>
+<h2>Brief history of Victorian Target Rifle Shooting</h2>
+	VRA formed in 1860's
+	Williamstown closed in 1992
+	Stawell Rifle Club lengthened their range in 2003
+		they now to Match rifle shooters and sometimes recieve shooters internationally
+	Competitor numbers have slowly been dwindling for many years
+<h2>What is a target Rifle competition like?</h2>
+Overwhelming and Stressful for beginners traveling to a new range by themselves
+Takes a long time to start heading home
+
+<h2>What where some points that were not expected?</h2>
+Uncovered cheating in the 2013 Victorian champion of champions team match. Refused to organise scores for the following year. Scores where modified on paper compared to shots fired. I tried to fix the mess and retrieve the correct scores, but after 45 minutes I gave up. EB scoreboard was thrown out and incorrect cores where beemed correct.
+No work was done on EB for the following 6 months and I also withdrew from shooting.
+
+<h2>competitors systems?</h2>
+
+
+<h2>Interview questions for EventBucket Opinion.</h2>
+what was good about eventbucket<br>
+what was bad about eventbucket<br>
+No one was ever interested in useing EB. Why do you think that was?<br>
+how could EB be changed to appeal to a wider ausience?<br>
+do you think EB made Prize Meetings better? - more organised?<br>
+do you think Cam communicated poorly and no no one ever knew what was going on?<br>
+Did EB ever perform poorly?<br>
+
+<h2>Interviewees?</h2>
+<ul>
+	<li>Mick</li>
+	<li>Carra</li>
+	<li>Pete</li>
+	<li>Leo Stigger</li>
+</ul>
+{{end}}
