@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"os"
 	"os/exec"
 
 	"gopkg.in/mgo.v2"
@@ -15,33 +16,16 @@ func startDB() {
 		mgoPort = "38888"
 		mgoDial = "localhost:" + mgoPort
 	)
+	databasePath := os.Getenv("ProgramData") + subDir
 	mkDir(databasePath)
-	cmd := exec.Command("mongod", "--dbpath", databasePath, "--port", mgoPort, "--nssize", "1", "--smallfiles", "--noscripting", "--nohttpinterface")
-	//TODO output mongodb errors/logs to stdOut
-	/*stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		warning.Println(err)
-	}
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
-		warning.Println(err)
-	}
-	err = cmd.Start()*/
+	//TODO remove db args after comment tag once profiling is finished.
+	cmd := exec.Command("mongod", "--dbpath", databasePath, "--port", mgoPort, "--nssize", "1", "--smallfiles", "--noscripting", "--nohttpinterface", "--quiet" /**/, "--notablescan", "--slowms", "25", "--profile", "1")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 	cmd.Start()
-	/*if err != nil {
-		dump("exporting!")
-		dump(stdout)
-		dump(stderr)
-		return
-	}
-	fmt.Println("Result: Err")
-	dump(stderr)
-	fmt.Println("Result: stdn out")
-	dump(stdout)*/
 
 	session, err := mgo.Dial(mgoDial)
 	if err != nil {
-		//TODO it would be better to output the mongodb connection error
 		warn.Println("The database service is not available.", err)
 		return
 	}
@@ -78,7 +62,6 @@ func getNextID(collectionName string) (string, error) {
 	}
 
 	change := mgo.Change{
-		//		Update:    M{"$inc": M{schemaCounter: 1}},
 		Update:    M{"$inc": M{schemaName: 1}},
 		Upsert:    true,
 		ReturnNew: true,
@@ -88,7 +71,6 @@ func getNextID(collectionName string) (string, error) {
 		warn.Println(err)
 		return "", fmt.Errorf("Unable to generate the next ID: '%v'", err)
 	}
-	//	return idSuffix(result[schemaCounter].(int))
 	return idSuffix(result[schemaName].(int))
 }
 
