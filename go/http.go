@@ -65,10 +65,9 @@ var headerOptions = map[string][2]string{
 	//dirJPEG:   {contentType, "image/jpeg"},
 }
 
-//research //net.tutsplus.com/tutorials/client-side-security-best-practices/
+//security add Access-Control-Allow-Origin //net.tutsplus.com/tutorials/client-side-security-best-practices/
 func headers(w http.ResponseWriter, setHeaders []string) {
-	//w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src 'self'; font-src 'self'")
-	w.Header().Set("Content-Security-Policy", "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'")
+	w.Header().Set("Content-Security-Policy", "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'") //"img-src 'self' data:; connect-src 'self'; font-src 'self'"
 
 	//The page cannot be displayed in a frame, regardless of the site attempting to do so. //developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options
 	w.Header().Set("X-Frame-Options", "DENY")
@@ -173,9 +172,6 @@ func errorHandler(w http.ResponseWriter, r *http.Request, status int, errorType 
 		},
 	})
 }
-
-//parameters don't match the regex string - 404 enent id not found
-//			errorHandler(w, r, http.StatusNotFound)
 
 //whoops an error occured
 // that club id you supplied doesn't match anything

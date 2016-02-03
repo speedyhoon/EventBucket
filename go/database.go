@@ -50,14 +50,13 @@ func startDB() {
 	session.SetMode(mgo.Strong, false) //false = the consistency guarantees won't be reset
 
 	//Can't directly change global variables in a go routine, so call an external function.
-	db(session)
+	dbConnection(session)
 }
 
-func db(session *mgo.Session) {
+func dbConnection(session *mgo.Session) {
 	conn = session.DB("local")
 }
 
-//func upsertDoc(collection string, ID interface{}, document interface{}) {
 func upsertDoc(collectionName string, ID string, document interface{}) error {
 	_, err := conn.C(collectionName).UpsertId(ID, document)
 	if err != nil {
@@ -65,6 +64,7 @@ func upsertDoc(collectionName string, ID string, document interface{}) error {
 	}
 	return err
 }
+
 func updateDoc(collectionName string, ID string, document interface{}) error {
 	err := conn.C(collectionName).UpdateId(ID, document)
 	if err != nil {
@@ -115,18 +115,6 @@ func getClub(ID string) (Club, error) {
 	return result, errors.New("Unable to get club with ID: '" + ID + "'")
 }
 
-func getCollection(collectionName string, result []interface{}) ([]interface{}, error) {
-	//	var result []interface{}
-	if conn == nil {
-		return result, fmt.Errorf("Unable to connect to database and get collection: %v", collectionName)
-	}
-	err := conn.C(collectionName).Find(nil).All(&result)
-	if err != nil {
-		warn.Println(err)
-	}
-	return result, err
-}
-
 func updateAll(collectionName string, query, update M) {
 	_, err := conn.C(collectionName).UpdateAll(query, update)
 	if err != nil {
@@ -142,23 +130,13 @@ func collectionQty(collectionName string) int {
 	return qty
 }
 
-/*func getCollectionByID(collectionName, ID string) (interface{}, error) {
-	var result interface{}
+func hasDefaultClub() bool {
 	if conn != nil {
-		err := conn.C(collectionName).FindId(ID).One(&result)
-		return result, err
+		qty, err := conn.C(tblClub).Find(M{schemaIsDefault: true}).Count()
+		return qty > 0 && err == nil
 	}
-	return result, fmt.Errorf("Unable to get %v with ID: '%v'", collectionName, ID)
+	return false
 }
-
-func getDocumentByID(collectionName, ID string, result interface{}) (interface{}, error) {
-	//	var result interface{}
-	if conn != nil {
-		err := conn.C(collectionName).FindId(ID).One(result)
-		return result, err
-	}
-	return result, fmt.Errorf("Unable to get %v with ID: '%v'", collectionName, ID)
-}*/
 
 /*func getDefaultClub() (Club, error) {
 	var result Club
@@ -168,11 +146,3 @@ func getDocumentByID(collectionName, ID string, result interface{}) (interface{}
 	}
 	return result, errors.New("Unable to get event with ID: '" + ID + "'")
 }*/
-
-func hasDefaultClub() bool {
-	if conn != nil {
-		qty, err := conn.C(tblClub).Find(M{schemaIsDefault: true}).Count()
-		return qty > 0 && err == nil
-	}
-	return false
-}
