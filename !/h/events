@@ -1,0 +1,4 @@
+{{define "page"}}
+	<h1>Events</h1>
+	{{template "NewEvent" .NewEvent}}
+{{end}}

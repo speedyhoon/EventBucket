@@ -1,0 +1,19 @@
+{{define "page"}}
+	<h1>About</h1>
+	EventBucket version: 0.92
+	<p>Compiled by Cam Webb using go1.5.1, on January 24, 2016.</p>
+	{{template "networkAdapters" .}}
+	<h2 class=center>
+		Built with:
+		<a title="The Go Programming Language" href=//golang.org><img alt=Go src=/p/go height=30></a>
+		<a title="Chrome Browser" href=//google.com.au/chrome><img alt="Chrome Browser" src=/p/chrome height=30></a>
+		<a title="IntelliJ IDEA" href=//jetbrains.com/idea><img alt="IntelliJ IDEA" src=/p/idea height=30></a>
+		<a title=MongoDB href=//mongodb.org><img alt=MongoDB src=/p/mongo height=30></a>
+		<a title="Robomongo | MongoDB management tool" href=//robomongo.org><img alt=Robomongo src=/p/robomongo height=30></a>
+		<a title=Git href=//git-scm.com><img alt=Git src=/p/git height=30></a>
+		<a title="Sass: Syntactically Awesome Style Sheets" href=//sass-lang.com><img alt=Sass src=/p/sass height=30></a>
+		<a title="Closure Tools" href=//developers.google.com/closure><img alt="Closure Tools" src=/p/closure height=30></a>
+		<a title="New Relic | Application Performance Management &amp; Monitoring" href=//newrelic.com><img alt="New Relic" src=/p/newrelic height=30></a>
+		<a title=Inkscape href=//inkscape.org><img alt=Inkscape src=/p/inkscape height=30></a>
+	</h2>
+{{end}}

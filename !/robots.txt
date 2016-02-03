@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /club/
+Disallow: /event/
+Disallow: /shooter/
+Disallow: /c/
+Disallow: /cz/
+Disallow: /j/
+Disallow: /jz/
+Disallow: /p/

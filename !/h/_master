@@ -1,0 +1,33 @@
+{{define "master"}}<!DOCTYPE html>
+<link rel=stylesheet href=/c/main>
+<title>EventBucket{{with .Page.Title}} - {{.}}{{end}}</title>
+<body class=dark>
+<div class=homeContainer>
+	<h1><a href=/>EventBucket</a></h1>
+	<span>Making scoring easier for rifle clubs!</span>
+	<ul class=mainMenu>
+		{{range .Menu}}
+			{{if eq $.Page.Title .Name}}
+				<li class=visited>{{.Name}}
+			{{else}}
+				<li><a href={{.Link}}>{{.Name}}</a>
+			{{end}}
+		{{end}}
+	</ul>
+	{{with .SubMenu}}
+		<ul class=mainMenu>
+			{{range .}}
+				{{if eq $.Page.Title .Name}}
+					<li class=visited>{{.Name}}
+				{{else}}
+					<li><a href={{.Link}}{{$.Page.MenuID}}>{{.Name}}</a>
+				{{end}}
+			{{end}}
+		</ul>
+	{{end}}
+	{{template "page" .Page.Data}}
+	<p class=homeFooter>
+		Copyright &copy; 2011-{{.CurrentYear}} EventBucket | v0.92 <a href=/licence class=right title="View licence"><img src=/p/cc80x15 alt="Creative Commons Licence" height=15 width=80></a>
+</div>
+<!--<script defer src=/j/test></script>-->
+{{end}}

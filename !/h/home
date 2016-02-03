@@ -1,0 +1,3 @@
+{{define "page"}}
+	{{template "NewEvent" .NewEvent}}
+{{end}}

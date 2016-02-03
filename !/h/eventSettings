@@ -1,0 +1,3 @@
+{{define "page"}}
+<h1>Event Settings</h1>
+{{end}}
