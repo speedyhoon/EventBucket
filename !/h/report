@@ -34,4 +34,29 @@ Did EB ever perform poorly?<br>
 	<li>Pete</li>
 	<li>Leo Stigger</li>
 </ul>
+
+<h2>What didn't work well</h2>
+<ul>
+	<li>ace HTML templating. biggest problem was adding spaces between elements was awkward. No syntax hilighting. sometimes file extension would open in a zip extraction program when editing files not on my normal developer workstation.</li>
+	<li>Second monitor failed three times.</li>
+	<li>IntelliJ IDEA
+		<ul>
+			<li>Displays false positives with golang syntax errors and unresolved variables</li>
+			<li>External file changes are not supported. Files fixed by build bot are not auto updated</li>
+			<li>Editor is slow</li>
+			<li>when network drive is disconnected constant java error popups and unable to refresh project to see files again.</li>
+			<li></li>
+		</ul>
+	</li>
+	<li>grunt build tools. lots of configuration - time consuming for not much gain</li>
+	<li>gulp build tools. waisted time with trying out plugins that don't work, debugging etc. others have had similar experience. errors are not handled properly or are poor/error prone to crashes for some plugins. Difficult to decipher poor documentation.</li>
+</ul>
+<h2>What worked</h2>
+<ul>
+	<li>Build bot can fix common Golang programming mistakes. Just run the executable in a directory. no need to setup an IDE and programming environment.</li>
+	<li>Git - helps keep track of changes. Some that are not good enough for product can be rolled back. Backup</li>
+	<li>Buildbot runs on an old networked laptop. off loads processing. Best for external monitor</li>
+	<li>build EB on slower hardware that the target audience has. reduces problems with intensive CPU tasks by discovering them earlier.</li>
+	<li>run BuildBot and EB in CompileDeamon so they auto recompile whenever code is changed in their files</li>
+</ul>
 {{end}}
