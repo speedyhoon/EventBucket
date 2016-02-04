@@ -1,4 +1,13 @@
 {{define "page"}}
 	<h1>Events</h1>
 	{{template "NewEvent" .NewEvent}}
+	{{with .ListEvents}}
+		<ul>
+			{{range .}}
+				<li><a href=/event/{{.ID}}>{{.Name}}</a>
+			{{end}}
+		</ul>
+	{{else}}
+		<p>No Events found</p>
+	{{end}}
 {{end}}

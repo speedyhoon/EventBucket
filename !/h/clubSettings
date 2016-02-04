@@ -1,5 +1,7 @@
 {{define "page"}}
 	<h1>Club Settings</h1>
+	{{template "ClubDetails" .ClubDetails}}
+	{{template "NewShootingMound" .ClubMound}}
 	<p>{{.Club.ID}}</p>
 	<p>{{.Club.Name}}</p>
 	<p>{{.Club.IsDefault}}</p>
@@ -19,6 +21,4 @@
 	<p>6 inner bullseye</p>
 	<p>V Vbull</p>
 	<p>X center bull</p>
-	{{template "ClubDetails" .ClubDetails}}
-	{{template "NewShootingMound" .ClubMound}}
 {{end}}

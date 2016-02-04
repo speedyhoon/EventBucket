@@ -3,7 +3,7 @@ package main
 import "net/http"
 
 func event(w http.ResponseWriter, r *http.Request, eventID string) {
-	event, err := getClub(eventID)
+	event, err := getEvent(eventID)
 	//If club not found in the database return error club not found (404).
 	if err != nil {
 		warn.Println(err)
@@ -22,10 +22,15 @@ func event(w http.ResponseWriter, r *http.Request, eventID string) {
 
 func events(w http.ResponseWriter, r *http.Request) {
 	sessionForm := getSession(w, r)
+	listEvents, err := getEvents()
+	if err != nil {
+		warn.Println(err)
+	}
 	templater(w, page{
 		Title: "Events",
 		Data: M{
-			"NewEvent": eventNewDefaultValues(sessionForm),
+			"NewEvent":   eventNewDefaultValues(sessionForm),
+			"ListEvents": listEvents,
 		},
 	})
 }
@@ -38,7 +43,7 @@ func eventInsert(w http.ResponseWriter, r *http.Request, submittedForm form, red
 	}
 
 	//Insert new event into database.
-	err = upsertDoc(tblEvent, "", Event{
+	err = upsertDoc(tblEvent, ID, Event{
 		ID:   ID,
 		Club: submittedForm.Fields[0].Value,
 		Name: submittedForm.Fields[1].Value,

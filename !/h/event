@@ -1,4 +1,5 @@
 {{define "page"}}
 	<h1>Event</h1>
-	id={{.EventId}}
+	id={{.Event.ID}}
+	<h2>{{.Event.Name}}</h2>
 {{end}}

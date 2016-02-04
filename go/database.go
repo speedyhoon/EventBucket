@@ -87,6 +87,18 @@ func getClubs() ([]Club, error) {
 	return result, errors.New("Unable to get clubs")
 }
 
+func getEvents() ([]Event, error) {
+	var result []Event
+	if conn != nil {
+		err := conn.C(tblEvent).Find(nil).All(&result)
+		if err != nil {
+			warn.Println(err)
+		}
+		return result, err
+	}
+	return result, errors.New("Unable to get events")
+}
+
 func getClub(ID string) (Club, error) {
 	var result Club
 	if conn != nil {
@@ -94,6 +106,15 @@ func getClub(ID string) (Club, error) {
 		return result, err
 	}
 	return result, errors.New("Unable to get club with ID: '" + ID + "'")
+}
+
+func getEvent(ID string) (Event, error) {
+	var result Event
+	if conn != nil {
+		err := conn.C(tblEvent).FindId(ID).One(&result)
+		return result, err
+	}
+	return result, errors.New("Unable to get event with ID: '" + ID + "'")
 }
 
 func updateAll(collectionName string, query, update M) {
