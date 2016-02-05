@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strconv"
 
 	"gopkg.in/mgo.v2"
 )
@@ -72,7 +73,9 @@ func getNextID(collectionName string) (string, error) {
 		warn.Println(err)
 		return "", fmt.Errorf("Unable to generate the next ID: '%v'", err)
 	}
-	return idSuffix(result[schemaName].(int))
+
+	//Convert integer to a alpha-numeric (0-9a-z / 36 base) string
+	return strconv.FormatUint(uint64(result[schemaName].(int)), 36), nil
 }
 
 func getClubs() ([]Club, error) {
