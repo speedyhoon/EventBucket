@@ -88,7 +88,7 @@ func clubMoundInsert(w http.ResponseWriter, r *http.Request, submittedForm form,
 	err := updateDoc(tblClub, clubID, M{"$push": M{
 		schemaMound: Mound{
 			Name:     submittedForm.Fields[0].Value,
-			Distance: submittedForm.Fields[1].internalValue.(int),
+			Distance: submittedForm.Fields[1].internalValue.(uint64),
 			Unit:     submittedForm.Fields[2].Value,
 		},
 	}})

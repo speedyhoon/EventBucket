@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"net/http"
 	"strconv"
 	"strings"
@@ -12,21 +13,43 @@ const (
 )
 
 func isValidInt(strNum string, field field) (interface{}, string) {
+	trace.Println(field.min, field.max, field.step, field.Required)
 	num := 0
 	var err error
 	if strNum != "" {
 		num, err = strconv.Atoi(strNum)
+		if err != nil {
+			return num, err.Error()
+		}
 	} else if field.Required {
 		return num, "Please fill in this field"
 	}
-	if err != nil {
-		return num, err.Error()
+	if field.max == 0 {
+		field.max = math.MaxInt32
 	}
 	if num >= field.min && num <= field.max && (field.step == 0 || field.step != 0 && num%field.step == 0) || !field.Required && num == 0 {
 		return num, ""
 	}
 	return num, "field integer doesn't pass validation"
 }
+
+func isValidFloat32(strNum string, field field) (interface{}, string) {
+	var num float64
+	var err error
+	if strNum != "" {
+		num, err = strconv.ParseFloat(strNum, 64)
+		if err != nil {
+			return num, err.Error()
+		}
+	} else if field.Required {
+		return num, "Please fill in this field"
+	}
+	if num >= float64(field.min) && num <= float64(field.max) && (field.step == 0 || field.step != 0 /*&& num%step == 0*/) || !field.Required && num == 0 {
+		return num, ""
+	}
+	return num, "field integer doesn't pass validation"
+}
+
 func isValidStr(str string, field field) (interface{}, string) {
 	//	info.Println(field.name, "r=", field.Required)
 	//	info.Println(field.minLen, field.maxLen, field.Required, `"`+str+`"`)
@@ -60,6 +83,7 @@ func isValidID(str string, field field) (interface{}, string) {
 	if regexId.MatchString(str) {
 		return str, ""
 	}
+	trace.Println(`"`+str+`"`, len(str))
 	return str, "ID supplied is incorrect"
 }
 
@@ -113,7 +137,9 @@ func isValid(r *http.Request, fields []field) ([]field, bool) {
 
 		//trace.Println("check", field.defValue != nil, !ok, fieldValue == nil, len(fieldValue))
 		if len(fieldValue) > 0 {
-			//trace.Println("contents: ", fieldValue[0], fieldValue[0] == "")
+			trace.Println(field.name, "contents: ", fieldValue[0], fieldValue[0] == "")
+		} else {
+			trace.Println(field.name, "no contents: ", fieldValue)
 		}
 		if field.defValue != nil && (!ok || fieldValue == nil || len(fieldValue) == 0 || (len(fieldValue) == 1 && fieldValue[0] == "")) {
 			//			trace.Println("set default value")

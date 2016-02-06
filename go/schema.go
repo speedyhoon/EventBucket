@@ -40,8 +40,8 @@ type Club struct {
 	Name      string  `bson:"schemaName"`
 	IsDefault bool    `bson:"schemaIsDefault,omitempty"`
 	Mounds    []Mound `bson:"schemaMound,omitempty"`
-	Latitude  string  `bson:"schemaLatitude,omitempty"`
-	Longitude string  `bson:"schemaLongitude,omitempty"`
+	Latitude  float64 `bson:"schemaLatitude,omitempty"`
+	Longitude float64 `bson:"schemaLongitude,omitempty"`
 	URL       string  `bson:"schemaURL,omitempty"`
 	Address   string  `bson:"schemaAddress,omitempty"`
 	Town      string  `bson:"schemaTown,omitempty"`
@@ -51,17 +51,17 @@ type Club struct {
 
 // AutoInc is a auto increment counter
 type AutoInc struct {
-	Mound   int `bson:"schemaMound,omitempty"`
-	Event   int `bson:"schemaEvent,omitempty"`
-	Club    int `bson:"schemaClub,omitempty"`
-	Range   int `bson:"schemaRange,omitempty"`
-	Shooter int `bson:"schemaShooter,omitempty"`
+	Mound   uint64 `bson:"schemaMound,omitempty"`
+	Event   uint64 `bson:"schemaEvent,omitempty"`
+	Club    uint64 `bson:"schemaClub,omitempty"`
+	Range   uint64 `bson:"schemaRange,omitempty"`
+	Shooter uint64 `bson:"schemaShooter,omitempty"`
 }
 
 // Mound is exported
 type Mound struct {
 	ID       int    `bson:"schemaID"`
-	Distance int    `bson:"schemaDistance,omitempty"`
+	Distance uint64 `bson:"schemaDistance,omitempty"`
 	Unit     string `bson:"schemaUnit,omitempty"`
 	Name     string `bson:"schemaName,omitempty"`
 }
