@@ -11,17 +11,16 @@
 <label>Address: <input{{with hasindex .Fields 1}}{{attr " value" .Value}}{{has .Error " class=error"}}{{end}} name=a maxlength=64 autocomplete=off>{{with hasindex .Fields 1}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Town: <input{{with hasindex .Fields 2}}{{attr " value" .Value}}{{has .Error " class=error"}}{{end}} name=w maxlength=64 autocomplete=off>{{with hasindex .Fields 2}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Postcode: <input{{with hasindex .Fields 3}}{{attr " value" .Value}}{{has .Error " class=error"}}{{end}} name=p maxlength=64 autocomplete=off>{{with hasindex .Fields 3}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
-<label>Latitude: <input{{with hasindex .Fields 4}}{{attr " value" .Value}}{{has .Error " class=error"}}{{end}} name=x maxlength=64 autocomplete=off>{{with hasindex .Fields 4}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
-<label>Longitude: <input{{with hasindex .Fields 5}}{{attr " value" .Value}}{{has .Error " class=error"}}{{end}} name=y maxlength=64 autocomplete=off>{{with hasindex .Fields 5}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
+<label>Latitude: <input{{with hasindex .Fields 4}}{{attr " value" .Value}}{{has .Error " class=error"}}{{end}} name=x min=-90 max=90 step=0.000001 type=number>{{with hasindex .Fields 4}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
+<label>Longitude: <input{{with hasindex .Fields 5}}{{attr " value" .Value}}{{has .Error " class=error"}}{{end}} name=y min=-180 max=180 step=0.000001 type=number>{{with hasindex .Fields 5}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 {{with hasindex .Fields 6}}{{if .Error}}<div>{{end}}{{end}}<button name=_id {{with hasindex .Fields 6}}{{attr "value" .Value}}{{end}}>Save</button>{{with hasindex .Fields 6}}{{with .Error}}<samp>{{.}}</samp></div>{{end}}{{end}}</fieldset></form>
 {{end}}
 
 {{define "NewShootingMound"}}<form method=post action=/2><fieldset><legend>New Shooting <u>M</u>ound</legend>
 {{with .Error}}<samp>{{.}}</samp>{{end}}
-<label>Mound Name: <input{{with hasindex .Fields 0}}{{attr " value" .Value}}{{has .Error " class=error"}}{{end}} name=n accesskey=m maxlength=64 autocomplete=off>{{with hasindex .Fields 0}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
-<label>Distance: <input{{with hasindex .Fields 1}}{{attr " value" .Value}}{{has .Error " class=error"}}{{end}} name=e min=10 type=number>{{with hasindex .Fields 1}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
-<label>Units: <select{{with hasindex .Fields 2}}{{has .Error " class=error"}}{{end}} name=z><option value=y>Yards<option value=m>Metres<option value=f>Feet</select>{{with hasindex .Fields 2}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
-{{with hasindex .Fields 3}}{{if .Error}}<div>{{end}}{{end}}<button name=_id {{with hasindex .Fields 3}}{{attr "value" .Value}}{{end}}>Save</button>{{with hasindex .Fields 3}}{{with .Error}}<samp>{{.}}</samp></div>{{end}}{{end}}</fieldset></form>
+<label>Distance: <input{{with hasindex .Fields 0}}{{attr " value" .Value}}{{has .Error " class=error"}}{{end}} name=e min=10 max=2147483647 step=1.000000 accesskey=m type=number>{{with hasindex .Fields 0}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
+<label>Units: <select{{with hasindex .Fields 1}}{{has .Error " class=error"}}{{end}} name=z><option value=m>Metres<option value=y>Yards<option value=f>Feet</select>{{with hasindex .Fields 1}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
+{{with hasindex .Fields 2}}{{if .Error}}<div>{{end}}{{end}}<button name=_id {{with hasindex .Fields 2}}{{attr "value" .Value}}{{end}}>Save</button>{{with hasindex .Fields 2}}{{with .Error}}<samp>{{.}}</samp></div>{{end}}{{end}}</fieldset></form>
 {{end}}
 
 {{define "NewEvent"}}<form method=post action=/3><fieldset><legend>New <u>E</u>vent</legend>
