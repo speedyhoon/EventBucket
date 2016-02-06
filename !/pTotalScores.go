@@ -3,24 +3,20 @@ package main
 import "net/http"
 
 func totalScores(w http.ResponseWriter, r *http.Request, eventID string) {
-	//	eventID := strings.TrimPrefix(r.URL.Path, urlEvent)
-	//	if eventID == "" {
-	//		http.Redirect(w, r, urlEvents, http.StatusNotFound)
-	//	}
-	/*cookie := r.Header.Get("Set-Cookie")
-	if cookie != "" {
+	event, err := getEvent(eventID)
 
-	}
-	if r.URL.Path[len(urlEvent):] == "3C" {
-		errorHandler(w, r, http.StatusNotFound)
+	//If event not found in the database return error event not found (404).
+	if err != nil {
+		errorHandler(w, r, http.StatusNotFound, "event")
 		return
-	}*/
+	}
+
 	templater(w, page{
 		Title:  "Total Scores",
 		menu:   urlEvent,
 		MenuID: eventID,
 		Data: M{
-			"EventId": eventID,
+			"Event": event,
 		},
 	})
 }
