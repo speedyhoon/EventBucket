@@ -33,7 +33,29 @@ func isValidInt(strNum string, field field) (interface{}, string) {
 	return num, "field integer doesn't pass validation"
 }
 
-func isValidFloat32(strNum string, field field) (interface{}, string) {
+func isValidUint64(strNum string, field field) (interface{}, string) {
+	trace.Println(field.min, field.max, field.step, field.Required)
+	var num uint64
+	num = 0
+	var err error
+	if strNum != "" {
+		num, err = strconv.ParseUint(strNum, 10, 64)
+		if err != nil {
+			return num, err.Error()
+		}
+	} else if field.Required {
+		return num, "Please fill in this field"
+	}
+	if field.max == 0 {
+		field.max = math.MaxInt32
+	}
+	if num >= uint64(field.min) && num <= uint64(field.max) && (field.step == 0 || field.step != 0 && num%uint64(field.step) == 0) || !field.Required && num == 0 {
+		return num, ""
+	}
+	return num, "field integer doesn't pass validation"
+}
+
+func isValidFloat64(strNum string, field field) (interface{}, string) {
 	var num float64
 	var err error
 	if strNum != "" {
@@ -83,7 +105,6 @@ func isValidID(str string, field field) (interface{}, string) {
 	if regexId.MatchString(str) {
 		return str, ""
 	}
-	trace.Println(`"`+str+`"`, len(str))
 	return str, "ID supplied is incorrect"
 }
 

@@ -73,8 +73,8 @@ func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm for
 		schemaAddress:   submittedForm.Fields[1].Value,
 		schemaTown:      submittedForm.Fields[2].Value,
 		schemaPostcode:  submittedForm.Fields[3].Value,
-		schemaLatitude:  submittedForm.Fields[4].Value,
-		schemaLongitude: submittedForm.Fields[5].Value,
+		schemaLatitude:  submittedForm.Fields[4].internalValue.(float64),
+		schemaLongitude: submittedForm.Fields[5].internalValue.(float64),
 	})
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
@@ -84,12 +84,11 @@ func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm for
 }
 
 func clubMoundInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
-	clubID := submittedForm.Fields[3].Value
+	clubID := submittedForm.Fields[2].Value
 	err := updateDoc(tblClub, clubID, M{"$push": M{
 		schemaMound: Mound{
-			Name:     submittedForm.Fields[0].Value,
-			Distance: submittedForm.Fields[1].internalValue.(int),
-			Unit:     submittedForm.Fields[2].Value,
+			Distance: submittedForm.Fields[0].internalValue.(uint64),
+			Unit:     submittedForm.Fields[1].Value,
 		},
 	}})
 	if err != nil {

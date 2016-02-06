@@ -18,17 +18,17 @@ const (
 	schemaIsDefault      = "b"
 	schemaClose          = "c"
 	schemaDate           = "d"
-	schemaDistance       = "schemaDistance"
+	schemaDistance       = "e"
 	schemaGrade          = "g"
 	schemaIsPrizeMeet    = "i"
 	schemaLongName       = "l"
 	schemaName           = "n"
 	schemaSortScoreboard = "o"
-	schemaPostcode       = "schemaPostcode"
+	schemaPostcode       = "p"
 	schemaSort           = "s"
 	schemaTime           = "t"
 	schemaURL            = "u"
-	schemaUnit           = "schemaUnit"
+	schemaUnit           = "z"
 	schemaTown           = "w"
 	schemaLatitude       = "x"
 	schemaLongitude      = "y"
@@ -40,30 +40,29 @@ type Club struct {
 	Name      string  `bson:"n"`
 	IsDefault bool    `bson:"b,omitempty"`
 	Mounds    []Mound `bson:"M,omitempty"`
-	Latitude  string  `bson:"x,omitempty"`
-	Longitude string  `bson:"y,omitempty"`
+	Latitude  float64 `bson:"x,omitempty"`
+	Longitude float64 `bson:"y,omitempty"`
 	URL       string  `bson:"u,omitempty"`
 	Address   string  `bson:"a,omitempty"`
 	Town      string  `bson:"w,omitempty"`
-	Postcode  string  `bson:"schemaPostcode,omitempty"`
+	Postcode  string  `bson:"p,omitempty"`
 	AutoInc   AutoInc `bson:"A,omitempty"`
 }
 
 // AutoInc is a auto increment counter
 type AutoInc struct {
-	Mound   int `bson:"M,omitempty"`
-	Event   int `bson:"E,omitempty"`
-	Club    int `bson:"C,omitempty"`
-	Range   int `bson:"R,omitempty"`
-	Shooter int `bson:"S,omitempty"`
+	Mound   uint64 `bson:"M,omitempty"`
+	Event   uint64 `bson:"E,omitempty"`
+	Club    uint64 `bson:"C,omitempty"`
+	Range   uint64 `bson:"R,omitempty"`
+	Shooter uint64 `bson:"S,omitempty"`
 }
 
 // Mound is exported
 type Mound struct {
-	ID       int    `bson:"_id"`
-	Distance int    `bson:"schemaDistance,omitempty"`
-	Unit     string `bson:"schemaUnit,omitempty"`
-	Name     string `bson:"n,omitempty"`
+	//	ID       string `bson:"_id"`
+	Distance uint64 `bson:"e,omitempty"`
+	Unit     string `bson:"z,omitempty"`
 }
 
 // Event is exported

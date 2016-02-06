@@ -13,6 +13,8 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 		return
 	}
 
+	trace.Println(club.Latitude, club.Longitude)
+
 	var invalidForm, detailsForm, newMoundForm form
 	invalidForm = getSession(w, r)
 	if invalidForm.action == clubDetails {
@@ -23,8 +25,8 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 			{Value: club.Address},
 			{Value: club.Town},
 			{Value: club.Postcode},
-			{Value: fmt.Sprintf("%v", club.Latitude)},
-			{Value: fmt.Sprintf("%v", club.Longitude)},
+			{Value: fmt.Sprintf("%f", club.Latitude)},
+			{Value: fmt.Sprintf("%f", club.Longitude)},
 			{Value: club.ID},
 		}}
 	}
