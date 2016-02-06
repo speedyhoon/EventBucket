@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strconv"
 
 	"gopkg.in/mgo.v2"
 )
@@ -19,7 +20,7 @@ func startDB() {
 	databasePath := os.Getenv("ProgramData") + subDir
 	mkDir(databasePath)
 	//TODO remove db args after comment tag once profiling is finished.
-	cmd := exec.Command("mongod", "--dbpath", databasePath, "--port", mgoPort, "--nssize", "1", "--smallfiles", "--noscripting", "--nohttpinterface", "--quiet" /**/, "--notablescan", "--slowms", "25", "--profile", "1")
+	cmd := exec.Command("mongod", "--dbpath", databasePath, "--port", mgoPort, "--nssize", "1", "--smallfiles", "--noscripting", "--nohttpinterface", "--quiet", "--notablescan" /*, "--slowms", "25", "--profile", "1"*/)
 	//Combine standard output of command into EventBucket standard output source://stackoverflow.com/questions/8875038/redirect-stdout-pipe-of-child-process-in-golang
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -72,7 +73,9 @@ func getNextID(collectionName string) (string, error) {
 		warn.Println(err)
 		return "", fmt.Errorf("Unable to generate the next ID: '%v'", err)
 	}
-	return idSuffix(result[schemaName].(int))
+
+	//Convert integer to a alpha-numeric (0-9a-z / 36 base) string
+	return strconv.FormatUint(uint64(result[schemaName].(int)), 36), nil
 }
 
 func getClubs() ([]Club, error) {

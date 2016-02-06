@@ -63,11 +63,11 @@ var GlobalForms = [][]field{
 		{name: schemaAddress, v8: isValidStr},
 		{name: schemaTown, v8: isValidStr},
 		{name: schemaPostcode, v8: isValidStr},
-		{name: schemaLatitude, v8: isValidStr,
+		{name: schemaLatitude, v8: isValidFloat64,
 			min: -90,
 			max: 90,
 		},
-		{name: schemaLongitude, v8: isValidStr,
+		{name: schemaLongitude, v8: isValidFloat64,
 			min: -180,
 			max: 180,
 		},
@@ -75,8 +75,9 @@ var GlobalForms = [][]field{
 	},
 	clubMoundNew: {
 		{
-			name:     schemaDistance,
-			v8:       isValidInt,
+			name: schemaDistance,
+			//			v8:       isValidInt,
+			v8:       isValidUint64,
 			Required: true,
 		},
 		{

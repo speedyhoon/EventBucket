@@ -5,6 +5,24 @@
 	<p>{{.Club.ID}}</p>
 	<p>{{.Club.Name}}</p>
 	<p>{{.Club.IsDefault}}</p>
+	{{with .Club.Mounds}}
+		<ul>
+			{{range .}}
+				<li>{{.Distance}} {{.Unit}}</li>
+			{{end}}
+		</ul>
+	{{else}}
+		<p>No mounds listed</p>
+	{{end}}
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
 	<select>
 		<option>-012345V
 		<option>-012345VX

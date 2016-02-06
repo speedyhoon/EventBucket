@@ -60,10 +60,9 @@ type AutoInc struct {
 
 // Mound is exported
 type Mound struct {
-	ID       int    `bson:"schemaID"`
+	//	ID       string `bson:"schemaID"`
 	Distance uint64 `bson:"schemaDistance,omitempty"`
 	Unit     string `bson:"schemaUnit,omitempty"`
-	Name     string `bson:"schemaName,omitempty"`
 }
 
 // Event is exported

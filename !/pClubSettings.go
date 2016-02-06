@@ -1,6 +1,9 @@
 package main
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 	club, err := getClub(clubID)
@@ -9,6 +12,8 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 		errorHandler(w, r, http.StatusNotFound, "club")
 		return
 	}
+
+	trace.Println(club.Latitude, club.Longitude)
 
 	var invalidForm, detailsForm, newMoundForm form
 	invalidForm = getSession(w, r)
@@ -20,8 +25,8 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 			{Value: club.Address},
 			{Value: club.Town},
 			{Value: club.Postcode},
-			{Value: club.Latitude},
-			{Value: club.Longitude},
+			{Value: fmt.Sprintf("%f", club.Latitude)},
+			{Value: fmt.Sprintf("%f", club.Longitude)},
 			{Value: club.ID},
 		}}
 	}
@@ -29,7 +34,6 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 		newMoundForm = invalidForm
 	} else {
 		newMoundForm = form{Fields: []field{
-			{},
 			{},
 			{},
 			{Value: club.ID},
