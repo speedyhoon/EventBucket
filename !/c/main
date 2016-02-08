@@ -11,7 +11,7 @@ a{
 	color: #0af;
 }
 
-label, fieldset div {
+label, fieldset div, fieldset > button:not(:last-child) {
 	display: inline-block;
 	margin-right: 2em;
 	vertical-align: top;
@@ -33,11 +33,14 @@ label samp, div samp{
 	border-radius: 0 0 .5em .5em;
 	margin-bottom: 0;
 }
-input.error{
+.error{
 	border-color: red;
 	color: black;
 	border-bottom-width: 0;
 	background: pink;
+}
+select[required] option:empty {
+	display: none;
 }
 .right{
 	float: right
@@ -70,9 +73,9 @@ input.error{
 	display: block;
 	margin: 30px auto;
 }
-fieldset button {
+/*fieldset button {
 	vertical-align: bottom;
-}
+}*/
 
 h1, h2, h3, p{
 	margin-bottom: 0;
