@@ -1,12 +1,50 @@
 package main
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 func event(w http.ResponseWriter, r *http.Request, eventID string) {
+	sessionForm := getSession(w, r, []int{eventShooterNew, eventShooterExisting})
+	trace.Println("event fields len=", len(sessionForm.Fields))
+	for i, input := range sessionForm.Fields {
+		fmt.Println(i, input.name, input.Error)
+	}
+	var shooterEntry form
+	switch sessionForm.action {
+	case eventShooterNew:
+		shooterEntry = sessionForm
+		shooterEntry.Fields = append(shooterEntry.Fields[:3], append([]field{{}}, shooterEntry.Fields[3:]...)...)
+	case eventShooterExisting:
+		shooterEntry = sessionForm
+		shooterEntry.Fields = append([]field{{}, {}, {}}, shooterEntry.Fields...)
+	default:
+		//	if sessionForm.action == eventShooterNew || sessionForm.action == eventShooterExisting {
+		//		shooterEntry = sessionForm
+		//	} else {
+		listClubs, err := getClubs()
+		shooterEntry = form{Fields: []field{
+			{}, {},
+			{Options: dataListClubs(listClubs)},
+			{},
+			{},
+			{},
+			{},
+			//{},
+		}}
+		if err != nil {
+			shooterEntry.Error = err.Error()
+		}
+	}
+	shooterEntry.Fields = append(shooterEntry.Fields, field{Value: eventID})
+	trace.Println("event fields len=", len(sessionForm.Fields))
+	shooterEntry.Fields[6].Value = eventID
+	//	shooterEntry.Fields[7].Value = eventID
+
 	event, err := getEvent(eventID)
 	//If club not found in the database return error club not found (404).
 	if err != nil {
-		warn.Println(err)
 		errorHandler(w, r, http.StatusNotFound, "event")
 		return
 	}
@@ -15,13 +53,14 @@ func event(w http.ResponseWriter, r *http.Request, eventID string) {
 		menu:   urlEvent,
 		MenuID: eventID,
 		Data: M{
-			"Event": event,
+			"Event":        event,
+			"ShooterEntry": shooterEntry,
 		},
 	})
 }
 
 func events(w http.ResponseWriter, r *http.Request) {
-	sessionForm := getSession(w, r)
+	sessionForm := getSession(w, r, []int{eventDetails})
 	listEvents, err := getEvents()
 	if err != nil {
 		warn.Println(err)

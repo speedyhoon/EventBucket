@@ -50,6 +50,10 @@ func pages() {
 	post(clubDetails, clubDetailsUpsert)
 	post(clubMoundNew, clubMoundInsert)
 	post(eventNew, eventInsert)
+	post(eventRangeNew, eventRangeInsert)
+	post(eventAggNew, eventAggInsert)
+	post(eventShooterExisting, eventShooterExistingInsert)
+	post(eventShooterNew, eventShooterInsert)
 
 	//BUG any url breaks when appending "&*((&*%"
 	get404(urlHome, home)
@@ -65,12 +69,19 @@ func post(formID int, runner func(http.ResponseWriter, *http.Request, form, func
 			http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
 			return
 		}
+		/*for z, input := range GlobalForms[formID] {
+			info.Println("pages:", z, input.Options, len(input.Options))
+		}*/
 		submittedFields, isValid := isValid(r, GlobalForms[formID])
+		/*for z, input := range submittedFields {
+			info.Println("submittedFields:", z, input.Options, len(input.Options))
+		}*/
 		redirect := func() { http.Redirect(w, r, r.Referer(), http.StatusSeeOther) }
 		newForm := form{
 			action: formID,
 			Fields: submittedFields,
 		}
+		//trace.Println("form isValid=", isValid)
 		if !isValid {
 			setSession(w, newForm)
 			redirect()
@@ -112,6 +123,9 @@ var (
 			Name: "Event",
 			Link: urlEvent,
 		}, {
+			Name: "Event Settings",
+			Link: urlEventSettings,
+		}, {
 			Name: "Scoreboard",
 			Link: urlScoreboard,
 		}, {
@@ -120,9 +134,6 @@ var (
 		}, {
 			Name: "Total Scores",
 			Link: urlTotalScores,
-		}, {
-			Name: "Event Settings",
-			Link: urlEventSettings,
 		}, {
 			Name: "Event Report",
 			Link: urlEventReport,
