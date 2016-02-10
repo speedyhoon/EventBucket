@@ -13,6 +13,7 @@ type menu struct {
 type page struct {
 	Title, menu, MenuID string
 	Data                M
+	Error               error
 }
 
 type markupEnv struct {

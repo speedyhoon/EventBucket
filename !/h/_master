@@ -25,6 +25,7 @@
 		</ul>
 	{{end}}
 	{{with .Page.Title}}<h1>{{.}}</h1>{{end}}
+	{{with .Page.Error}}<samp class=error>{{.}}</samp>{{end}}
 	{{template "page" .Page.Data}}
 	<p class=homeFooter>
 		Copyright &copy; 2011-{{.CurrentYear}} EventBucket | v0.92 <a href=/licence class=right title="View licence"><img src=/p/cc80x15 alt="Creative Commons Licence" height=15 width=80></a>
