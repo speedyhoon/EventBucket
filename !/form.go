@@ -14,11 +14,13 @@ type field struct {
 	Options            []option
 	maxLen, minLen     int
 	min, max, step     int
+	AutoFocus          bool
 	//	kind               interface{}
 	internalValue interface{}
 	kind          interface{}
 	//	v8 string
 	v8       func(string, field) (interface{}, string)
+	v9       func([]string, field) (interface{}, string)
 	defValue func() []string
 }
 
@@ -36,10 +38,15 @@ func defaultTime() []string {
 }
 
 const (
-	clubNew      = 0
-	clubDetails  = 1
-	clubMoundNew = 2
-	eventNew     = 3
+	clubNew              = 0
+	clubDetails          = 1
+	clubMoundNew         = 2
+	eventNew             = 3
+	eventDetails         = 4
+	eventRangeNew        = 5
+	eventAggNew          = 6
+	eventShooterExisting = 7
+	eventShooterNew      = 8
 )
 
 var GlobalForms = [][]field{
@@ -71,7 +78,7 @@ var GlobalForms = [][]field{
 			min: -180,
 			max: 180,
 		},
-		{name: schemaID, v8: isValidID},
+		{name: schemaClub, v8: isValidID},
 	},
 	clubMoundNew: {
 		{
@@ -87,7 +94,7 @@ var GlobalForms = [][]field{
 		},
 		{
 			//submit - Club ID
-			name:     schemaID,
+			name:     schemaClub,
 			v8:       isValidID,
 			Required: true,
 		},
@@ -131,36 +138,95 @@ var GlobalForms = [][]field{
 			maxLen:   5,
 		},
 	},
-	/*{
-		title:   "Insert Shooter",
-		display: vertical,
-		fields: []field{
-			search{
-				name:      schemaName,
-				label:     "Event Name",
-				autoFocus: true,
-				required:  true,
-				options:   true,
-			},
-			search{
-				name:      schemaClub,
-				label:     "Club Name",
-				required:  true,
-				autoFocus: true,
-				maxLen:    50,
-				options:   true,
-			},
-			dateTime{},
-			dateTime{
-				kind: "time",
-			},
-			checkbox{},
-			hidden{},
-			submit{
-				name:  "eventId",
-				value: "3",
-				label: "Save",
-			},
+	eventDetails: {},
+	eventRangeNew: {
+		{
+			name:     schemaName,
+			Required: true,
+			v8:       isValidStr,
+		}, {
+			name:     schemaEvent,
+			Required: true,
+			v8:       isValidID,
 		},
-	},*/
+	},
+	eventAggNew: {
+		{
+			name:     schemaName,
+			Required: true,
+			v8:       isValidStr,
+		}, {
+			name:     schemaRange,
+			Required: true,
+			v9:       isValidRangeIDs,
+		}, {
+			name:     schemaEvent,
+			Required: true,
+			v8:       isValidID,
+		},
+	},
+	eventShooterNew: {
+		{
+			name:     schemaFirstName,
+			Required: true,
+			v8:       isValidStr,
+		}, {
+			name:     schemaSurname,
+			Required: true,
+			v8:       isValidStr,
+		}, {
+			name:     schemaClub,
+			Required: true,
+			v8:       isValidStr,
+		}, {
+			name:     schemaGrade,
+			Required: true,
+			//			v8:       isValidGrade,
+			v8:      isValidUint64,
+			min:     1,
+			max:     len(dataListGrades()),
+			step:    1,
+			Options: dataListGrades(),
+		}, {
+			name: schemaAgeGroup,
+			//			v8:   isValidAgeGroup,
+			v8:      isValidUint64,
+			min:     1,
+			max:     len(dataListAgeGroup()),
+			step:    1,
+			Options: dataListAgeGroup(),
+		}, {
+			name:     schemaEvent,
+			Required: true,
+			v8:       isValidID,
+		},
+	},
+	eventShooterExisting: {
+		{
+			name:     schemaShooter,
+			Required: true,
+			v8:       isValidID,
+		}, {
+			name:     schemaGrade,
+			Required: true,
+			v8:       isValidUint64,
+			//			v8:       isValidGrade,
+			min:     1,
+			max:     len(dataListGrades()) - 1,
+			step:    1,
+			Options: dataListGrades(),
+		}, {
+			name: schemaAgeGroup,
+			//			v8:   isValidAgeGroup,
+			v8:      isValidUint64,
+			min:     1,
+			max:     len(dataListAgeGroup()) - 1,
+			step:    1,
+			Options: dataListAgeGroup(),
+		}, {
+			name:     schemaEvent,
+			Required: true,
+			v8:       isValidID,
+		},
+	},
 }

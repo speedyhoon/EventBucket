@@ -2,4 +2,5 @@
 	<h1>Event</h1>
 	id={{.Event.ID}}
 	<h2>{{.Event.Name}}</h2>
+	{{template "ShooterEntry" .ShooterEntry}}
 {{end}}

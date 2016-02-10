@@ -29,7 +29,7 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
 		Title: "Clubs",
 		Data: M{
-			"NewClub":   getSession(w, r),
+			"NewClub":   getSession(w, r, []int{clubNew}),
 			"ListClubs": listClubs,
 		},
 	})
@@ -63,7 +63,7 @@ func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redi
 		formError(w, submittedForm, redirect, err)
 		return
 	}
-	http.Redirect(w, r, "/club/"+ID, http.StatusSeeOther)
+	http.Redirect(w, r, urlClub+ID, http.StatusSeeOther)
 }
 
 func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
@@ -96,4 +96,38 @@ func clubMoundInsert(w http.ResponseWriter, r *http.Request, submittedForm form,
 		return
 	}
 	http.Redirect(w, r, urlClubSettings+clubID, http.StatusSeeOther)
+}
+
+func dataListClubs(clubs []Club) []option {
+	var options []option
+	for _, club := range clubs {
+		options = append(options, option{Label: club.Name})
+	}
+	return options
+}
+
+func dataListGrades() []option {
+	return []option{
+		{},
+		{Value: "1", Label: "Target A"},
+		{Value: "2", Label: "Target B"},
+		{Value: "3", Label: "Target C"},
+		{Value: "4", Label: "F Class A"},
+		{Value: "5", Label: "F Class B"},
+		{Value: "6", Label: "F Class Open"},
+		{Value: "7", Label: "F/TR"},
+		{Value: "8", Label: "Match Open"},
+		{Value: "9", Label: "Match Reserve"},
+		{Value: "10", Label: "303 Rifle"},
+	}
+}
+
+func dataListAgeGroup() []option {
+	return []option{
+		{},
+		{Value: "1", Label: "Junior U21"},
+		{Value: "2", Label: "Junior U25"},
+		{Value: "3", Label: "Veteran"},
+		{Value: "4", Label: "Super Veteran"},
+	}
 }

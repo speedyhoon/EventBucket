@@ -13,6 +13,10 @@ const (
 )
 
 func isValidInt(strNum string, field field) (interface{}, string) {
+	if field.step == 0 {
+		warn.Println("Are you sure about step == 0?")
+		return num, "Step supplied = 0"
+	}
 	trace.Println(field.min, field.max, field.step, field.Required)
 	num := 0
 	var err error
@@ -34,9 +38,13 @@ func isValidInt(strNum string, field field) (interface{}, string) {
 }
 
 func isValidUint64(strNum string, field field) (interface{}, string) {
-	trace.Println(field.min, field.max, field.step, field.Required)
+	trace.Println(field.min, field.max, field.step, field.Required, "name=", field.name)
 	var num uint64
 	num = 0
+	if field.step == 0 {
+		warn.Println("Are you sure about step == 0?")
+		return num, "Step supplied = 0"
+	}
 	var err error
 	if strNum != "" {
 		num, err = strconv.ParseUint(strNum, 10, 64)
@@ -49,13 +57,17 @@ func isValidUint64(strNum string, field field) (interface{}, string) {
 	if field.max == 0 {
 		field.max = math.MaxInt32
 	}
-	if num >= uint64(field.min) && num <= uint64(field.max) && (field.step == 0 || field.step != 0 && num%uint64(field.step) == 0) || !field.Required && num == 0 {
+	if num >= uint64(field.min) && num <= uint64(field.max) && num%uint64(field.step) == 0 || !field.Required && num == 0 {
 		return num, ""
 	}
 	return num, "field integer doesn't pass validation"
 }
 
 func isValidFloat64(strNum string, field field) (interface{}, string) {
+	if field.step == 0 {
+		warn.Println("Are you sure about step == 0?")
+		return num, "Step supplied = 0"
+	}
 	var num float64
 	var err error
 	if strNum != "" {
@@ -116,6 +128,28 @@ func isValidBool(str string, field field) (interface{}, string) {
 	return checked, ""
 }
 
+func isValidRangeIDs(ranges []string, field field) (interface{}, string) {
+	var rangeIDs []uint64
+	var num uint64
+	var err error
+	for _, r := range ranges {
+		num, err = strconv.ParseUint(r, 10, 64)
+		if err != nil {
+			return []uint64{}, "Contains invalid range ids."
+		}
+		rangeIDs = append(rangeIDs, num)
+	}
+	return rangeIDs, ""
+
+	//	trace.Println("TODO")
+	//	return "fds", "fsd"
+	//get eventid
+	//get list of ranges
+	//get their ids
+	//check each
+	// 			[]range has index str
+}
+
 //Is it worth while to auto add failed forms to session so it doesn't have to be done in each http handler?
 func isValid(r *http.Request, fields []field) ([]field, bool) {
 	r.ParseForm()
@@ -130,7 +164,7 @@ func isValid(r *http.Request, fields []field) ([]field, bool) {
 		//TODO remove developer message
 		if field.v8 == nil {
 			field.Error = "No v8 function setup!"
-			warn.Println("No v8 function setup!")
+			warn.Println("No v8 function setup! for", field.name)
 			continue
 		}
 
@@ -157,11 +191,11 @@ func isValid(r *http.Request, fields []field) ([]field, bool) {
 					}*/
 
 		//trace.Println("check", field.defValue != nil, !ok, fieldValue == nil, len(fieldValue))
-		if len(fieldValue) > 0 {
+		/*if len(fieldValue) > 0 {
 			trace.Println(field.name, "contents: ", fieldValue[0], fieldValue[0] == "")
 		} else {
 			trace.Println(field.name, "no contents: ", fieldValue)
-		}
+		}*/
 		if field.defValue != nil && (!ok || fieldValue == nil || len(fieldValue) == 0 || (len(fieldValue) == 1 && fieldValue[0] == "")) {
 			//			trace.Println("set default value")
 			fieldValue = field.defValue()
@@ -170,10 +204,17 @@ func isValid(r *http.Request, fields []field) ([]field, bool) {
 			fieldValue = []string{""}
 		}
 
-		fields[i].internalValue, fields[i].Error = field.v8(strings.TrimSpace(fieldValue[0]), field)
+		if field.name == schemaRange {
+			fields[i].internalValue, fields[i].Error = field.v9(fieldValue, field)
+		} else {
+			fields[i].internalValue, fields[i].Error = field.v8(strings.TrimSpace(fieldValue[0]), field)
+		}
 		//		info.Println("\n\n", field.name, "\nval=", fieldValue[0], "\nErr=", fields[i].Error)
 		if fields[i].Error != "" {
-			warn.Println("err2", fields[i].Error, field.name)
+			//Set the first field with failed validation to have focus onscreen
+			if valid {
+				fields[i].AutoFocus = true
+			}
 			valid = false
 			//		}else{
 			//			temp := field.kind.(type)
@@ -191,7 +232,10 @@ func isValid(r *http.Request, fields []field) ([]field, bool) {
 				fields[i].Value = ""
 			}
 		}
-		//		trace.Println("mmm", fields[i].internalValue, fields[i].internalValue, "v=", fields[i].Value)
+	}
+
+	for z, input := range fields {
+		info.Println("validation:", z, input.Options, len(input.Options))
 	}
 	return fields, valid
 }
