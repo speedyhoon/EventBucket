@@ -15,7 +15,7 @@ const (
 func isValidInt(strNum string, field field) (interface{}, string) {
 	if field.step == 0 {
 		warn.Println("Are you sure about step == 0?")
-		return num, "Step supplied = 0"
+		return 0, "Step supplied = 0"
 	}
 	trace.Println(field.min, field.max, field.step, field.Required)
 	num := 0
@@ -66,7 +66,7 @@ func isValidUint64(strNum string, field field) (interface{}, string) {
 func isValidFloat64(strNum string, field field) (interface{}, string) {
 	if field.step == 0 {
 		warn.Println("Are you sure about step == 0?")
-		return num, "Step supplied = 0"
+		return 0, "Step supplied = 0"
 	}
 	var num float64
 	var err error
