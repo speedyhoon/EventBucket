@@ -221,4 +221,15 @@ simple: don't use id in this case and only provide Label.
 use Label in the backend as an additional case insensitive unique identifier, but also have an id
 return label as normal
 </pre>
+
+<h3>Mongodb issues</h3>
+<p>I am not using javascript scripting in mongodb selects and updates. this puts more pressure on the database with increased quantity of queries on the database but also<br>
+the queries don't run atomically (in parallel) so there is a higher risk of wrong ids and it is just overall slower that way.</p>
+<p>Would like to move to mobile crouchbase database. so that syncing in future could be much simpler. Couchbase also has a larger document limit of 20MB, compared to 16MB for MongoDB</p>
+<p>thought that not writing mongodb scripting would help the program to be less database agnostic. This is true is some cases - no stored procedures need to be written in sql if moved to a RDBMS. However it requires auto increment code in the program.</p>
+<p>mongodb isn't a silver bullet. Putting all event data in a single object will eventually lead to a document overflow where no more data can be stored within the object because it has exceeded 16MB</p>
+sql schema compare:        mongodb
+read - painful             enjoyable
+write - easy               more complex
+joins - doable             teadious
 {{end}}

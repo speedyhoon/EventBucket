@@ -1,5 +1,14 @@
 {{define "page"}}
-<h1>Event Settings</h1>
-id={{.Event.ID}}
-<h2>{{.Event.Name}}</h2>
+<!--<h1>{{.Event.Name}} Settings</h1>-->
+{{template "AddRange" .AddRange}}
+	<ul>
+		{{range .Event.Ranges}}
+			<li>{{.Name}}</li>
+		{{else}}
+			<li>No ranges listed</li>
+		{{end}}
+	</ul>
+	{{if ge .RangesQty 2}}
+		{{template "AddAggregateRange" .AddAgg}}
+	{{end}}
 {{end}}
