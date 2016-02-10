@@ -68,8 +68,8 @@ func newSessionID() string {
 
 //TODO create a ticker that checks the saved sessions every 90 seconds. If the session is older than 1 minute, delete it.
 
-//When a session id is used remove it.
-func getSession(w http.ResponseWriter, r *http.Request) form {
+//When a session id is used remove it. Supply a list of expected forms to display error messages for. Don't show errors for different pages.
+func getSession(w http.ResponseWriter, r *http.Request, formActions []int) form {
 	cookies, err := r.Cookie(sessionToken)
 	if err != nil || cookies.Value == "" {
 		return form{}
@@ -80,7 +80,11 @@ func getSession(w http.ResponseWriter, r *http.Request) form {
 		//Clear the session contents as it has been returned to the user.
 		delete(globalSessions, cookies.Value)
 		w.Header().Set("Set-Cookie", fmt.Sprintf("%v=; expires=%v", sessionToken, time.Now().UTC().Add(-sessionExpiryTime).Format(formatGMT)))
-		return contents.form
+		for _, action := range formActions {
+			if action == contents.form.action {
+				return contents.form
+			}
+		}
 	}
 	return form{}
 }
