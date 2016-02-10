@@ -62,6 +62,11 @@ type AutoInc struct {
 	Shooter uint64 `bson:"S,omitempty"`
 }
 
+type AutoID struct {
+	ID   string `bson:"_id"`
+	Name uint64 `bson:"n"`
+}
+
 // Mound is exported
 type Mound struct {
 	//	ID       string `bson:"_id"`
