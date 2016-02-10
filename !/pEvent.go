@@ -1,16 +1,13 @@
 package main
 
-import (
-	"fmt"
-	"net/http"
-)
+import "net/http"
 
 func event(w http.ResponseWriter, r *http.Request, eventID string) {
 	sessionForm := getSession(w, r, []int{eventShooterNew, eventShooterExisting})
-	trace.Println("event fields len=", len(sessionForm.Fields))
-	for i, input := range sessionForm.Fields {
-		fmt.Println(i, input.name, input.Error)
-	}
+	//	trace.Println("event fields len=", len(sessionForm.Fields))
+	//	for i, input := range sessionForm.Fields {
+	//		fmt.Println(i, input.name, input.Error)
+	//	}
 	var shooterEntry form
 	switch sessionForm.action {
 	case eventShooterNew:
@@ -38,7 +35,7 @@ func event(w http.ResponseWriter, r *http.Request, eventID string) {
 		}
 	}
 	shooterEntry.Fields = append(shooterEntry.Fields, field{Value: eventID})
-	trace.Println("event fields len=", len(sessionForm.Fields))
+	//	trace.Println("event fields len=", len(sessionForm.Fields))
 	shooterEntry.Fields[6].Value = eventID
 	//	shooterEntry.Fields[7].Value = eventID
 
@@ -62,11 +59,9 @@ func event(w http.ResponseWriter, r *http.Request, eventID string) {
 func events(w http.ResponseWriter, r *http.Request) {
 	sessionForm := getSession(w, r, []int{eventDetails})
 	listEvents, err := getEvents()
-	if err != nil {
-		warn.Println(err)
-	}
 	templater(w, page{
 		Title: "Events",
+		Error: err,
 		Data: M{
 			"NewEvent":   eventNewDefaultValues(sessionForm),
 			"ListEvents": listEvents,

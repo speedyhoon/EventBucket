@@ -76,7 +76,7 @@ func updateDoc(collectionName string, ID string, document interface{}) error {
 }
 
 func getNextID(collectionName string) (string, error) {
-	var result M
+	var result AutoID
 	if conn == nil {
 		return "", errors.New("Unable to generate the next ID. No database connection.")
 	}
@@ -93,10 +93,8 @@ func getNextID(collectionName string) (string, error) {
 	}
 
 	//Convert integer to a alpha-numeric (0-9a-z / 36 base) string
-	return strconv.FormatUint(uint64(result[schemaName].(int)), 36), nil
+	return strconv.FormatUint(result.Name, 36), nil
 }
-
-///fdsfdsafdsafsd
 
 func eventAddRange(eventID string, newRange Range) error {
 	change := mgo.Change{
