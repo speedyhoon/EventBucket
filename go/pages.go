@@ -59,7 +59,7 @@ func pages() {
 	get404(urlHome, home)
 }
 
-func post(formID int, runner func(http.ResponseWriter, *http.Request, form, func())) {
+func post(formID uint8, runner func(http.ResponseWriter, *http.Request, form, func())) {
 	h := func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
 			/*405 Method Not Allowed
@@ -72,7 +72,7 @@ func post(formID int, runner func(http.ResponseWriter, *http.Request, form, func
 		/*for z, input := range GlobalForms[formID] {
 			info.Println("pages:", z, input.Options, len(input.Options))
 		}*/
-		submittedFields, isValid := isValid(r, GlobalForms[formID])
+		submittedFields, isValid := isValid(r, getForm(formID))
 		/*for z, input := range submittedFields {
 			info.Println("submittedFields:", z, input.Options, len(input.Options))
 		}*/
