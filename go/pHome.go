@@ -6,7 +6,7 @@ import (
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
-	sessionForm := getSession(w, r, []int{eventNew})
+	sessionForm := getSession(w, r, []uint8{eventNew})
 	templater(w, page{
 		Title: "Home",
 		Data: M{

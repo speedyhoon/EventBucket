@@ -16,7 +16,7 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 	trace.Println(club.Latitude, club.Longitude)
 
 	var invalidForm, detailsForm, newMoundForm form
-	invalidForm = getSession(w, r, []int{clubDetails})
+	invalidForm = getSession(w, r, []uint8{clubDetails})
 	if invalidForm.action == clubDetails {
 		detailsForm = invalidForm
 	} else {

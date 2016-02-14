@@ -148,3 +148,11 @@ func setExpiresTime() {
 	//w3.org says: "All HTTP date/time stamps MUST be represented in Greenwich Mean Time" under 3.3.1 Full Date //www.w3.org/Protocols/rfc2616/rfc2616-sec3.html
 	masterTemplate.CurrentYear = time.Now().Format("2006")
 }
+
+func defaultDate() []string {
+	return []string{time.Now().Format(formatYMD)}
+}
+
+func defaultTime() []string {
+	return []string{time.Now().Format(formatTime)}
+}

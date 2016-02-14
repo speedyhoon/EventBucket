@@ -35,21 +35,21 @@
 {{define "EventDetails"}}<form method=post action=/4><fieldset><legend>Event <u>D</u>etails</legend>
 {{with .Error}}<samp>{{.}}</samp>{{end}}
 <label>Event Name: <input{{with hasindex .Fields 0}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=n accesskey=d maxlength=64 autocomplete=off>{{with hasindex .Fields 0}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
-<label>Club Name: <input{{with hasindex .Fields 1}}{{attr " value" .Value}}{{has .Options " list=C"}}{{has .Error " class=error"}}{{end}} name=C maxlength=64 autocomplete=off>{{with hasindex .Fields 1}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
+<label>Club Name: <input{{with hasindex .Fields 1}}{{attr " value" .Value}}{{has .Options " list=C"}}{{has .Error " class=error"}}{{end}} name=C maxlength=64 type=search>{{with hasindex .Fields 1}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Date: <input{{with hasindex .Fields 2}}{{attr " value" .Value}}{{has .Error " class=error"}}{{end}} type=date placeholder=yyyy-mm-dd name=d>{{with hasindex .Fields 2}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Time: <input{{with hasindex .Fields 3}}{{attr " value" .Value}}{{has .Error " class=error"}}{{end}} type=time placeholder=hh:mm name=t>{{with hasindex .Fields 3}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 {{with hasindex .Fields 4}}{{if .Error}}<div>{{end}}{{end}}<button name=E {{with hasindex .Fields 4}}{{attr "value" .Value}}{{end}}>Save</button>{{with hasindex .Fields 4}}{{with .Error}}<samp>{{.}}</samp></div>{{end}}{{end}}</fieldset></form>
-{{end}}
+{{with hasindex .Fields 1}}{{with .Options}}<datalist id=C>{{range .}}<option{{attr " value" .Label}}>{{end}}</datalist>{{end}}{{end}}{{end}}
 
 {{define "AddRange"}}<form method=post action=/5><fieldset><legend>Add <u>R</u>ange</legend>
 {{with .Error}}<samp>{{.}}</samp>{{end}}
-<label>Range Name: <input{{with hasindex .Fields 0}}{{attr " value" .Value}}{{has .Options " list=n"}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=n accesskey=r maxlength=64 autocomplete=off>{{with hasindex .Fields 0}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
+<label>Range Name: <input{{with hasindex .Fields 0}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=n accesskey=r maxlength=64 autocomplete=off>{{with hasindex .Fields 0}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 {{with hasindex .Fields 1}}{{if .Error}}<div>{{end}}{{end}}<button name=E {{with hasindex .Fields 1}}{{attr "value" .Value}}{{end}}>Save</button>{{with hasindex .Fields 1}}{{with .Error}}<samp>{{.}}</samp></div>{{end}}{{end}}</fieldset></form>
 {{end}}
 
 {{define "AddAggregateRange"}}<form method=post action=/6><fieldset><legend><u>A</u>dd Aggregate Range</legend>
 {{with .Error}}<samp>{{.}}</samp>{{end}}
-<label>Aggregate Name: <input{{with hasindex .Fields 0}}{{attr " value" .Value}}{{has .Options " list=n"}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=n accesskey=a maxlength=64 autocomplete=off>{{with hasindex .Fields 0}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
+<label>Aggregate Name: <input{{with hasindex .Fields 0}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=n accesskey=a maxlength=64 autocomplete=off>{{with hasindex .Fields 0}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Sum up ranges: <select{{with hasindex .Fields 1}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=R multiple>{{with hasindex .Fields 1}}{{with .Options}}{{range .}}<option{{attr " value" .Value}}>{{.Label}}{{end}}{{end}}{{end}}</select>{{with hasindex .Fields 1}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 {{with hasindex .Fields 2}}{{if .Error}}<div>{{end}}{{end}}<button name=E {{with hasindex .Fields 2}}{{attr "value" .Value}}{{end}}>Save</button>{{with hasindex .Fields 2}}{{with .Error}}<samp>{{.}}</samp></div>{{end}}{{end}}</fieldset></form>
 {{end}}

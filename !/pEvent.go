@@ -3,7 +3,7 @@ package main
 import "net/http"
 
 func event(w http.ResponseWriter, r *http.Request, eventID string) {
-	sessionForm := getSession(w, r, []int{eventShooterNew, eventShooterExisting})
+	sessionForm := getSession(w, r, []uint8{eventShooterNew, eventShooterExisting})
 	//	trace.Println("event fields len=", len(sessionForm.Fields))
 	//	for i, input := range sessionForm.Fields {
 	//		fmt.Println(i, input.name, input.Error)
@@ -57,7 +57,7 @@ func event(w http.ResponseWriter, r *http.Request, eventID string) {
 }
 
 func events(w http.ResponseWriter, r *http.Request) {
-	sessionForm := getSession(w, r, []int{eventDetails})
+	sessionForm := getSession(w, r, []uint8{eventDetails})
 	listEvents, err := getEvents()
 	templater(w, page{
 		Title: "Events",

@@ -16,13 +16,7 @@ const (
 	sessionExpiryTime = 2 * time.Minute
 )
 
-type sessionInfo struct {
-	inputs []field
-	form   form
-	expiry time.Time
-}
-
-var globalSessions = make(map[string]sessionInfo, 1)
+var globalSessions = make(map[string]*form, 1)
 
 //TODO will possibly need a chanel here to prevent locks occurring
 func setSession(w http.ResponseWriter, returns form) {
@@ -43,12 +37,9 @@ func setSession(w http.ResponseWriter, returns form) {
 		}
 	}
 	//	}
-	expiry := time.Now().Add(sessionExpiryTime)
-	globalSessions[sessionID] = sessionInfo{
-		expiry: expiry,
-		form:   returns,
-	}
-	w.Header().Add("Set-Cookie", fmt.Sprintf("%v=%v; expires=%v", sessionToken, sessionID, expiry.Format(formatGMT)))
+	globalSessions[sessionID] = returns
+	returns.expiry := time.Now().Add(sessionExpiryTime)
+	w.Header().Add("Set-Cookie", fmt.Sprintf("%v=%v; expires=%v", sessionToken, sessionID, returns.expiry.Format(formatGMT)))
 }
 
 //SessionID's should be at least 16 characters length can't have space or semicolon
@@ -69,7 +60,7 @@ func newSessionID() string {
 //TODO create a ticker that checks the saved sessions every 90 seconds. If the session is older than 1 minute, delete it.
 
 //When a session id is used remove it. Supply a list of expected forms to display error messages for. Don't show errors for different pages.
-func getSession(w http.ResponseWriter, r *http.Request, formActions []int) form {
+func getSession(w http.ResponseWriter, r *http.Request, formActions []uint8) form {
 	cookies, err := r.Cookie(sessionToken)
 	if err != nil || cookies.Value == "" {
 		return form{}
@@ -81,8 +72,8 @@ func getSession(w http.ResponseWriter, r *http.Request, formActions []int) form 
 		delete(globalSessions, cookies.Value)
 		w.Header().Set("Set-Cookie", fmt.Sprintf("%v=; expires=%v", sessionToken, time.Now().UTC().Add(-sessionExpiryTime).Format(formatGMT)))
 		for _, action := range formActions {
-			if action == contents.form.action {
-				return contents.form
+			if action == contents.action {
+				return contents
 			}
 		}
 	}
