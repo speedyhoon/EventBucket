@@ -137,7 +137,7 @@ func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request,
 				return
 			}
 
-			if regexId.MatchString(lowerParams) {
+			if regexID.MatchString(lowerParams) {
 				pageFunc(w, r, lowerParams)
 				return
 			}
