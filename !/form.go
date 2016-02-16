@@ -17,8 +17,9 @@ type field struct {
 	Required           bool
 	Options            []option
 	maxLen, minLen     uint
-	min, max, step     float64
+	min, max, step     float32
 	AutoFocus          bool
+	size               uint8
 	Checked            bool //only used by checkboxes
 	regex              *regexp.Regexp
 	internalValue      interface{}
@@ -45,20 +46,36 @@ const (
 	eventShooterNew      = 8
 )
 
+func dataListGrades() []option {
+	return []option{
+		{},
+		{Value: "1", Label: "Target A"},
+		{Value: "2", Label: "Target B"},
+		{Value: "3", Label: "Target C"},
+		{Value: "4", Label: "F Class A"},
+		{Value: "5", Label: "F Class B"},
+		{Value: "6", Label: "F Class Open"},
+		{Value: "7", Label: "F/TR"},
+		{Value: "8", Label: "Match Open"},
+		{Value: "9", Label: "Match Reserve"},
+		{Value: "10", Label: "303 Rifle"},
+	}
+}
+
+func dataListAgeGroup() []option {
+	return []option{
+		{},
+		{Value: "1", Label: "Junior U21"},
+		{Value: "2", Label: "Junior U25"},
+		{Value: "3", Label: "Veteran"},
+		{Value: "4", Label: "Super Veteran"},
+	}
+}
+
 func getForm(id uint8) []field {
 	switch id {
-	case 0:
-		return []field{{
-			name:     "n",
-			Required: true,
-			maxLen:   0x40,
-			min:      0,
-			Checked:  false,
-		}, {
-			name:    "b",
-			min:     0,
-			Checked: false,
-		}}
+	case 8:
+		return []field{}
 	}
 	return []field{}
 }

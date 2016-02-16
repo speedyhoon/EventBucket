@@ -49,7 +49,7 @@ var (
 	warn  = log.New(os.Stderr, "WARN:  ", log.Lshortfile)
 
 	//URL validation matching
-	regexId = regexp.MustCompile(`^[a-z0-9]+$`)
+	regexID = regexp.MustCompile(`^[a-z0-9]+$`)
 )
 
 type M map[string]interface{}

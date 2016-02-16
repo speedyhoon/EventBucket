@@ -56,6 +56,30 @@ func isValidFloat64(inp []string, field field) (interface{}, string) {
 	return num, "field integer doesn't pass validation"
 }
 
+func isValidFloat32(inp []string, field field) (interface{}, string) {
+	strNum := strings.TrimSpace(inp[0])
+	if field.step == 0 {
+		warn.Println("Are you sure about step == 0?")
+		return 0, "Step supplied = 0"
+	}
+	var num float32
+	var x float64
+	var err error
+	if strNum != "" {
+		x, err = strconv.ParseFloat(strNum, 64)
+		if err != nil {
+			return num, err.Error()
+		}
+		num = float32(x)
+	} else if field.Required {
+		return num, "Please fill in this field"
+	}
+	if num >= float32(field.min) && num <= float32(field.max) && (field.step == 0 || field.step != 0 /*&& num%step == 0*/) || !field.Required && num == 0 {
+		return num, ""
+	}
+	return num, "field integer doesn't pass validation"
+}
+
 func isValidStr(inp []string, field field) (interface{}, string) {
 	//TODO check if the string passes regex
 	//TODO check if it matches one of the options provided
