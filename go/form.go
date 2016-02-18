@@ -19,17 +19,17 @@ type field struct {
 	maxLen, minLen     uint
 	min, max, step     float32
 	AutoFocus          bool
-	size uint8
-	Checked bool		//only used by checkboxes
-	regex *regexp.Regexp
-	internalValue interface{}
-	v8       func([]string, field) (interface{}, string)
-	defValue func() []string
+	size               uint8
+	Checked            bool //only used by checkboxes
+	regex              *regexp.Regexp
+	internalValue      interface{}
+	v8                 func([]string, field) (interface{}, string)
+	defValue           func() []string
 }
 
 type option struct {
 	Label, Value string
-	Selected bool
+	Selected     bool
 }
 
 const (
@@ -72,8 +72,8 @@ func dataListAgeGroup() []option {
 	}
 }
 
-func getForm(id uint8)[]field{
-	switch(id){
+func getForm(id uint8) []field {
+	switch id {
 	case 0:
 		return []field{{
 			name: "n", Required: true, maxLen: 64, v8: isValidStr,

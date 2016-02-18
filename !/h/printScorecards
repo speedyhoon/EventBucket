@@ -1,0 +1,15 @@
+{{define "page"}}
+	<div class=tr>
+		{{range .Ranges}}
+			<table>
+				<tr>
+					<td rowspan=3><img class=barcode src=/b/{{$.EventID}}/{{$.ShooterID}}/{{.}} alt="{{$.FirstName}}'s Barcode">
+					<td>Event ID: {{$.EventID}}<td>2016 Warrack Prizemeeting
+				<tr>
+					<td>Shooter ID: {{$.ShooterID}}<td>Leesa Webb
+				<tr>
+					<td>Range ID: {{.}}<td>600 yards
+			</table>
+		{{end}}
+	</div>
+{{end}}
