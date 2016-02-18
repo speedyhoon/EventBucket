@@ -102,7 +102,11 @@ func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm fo
 }
 func eventShooterExistingInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	eventID := submittedForm.Fields[3].Value
-	shooter := getShooter(submittedForm.Fields[0].Value)
+	shooter, err := getShooter(submittedForm.Fields[0].Value)
+	if err != nil {
+		formError(w, submittedForm, redirect, err)
+		return
+	}
 	eventShooter := EventShooter{
 		Grade:     submittedForm.Fields[1].internalValue.(uint64),
 		AgeGroup:  submittedForm.Fields[2].internalValue.(uint64),
@@ -110,17 +114,10 @@ func eventShooterExistingInsert(w http.ResponseWriter, r *http.Request, submitte
 		Surname:   shooter.Surname,
 		Club:      shooter.Club,
 	}
-	err := eventShooterInsertDB(eventID, eventShooter)
+	err = eventShooterInsertDB(eventID, eventShooter)
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
+		return
 	}
 	http.Redirect(w, r, urlEvent+eventID, http.StatusSeeOther)
-}
-
-func getShooter(ID string) Shooter {
-	var result Shooter
-	if conn != nil {
-		conn.C(tblShooter).FindId(ID).One(&result)
-	}
-	return result
 }

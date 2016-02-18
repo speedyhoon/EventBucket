@@ -12,7 +12,10 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"time"
+
+	"github.com/boltdb/bolt"
 )
 
 const (
@@ -20,14 +23,15 @@ const (
 	subDir = `\EventBucket`
 
 	//HTTP settings
-	address = "http://localhost"
-	dirRoot = "./"
-	dirCSS  = "dirCSS"
-	dirJS   = "dirJS"
-	dirGzip = "dirGzip"
-	dirPNG  = "dirPNG"
-	robots  = "robots.txt"
-	favicon = "favicon.ico"
+	address    = "http://localhost"
+	dirRoot    = "./"
+	dirBarcode = "dirBarcode"
+	dirCSS     = "dirCSS"
+	dirJS      = "dirJS"
+	dirGzip    = "dirGzip"
+	dirPNG     = "dirPNG"
+	robots     = "robots.txt"
+	favicon    = "favicon.ico"
 
 	//Date formats
 	formatYMD  = "2006-01-02"
@@ -36,6 +40,9 @@ const (
 )
 
 var (
+	//Database open connection
+	db *bolt.DB
+
 	debug bool
 
 	//HTTP settings
@@ -49,13 +56,15 @@ var (
 	warn  = log.New(os.Stderr, "WARN:  ", log.Lshortfile)
 
 	//URL validation matching
-	regexID = regexp.MustCompile(`^[a-z0-9]+$`)
+	regexID      = regexp.MustCompile(`^[a-z0-9]+$`)
+	regexPath    = regexp.MustCompile(`^[a-z0-9]+/[a-z0-9]+$`)
+	regexBarcode = regexp.MustCompile(`^[a-z0-9]+/[a-z0-9]+/[a-z0-9]+$`)
 )
 
 type M map[string]interface{}
 
 func init() {
-	go startDB()
+	//go startDB()
 	go maintainExpiresTime()
 
 	port := flag.Uint("port", 80, "Assign a differnet port number for the http server. Range: 0 through 65535.")
@@ -95,6 +104,14 @@ func init() {
 }
 
 func main() {
+	var err error
+	databasePath := os.Getenv("ProgramData") + subDir + "\\bolt.db"
+	db, err = bolt.Open(databasePath, 0644, nil)
+	if err != nil {
+		warn.Println(err)
+	}
+	defer db.Close()
+
 	pages()
 	info.Print("Starting EventBucket HTTP server...")
 	warn.Printf("ListenAndServe: %v", http.ListenAndServe(portAddr, nil))
@@ -155,4 +172,12 @@ func defaultDate() []string {
 
 func defaultTime() []string {
 	return []string{time.Now().Format(formatTime)}
+}
+
+func toB36(b uint64) string {
+	return strconv.FormatUint(b, 36)
+}
+
+func B36toUint(b string) (uint64, error) {
+	return strconv.ParseUint(b, 36, 64)
 }
