@@ -78,7 +78,7 @@ func getForm(id uint8)[]field{
 		return []field{{
 			name: "n", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
-			name: "b", v8: isValidBool
+			name: "b", v8: isValidBool,
 		}}
 	case 1:
 		return []field{{
@@ -94,7 +94,7 @@ func getForm(id uint8)[]field{
 		}, {
 			name: "y", min: -180, max: 180, step: .000001, v8: isValidFloat32,
 		}, {
-			name: "C", v8: isValidID
+			name: "C", v8: isValidID,
 		}}
 	case 2:
 		return []field{{
@@ -104,7 +104,7 @@ func getForm(id uint8)[]field{
 		}, {
 			name: "z", Required: true, v8: isValidStr, Options: []option{option{Label:"Metres", Value:"m", Selected:false}, option{Label:"Kilometres", Value:"k", Selected:false}, option{Label:"Yards", Value:"y", Selected:false}, option{Label:"Feet", Value:"f", Selected:false}},
 		}, {
-			name: "C", v8: isValidID
+			name: "C", v8: isValidID,
 		}}
 	case 3:
 		return []field{{
@@ -114,7 +114,7 @@ func getForm(id uint8)[]field{
 		}, {
 			name: "d", v8: isValidStr,
 		}, {
-			name: "t", v8: isValidStr
+			name: "t", v8: isValidStr,
 		}}
 	case 4:
 		return []field{{
@@ -126,13 +126,13 @@ func getForm(id uint8)[]field{
 		}, {
 			name: "t", v8: isValidStr,
 		}, {
-			name: "E", v8: isValidID
+			name: "E", v8: isValidID,
 		}}
 	case 5:
 		return []field{{
 			name: "n", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
-			name: "E", v8: isValidID
+			name: "E", v8: isValidID,
 		}}
 	case 6:
 		return []field{{
@@ -140,7 +140,7 @@ func getForm(id uint8)[]field{
 		}, {
 			name: "R", Required: true, v8: isValidStr,
 		}, {
-			name: "E", v8: isValidID
+			name: "E", v8: isValidID,
 		}}
 	case 7:
 		return []field{{
@@ -158,7 +158,7 @@ func getForm(id uint8)[]field{
 		}, {
 			name: "E",
 		}, {
-			name: "E"
+			name: "E",
 		}}
 	case 8:
 		return []field{{
@@ -176,7 +176,7 @@ func getForm(id uint8)[]field{
 		}, {
 			name: "E",
 		}, {
-			name: "E"
+			name: "E",
 		}}
 	}
 	return []field{}

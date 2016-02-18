@@ -16,7 +16,7 @@ const (
 	sessionExpiryTime = 2 * time.Minute
 )
 
-var globalSessions = make(map[string]*form, 1)
+var globalSessions = make(map[string]form, 1)
 
 //TODO will possibly need a chanel here to prevent locks occurring
 func setSession(w http.ResponseWriter, returns form) {
@@ -38,7 +38,7 @@ func setSession(w http.ResponseWriter, returns form) {
 	}
 	//	}
 	globalSessions[sessionID] = returns
-	returns.expiry := time.Now().Add(sessionExpiryTime)
+	returns.expiry = time.Now().Add(sessionExpiryTime)
 	w.Header().Add("Set-Cookie", fmt.Sprintf("%v=%v; expires=%v", sessionToken, sessionID, returns.expiry.Format(formatGMT)))
 }
 

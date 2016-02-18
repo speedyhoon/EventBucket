@@ -16,13 +16,6 @@ const (
 	sessionExpiryTime = 2 * time.Minute
 )
 
-//type sessionInfo struct {
-//	inputs []field
-//	form   form
-//	expiry time.Time
-//}
-
-//var globalSessions = make(map[string]sessionInfo, 1)
 var globalSessions = make(map[string]form, 1)
 
 //TODO will possibly need a chanel here to prevent locks occurring
@@ -44,14 +37,9 @@ func setSession(w http.ResponseWriter, returns form) {
 		}
 	}
 	//	}
-	expiry := time.Now().Add(sessionExpiryTime)
-	/*globalSessions[sessionID] = sessionInfo{
-		expiry: expiry,
-		form:   returns,
-	}*/
-	returns.expiry = expiry
 	globalSessions[sessionID] = returns
-	w.Header().Add("Set-Cookie", fmt.Sprintf("%v=%v; expires=%v", sessionToken, sessionID, expiry.Format(formatGMT)))
+	returns.expiry = time.Now().Add(sessionExpiryTime)
+	w.Header().Add("Set-Cookie", fmt.Sprintf("%v=%v; expires=%v", sessionToken, sessionID, returns.expiry.Format(formatGMT)))
 }
 
 //SessionID's should be at least 16 characters length can't have space or semicolon

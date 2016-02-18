@@ -273,5 +273,10 @@ one struct type for each kind of form field
 	+ swaping fields around in html doesn't require a server to restart now.
 	+ can save fields to a variable to reuse
 
+<h1>Bolt DB</h1>
+trialing boltDB. reduced compiled size
+EventBucket with MongoDB size: 9.46 MB (9,927,680 bytes)
+EventBucket with Bolt DB size: 8.86 MB (9,300,480 bytes)
+
 
 {{end}}
