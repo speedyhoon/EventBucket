@@ -88,3 +88,10 @@ h1, h2, h3, p{
 	margin: 0;
 	color: #000;
 }
+.barcode{
+	image-rendering: pixelated;
+	width: 100px;
+}
+.tr table td:last-child {
+	padding-left: 2em;
+}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"regexp"
 	"strings"
 )
 
@@ -119,7 +120,7 @@ func getRedirectPermanent(url string, pageFunc func(http.ResponseWriter, *http.R
 not doing this may frustrate some users who want to get to the club settings page but can't remember the club id.
 then display a list of clubs and status code 404
 */
-func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request, string)) {
+func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request, string), regex *regexp.Regexp) {
 	var parameters, lowerParams string
 	http.HandleFunc(url,
 		func(w http.ResponseWriter, r *http.Request) {
@@ -137,7 +138,7 @@ func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request,
 				return
 			}
 
-			if regexID.MatchString(lowerParams) {
+			if regex.MatchString(lowerParams) {
 				pageFunc(w, r, lowerParams)
 				return
 			}

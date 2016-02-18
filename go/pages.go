@@ -14,14 +14,15 @@ const (
 	urlLicence  = "/licence"
 	urlShooters = "/shooters"
 	//GET with PARAMETERS
-	urlClub          = "/club/"           //clubID
-	urlClubSettings  = "/club-settings/"  //clubID
-	urlEvent         = "/event/"          //eventID
-	urlEventSettings = "/event-settings/" //eventID
-	urlEventReport   = "/event-report/"   //eventID
-	urlScoreboard    = "/scoreboard/"     //eventID
-	urlScorecards    = "/scorecards/"     //eventID
-	urlTotalScores   = "/total-scores/"   //eventID
+	urlClub            = "/club/"           //clubID
+	urlClubSettings    = "/club-settings/"  //clubID
+	urlEvent           = "/event/"          //eventID
+	urlEventSettings   = "/event-settings/" //eventID
+	urlEventReport     = "/event-report/"   //eventID
+	urlScoreboard      = "/scoreboard/"     //eventID
+	urlScorecards      = "/scorecards/"     //eventID
+	urlPrintScorecards = "/print-cards/"    //eventID/shooterID
+	urlTotalScores     = "/total-scores/"   //eventID
 )
 
 func pages() {
@@ -30,6 +31,7 @@ func pages() {
 	serveDir(dirCSS, false)
 	serveDir(dirJS, false)
 	serveDir(dirPNG, false)
+	getParameters("/b/", base64QrH, regexBarcode)
 	getRedirectPermanent(urlAbout, about)
 	getRedirectPermanent(urlArchive, eventArchive)
 	getRedirectPermanent(urlClubs, clubs)
@@ -38,14 +40,15 @@ func pages() {
 	getRedirectPermanent(urlShooters, shooters)
 	getRedirectPermanent("/all", all)
 	getRedirectPermanent("/report", report)
-	getParameters(urlClub, club)
-	getParameters(urlClubSettings, clubSettings)
-	getParameters(urlEvent, event)
-	getParameters(urlEventSettings, eventSettings)
-	getParameters(urlEventReport, eventReport)
-	getParameters(urlScoreboard, scoreboard)
-	getParameters(urlScorecards, scorecards)
-	getParameters(urlTotalScores, totalScores)
+	getParameters(urlClub, club, regexID)
+	getParameters(urlClubSettings, clubSettings, regexID)
+	getParameters(urlEvent, event, regexID)
+	getParameters(urlEventSettings, eventSettings, regexID)
+	getParameters(urlEventReport, eventReport, regexID)
+	getParameters(urlScoreboard, scoreboard, regexID)
+	getParameters(urlScorecards, scorecards, regexID)
+	getParameters(urlPrintScorecards, printScorecards, regexPath)
+	getParameters(urlTotalScores, totalScores, regexID)
 	post(clubNew, clubInsert)
 	post(clubDetails, clubDetailsUpsert)
 	post(clubMoundNew, clubMoundInsert)
@@ -137,6 +140,9 @@ var (
 		}, {
 			Name: "Event Report",
 			Link: urlEventReport,
+		}, {
+			Name: "Print Scorecards",
+			Link: urlPrintScorecards,
 		},
 		},
 		urlClub: {{
