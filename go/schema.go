@@ -1,12 +1,6 @@
 package main
 
 const (
-	//Databse collection names
-	tblClub    = "C"
-	tblEvent   = "E"
-	tblShooter = "S"
-	tblAutoInc = "U"
-
 	//Collection property names
 	schemaClub           = "schemaClub"
 	schemaEvent          = "schemaEvent"
