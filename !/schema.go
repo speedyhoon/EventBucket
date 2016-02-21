@@ -70,13 +70,12 @@ type Mound struct {
 
 // Event is exported
 type Event struct {
-	ID      string  `bson:"_id"`
-	Name    string  `bson:"n"`
-	Club    string  `bson:"C"`
-	Date    string  `bson:"d"`
-	Time    string  `bson:"t"`
-	Ranges  []Range `bson:"R,omitempty"`
-	AutoInc AutoInc `bson:"A"`
+	ID       string  `bson:"_id"`
+	Name     string  `bson:"n"`
+	Club     string  `bson:"C"`
+	DateTime string  `bson:"schemaDateTime"`
+	Ranges   []Range `bson:"R,omitempty"`
+	AutoInc  AutoInc `bson:"A"`
 }
 
 /*

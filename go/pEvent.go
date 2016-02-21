@@ -56,19 +56,6 @@ func event(w http.ResponseWriter, r *http.Request, eventID string) {
 	})
 }
 
-func events(w http.ResponseWriter, r *http.Request) {
-	sessionForm := getSession(w, r, []uint8{eventDetails})
-	listEvents, err := getEvents()
-	templater(w, page{
-		Title: "Events",
-		Error: err,
-		Data: M{
-			"NewEvent":   eventNewDefaultValues(sessionForm),
-			"ListEvents": listEvents,
-		},
-	})
-}
-
 func eventInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	ID, err := getNextID(tblEvent)
 	if err != nil {
@@ -78,11 +65,10 @@ func eventInsert(w http.ResponseWriter, r *http.Request, submittedForm form, red
 
 	//Insert new event into database.
 	err = upsertDoc(tblEvent, ID, Event{
-		ID:   ID,
-		Club: submittedForm.Fields[0].Value,
-		Name: submittedForm.Fields[1].Value,
-		Date: submittedForm.Fields[2].Value,
-		Time: submittedForm.Fields[3].Value,
+		ID:       ID,
+		Club:     submittedForm.Fields[0].Value,
+		Name:     submittedForm.Fields[1].Value,
+		DateTime: submittedForm.Fields[2].Value,
 	})
 
 	//Display any insert errors onscreen.
@@ -91,15 +77,4 @@ func eventInsert(w http.ResponseWriter, r *http.Request, submittedForm form, red
 		return
 	}
 	http.Redirect(w, r, urlEvent+ID, http.StatusSeeOther)
-}
-
-func eventNewDefaultValues(form form) form {
-	if form.action != eventNew && len(form.Fields) == 0 {
-		form.Fields = []field{
-			{Required: hasDefaultClub()},
-			{},
-			{Value: defaultDateTime()[0]},
-		}
-	}
-	return form
 }
