@@ -11,15 +11,15 @@
 <label>Address: <input{{with hasindex .Fields 1}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=a maxlength=64 autocomplete=off>{{with hasindex .Fields 1}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Town: <input{{with hasindex .Fields 2}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=w maxlength=64 autocomplete=off>{{with hasindex .Fields 2}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Postcode: <input{{with hasindex .Fields 3}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=p maxlength=64 autocomplete=off>{{with hasindex .Fields 3}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
-<label>Latitude: <input{{with hasindex .Fields 4}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=x min=-90.000000 max=90.000000 step=0.000001 type=number>{{with hasindex .Fields 4}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
-<label>Longitude: <input{{with hasindex .Fields 5}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=y min=-180.000000 max=180.000000 step=0.000001 type=number>{{with hasindex .Fields 5}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
+<label>Latitude: <input{{with hasindex .Fields 4}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=x min=-90 max=90 step=.000001 type=number>{{with hasindex .Fields 4}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
+<label>Longitude: <input{{with hasindex .Fields 5}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=y min=-180 max=180 step=.000001 type=number>{{with hasindex .Fields 5}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 {{with hasindex .Fields 6}}{{if .Error}}<div>{{end}}{{end}}<button {{with hasindex .Fields 6}}{{attr " value" .Value}}{{end}} name=C>Save</button>{{with hasindex .Fields 6}}{{with .Error}}<samp>{{.}}</samp></div>{{end}}{{end}}</fieldset></form>
 {{end}}
 
 {{define "NewShootingMound"}}<form method=post action=/2><fieldset><legend>New Shooting <u>M</u>ound</legend>
 {{with .Error}}<samp>{{.}}</samp>{{end}}
 <label>Mound Name: <input{{with hasindex .Fields 0}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=n maxlength=64 autocomplete=off>{{with hasindex .Fields 0}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
-<label>Distance: <input{{with hasindex .Fields 1}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=e min=10.000000 max=65535.000000 step=0.010000 accesskey=m type=number>{{with hasindex .Fields 1}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
+<label>Distance: <input{{with hasindex .Fields 1}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=e min=10 max=65535 step=.01 accesskey=m type=number>{{with hasindex .Fields 1}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Units: <select{{with hasindex .Fields 2}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=z>{{with hasindex .Fields 2}}{{with .Options}}{{range .}}<option{{attr " value" .Value}}>{{.Label}}{{end}}{{end}}{{else}}<option value=m>Metres<option value=k>Kilometres<option value=y>Yards<option value=f>Feet{{end}}</select>{{with hasindex .Fields 2}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 {{with hasindex .Fields 3}}{{if .Error}}<div>{{end}}{{end}}<button {{with hasindex .Fields 3}}{{attr " value" .Value}}{{end}} name=C>Save</button>{{with hasindex .Fields 3}}{{with .Error}}<samp>{{.}}</samp></div>{{end}}{{end}}</fieldset></form>
 {{end}}
@@ -28,7 +28,7 @@
 {{with .Error}}<samp>{{.}}</samp>{{end}}
 <label>Club Name: <input{{with hasindex .Fields 0}}{{attr " value" .Value}}{{has .Options " list=C"}}{{has .Error " class=error"}}{{has .Required " required"}}{{has .AutoFocus " autofocus"}}{{end}} name=C accesskey=e maxlength=64>{{with hasindex .Fields 0}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Event Name: <input{{with hasindex .Fields 1}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=n maxlength=64 autocomplete=off>{{with hasindex .Fields 1}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
-<label>Start date &amp; time: <input{{with hasindex .Fields 2}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} type=datetime-local placeholder="yyyy-mm-dd hh:mm" name=d step=5.000000>{{with hasindex .Fields 2}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
+<label>Start date &amp; time: <input{{with hasindex .Fields 2}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} type=datetime-local placeholder="yyyy-mm-dd hh:mm" name=d step=5>{{with hasindex .Fields 2}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <button>Save</button></fieldset></form>
 {{with hasindex .Fields 0}}{{with .Options}}<datalist id=C>{{range .}}<option{{attr " value" .Label}}>{{end}}</datalist>{{end}}{{end}}{{end}}
 
