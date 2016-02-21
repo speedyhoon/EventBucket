@@ -34,9 +34,8 @@ const (
 	favicon    = "favicon.ico"
 
 	//Date formats
-	formatYMD  = "2006-01-02"
-	formatTime = "15:04"
-	formatGMT  = "Mon, 02 Jan 2006 15:04:05 GMT"
+	formatDT  = "2006-01-02T15:04"
+	formatGMT = "Mon, 02 Jan 2006 15:04:05 GMT"
 )
 
 var (
@@ -166,12 +165,8 @@ func setExpiresTime() {
 	masterTemplate.CurrentYear = time.Now().Format("2006")
 }
 
-func defaultDate() []string {
-	return []string{time.Now().Format(formatYMD)}
-}
-
-func defaultTime() []string {
-	return []string{time.Now().Format(formatTime)}
+func defaultDateTime() []string {
+	return []string{time.Now().Format(formatDT)}
 }
 
 func toB36(b uint64) string {

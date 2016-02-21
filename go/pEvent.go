@@ -98,8 +98,7 @@ func eventNewDefaultValues(form form) form {
 		form.Fields = []field{
 			{Required: hasDefaultClub()},
 			{},
-			{Value: defaultDate()[0]},
-			{Value: defaultTime()[0]},
+			{Value: defaultDateTime()[0]},
 		}
 	}
 	return form

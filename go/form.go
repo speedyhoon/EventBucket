@@ -112,9 +112,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "n", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
-			name: "d", v8: isValidStr,
-		}, {
-			name: "t", v8: isValidStr,
+			name: "d", step: 5, v8: isValidStr,
 		}}
 	case 4:
 		return []field{{
