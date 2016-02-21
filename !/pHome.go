@@ -7,18 +7,42 @@ import (
 
 func home(w http.ResponseWriter, r *http.Request) {
 	sessionForm := getSession(w, r, []uint8{eventNew})
+	listEvents, err := getEvents()
 	templater(w, page{
 		Title: "Home",
+		Error: err,
 		Data: M{
-			"NewEvent": eventNewDefaultValues(sessionForm),
+			"NewEvent":   eventNewDefaultValues(sessionForm),
+			"ListEvents": listEvents,
 		},
 	})
 }
 
-func report(w http.ResponseWriter, r *http.Request) {
+func events(w http.ResponseWriter, r *http.Request) {
+	sessionForm := getSession(w, r, []uint8{eventNew, eventDetails})
+	listEvents, err := getEvents()
 	templater(w, page{
-		Title: "Report",
+		Title: "Events",
+		Error: err,
+		Data: M{
+			"NewEvent":   eventNewDefaultValues(sessionForm),
+			"ListEvents": listEvents,
+		},
 	})
+}
+
+func eventNewDefaultValues(form form) form {
+	if len(form.Fields) == 0 {
+		form.Fields = []field{
+			{Required: hasDefaultClub()},
+			{},
+			{},
+		}
+	}
+	if form.Fields[2].Value == "" {
+		form.Fields[2].Value = defaultDateTime()[0]
+	}
+	return form
 }
 
 func eventArchive(w http.ResponseWriter, r *http.Request) {
@@ -46,21 +70,3 @@ func licence(w http.ResponseWriter, r *http.Request) {
 		Title: "Licence",
 	})
 }
-
-/*
-Adding forms to a page:
-	in a HTML form there are 3 main areas:
-		the data being displayed - textbox values and select box options
-		validation - attributes to hinder user from submitting invalid form data - required, min, max etc...
-		presentation & functionality
-		error handling - bypassing validation or complex validation not implemented in HTML (required checkbox group)
-
-
-	it's difficult to maintain standardised forms in all areas without making a standard form builder
-	building a form during runtime is quite slow string & slice concatenation
-	passing the form to validation has a lot of fields that aren't needed
-
-create the HTML
-add validation struct
-add population data - map[string]interface OR anonymous struct
-*/

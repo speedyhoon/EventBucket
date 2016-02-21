@@ -278,5 +278,22 @@ trialing boltDB. reduced compiled size
 EventBucket with MongoDB size: 9.46 MB (9,927,680 bytes)
 EventBucket with Bolt DB size: 8.86 MB (9,300,480 bytes)
 
+<h2>HTML Forms</h2>
+<pre>
+Adding forms to a page:
+	in a HTML form there are 3 main areas:
+		the data being displayed - textbox values and select box options
+		validation - attributes to hinder user from submitting invalid form data - required, min, max etc...
+		presentation & functionality
+		error handling - bypassing validation or complex validation not implemented in HTML (required checkbox group)
 
+
+	it's difficult to maintain standardised forms in all areas without making a standard form builder
+	building a form during runtime is quite slow string & slice concatenation
+	passing the form to validation has a lot of fields that aren't needed
+
+create the HTML
+add validation struct
+add population data - map[string]interface OR anonymous struct
+</pre>
 {{end}}
