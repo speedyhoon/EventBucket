@@ -17,10 +17,9 @@ type page struct {
 }
 
 type markupEnv struct {
-	JS, CurrentYear, CSS, PNG string
-	Page                      page
-	Menu                      []menu
-	SubMenu                   []menu
+	CurrentYear   string
+	Page          page
+	Menu, SubMenu []menu
 }
 
 const (
@@ -34,11 +33,8 @@ const (
 var (
 	templates      = make(map[string]*template.Template)
 	masterTemplate = markupEnv{
-		CSS:         dirCSS,
 		CurrentYear: currentYear,
-		JS:          dirJS,
 		Menu:        mainMenu,
-		PNG:         dirPNG,
 	}
 )
 
