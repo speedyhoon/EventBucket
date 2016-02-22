@@ -34,7 +34,7 @@ const (
 
 // Club is exported
 type Club struct {
-	ID        string  `bson:"_id"`
+	ID        uint64  `bson:"_id"`
 	Name      string  `bson:"n"`
 	IsDefault bool    `bson:"b,omitempty"`
 	Mounds    []Mound `bson:"M,omitempty"`
@@ -70,10 +70,10 @@ type Mound struct {
 
 // Event is exported
 type Event struct {
-	ID       string  `bson:"_id"`
+	ID       uint64  `bson:"_id"`
 	Name     string  `bson:"n"`
 	Club     string  `bson:"C"`
-	DateTime string  `bson:"schemaDateTime"`
+	DateTime string  `bson:"d"`
 	Ranges   []Range `bson:"R,omitempty"`
 	AutoInc  AutoInc `bson:"A"`
 }

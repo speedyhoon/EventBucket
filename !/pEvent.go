@@ -57,15 +57,15 @@ func event(w http.ResponseWriter, r *http.Request, eventID string) {
 }
 
 func eventInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
-	ID, err := getNextID(tblEvent)
+	/*ID, err := getNextID(tblEvent)
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
 		return
-	}
+	}*/
 
 	//Insert new event into database.
-	err = upsertDoc(tblEvent, ID, Event{
-		ID:       ID,
+	ID, err := insertEvent(Event{
+		//		ID:       ID,
 		Club:     submittedForm.Fields[0].Value,
 		Name:     submittedForm.Fields[1].Value,
 		DateTime: submittedForm.Fields[2].Value,
