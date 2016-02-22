@@ -16,23 +16,6 @@ var (
 	tblShooter = []byte("S")
 )
 
-/*
-	event, err := getEvent3(2)
-	//event, err := getEvent(2)
-	if err != nil {
-		log.Println(err)
-	}
-	fmt.Printf("%T\n\n%v, %v", event, len(event.Shooters), len(event.Shooters[0].Scores))
-*/
-
-/*for _, shooter := range event.Shooters{
-	log.Println(shooter.ID, shooter.FirstName, shooter.Surname)
-	log.Println(len(shooter.Scores))
-	for _, score := range shooter.Scores{
-		log.Println("\t", score.RangeID, score.Total, score.Centres, score.Shots)
-	}
-}*/
-
 func getDocument(collection []byte, ID string, result interface{}) error {
 	err := db.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(collection)
@@ -43,14 +26,12 @@ func getDocument(collection []byte, ID string, result interface{}) error {
 		if err != nil {
 			return err
 		}
-		trace.Println(ID, []byte(ID), byteID)
 
 		document := bucket.Get(byteID)
 		err = json.Unmarshal(document, result)
 		if err != nil {
 			warn.Printf("Query %p document unmarshaling failed: %#v\n", document, err)
 		}
-		warn.Println(string(document))
 		return err
 	})
 	return err
@@ -58,95 +39,18 @@ func getDocument(collection []byte, ID string, result interface{}) error {
 
 func getEvent(ID string) (Event, error) {
 	var event Event
-	//	b, err := B36toUint(ID)
-	//	if err != nil {
-	//		return event, err
-	//	}
 	return event, getDocument(tblEvent, ID, &event)
 }
 
 func getClub(ID string) (Club, error) {
 	var club Club
-	//	b, err := B36toUint(ID)
-	//	if err != nil {
-	//		return club, err
-	//	}
 	return club, getDocument(tblClub, ID, &club)
 }
 
 func getShooter(ID string) (Shooter, error) {
 	var shooter Shooter
-	//	b, err := B36toUint(ID)
-	//	if err != nil {
-	//		return shooter, err
-	//	}
 	return shooter, getDocument(tblShooter, ID, &shooter)
 }
-
-/*
-func insertEvent(db *bolt.DB, u Event) uint64 {
-	var eventID uint64
-
-	// store some data
-	err := db.Update(func(tx *bolt.Tx) error {
-		bucket, err := tx.CreateBucketIfNotExists(tblEvent)
-		if err != nil {
-			return err
-		}
-		// Generate ID for the user.
-		// This returns an error only if the Tx is closed or not writeable.
-		// That can't happen in an Update() call so I ignore the error check.
-		eventID, _ = bucket.NextSequence()
-
-		//log.Println("eventID", eventID)
-
-		u.Name = string(eventID)
-		u.ID = toB36(eventID) //uint64(id)
-
-		// Marshal user data into bytes.
-		buf, err := json.Marshal(u)
-		if err != nil {
-			return err
-		}
-		return bucket.Put(itob(eventID), buf)
-	})
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	return eventID
-}*/
-/*
-func insertE(db *bolt.DB, u Event) {
-	//var eventID uint64
-
-	// store some data
-	err := db.Update(func(tx *bolt.Tx) error {
-		bucket, err := tx.CreateBucketIfNotExists(tblEvent)
-		if err != nil {
-			return err
-		}
-		// Generate ID for the user.
-		// This returns an error only if the Tx is closed or not writeable.
-		// That can't happen in an Update() call so I ignore the error check.
-		eventID, _ := bucket.NextSequence()
-
-		//log.Println("eventID", eventID)
-
-		u.ID = toB36(eventID) //uint64(id)
-
-		// Marshal user data into bytes.
-		buf, err := json.Marshal(u)
-		if err != nil {
-			return err
-		}
-		return bucket.Put(itob(eventID), buf)
-	})
-
-	if err != nil {
-		log.Fatal(err)
-	}
-}*/
 
 func insertEvent(event Event) (string, error) {
 	err := db.Update(func(tx *bolt.Tx) error {
@@ -158,22 +62,13 @@ func insertEvent(event Event) (string, error) {
 		// This returns an error only if the Tx is closed or not writeable.
 		// That can't happen in an Update() call so I ignore the error check.
 		event.ID, _ = bucket.NextSequence()
-		//		eventID = toB36(sequence)
-		//		event.ID = eventID
-
 		// Marshal user data into bytes.
 		buf, err := json.Marshal(event)
 		if err != nil {
 			return err
 		}
-
-		//		return bucket.Put(itob(eventID), buf)
 		return bucket.Put(itob(event.ID), buf)
 	})
-
-	//	if err != nil {
-	//		warn.Fatal(err)
-	//	}
 	return toB36(event.ID), err
 }
 
@@ -187,104 +82,15 @@ func insertClub(club Club) (string, error) {
 		// This returns an error only if the Tx is closed or not writeable.
 		// That can't happen in an Update() call so I ignore the error check.
 		club.ID, _ = bucket.NextSequence()
-		//		clubID = toB36(sequence)
-		//		club.ID = clubID
-
 		// Marshal user data into bytes.
 		buf, err := json.Marshal(club)
 		if err != nil {
 			return err
 		}
-
-		//		return bucket.Put(itob(clubID), buf)
 		return bucket.Put(itob(club.ID), buf)
 	})
-
-	//	if err != nil {
-	//		warn.Fatal(err)
-	//	}
 	return toB36(club.ID), err
 }
-
-/*
-func getDocument_backup(collection []byte, ID uint64) ([]byte, error) {
-	var document []byte
-	// retrieve the data
-	err := db.View(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(collection)
-		if bucket == nil {
-			return fmt.Errorf("Bucket %q not found!", collection)
-		}
-		document = bucket.Get(itob(ID))
-		return nil
-	})
-	return document, err
-}
-
-func getEvent2(eventID uint64)(Event, error){
-	var event Event
-	document, err := getDocument(tblEvent, eventID)
-	if err != nil{
-		return event, err
-	}
-	err = json.Unmarshal(document, &event)
-	return event, err
-}
-
-func getClub(clubID uint64)(Club, error){
-	var club Club
-	document, err := getDocument(tblClub, clubID)
-	if err != nil{
-		return club, err
-	}
-	err = json.Unmarshal(document, &club)
-	return club, err
-}*/
-/*
-func getEvent(eventID uint64) (Event, error) {
-	var event Event
-	var err error
-	var value []byte
-	// retrieve the data
-	err = db.View(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(tblEvent)
-		if bucket == nil {
-			return fmt.Errorf("Bucket %q not found!", tblEvent)
-		}
-
-		value = bucket.Get(itob(eventID))
-
-		//log.Println("out", string(val))
-
-		return nil
-
-	})
-	if err != nil {
-		return event, err
-	}
-	//log.Println(string(value))
-	err = json.Unmarshal(value, &event)
-	return event, err
-}
-
-func getE(db *bolt.DB, collection []byte, id uint64) []byte {
-	var val []byte
-	// retrieve the data
-	err := db.View(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(collection)
-		if bucket == nil {
-			return fmt.Errorf("Bucket %q not found!", collection)
-		}
-
-		val = bucket.Get(itob(id))
-		return nil
-	})
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	return val
-}*/
 
 // itob returns an 8-byte big endian representation of v.
 func itob(v uint64) []byte {
