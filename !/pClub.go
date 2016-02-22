@@ -39,7 +39,7 @@ func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redi
 	name := submittedForm.Fields[0].Value
 	isDefault := submittedForm.Fields[1].internalValue.(bool)
 
-	//TODO these several db calls are not atomic.
+	/*//TODO these several db calls are not atomic.
 	ID, err := getNextID(tblClub)
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
@@ -58,7 +58,8 @@ func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redi
 		AutoInc: AutoInc{
 			Mound: 1,
 		},
-	})
+	})*/
+	ID, err := insertClub(Club{Name: name, IsDefault: isDefault})
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
 		return

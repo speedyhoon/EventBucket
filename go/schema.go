@@ -34,7 +34,7 @@ const (
 
 // Club is exported
 type Club struct {
-	ID        string  `bson:"schemaID"`
+	ID        uint64  `bson:"schemaID"`
 	Name      string  `bson:"schemaName"`
 	IsDefault bool    `bson:"schemaIsDefault,omitempty"`
 	Mounds    []Mound `bson:"schemaMound,omitempty"`
@@ -70,7 +70,7 @@ type Mound struct {
 
 // Event is exported
 type Event struct {
-	ID       string  `bson:"schemaID"`
+	ID       uint64  `bson:"schemaID"`
 	Name     string  `bson:"schemaName"`
 	Club     string  `bson:"schemaClub"`
 	DateTime string  `bson:"schemaDateTime"`

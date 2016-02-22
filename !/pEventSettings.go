@@ -21,13 +21,13 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 			"RangesQty": len(ranges),
 			"AddRange": form{Fields: []field{
 				{},
-				{Value: event.ID},
+				{Value: toB36(event.ID)},
 			},
 			},
 			"AddAgg": form{Fields: []field{
 				{},
 				{Options: ranges},
-				{Value: event.ID},
+				{Value: toB36(event.ID)},
 			},
 			},
 		},

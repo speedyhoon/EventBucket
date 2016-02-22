@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
-	"log"
+	"strconv"
 
 	"github.com/boltdb/bolt"
 )
@@ -33,18 +33,24 @@ var (
 	}
 }*/
 
-func getDocument(collection []byte, ID uint64, result interface{}) error {
+func getDocument(collection []byte, ID string, result interface{}) error {
 	err := db.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(collection)
 		if bucket == nil {
 			return fmt.Errorf("Bucket %q not found!", collection)
 		}
-		document := bucket.Get(itob(ID))
-
-		err := json.Unmarshal(document, result)
+		byteID, err := B36toBy(ID)
 		if err != nil {
-			log.Printf("Query %p document unmarshaling failed: %#v\n", document, err)
+			return err
 		}
+//		trace.Println(ID, []byte(ID), byteID)
+
+		document := bucket.Get(byteID)
+		err = json.Unmarshal(document, result)
+		if err != nil {
+			warn.Printf("Query %p document unmarshaling failed: %#v\n", document, err)
+		}
+//		warn.Println(string(document))
 		return err
 	})
 	return err
@@ -52,31 +58,32 @@ func getDocument(collection []byte, ID uint64, result interface{}) error {
 
 func getEvent(ID string) (Event, error) {
 	var event Event
-	b, err := B36toUint(ID)
-	if err != nil {
-		return event, err
-	}
-	return event, getDocument(tblEvent, b, &event)
+	//	b, err := B36toUint(ID)
+	//	if err != nil {
+	//		return event, err
+	//	}
+	return event, getDocument(tblEvent, ID, &event)
 }
 
 func getClub(ID string) (Club, error) {
 	var club Club
-	b, err := B36toUint(ID)
-	if err != nil {
-		return club, err
-	}
-	return club, getDocument(tblClub, b, &club)
+	//	b, err := B36toUint(ID)
+	//	if err != nil {
+	//		return club, err
+	//	}
+	return club, getDocument(tblClub, ID, &club)
 }
 
 func getShooter(ID string) (Shooter, error) {
 	var shooter Shooter
-	b, err := B36toUint(ID)
-	if err != nil {
-		return shooter, err
-	}
-	return shooter, getDocument(tblShooter, b, &shooter)
+	//	b, err := B36toUint(ID)
+	//	if err != nil {
+	//		return shooter, err
+	//	}
+	return shooter, getDocument(tblShooter, ID, &shooter)
 }
 
+/*
 func insertEvent(db *bolt.DB, u Event) uint64 {
 	var eventID uint64
 
@@ -108,8 +115,8 @@ func insertEvent(db *bolt.DB, u Event) uint64 {
 		log.Fatal(err)
 	}
 	return eventID
-}
-
+}*/
+/*
 func insertE(db *bolt.DB, u Event) {
 	//var eventID uint64
 
@@ -139,6 +146,64 @@ func insertE(db *bolt.DB, u Event) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}*/
+
+func insertEvent(event Event) (string, error) {
+	err := db.Update(func(tx *bolt.Tx) error {
+		bucket, err := tx.CreateBucketIfNotExists(tblEvent)
+		if err != nil {
+			return err
+		}
+		// Generate ID for the user.
+		// This returns an error only if the Tx is closed or not writeable.
+		// That can't happen in an Update() call so I ignore the error check.
+		event.ID, _ = bucket.NextSequence()
+		//		eventID = toB36(sequence)
+		//		event.ID = eventID
+
+		// Marshal user data into bytes.
+		buf, err := json.Marshal(event)
+		if err != nil {
+			return err
+		}
+
+		//		return bucket.Put(itob(eventID), buf)
+		return bucket.Put(itob(event.ID), buf)
+	})
+
+	//	if err != nil {
+	//		warn.Fatal(err)
+	//	}
+	return toB36(event.ID), err
+}
+
+func insertClub(club Club) (string, error) {
+	err := db.Update(func(tx *bolt.Tx) error {
+		bucket, err := tx.CreateBucketIfNotExists(tblClub)
+		if err != nil {
+			return err
+		}
+		// Generate ID for the user.
+		// This returns an error only if the Tx is closed or not writeable.
+		// That can't happen in an Update() call so I ignore the error check.
+		club.ID, _ = bucket.NextSequence()
+		//		clubID = toB36(sequence)
+		//		club.ID = clubID
+
+		// Marshal user data into bytes.
+		buf, err := json.Marshal(club)
+		if err != nil {
+			return err
+		}
+
+		//		return bucket.Put(itob(clubID), buf)
+		return bucket.Put(itob(club.ID), buf)
+	})
+
+	//	if err != nil {
+	//		warn.Fatal(err)
+	//	}
+	return toB36(club.ID), err
 }
 
 /*
@@ -228,6 +293,13 @@ func itob(v uint64) []byte {
 	return b
 }
 
+// stob returns an 8-byte big endian representation of v.
+func stob(v string) []byte {
+	//	b := make([]byte, 8)
+	//	binary.BigEndian.PutUint64(b, v)
+	return []byte(v)
+}
+
 func insertDoc(collectionName []byte, document interface{}) error {
 	/*err := conn.C(collectionName).Insert(document)
 	if err != nil {
@@ -300,29 +372,41 @@ func eventAddRange(eventID string, newRange Range) error {
 }
 
 func getClubs() ([]Club, error) {
-	/*	var result []Club
-		if conn != nil {
-			err := conn.C(tblClub).Find(nil).All(&result)
-			if err != nil {
-				warn.Println(err)
-			}
-			return result, err
+	var clubs []Club
+	var club Club
+	err := db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(tblClub)
+		if b == nil {
+			//Club Bucket isn't created yet
+			return nil
 		}
-		return result, errors.New("Unable to get clubs")*/
-	return []Club{}, nil
+		return b.ForEach(func(_, value []byte) error {
+			if json.Unmarshal(value, &club) == nil {
+				clubs = append(clubs, club)
+			}
+			return nil
+		})
+	})
+	return clubs, err
 }
 
 func getEvents() ([]Event, error) {
-	/*var result []Event
-	if conn != nil {
-		err := conn.C(tblEvent).Find(nil).All(&result)
-		if err != nil {
-			warn.Println(err)
+	var events []Event
+	var event Event
+	err := db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(tblEvent)
+		if b == nil {
+			//Event Bucket isn't created yet
+			return nil
 		}
-		return result, err
-	}
-	return result, errors.New("Unable to get events")*/
-	return []Event{}, nil
+		return b.ForEach(func(_, value []byte) error {
+			if json.Unmarshal(value, &event) == nil {
+				events = append(events, event)
+			}
+			return nil
+		})
+	})
+	return events, err
 }
 
 func updateAll(collectionName []byte, query, update M) {
@@ -406,4 +490,14 @@ func eventShooterInsertDB(eventID string, shooter EventShooter) error {
 	}
 	conn.C(tblEvent).FindId(eventID).Apply(change, &event)*/
 	return nil
+}
+
+func B36toBy(a string) ([]byte, error) {
+	v, err := strconv.ParseUint(a, 36, 64)
+	if err != nil {
+		return []byte{}, err
+	}
+	b := make([]byte, 8)
+	binary.BigEndian.PutUint64(b, v)
+	return b, nil
 }

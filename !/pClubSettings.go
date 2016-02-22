@@ -27,7 +27,7 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 			{Value: club.Postcode},
 			{Value: fmt.Sprintf("%f", club.Latitude)},
 			{Value: fmt.Sprintf("%f", club.Longitude)},
-			{Value: club.ID},
+			{Value: toB36(club.ID)},
 		}}
 	}
 	if invalidForm.action == clubMoundNew {
@@ -36,14 +36,14 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 		newMoundForm = form{Fields: []field{
 			{},
 			{},
-			{Value: club.ID},
+			{Value: toB36(club.ID)},
 		}}
 	}
 
 	templater(w, page{
 		Title:  "Club Settings",
 		menu:   urlClub,
-		MenuID: club.ID,
+		MenuID: toB36(club.ID),
 		Data: M{
 			"Club":        club,
 			"ClubDetails": detailsForm,
