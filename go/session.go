@@ -79,3 +79,21 @@ func getSession(w http.ResponseWriter, r *http.Request, formActions []uint8) for
 	}
 	return form{}
 }
+
+func getFormSession(w http.ResponseWriter, r *http.Request, formAction uint8) form {
+	cookies, err := r.Cookie(sessionToken)
+	if err != nil || cookies.Value == "" {
+		return form{Fields: getForm(formAction)}
+	}
+
+	contents, ok := globalSessions[cookies.Value]
+	if ok {
+		//Clear the session contents as it has been returned to the user.
+		delete(globalSessions, cookies.Value)
+		w.Header().Set("Set-Cookie", fmt.Sprintf("%v=; expires=%v", sessionToken, time.Now().UTC().Add(-sessionExpiryTime).Format(formatGMT)))
+		if formAction == contents.action {
+			return contents
+		}
+	}
+	return form{Fields: getForm(formAction)}
+}

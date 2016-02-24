@@ -107,3 +107,12 @@ func dataListClubs(clubs []Club) []option {
 	}
 	return options
 }
+
+func getDataListClubs() []option {
+	clubs, err := getClubs()
+	if err != nil {
+		warn.Println(err)
+	}
+	trace.Println(dataListClubs(clubs))
+	return dataListClubs(clubs)
+}
