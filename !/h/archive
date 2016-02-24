@@ -1,3 +1,4 @@
 {{define "page"}}
-	{{.Stuff}}_mmmm nasty
+	<p>Completed events.</p>
+	{{template "listEvents" .ListEvents}}
 {{end}}

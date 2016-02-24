@@ -135,13 +135,13 @@ var (
 		Name: "Shooters",
 		Link: urlShooters,
 	}, {
+		Name: "Archive",
+		Link: urlArchive,
+	}, {
 		Name: "About",
 		Link: urlAbout,
 	}, {
 		Name: "Licence",
 		Link: urlLicence,
-	}, {
-		Name: "Archive",
-		Link: urlArchive,
 	}}
 )
