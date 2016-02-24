@@ -99,7 +99,7 @@ func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm fo
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
 	}
-	http.Redirect(w, r, urlEvent+eventID, http.StatusSeeOther)
+	http.Redirect(w, r, urlEntries+eventID, http.StatusSeeOther)
 }
 func eventShooterExistingInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	eventID := submittedForm.Fields[3].Value
@@ -120,5 +120,5 @@ func eventShooterExistingInsert(w http.ResponseWriter, r *http.Request, submitte
 		formError(w, submittedForm, redirect, err)
 		return
 	}
-	http.Redirect(w, r, urlEvent+eventID, http.StatusSeeOther)
+	http.Redirect(w, r, urlEntries+eventID, http.StatusSeeOther)
 }

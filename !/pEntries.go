@@ -2,7 +2,7 @@ package main
 
 import "net/http"
 
-func event(w http.ResponseWriter, r *http.Request, eventID string) {
+func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 	sessionForm := getSession(w, r, []uint8{eventShooterNew, eventShooterExisting})
 	//	trace.Println("event fields len=", len(sessionForm.Fields))
 	//	for i, input := range sessionForm.Fields {
@@ -88,5 +88,5 @@ func eventInsert(w http.ResponseWriter, r *http.Request, submittedForm form, red
 		formError(w, submittedForm, redirect, err)
 		return
 	}
-	http.Redirect(w, r, urlEvent+ID, http.StatusSeeOther)
+	http.Redirect(w, r, urlEntries+ID, http.StatusSeeOther)
 }

@@ -16,7 +16,7 @@ const (
 	//GET with PARAMETERS
 	urlClub            = "/club/"           //clubID
 	urlClubSettings    = "/club-settings/"  //clubID
-	urlEvent           = "/event/"          //eventID
+	urlEntries         = "/entries/"        //eventID
 	urlEventSettings   = "/event-settings/" //eventID
 	urlEventReport     = "/event-report/"   //eventID
 	urlScoreboard      = "/scoreboard/"     //eventID
@@ -42,7 +42,7 @@ func pages() {
 	getRedirectPermanent("/report", report)
 	getParameters(urlClub, club, regexID)
 	getParameters(urlClubSettings, clubSettings, regexID)
-	getParameters(urlEvent, event, regexID)
+	getParameters(urlEntries, entries, regexID)
 	getParameters(urlEventSettings, eventSettings, regexID)
 	getParameters(urlEventReport, eventReport, regexID)
 	getParameters(urlScoreboard, scoreboard, regexID)
@@ -104,7 +104,7 @@ var (
 		Link: urlEvents,
 		SubMenu: []menu{{
 			Name: "Entries",
-			Link: urlEvent,
+			Link: urlEntries,
 		}, {
 			Name: "Event Settings",
 			Link: urlEventSettings,
@@ -143,8 +143,5 @@ var (
 	}, {
 		Name: "Archive",
 		Link: urlArchive,
-	}, {
-		Name: "Report",
-		Link: "/report/",
 	}}
 )
