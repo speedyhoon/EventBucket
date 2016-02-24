@@ -24,11 +24,11 @@ type markupEnv struct {
 }
 
 const (
-	titleSeparator              = " - "
-	htmlDirectory               = "./h/"
-	masterTemplatePath          = htmlDirectory + "_master"
-	formsTemplatePath           = htmlDirectory + "forms"
-	networkAdaptersTemplatePath = htmlDirectory + "_networkAdapters"
+	titleSeparator        = " - "
+	htmlDirectory         = "./h/"
+	masterTemplatePath    = htmlDirectory + "_master"
+	formsTemplatePath     = htmlDirectory + "forms"
+	reusablesTemplatePath = htmlDirectory + "_reusables"
 )
 
 var (
@@ -85,7 +85,7 @@ func templater(w http.ResponseWriter, page page) {
 				}
 				return template.HTMLAttr("")
 			},
-		}).ParseFiles(htmlDirectory+pageName, formsTemplatePath, networkAdaptersTemplatePath, masterTemplatePath))
+		}).ParseFiles(htmlDirectory+pageName, formsTemplatePath, reusablesTemplatePath, masterTemplatePath))
 		html = templates[pageName]
 	}
 

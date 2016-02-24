@@ -1,6 +1,6 @@
-{{define "NewClub"}}<form method=post action=/0><fieldset><legend>New <u>C</u>lub</legend>
+{{define "NewClub"}}<form method=post action=/0><fieldset><legend><u>N</u>ew Club</legend>
 {{with .Error}}<samp>{{.}}</samp>{{end}}
-<label>Club Name: <input{{with hasindex .Fields 0}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=n accesskey=c maxlength=64 autocomplete=off>{{with hasindex .Fields 0}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
+<label>Club Name: <input{{with hasindex .Fields 0}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=n accesskey=n maxlength=64 autocomplete=off>{{with hasindex .Fields 0}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Default Club: <input{{with hasindex .Fields 1}}{{attr " value" .Value}}{{attr " checked" .Checked}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=b type=checkbox>{{with hasindex .Fields 1}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <button>Save</button></fieldset></form>
 {{end}}
@@ -24,9 +24,9 @@
 {{with hasindex .Fields 3}}{{if .Error}}<div>{{end}}{{end}}<button {{with hasindex .Fields 3}}{{attr " value" .Value}}{{end}} name=C>Save</button>{{with hasindex .Fields 3}}{{with .Error}}<samp>{{.}}</samp></div>{{end}}{{end}}</fieldset></form>
 {{end}}
 
-{{define "NewEvent"}}<form method=post action=/3><fieldset><legend>New <u>E</u>vent</legend>
+{{define "NewEvent"}}<form method=post action=/3><fieldset><legend><u>N</u>ew Event</legend>
 {{with .Error}}<samp>{{.}}</samp>{{end}}
-<label>Club Name: <input{{with hasindex .Fields 0}}{{attr " value" .Value}}{{has .Options " list=C"}}{{has .Error " class=error"}}{{has .Required " required"}}{{has .AutoFocus " autofocus"}}{{end}} name=C accesskey=e maxlength=64>{{with hasindex .Fields 0}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
+<label>Club Name: <input{{with hasindex .Fields 0}}{{attr " value" .Value}}{{has .Options " list=C"}}{{has .Error " class=error"}}{{has .Required " required"}}{{has .AutoFocus " autofocus"}}{{end}} name=C accesskey=n maxlength=64>{{with hasindex .Fields 0}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Event Name: <input{{with hasindex .Fields 1}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=n maxlength=64 autocomplete=off>{{with hasindex .Fields 1}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Start date &amp; time: <input{{with hasindex .Fields 2}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} type=datetime-local placeholder="yyyy-mm-dd hh:mm" name=d step=5>{{with hasindex .Fields 2}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <button>Save</button></fieldset></form>
