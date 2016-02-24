@@ -24,15 +24,6 @@ func report(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func eventArchive(w http.ResponseWriter, r *http.Request) {
-	templater(w, page{
-		Title: "Archive",
-		Data: M{
-			"Stuff": "Archive page!",
-		},
-	})
-}
-
 func about(w http.ResponseWriter, r *http.Request) {
 	hostname, _ := os.Hostname()
 	templater(w, page{
