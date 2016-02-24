@@ -185,7 +185,7 @@ func whoops(w http.ResponseWriter, r *http.Request, url string) {
 	case urlClubSettings:
 		pageName = "Club Settings"
 		pageType = "club"
-	case urlEvent:
+	case urlEntries:
 		pageName = "Event"
 		pageType = "event"
 	case urlEventSettings:
