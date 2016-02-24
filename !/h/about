@@ -1,7 +1,6 @@
 {{define "page"}}
-	<h1>About</h1>
 	EventBucket version: 0.92
-	<p>Compiled by Cam Webb using go1.5.1, on January 24, 2016.</p>
+	<p>Compiled by Cam Webb using go1.6, on February 24, 2016.</p>
 	{{template "networkAdapters" .}}
 	<h2 class=center>
 		Built with:

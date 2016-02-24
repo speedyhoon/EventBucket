@@ -1,5 +1,3 @@
 {{define "page"}}
-<h1>Scoreboard</h1>
 id={{.Event.ID}}
-<h2>{{.Event.Name}}</h2>
 {{end}}

@@ -12,9 +12,10 @@ func club(w http.ResponseWriter, r *http.Request, clubID string) {
 		return
 	}
 	templater(w, page{
-		Title:  "Club",
-		MenuID: clubID,
-		menu:   urlClub,
+		Title:   "Club",
+		MenuID:  clubID,
+		Menu:    urlClubs,
+		Heading: club.Name,
 		Data: M{
 			"Club": club,
 		},

@@ -41,9 +41,10 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 	}
 
 	templater(w, page{
-		Title:  "Club Settings",
-		menu:   urlClub,
-		MenuID: toB36(club.ID),
+		Title:   "Club Settings",
+		Menu:    urlClubs,
+		MenuID:  toB36(club.ID),
+		Heading: club.Name,
 		Data: M{
 			"Club":        club,
 			"ClubDetails": detailsForm,

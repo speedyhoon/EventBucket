@@ -8,6 +8,9 @@ func event(w http.ResponseWriter, r *http.Request, eventID string) {
 	//	for i, input := range sessionForm.Fields {
 	//		fmt.Println(i, input.name, input.Error)
 	//	}
+
+	listClubs, err := getClubs()
+
 	var shooterEntry form
 	switch sessionForm.action {
 	case eventShooterNew:
@@ -15,12 +18,15 @@ func event(w http.ResponseWriter, r *http.Request, eventID string) {
 		shooterEntry.Fields = append(shooterEntry.Fields[:3], append([]field{{}}, shooterEntry.Fields[3:]...)...)
 	case eventShooterExisting:
 		shooterEntry = sessionForm
-		shooterEntry.Fields = append([]field{{}, {}, {}}, shooterEntry.Fields...)
+		shooterEntry.Fields = append([]field{
+			{},
+			{},
+			{Options: dataListClubs(listClubs)},
+		}, shooterEntry.Fields...)
 	default:
 		//	if sessionForm.action == eventShooterNew || sessionForm.action == eventShooterExisting {
 		//		shooterEntry = sessionForm
 		//	} else {
-		listClubs, err := getClubs()
 		shooterEntry = form{Fields: []field{
 			{}, {},
 			{Options: dataListClubs(listClubs)},
@@ -30,14 +36,19 @@ func event(w http.ResponseWriter, r *http.Request, eventID string) {
 			{},
 			//{},
 		}}
-		if err != nil {
-			shooterEntry.Error = err.Error()
-		}
+	}
+	if err != nil {
+		shooterEntry.Error = err.Error()
+	}
+
+	if len(shooterEntry.Fields[4].Options) == 0 {
+		shooterEntry.Fields[4].Options = dataListGrades()
+	}
+	if len(shooterEntry.Fields[5].Options) == 0 {
+		shooterEntry.Fields[5].Options = dataListAgeGroup()
 	}
 	shooterEntry.Fields = append(shooterEntry.Fields, field{Value: eventID})
-	//	trace.Println("event fields len=", len(sessionForm.Fields))
 	shooterEntry.Fields[6].Value = eventID
-	//	shooterEntry.Fields[7].Value = eventID
 
 	event, err := getEvent(eventID)
 	//If club not found in the database return error club not found (404).
@@ -46,9 +57,10 @@ func event(w http.ResponseWriter, r *http.Request, eventID string) {
 		return
 	}
 	templater(w, page{
-		Title:  "Event",
-		menu:   urlEvent,
-		MenuID: eventID,
+		Title:   "Entries",
+		Menu:    urlEvents,
+		MenuID:  eventID,
+		Heading: event.Name,
 		Data: M{
 			"Event":        event,
 			"ShooterEntry": shooterEntry,

@@ -1,0 +1,134 @@
+$margin: 1.5em
+//Colours
+$black: #000
+$dark: #445
+$grey: #777
+$liteGrey: #cdd
+$blue: #08b
+$briteBlue: #0bf
+$red: #c24
+$white: #fff
+//menu
+$menuPadding: $margin/6
+$bigPadding: $margin/3
+$fatBorder: 2px solid
+$thinBorder: 1px solid
+body
+	background: $black
+	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+	margin: $margin
+	color: $liteGrey
+
+section, header
+	float: left
+	display: block
+
+header > div
+	border-right: 1px dashed $dark
+	padding-right: $margin
+	padding-bottom: $menuPadding
+	margin-top: $margin
+
+section
+	padding-left: $margin
+	width: calc(100% - 14em)
+
+//Tables
+tr
+	border-bottom: $thinBorder $dark
+	padding: $bigPadding
+
+th
+	border: $fatBorder $dark
+
+.sorted, legend u
+	color: $briteBlue
+	border-color: $briteBlue
+
+form, table
+	margin-bottom: $margin
+	width: 100%
+
+//Forms
+legend
+	font-size: $margin
+	font-weight: 700
+	color: $liteGrey
+
+fieldset
+	border-color: $dark
+
+label, button
+	float: left
+	margin: 0 $margin $margin 0
+
+input, select
+	background: $dark
+	border: $thinBorder $grey
+	border-radius: $menuPadding
+	display: block
+	padding: $menuPadding
+	color: $liteGrey
+
+option:empty
+	display: none
+
+label select
+	width: 100%
+
+samp
+	color: $red
+
+button
+	background: transparent
+	color: $briteBlue
+	border: $fatBorder $briteBlue
+	padding: $bigPadding
+	border-radius: $bigPadding
+	cursor: pointer
+
+//Menus
+ul
+	list-style: none
+	padding: 0
+
+li a, .v
+	padding: $menuPadding
+	display: block
+
+li a, li ul, .v
+	padding-left: $margin
+
+ul a
+	border-left: $fatBorder transparent
+
+ul a:hover, button:hover, a:hover
+	border-color: $blue
+	color: $blue
+
+.v
+	color: $white
+	border-left: $fatBorder $white
+
+//Text
+h1,h2,h3,h4,h5,h6
+	margin: 0
+	color: $grey
+
+h1,h2,h3
+	color: $white
+	font-weight: 100
+
+.small
+	font-size: .7em
+
+a
+	text-decoration: none
+	color: $briteBlue
+
+.clear
+	clear: both
+
+.right
+	float: right
+//125

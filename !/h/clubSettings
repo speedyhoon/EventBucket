@@ -1,10 +1,9 @@
 {{define "page"}}
-	<h1>Club Settings</h1>
 	{{template "ClubDetails" .ClubDetails}}
 	{{template "NewShootingMound" .ClubMound}}
 	<p>{{.Club.ID}}</p>
-	<p>{{.Club.Name}}</p>
 	<p>{{.Club.IsDefault}}</p>
+	<h2>Mounds</h2>
 	{{with .Club.Mounds}}
 		<ul>
 			{{range .}}
@@ -12,7 +11,7 @@
 			{{end}}
 		</ul>
 	{{else}}
-		<p>No mounds listed</p>
+		<samp>No mounds listed</samp>
 	{{end}}
 
 <br>
