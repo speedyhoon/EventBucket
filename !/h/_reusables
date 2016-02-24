@@ -4,3 +4,15 @@
 	<strong>IP Address</strong> (Apple &amp; Android devices):{{range .IpAddresses}} <a href=//{{.}}>{{.}}</a>{{end}}
 </p>
 {{end}}
+
+{{define "listEvents"}}
+	{{with .}}
+		<ul>
+			{{range .}}
+				<li><a href=/entries/{{.ID}}>{{.Name}}</a>
+			{{end}}
+		</ul>
+	{{else}}
+		<samp>No Events found</samp>
+	{{end}}
+{{end}}
