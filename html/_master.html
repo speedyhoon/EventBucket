@@ -1,33 +1,44 @@
 {{define "master"}}<!DOCTYPE html>
-<link rel=stylesheet href=dirCSS/main>
+<link rel=stylesheet href=dirCSS/dark>
 <title>EventBucket{{with .Page.Title}} - {{.}}{{end}}</title>
-<body class=dark>
-	<h1><a href=/>EventBucket</a></h1>
-	<span>Making scoring easier for rifle clubs!</span>
-	<ul class=mainMenu>
-		{{range .Menu}}
-			{{if eq $.Page.Title .Name}}
-				<li class=visited>{{.Name}}
-			{{else}}
-				<li><a href={{.Link}}>{{.Name}}</a>
-			{{end}}
-		{{end}}
-	</ul>
-	{{with .SubMenu}}
-		<ul class=mainMenu>
-			{{range .}}
-				{{if eq $.Page.Title .Name}}
-					<li class=visited>{{.Name}}
-				{{else}}
-					<li><a href={{.Link}}{{$.Page.MenuID}}>{{.Name}}</a>
+<body>
+	<header>
+		<h1><a href=/>EventBucket</a></h1>
+		<span class=small>Making scoring easier for rifle clubs</span><br>
+		<span>Easier rifle club scoring</span>
+		<div>
+			<ul>
+				{{range .Menu}}
+					{{if eq $.Page.Title .Name}}
+						<li class=v>{{.Name}}
+					{{else}}
+						<li><a href={{.Link}}>{{.Name}}</a>
+							{{if eq $.Page.Menu .Link}}
+								{{with .SubMenu}}
+									<ul>
+										{{range .}}
+											{{if eq $.Page.Title .Name}}
+												<li class=v>{{.Name}}
+											{{else}}
+												<li><a href={{.Link}}{{$.Page.MenuID}}>{{.Name}}</a>
+											{{end}}
+										{{end}}
+									</ul>
+								{{end}}
+						{{end}}
+					{{end}}
 				{{end}}
-			{{end}}
-		</ul>
-	{{end}}
-	{{with .Page.Title}}<h1>{{.}}</h1>{{end}}
-	{{with .Page.Error}}<samp class=error>{{.}}</samp>{{end}}
-	{{template "page" .Page.Data}}
-	<p class=homeFooter>
-		Copyright &copy; 2011-{{.CurrentYear}} EventBucket | vversionNumber <a href=/licence class=right title="View licence"><img src=dirPNG/cc80x15 alt="Creative Commons Licence" height=15 width=80></a>
-<!--<script defer src=dirJS/test></script>-->
+			</ul>
+			<p class=small>Copyright &copy; 2011-{{.CurrentYear}}</p>
+			<p class=small><a href=#>vversionNumber</a> <a href=/licence class=right><img src=dirPNG/cc80x15 alt="Creative Commons Licence" height=15 width=80></a></p>
+		</div>
+	</header>
+	<section>
+		{{with .Page}}
+			{{with .Heading}}<h4>{{.}}</h4>{{end}}
+			{{with .Title}}<h1>{{.}}</h1>{{end}}
+			{{with .Error}}<samp>{{.}}</samp>{{end}}
+			{{template "page" .Data}}
+		{{end}}
+	</section>
 {{end}}

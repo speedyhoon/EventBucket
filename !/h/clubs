@@ -1,5 +1,4 @@
 {{define "page"}}
-	<h1>Clubs</h1>
 	{{template "NewClub" .NewClub}}
 	{{with .ListClubs}}
 		<ul>

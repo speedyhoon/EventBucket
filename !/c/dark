@@ -1,0 +1,142 @@
+body {
+  background: black;
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: 1.5em;
+  color: #ccdddd;
+}
+
+section, header {
+  float: left;
+  display: block;
+}
+
+header > div {
+  border-right: 1px dashed #444455;
+  padding-right: 1.5em;
+  padding-bottom: 0.25em;
+  margin-top: 1.5em;
+}
+
+section {
+  padding-left: 1.5em;
+  width: calc(100% - 14em);
+}
+
+tr {
+  border-bottom: 1px solid #444455;
+  padding: 0.5em;
+}
+
+th {
+  border: 2px solid #444455;
+}
+
+.sorted, legend u {
+  color: #00bbff;
+  border-color: #00bbff;
+}
+
+form, table {
+  margin-bottom: 1.5em;
+  width: 100%;
+}
+
+legend {
+  font-size: 1.5em;
+  font-weight: 700;
+  color: #ccdddd;
+}
+
+fieldset {
+  border-color: #444455;
+}
+
+label, button {
+  float: left;
+  margin: 0 1.5em 1.5em 0;
+}
+
+input, select {
+  background: #444455;
+  border: 1px solid #777777;
+  border-radius: 0.25em;
+  display: block;
+  padding: 0.25em;
+  color: #ccdddd;
+}
+
+option:empty {
+  display: none;
+}
+
+label select {
+  width: 100%;
+}
+
+samp {
+  color: #cc2244;
+}
+
+button {
+  background: transparent;
+  color: #00bbff;
+  border: 2px solid #00bbff;
+  padding: 0.5em;
+  border-radius: 0.5em;
+  cursor: pointer;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li a, .v {
+  padding: 0.25em;
+  display: block;
+}
+
+li a, li ul, .v {
+  padding-left: 1.5em;
+}
+
+ul a {
+  border-left: 2px solid transparent;
+}
+
+ul a:hover, button:hover, a:hover {
+  border-color: #0088bb;
+  color: #0088bb;
+}
+
+.v {
+  color: white;
+  border-left: 2px solid white;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  color: #777777;
+}
+
+h1, h2, h3 {
+  color: white;
+  font-weight: 100;
+}
+
+.small {
+  font-size: 0.7em;
+}
+
+a {
+  text-decoration: none;
+  color: #00bbff;
+}
+
+.clear {
+  clear: both;
+}
+
+.right {
+  float: right;
+}

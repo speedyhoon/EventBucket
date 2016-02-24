@@ -12,9 +12,10 @@ func eventReport(w http.ResponseWriter, r *http.Request, eventID string) {
 	}
 
 	templater(w, page{
-		Title:  "Event Report",
-		menu:   urlEvent,
-		MenuID: eventID,
+		Title:   "Event Report",
+		Menu:    urlEvents,
+		MenuID:  eventID,
+		Heading: event.Name,
 		Data: M{
 			"Event": event,
 		},

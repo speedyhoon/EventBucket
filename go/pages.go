@@ -102,28 +102,8 @@ var (
 	}, {
 		Name: "Events",
 		Link: urlEvents,
-	}, {
-		Name: "Clubs",
-		Link: urlClubs,
-	}, {
-		Name: "Shooters",
-		Link: urlShooters,
-	}, {
-		Name: "About",
-		Link: urlAbout,
-	}, {
-		Name: "Licence",
-		Link: urlLicence,
-	}, {
-		Name: "Archive",
-		Link: urlArchive,
-	}, {
-		Name: "Report",
-		Link: "/report/",
-	}}
-	subMenus = map[string][]menu{
-		urlEvent: {{
-			Name: "Event",
+		SubMenu: []menu{{
+			Name: "Entries",
 			Link: urlEvent,
 		}, {
 			Name: "Event Settings",
@@ -140,17 +120,31 @@ var (
 		}, {
 			Name: "Event Report",
 			Link: urlEventReport,
-		}, {
-			Name: "Print Scorecards",
-			Link: urlPrintScorecards,
-		},
-		},
-		urlClub: {{
+		}},
+	}, {
+		Name: "Clubs",
+		Link: urlClubs,
+		SubMenu: []menu{{
 			Name: "Club",
 			Link: urlClub,
 		}, {
 			Name: "Club Settings",
 			Link: urlClubSettings,
 		}},
-	}
+	}, {
+		Name: "Shooters",
+		Link: urlShooters,
+	}, {
+		Name: "About",
+		Link: urlAbout,
+	}, {
+		Name: "Licence",
+		Link: urlLicence,
+	}, {
+		Name: "Archive",
+		Link: urlArchive,
+	}, {
+		Name: "Report",
+		Link: "/report/",
+	}}
 )

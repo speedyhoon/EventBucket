@@ -45,7 +45,7 @@ func printScorecards(w http.ResponseWriter, r *http.Request, parameters string) 
 
 	templater(w, page{
 		Title:  "Print Scorecards",
-		menu:   urlEvent,
+		Menu:   urlEvents,
 		MenuID: eventID,
 		Data: M{
 			"EventID":   eventID,

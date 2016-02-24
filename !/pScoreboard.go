@@ -12,9 +12,10 @@ func scoreboard(w http.ResponseWriter, r *http.Request, eventID string) {
 	}
 
 	templater(w, page{
-		Title:  "Scoreboard",
-		menu:   urlEvent,
-		MenuID: eventID,
+		Title:   "Scoreboard",
+		Menu:    urlEvents,
+		MenuID:  eventID,
+		Heading: event.Name,
 		Data: M{
 			"Event": event,
 		},

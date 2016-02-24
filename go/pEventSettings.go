@@ -13,9 +13,10 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 	ranges := filteredRanges(event.Ranges)
 
 	templater(w, page{
-		Title:  "Event Settings",
-		menu:   urlEvent,
-		MenuID: eventID,
+		Title:   "Event Settings",
+		Menu:    urlEvents,
+		MenuID:  eventID,
+		Heading: event.Name,
 		Data: M{
 			"Event":     event,
 			"RangesQty": len(ranges),

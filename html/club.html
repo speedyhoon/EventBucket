@@ -1,5 +1,4 @@
 {{define "page"}}
-	<h1>{{.Club.Name}}</h1>
 	<p>{{.Club.IsDefault}}</p>
 	<h2>Map</h2>
 	{{with .Club}}
@@ -37,7 +36,7 @@
 			</script>
 			<script async defer src="https://maps.googleapis.com/maps/api/js?callback=initMap"></script>
 		{{else}}
-			<p>Club location not listed</p>
+			<samp>Club location not listed</samp>
 		{{end}}
 	{{end}}
 {{end}}

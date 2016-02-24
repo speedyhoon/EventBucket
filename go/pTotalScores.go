@@ -12,9 +12,10 @@ func totalScores(w http.ResponseWriter, r *http.Request, eventID string) {
 	}
 
 	templater(w, page{
-		Title:  "Total Scores",
-		menu:   urlEvent,
-		MenuID: eventID,
+		Title:   "Total Scores",
+		Menu:    urlEvents,
+		MenuID:  eventID,
+		Heading: event.Name,
 		Data: M{
 			"Event": event,
 		},
