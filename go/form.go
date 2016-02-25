@@ -1,7 +1,6 @@
 package main
 
 import (
-	"regexp"
 	"time"
 )
 
@@ -10,21 +9,6 @@ type form struct {
 	Fields []field
 	Error  string
 	expiry time.Time
-}
-
-type field struct {
-	name, Error, Value string
-	Required           bool
-	Options            []option
-	maxLen, minLen     uint
-	min, max, step     float32
-	AutoFocus          bool
-	size               uint8
-	Checked            bool //only used by checkboxes
-	regex              *regexp.Regexp
-	internalValue      interface{}
-	v8                 func([]string, field) (interface{}, string)
-	defValue           func() []string
 }
 
 type option struct {
@@ -108,11 +92,13 @@ func getForm(id uint8) []field {
 		}}
 	case 3:
 		return []field{{
-			name: "C", Required: hasDefaultClub(), maxLen: 64, v8: isValidStr, Options: getDataListClubs(),
+			name: "C", Value: defaultClubName(), Required: hasDefaultClub(), maxLen: 64, v8: isValidStr, Options: getDataListClubs(),
 		}, {
 			name: "n", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
-			name: "d", step: 5, v8: isValidStr, Value: defaultDateTime()[0],
+			name: "d", Value: defaultDate(), v8: isValidStr,
+		}, {
+			name: "t", Value: defaultTime(), step: 300, v8: isValidStr,
 		}}
 	case 4:
 		return []field{{

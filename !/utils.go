@@ -2,7 +2,9 @@ package main
 
 import (
 	"net"
+	"strconv"
 	"strings"
+	"time"
 )
 
 //AddQuotes returns value with or without surrounding single or double quote characters suitable for a [[//dev.w3.org/html5/html-author/#attributes][HTML5 attribute]] value.
@@ -56,4 +58,20 @@ func localIPs() []string {
 		}
 	}
 	return localIPs
+}
+
+func defaultDate() string {
+	return time.Now().Format("2006-01-02")
+}
+
+func defaultTime() string {
+	return time.Now().Format("15:04")
+}
+
+func toB36(b uint64) string {
+	return strconv.FormatUint(b, 36)
+}
+
+func B36toUint(b string) (uint64, error) {
+	return strconv.ParseUint(b, 36, 64)
 }

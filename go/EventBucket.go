@@ -12,7 +12,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
-	"strconv"
 	"time"
 
 	"github.com/boltdb/bolt"
@@ -34,7 +33,6 @@ const (
 	favicon    = "favicon.ico"
 
 	//Date formats
-	formatDT  = "2006-01-02T15:04"
 	formatGMT = "Mon, 02 Jan 2006 15:04:05 GMT"
 )
 
@@ -163,16 +161,4 @@ func setExpiresTime() {
 	expiresTime = time.Now().UTC().AddDate(1, 0, 0).Format(formatGMT)
 	//w3.org says: "All HTTP date/time stamps MUST be represented in Greenwich Mean Time" under 3.3.1 Full Date //www.w3.org/Protocols/rfc2616/rfc2616-sec3.html
 	masterTemplate.CurrentYear = time.Now().Format("2006")
-}
-
-func defaultDateTime() []string {
-	return []string{time.Now().Format(formatDT)}
-}
-
-func toB36(b uint64) string {
-	return strconv.FormatUint(b, 36)
-}
-
-func B36toUint(b string) (uint64, error) {
-	return strconv.ParseUint(b, 36, 64)
 }

@@ -106,7 +106,7 @@ var (
 			Name: "Entries",
 			Link: urlEntries,
 		}, {
-			Name: "Event Settings",
+			Name: "Settings",
 			Link: urlEventSettings,
 		}, {
 			Name: "Scoreboard",
@@ -118,7 +118,7 @@ var (
 			Name: "Total Scores",
 			Link: urlTotalScores,
 		}, {
-			Name: "Event Report",
+			Name: "Report",
 			Link: urlEventReport,
 		}},
 	}, {
@@ -128,7 +128,7 @@ var (
 			Name: "Club",
 			Link: urlClub,
 		}, {
-			Name: "Club Settings",
+			Name: "Settings",
 			Link: urlClubSettings,
 		}},
 	}, {
