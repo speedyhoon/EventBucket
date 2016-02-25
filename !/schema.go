@@ -1,5 +1,7 @@
 package main
 
+import "regexp"
+
 const (
 	//Collection property names
 	schemaClub           = "C"
@@ -155,4 +157,19 @@ type Shooter struct {
 	//When merging set one record to merged, the other to deleted.
 	//Both records must set MergedSID to the other corresponding shooter SID
 	MergedSID int `bson:"m,omitempty"`
+}
+
+type field struct {
+	name, Error, Value string
+	Required           bool
+	Options            []option
+	maxLen, minLen     uint
+	min, max, step     float32
+	AutoFocus          bool
+	size               uint8
+	Checked            bool //only used by checkboxes
+	regex              *regexp.Regexp
+	internalValue      interface{}
+	v8                 func([]string, field) (interface{}, string)
+	defValue           func() []string
 }

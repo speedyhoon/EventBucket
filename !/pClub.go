@@ -116,3 +116,8 @@ func getDataListClubs() []option {
 	trace.Println(dataListClubs(clubs))
 	return dataListClubs(clubs)
 }
+
+func defaultClubName() string {
+	//TODO get Club name.
+	return "thingy Name"
+}

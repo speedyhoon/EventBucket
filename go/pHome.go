@@ -6,13 +6,12 @@ import (
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
-	sessionForm := getFormSession(w, r, eventNew)
 	listEvents, err := getEvents()
 	templater(w, page{
 		Title: "Home",
 		Error: err,
 		Data: M{
-			"NewEvent":   sessionForm,
+			"NewEvent":   getFormSession(w, r, eventNew),
 			"ListEvents": listEvents,
 		},
 	})
