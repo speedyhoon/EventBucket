@@ -49,22 +49,23 @@ func pages() {
 	getParameters(urlScorecards, scorecards, regexID)
 	getParameters(urlPrintScorecards, printScorecards, regexPath)
 	getParameters(urlTotalScores, totalScores, regexID)
-	post(clubNew, clubInsert)
-	post(clubDetails, clubDetailsUpsert)
-	post(clubMoundNew, clubMoundInsert)
-	post(eventNew, eventInsert)
-	post(eventRangeNew, eventRangeInsert)
-	post(eventAggNew, eventAggInsert)
-	post(eventShooterExisting, eventShooterExistingInsert)
-	post(eventShooterNew, eventShooterInsert)
+	post("POST", clubNew, clubInsert)
+	post("POST", clubDetails, clubDetailsUpsert)
+	post("POST", clubMoundNew, clubMoundInsert)
+	post("POST", eventNew, eventInsert)
+	post("POST", eventRangeNew, eventRangeInsert)
+	post("POST", eventAggNew, eventAggInsert)
+	post("POST", eventShooterExisting, eventShooterExistingInsert)
+	post("POST", eventShooterNew, eventShooterInsert)
+	post("GET", shooterSearch, searchShooters)
 
 	//BUG any url breaks when appending "&*((&*%"
 	get404(urlHome, home)
 }
 
-func post(formID uint8, runner func(http.ResponseWriter, *http.Request, form, func())) {
+func post(method string, formID uint8, runner func(http.ResponseWriter, *http.Request, form, func())) {
 	h := func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
+		if r.Method != method {
 			/*405 Method Not Allowed
 			A request was made of a resource using a request method not supported by that resource; for example,
 			using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
@@ -84,8 +85,11 @@ func post(formID uint8, runner func(http.ResponseWriter, *http.Request, form, fu
 			action: formID,
 			Fields: submittedFields,
 		}
-		//trace.Println("form isValid=", isValid)
-		if !isValid {
+		//		trace.Println("form isValid=", isValid)
+		//		if !isValid {
+		//			trace.Printf("%#v\n\n", submittedFields)
+		//		}
+		if !isValid && method != "GET" {
 			setSession(w, newForm)
 			redirect()
 			return

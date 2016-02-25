@@ -1,3 +1,4 @@
 {{define "page"}}
 	{{template "ShooterEntry" .ShooterEntry}}
+	<script defer src=/j/shooterSearch></script>
 {{end}}

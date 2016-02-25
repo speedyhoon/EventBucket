@@ -28,6 +28,7 @@ const (
 	eventAggNew          = 6
 	eventShooterExisting = 7
 	eventShooterNew      = 8
+	shooterSearch        = 9
 )
 
 func dataListGrades() []option {
@@ -161,6 +162,14 @@ func getForm(id uint8) []field {
 			name: "E",
 		}, {
 			name: "E",
+		}}
+	case 9:
+		return []field{{
+			name: "f", maxLen: 64, v8: isValidStr,
+		}, {
+			name: "s", maxLen: 64, v8: isValidStr,
+		}, {
+			name: "C", maxLen: 64, v8: isValidStr,
 		}}
 	}
 	return []field{}
