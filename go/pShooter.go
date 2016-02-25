@@ -30,3 +30,21 @@ func shooters(w http.ResponseWriter, r *http.Request) {
 		},
 	})
 }
+
+func searchShooters(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+	trace.Println(submittedForm.Fields[0].Value)
+	trace.Println(submittedForm.Fields[1].Value)
+	trace.Println(submittedForm.Fields[2].Value)
+
+	listShooters := []option{
+		{Value: "sid", Label: "Firstname, Surname, Club"},
+		{Value: "123", Label: "Tom, Dick, Harry"},
+	}
+	templater(w, page{
+		Title: "Shooter Search",
+		Ajax:  true,
+		Data: M{
+			"ListShooters": listShooters,
+		},
+	})
+}

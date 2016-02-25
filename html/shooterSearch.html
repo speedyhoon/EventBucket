@@ -1,0 +1,8 @@
+{{define "page"}}
+	{{with .ListShooters}}
+		<option>
+		{{range .}}
+			<option{{attr " value" .Value}}>{{.Label}}
+		{{end}}
+	{{end}}
+{{end}}

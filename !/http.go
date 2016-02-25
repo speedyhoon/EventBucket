@@ -69,7 +69,8 @@ var headerOptions = map[string][2]string{
 //security add Access-Control-Allow-Origin //net.tutsplus.com/tutorials/client-side-security-best-practices/
 func headers(w http.ResponseWriter, setHeaders []string) {
 	//TODO remove google references by iframing content
-	w.Header().Set("Content-Security-Policy", "default-src 'none'; script-src 'self' 'unsafe-inline' maps.googleapis.com; style-src 'self'; img-src 'self' maps.googleapis.com maps.gstatic.com; frame-src maps.google.com www.google.com") //"img-src 'self' data:; connect-src 'self'; font-src 'self'"
+	//	w.Header().Set("Content-Security-Policy", "default-src 'none'; script-src 'self' 'unsafe-inline' maps.googleapis.com; style-src 'self'; img-src 'self' maps.googleapis.com maps.gstatic.com; frame-src maps.google.com www.google.com") //"img-src 'self' data:; connect-src 'self'; font-src 'self'"
+	w.Header().Set("Content-Security-Policy", "default-src 'none'; script-src 'self' 'unsafe-inline' maps.googleapis.com; style-src 'self'; connect-src 'self'; img-src 'self' maps.googleapis.com maps.gstatic.com; frame-src maps.google.com www.google.com") //"img-src 'self' data:; connect-src 'self'; font-src 'self'"
 
 	//The page cannot be displayed in a frame, regardless of the site attempting to do so. //developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options
 	w.Header().Set("X-Frame-Options", "DENY")
