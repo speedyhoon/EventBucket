@@ -55,7 +55,7 @@
 <button {{with hasindex .Fields 2}}{{attr " value" .Value}}{{end}} name=E>Save</button></fieldset></form>
 {{end}}
 
-{{define "ShooterEntry"}}<form method=post action=/7><fieldset><legend><u>S</u>hooter Entry</legend>
+{{define "ShooterEntry"}}<form method=post action=/7 oninput=getter(this)><fieldset><legend><u>S</u>hooter Entry</legend>
 {{with .Error}}<samp>{{.}}</samp>{{end}}
 <label>First Name: <input{{with hasindex .Fields 0}}{{attr " value" .Value}}{{has .Options " list=f"}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=f accesskey=s maxlength=64 type=search>{{with hasindex .Fields 0}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Surname: <input{{with hasindex .Fields 1}}{{attr " value" .Value}}{{has .Options " list=s"}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=s maxlength=64 type=search>{{with hasindex .Fields 1}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
