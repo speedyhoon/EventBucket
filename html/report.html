@@ -306,4 +306,23 @@ add population data - map[string]interface OR anonymous struct
 	<li>loading.gif</li>
 </ul>
 <p>Thats amazing. I thought that the file should remain in the GIF folder because if it was placed in the PNG folder, trying to run png guantlet and lossy compression on the file in the furture would be a bad idea.</p>
+
+<h4>First time I ran Acunetix:</h4>
+It failed with a smile. whoops no problems. :)
+
+fatal error: concurrent map writes
+2016/02/27 00:14:53 stderr:
+2016/02/27 00:14:53 stderr: goroutine 1015 [running]:
+2016/02/27 00:14:53 stderr: runtime.throw(0x9732a0, 0x15)
+2016/02/27 00:14:53 stderr: runtime.mapassign1(0x7c06c0, 0xc08206d1d0, 0xc0833ab778, 0xc0833ab6d8)
+2016/02/27 00:14:53 stderr:     C:/Go/src/runtime/hashmap.go:540 +0x552 fp=0xc0833ab4f8 sp=0xc0833ab450
+2016/02/27 00:14:53 stderr: main.templater(0x3a9bd8, 0xc083b1d790, 0x91e838, 0x4, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, ...)
+2016/02/27 00:14:53 stderr:     C:/Users/Cam/Code/EventBucket/!/template.go:94 +0xd09 fp=0xc0833ab888 sp=0xc0833ab4f8
+
+I had pointed Acunetix on a server running in debug mode. Debug mode reloads the html template on every request and saves it to a map variable
+It had sent so many requests that is was bound to cause this error eventually.  The was 6 medium errors HTML form without CSRF protection. I hadn't planned on implementing this due to Eventbuckets private nature of running within private wifi networks. hopefully with wifi security setup like wpa2 (not just WEP)
+
+On the next test run the laptop started to beep at me like a machine gun for 30 seconds! I suspect the temporary trace logging that I had for variables while developing a few pages (that I forgot to remove) had stack overflowed the command console Cmder.
+The test came back with 99 failed pages /club/265-/club/344,/entries/371-/entries/424 probably because I killed the server early with Ctrl + C
+
 {{end}}
