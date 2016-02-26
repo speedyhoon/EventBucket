@@ -1,0 +1,19 @@
+{
+	"FixedFileInfo":
+	{
+		"FileVersion": {
+			"Major": 3,
+			"Minor": 0,
+			"Patch": 0,
+			"Build": 5972
+		}
+	},
+	"StringFileInfo":
+	{
+		"CompanyName": "EventBucket",
+		"FileDescription": "Rifle club scoring website for prize meetings.",
+		"LegalCopyright": "EventBucket",
+		"ProductName": "EventBucket",
+		"ProductVersion": "3.0 "
+	}
+}
