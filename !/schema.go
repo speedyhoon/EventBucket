@@ -40,8 +40,8 @@ type Club struct {
 	Name      string  `bson:"n"`
 	IsDefault bool    `bson:"b,omitempty"`
 	Mounds    []Mound `bson:"M,omitempty"`
-	Latitude  float64 `bson:"x,omitempty"`
-	Longitude float64 `bson:"y,omitempty"`
+	Latitude  float32 `bson:"x,omitempty"`
+	Longitude float32 `bson:"y,omitempty"`
 	URL       string  `bson:"u,omitempty"`
 	Address   string  `bson:"a,omitempty"`
 	Town      string  `bson:"w,omitempty"`

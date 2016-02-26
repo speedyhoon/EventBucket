@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
+	"sync"
 	"time"
 )
 
@@ -16,7 +17,10 @@ const (
 	sessionExpiryTime = 2 * time.Minute
 )
 
-var globalSessions = make(map[string]form, 1)
+var globalSessions = struct {
+	sync.RWMutex
+	m map[string]form
+}{m: make(map[string]form)}
 
 //TODO will possibly need a chanel here to prevent locks occurring
 func setSession(w http.ResponseWriter, returns form) {
@@ -37,7 +41,9 @@ func setSession(w http.ResponseWriter, returns form) {
 		}
 	}
 	//	}
-	globalSessions[sessionID] = returns
+	globalSessions.Lock()
+	globalSessions.m[sessionID] = returns
+	globalSessions.Unlock()
 	returns.expiry = time.Now().Add(sessionExpiryTime)
 	w.Header().Add("Set-Cookie", fmt.Sprintf("%v=%v; expires=%v", sessionToken, sessionID, returns.expiry.Format(formatGMT)))
 }
@@ -66,10 +72,14 @@ func getSession(w http.ResponseWriter, r *http.Request, formActions []uint8) for
 		return form{}
 	}
 
-	contents, ok := globalSessions[cookies.Value]
+	globalSessions.RLock()
+	contents, ok := globalSessions.m[cookies.Value]
+	globalSessions.RUnlock()
 	if ok {
 		//Clear the session contents as it has been returned to the user.
-		delete(globalSessions, cookies.Value)
+		globalSessions.Lock()
+		delete(globalSessions.m, cookies.Value)
+		globalSessions.Unlock()
 		w.Header().Set("Set-Cookie", fmt.Sprintf("%v=; expires=%v", sessionToken, time.Now().UTC().Add(-sessionExpiryTime).Format(formatGMT)))
 		for _, action := range formActions {
 			if action == contents.action {
@@ -86,10 +96,14 @@ func getFormSession(w http.ResponseWriter, r *http.Request, formAction uint8) fo
 		return form{Fields: getForm(formAction)}
 	}
 
-	contents, ok := globalSessions[cookies.Value]
+	globalSessions.RLock()
+	contents, ok := globalSessions.m[cookies.Value]
+	globalSessions.RUnlock()
 	if ok {
 		//Clear the session contents as it has been returned to the user.
-		delete(globalSessions, cookies.Value)
+		globalSessions.Lock()
+		delete(globalSessions.m, cookies.Value)
+		globalSessions.Unlock()
 		w.Header().Set("Set-Cookie", fmt.Sprintf("%v=; expires=%v", sessionToken, time.Now().UTC().Add(-sessionExpiryTime).Format(formatGMT)))
 		if formAction == contents.action {
 			return contents
@@ -97,3 +111,24 @@ func getFormSession(w http.ResponseWriter, r *http.Request, formAction uint8) fo
 	}
 	return form{Fields: getForm(formAction)}
 }
+
+/*
+
+
+//Update the expires http header time, every 15 minutes rather than recalculating it on every http request.
+func maintainExpiresTime() {
+	ticker := time.NewTicker(time.Minute * 15)
+	for range ticker.C {
+	//Can't directly change global variables in a go routine, so call an external function.
+	setExpiresTime()
+}
+}
+
+//Set expiry date 1 year, 0 months & 0 days in the future.
+func setExpiresTime() {
+	//Date format is the same as Go`s time.RFC1123 but uses "GMT" timezone instead of "UTC" time standard.
+	expiresTime = time.Now().UTC().AddDate(1, 0, 0).Format(formatGMT)
+	//w3.org says: "All HTTP date/time stamps MUST be represented in Greenwich Mean Time" under 3.3.1 Full Date //www.w3.org/Protocols/rfc2616/rfc2616-sec3.html
+	masterTemplate.CurrentYear = time.Now().Format("2006")
+}
+*/
