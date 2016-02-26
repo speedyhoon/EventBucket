@@ -295,4 +295,15 @@ create the HTML
 add validation struct
 add population data - map[string]interface OR anonymous struct
 </pre>
+
+<h4>Suprising things</h4>
+<p>While adding an animated gif to the project, I put the file in the "p" folder that is served as mime type image/png. Suprisingly chrome and firefox rendered the picture OK. I then renamed the file without an extendion type and it still worked.</p>
+<p>I then tried to open the file with different extensions and all worked fine.</p>
+<ul><li>
+	loading
+</li>
+	<li>loading.png</li>
+	<li>loading.gif</li>
+</ul>
+<p>Thats amazing. I thought that the file should remain in the GIF folder because if it was placed in the PNG folder, trying to run png guantlet and lossy compression on the file in the furture would be a bad idea.</p>
 {{end}}

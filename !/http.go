@@ -61,6 +61,7 @@ var headerOptions = map[string][2]string{
 	dirCSS: {contentType, "text/css; charset=utf-8"},
 	dirJS:  {contentType, "text/javascript"},
 	dirPNG: {contentType, "image/png"},
+	dirGIF: {contentType, "image/gif"},
 	//dirSVG:    {contentType, "image/svg+xml"},
 	//dirWOF2:   {contentType, "application/font-woff2"},
 	//dirJPEG:   {contentType, "image/jpeg"},

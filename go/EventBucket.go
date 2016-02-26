@@ -1,5 +1,7 @@
 // build+ debug
 
+//go:generate goversioninfo -icon=favicon.ico
+
 package main
 
 import (
@@ -29,6 +31,7 @@ const (
 	dirJS      = "dirJS"
 	dirGzip    = "dirGzip"
 	dirPNG     = "dirPNG"
+	dirGIF     = "dirGIF"
 	robots     = "robots.txt"
 	favicon    = "favicon.ico"
 

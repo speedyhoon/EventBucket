@@ -31,6 +31,7 @@ func pages() {
 	serveDir(dirCSS, false)
 	serveDir(dirJS, false)
 	serveDir(dirPNG, false)
+	serveDir(dirGIF, false)
 	getParameters("/b/", base64QrH, regexBarcode)
 	getRedirectPermanent(urlAbout, about)
 	getRedirectPermanent(urlArchive, eventArchive)
