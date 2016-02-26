@@ -113,7 +113,6 @@ func getDataListClubs() []option {
 	if err != nil {
 		warn.Println(err)
 	}
-	trace.Println(dataListClubs(clubs))
 	return dataListClubs(clubs)
 }
 

@@ -74,22 +74,12 @@ func post(method string, formID uint8, runner func(http.ResponseWriter, *http.Re
 			http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
 			return
 		}
-		/*for z, input := range GlobalForms[formID] {
-			info.Println("pages:", z, input.Options, len(input.Options))
-		}*/
 		submittedFields, isValid := isValid(r, getForm(formID))
-		/*for z, input := range submittedFields {
-			info.Println("submittedFields:", z, input.Options, len(input.Options))
-		}*/
 		redirect := func() { http.Redirect(w, r, r.Referer(), http.StatusSeeOther) }
 		newForm := form{
 			action: formID,
 			Fields: submittedFields,
 		}
-		//		trace.Println("form isValid=", isValid)
-		//		if !isValid {
-		//			trace.Printf("%#v\n\n", submittedFields)
-		//		}
 		if !isValid && method != "GET" {
 			setSession(w, newForm)
 			redirect()
