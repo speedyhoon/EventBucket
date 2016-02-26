@@ -73,9 +73,5 @@ func isValid(r *http.Request, fields []field) ([]field, bool) {
 			fields[i].Checked = fields[i].internalValue.(bool)
 		}
 	}
-
-	for z, input := range fields {
-		info.Println("validation:", z, input.Options, len(input.Options))
-	}
 	return fields, valid
 }
