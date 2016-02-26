@@ -72,7 +72,7 @@ func init() {
 	flag.Parse()
 
 	if *port > math.MaxUint16 || *port < 0 {
-		info.Println("Port number must be between 0 and", math.MaxUint16)
+		warn.Println("Port number must be between 0 and", math.MaxUint16)
 		return
 	}
 

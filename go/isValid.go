@@ -9,7 +9,6 @@ import (
 
 func isValidUint64(inp []string, field field) (interface{}, string) {
 	strNum := strings.TrimSpace(inp[0])
-	trace.Println(field.min, field.max, field.step, field.Required, "name=", field.name)
 	var num uint64
 	num = 0
 	if field.step == 0 {
