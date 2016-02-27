@@ -17,20 +17,23 @@ var (
 )
 
 func getDocument(collection []byte, ID string, result interface{}) error {
-	err := db.View(func(tx *bolt.Tx) error {
+	byteID, err := B36toBy(ID)
+	if err != nil {
+		return err
+	}
+	err = db.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(collection)
 		if bucket == nil {
 			return fmt.Errorf("Bucket %q not found!", collection)
 		}
-		byteID, err := B36toBy(ID)
-		if err != nil {
-			return err
-		}
 
 		document := bucket.Get(byteID)
+		if len(document) == 0 {
+			return fmt.Errorf("'%v' document is empty / doesn't exist %q", ID, document)
+		}
 		err = json.Unmarshal(document, result)
 		if err != nil {
-			warn.Printf("Query %p document unmarshaling failed: %#v\n", document, err)
+			warn.Printf("'%v' Query document unmarshaling failed: \n%q\n%#v\n", ID, document, err)
 		}
 		return err
 	})
@@ -53,6 +56,7 @@ func getShooter(ID string) (Shooter, error) {
 }
 
 func insertEvent(event Event) (string, error) {
+	var id string
 	err := db.Update(func(tx *bolt.Tx) error {
 		bucket, err := tx.CreateBucketIfNotExists(tblEvent)
 		if err != nil {
@@ -61,18 +65,22 @@ func insertEvent(event Event) (string, error) {
 		// Generate ID for the user.
 		// This returns an error only if the Tx is closed or not writeable.
 		// That can't happen in an Update() call so I ignore the error check.
-		event.ID, _ = bucket.NextSequence()
+		num, _ := bucket.NextSequence()
+		id = toB36(num)
+		event.ID = id
+
 		// Marshal user data into bytes.
 		buf, err := json.Marshal(event)
 		if err != nil {
 			return err
 		}
-		return bucket.Put(itob(event.ID), buf)
+		return bucket.Put(itob(num), buf)
 	})
-	return toB36(event.ID), err
+	return id, err
 }
 
 func insertClub(club Club) (string, error) {
+	var id string
 	err := db.Update(func(tx *bolt.Tx) error {
 		bucket, err := tx.CreateBucketIfNotExists(tblClub)
 		if err != nil {
@@ -81,15 +89,17 @@ func insertClub(club Club) (string, error) {
 		// Generate ID for the user.
 		// This returns an error only if the Tx is closed or not writeable.
 		// That can't happen in an Update() call so I ignore the error check.
-		club.ID, _ = bucket.NextSequence()
+		num, _ := bucket.NextSequence()
+		id = toB36(num)
+		club.ID = id
 		// Marshal user data into bytes.
 		buf, err := json.Marshal(club)
 		if err != nil {
 			return err
 		}
-		return bucket.Put(itob(club.ID), buf)
+		return bucket.Put(itob(num), buf)
 	})
-	return toB36(club.ID), err
+	return id, err
 }
 
 // itob returns an 8-byte big endian representation of v.
@@ -298,12 +308,13 @@ func eventShooterInsertDB(eventID string, shooter EventShooter) error {
 	return nil
 }
 
-func B36toBy(a string) ([]byte, error) {
-	v, err := strconv.ParseUint(a, 36, 64)
+//Converts base36 string to uint64 binary used for bolt maps
+func B36toBy(id string) ([]byte, error) {
+	num, err := strconv.ParseUint(id, 36, 64)
 	if err != nil {
 		return []byte{}, err
 	}
 	b := make([]byte, 8)
-	binary.BigEndian.PutUint64(b, v)
+	binary.BigEndian.PutUint64(b, num)
 	return b, nil
 }

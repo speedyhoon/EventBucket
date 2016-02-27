@@ -30,7 +30,7 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
 		Title: "Clubs",
 		Data: M{
-			"NewClub":   getSession(w, r, []uint8{clubNew}),
+			"NewClub":   getFormSession(w, r, clubNew),
 			"ListClubs": listClubs,
 		},
 	})
