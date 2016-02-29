@@ -1,7 +1,7 @@
 {{define "page"}}
 	{{template "ShooterEntry" .ShooterEntry}}
 	{{with .Event.Shooters}}
-		<p>Total: {{$.QtyEntries}}</p>
+		Total Entries: {{$.QtyEntries}}
 		<table>
 			<thead>
 				<th class=sorted>ID
