@@ -258,54 +258,52 @@ func hasDefaultClub() bool {
 	return result, errors.New("Unable to get event with ID: '" + ID + "'")
 }*/
 
-func eventShooterInsertDB(eventID string, shooter EventShooter) error {
-	/*insert := M{
-		schemaShooter: []EventShooter{shooter},
+func eventShooterInsertDB(ID string, shooter EventShooter) error {
+	byteID, err := B36toBy(ID)
+	if err != nil {
+		return err
 	}
-	//If shooter is Match Reserve, duplicate them in the Match Open category
-	increment := 1
-	if shooter.Grade == 8 {
-		increment = 2
-		duplicateShooter := shooter
-		duplicateShooter.Grade = 7
-		duplicateShooter.Hidden = true
-		insert[schemaShooter] = []EventShooter{shooter, duplicateShooter}
-	}
-	change := mgo.Change{
-		Update: M{
-			"$pushAll": insert,
-			"$inc": M{
-				dot(schemaAutoInc, schemaShooter): increment,
-			},
-		},
-		Upsert:    true,
-		ReturnNew: true,
-	}
-	var event Event
-	conn.C(tblEvent).FindId(eventID).Apply(change, &event)
+	err = db.Update(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(tblEvent)
+		if bucket == nil {
+			return fmt.Errorf("Bucket %q not found!", tblEvent)
+		}
 
-	if increment == 2 {
-		change = mgo.Change{
-			Update: M{
-				"$set": M{
-					dot(schemaShooter, event.AutoInc.Shooter-2, "i"): event.AutoInc.Shooter - 2,
-					dot(schemaShooter, event.AutoInc.Shooter-2, "l"): event.AutoInc.Shooter - 1,
-					dot(schemaShooter, event.AutoInc.Shooter-1, "i"): event.AutoInc.Shooter - 1,
-					dot(schemaShooter, event.AutoInc.Shooter-1, "l"): event.AutoInc.Shooter - 2,
-				},
-			},
+		document := bucket.Get(byteID)
+		if len(document) == 0 {
+			return fmt.Errorf("'%v' document is empty / doesn't exist %q", ID, document)
 		}
-	} else {
-		change = mgo.Change{
-			Update: M{
-				"$set": M{
-					dot(schemaShooter, event.AutoInc.Shooter-1, "i"): event.AutoInc.Shooter - 1,
-				},
-			},
+		var event Event
+		err = json.Unmarshal(document, &event)
+		if err != nil {
+			return err
 		}
-	}
-	conn.C(tblEvent).FindId(eventID).Apply(change, &event)*/
-	return nil
+
+		//Assign shooter ID
+		shooter.ID = event.AutoInc.Shooter
+		event.Shooters = append(event.Shooters, shooter)
+
+		//Increment Event Shooter ID
+		event.AutoInc.Shooter++
+
+		//If shooter is Match Reserve, duplicate them in the Match Open category
+		if shooter.Grade == 8 {
+			shooter.ID = event.AutoInc.Shooter
+			shooter.Grade = 7
+			shooter.Hidden = true
+			event.Shooters = append(event.Shooters, shooter)
+			event.AutoInc.Shooter++
+		}
+
+		document, err = json.Marshal(event)
+		if err != nil {
+			return err
+		}
+
+		err = bucket.Put(byteID, document)
+		return err
+	})
+	return err
 }
 
 //Converts base36 string to uint64 binary used for bolt maps
