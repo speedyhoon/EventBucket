@@ -1,4 +1,29 @@
 {{define "page"}}
 	{{template "ShooterEntry" .ShooterEntry}}
+	{{with .Event.Shooters}}
+	<table>
+		<thead>
+			<th class=sorted>ID
+			<th>First Name
+			<th>Surname
+			<th>Club
+			<th>Grade
+			<th>Age Group
+		</thead>
+		{{range .}}
+			<tr>
+				<td>{{.ID}}
+				<td>{{.FirstName}}
+				<td>{{.Surname}}
+				<td>{{.Club}}
+				<td>{{.Grade}}
+				<td>{{.AgeGroup}}
+			</tr>
+		{{end}}
+	</table>
+{{else}}
+<samp>No shooters entered in event.</samp>
+{{end}}
+
 	<script defer src=/j/shooterSearch></script>
 {{end}}
