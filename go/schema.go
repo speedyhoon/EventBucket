@@ -72,12 +72,13 @@ type Mound struct {
 
 // Event is exported
 type Event struct {
-	ID       string  `bson:"schemaID"`
-	Name     string  `bson:"schemaName"`
-	Club     string  `bson:"schemaClub"`
-	DateTime string  `bson:"schemaDateTime"`
-	Ranges   []Range `bson:"schemaRange,omitempty"`
-	AutoInc  AutoInc `bson:"schemaAutoInc"`
+	ID       string         `bson:"schemaID"`
+	Name     string         `bson:"schemaName"`
+	Club     string         `bson:"schemaClub"`
+	DateTime string         `bson:"schemaDateTime"`
+	Ranges   []Range        `bson:"schemaRange,omitempty"`
+	AutoInc  AutoInc        `bson:"schemaAutoInc"`
+	Shooters []EventShooter `bson:"schemaSHOOTER,omitempty"`
 }
 
 /*
