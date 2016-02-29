@@ -22,13 +22,13 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 			"RangesQty": len(ranges),
 			"AddRange": form{Fields: []field{
 				{},
-				{Value: toB36(event.ID)},
+				{Value: event.ID},
 			},
 			},
 			"AddAgg": form{Fields: []field{
 				{},
 				{Options: ranges},
-				{Value: toB36(event.ID)},
+				{Value: event.ID},
 			},
 			},
 		},
@@ -87,17 +87,18 @@ func aggInsert(w http.ResponseWriter, r *http.Request) {
 }
 */
 func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
-	eventID := submittedForm.Fields[5].Value
+	eventID := submittedForm.Fields[6].Value
 	shooter := EventShooter{
 		FirstName: submittedForm.Fields[0].Value,
 		Surname:   submittedForm.Fields[1].Value,
 		Club:      submittedForm.Fields[2].Value,
-		Grade:     submittedForm.Fields[3].internalValue.(uint64),
-		AgeGroup:  submittedForm.Fields[4].internalValue.(uint64),
+		Grade:     submittedForm.Fields[4].internalValue.(uint64),
+		AgeGroup:  submittedForm.Fields[5].internalValue.(uint64),
 	}
 	err := eventShooterInsertDB(eventID, shooter)
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
+		return
 	}
 	http.Redirect(w, r, urlEntries+eventID, http.StatusSeeOther)
 }

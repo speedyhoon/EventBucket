@@ -36,7 +36,7 @@ const (
 
 // Club is exported
 type Club struct {
-	ID        uint64  `bson:"_id"`
+	ID        string  `bson:"_id"`
 	Name      string  `bson:"n"`
 	IsDefault bool    `bson:"b,omitempty"`
 	Mounds    []Mound `bson:"M,omitempty"`
@@ -58,11 +58,6 @@ type AutoInc struct {
 	Shooter uint64 `bson:"S,omitempty"`
 }
 
-type AutoID struct {
-	ID   string `bson:"_id"`
-	Name uint64 `bson:"n"`
-}
-
 // Mound is exported
 type Mound struct {
 	//	ID       string `bson:"_id"`
@@ -72,12 +67,13 @@ type Mound struct {
 
 // Event is exported
 type Event struct {
-	ID       uint64  `bson:"_id"`
-	Name     string  `bson:"n"`
-	Club     string  `bson:"C"`
-	DateTime string  `bson:"d"`
-	Ranges   []Range `bson:"R,omitempty"`
-	AutoInc  AutoInc `bson:"A"`
+	ID       string         `bson:"_id"`
+	Name     string         `bson:"n"`
+	Club     string         `bson:"C"`
+	DateTime string         `bson:"d"`
+	Ranges   []Range        `bson:"R,omitempty"`
+	AutoInc  AutoInc        `bson:"A"`
+	Shooters []EventShooter `bson:"schemaSHOOTER,omitempty"`
 }
 
 /*
@@ -126,9 +122,9 @@ type EventShooter struct {
 	SID      int  `bson:"d,omitempty"`
 	Disabled bool `bson:"b,omitempty"`
 	//SCOREBOARD
-	ID       int    `bson:"i,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
+	ID       uint64 `bson:"i,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
 	Position string `bson:"x,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
-	Warning  int8   `bson:"y,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
+	Warning  uint8  `bson:"y,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
 	//		0 = nil
 	//		1 = shoot off
 	//		2 = warning, no score

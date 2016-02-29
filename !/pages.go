@@ -56,8 +56,8 @@ func pages() {
 	post("POST", eventNew, eventInsert)
 	post("POST", eventRangeNew, eventRangeInsert)
 	post("POST", eventAggNew, eventAggInsert)
-	post("POST", eventShooterExisting, eventShooterExistingInsert)
 	post("POST", eventShooterNew, eventShooterInsert)
+	post("POST", eventShooterExisting, eventShooterExistingInsert)
 	post("GET", shooterSearch, searchShooters)
 
 	//BUG any url breaks when appending "&*((&*%"
