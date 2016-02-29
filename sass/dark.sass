@@ -35,12 +35,14 @@ section
 	width: calc(100% - 14em)
 
 //Tables
+table
+	border-collapse: collapse
 tr
 	border-bottom: $thinBorder $dark
 	padding: $bigPadding
 
 th
-	border: $fatBorder $dark
+	border-bottom: $fatBorder $dark
 
 .sorted, legend u
 	color: $briteBlue
@@ -71,7 +73,7 @@ input, select
 	padding: $menuPadding
 	color: $liteGrey
 
-option:empty
+select[required] option:empty
 	display: none
 
 label select
@@ -87,6 +89,9 @@ button
 	padding: $bigPadding
 	border-radius: $bigPadding
 	cursor: pointer
+
+\:focus
+	box-shadow: 1em 1em .5em orange
 
 //Menus
 ul
