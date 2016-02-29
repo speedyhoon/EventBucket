@@ -58,11 +58,6 @@ type AutoInc struct {
 	Shooter uint64 `bson:"schemaShooter,omitempty"`
 }
 
-type AutoID struct {
-	ID   string `bson:"schemaID"`
-	Name uint64 `bson:"schemaName"`
-}
-
 // Mound is exported
 type Mound struct {
 	//	ID       string `bson:"schemaID"`
@@ -127,9 +122,9 @@ type EventShooter struct {
 	SID      int  `bson:"d,omitempty"`
 	Disabled bool `bson:"b,omitempty"`
 	//SCOREBOARD
-	ID       int    `bson:"i,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
+	ID       uint64 `bson:"i,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
 	Position string `bson:"x,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
-	Warning  int8   `bson:"y,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
+	Warning  uint8  `bson:"y,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
 	//		0 = nil
 	//		1 = shoot off
 	//		2 = warning, no score
