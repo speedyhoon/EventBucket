@@ -17,15 +17,15 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 	detailsForm.Fields[3].Value = club.Postcode
 	detailsForm.Fields[4].Value = trimFloat(club.Latitude)
 	detailsForm.Fields[5].Value = trimFloat(club.Longitude)
-	detailsForm.Fields[6].Value = toB36(club.ID)
+	detailsForm.Fields[6].Value = club.ID
 
 	newMoundForm := getFormSession(w, r, clubMoundNew)
-	newMoundForm.Fields[0].Value = toB36(club.ID)
+	newMoundForm.Fields[0].Value = club.ID
 
 	templater(w, page{
 		Title:   "Club Settings",
 		Menu:    urlClubs,
-		MenuID:  toB36(club.ID),
+		MenuID:  club.ID,
 		Heading: club.Name,
 		Data: M{
 			"Club":        club,

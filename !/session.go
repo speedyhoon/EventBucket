@@ -45,7 +45,7 @@ func setSession(w http.ResponseWriter, returns form) {
 	globalSessions.m[sessionID] = returns
 	globalSessions.Unlock()
 	returns.expiry = time.Now().Add(sessionExpiryTime)
-	w.Header().Add("Set-Cookie", fmt.Sprintf("%v=%v; expires=%v", sessionToken, sessionID, returns.expiry.Format(formatGMT)))
+	w.Header().Add("Set-Cookie", fmt.Sprintf("%v=%v; expires=%v HttpOnly", sessionToken, sessionID, returns.expiry.Format(formatGMT)))
 }
 
 //SessionID's should be at least 16 characters length can't have space or semicolon
@@ -80,7 +80,7 @@ func getSession(w http.ResponseWriter, r *http.Request, formActions []uint8) for
 		globalSessions.Lock()
 		delete(globalSessions.m, cookies.Value)
 		globalSessions.Unlock()
-		w.Header().Set("Set-Cookie", fmt.Sprintf("%v=; expires=%v", sessionToken, time.Now().UTC().Add(-sessionExpiryTime).Format(formatGMT)))
+		w.Header().Set("Set-Cookie", fmt.Sprintf("%v=; expires=%v HttpOnly", sessionToken, time.Now().UTC().Add(-sessionExpiryTime).Format(formatGMT)))
 		for _, action := range formActions {
 			if action == contents.action {
 				return contents
@@ -90,10 +90,10 @@ func getSession(w http.ResponseWriter, r *http.Request, formActions []uint8) for
 	return form{}
 }
 
-func getFormSession(w http.ResponseWriter, r *http.Request, formAction uint8) form {
+func getFormSession(w http.ResponseWriter, r *http.Request, formActions ...uint8) form {
 	cookies, err := r.Cookie(sessionToken)
 	if err != nil || cookies.Value == "" {
-		return form{Fields: getForm(formAction)}
+		return form{Fields: getForm(formActions[0])}
 	}
 
 	globalSessions.RLock()
@@ -104,12 +104,59 @@ func getFormSession(w http.ResponseWriter, r *http.Request, formAction uint8) fo
 		globalSessions.Lock()
 		delete(globalSessions.m, cookies.Value)
 		globalSessions.Unlock()
-		w.Header().Set("Set-Cookie", fmt.Sprintf("%v=; expires=%v", sessionToken, time.Now().UTC().Add(-sessionExpiryTime).Format(formatGMT)))
-		if formAction == contents.action {
-			return contents
+		w.Header().Set("Set-Cookie", fmt.Sprintf("%v=; expires=%v HttpOnly", sessionToken, time.Now().UTC().Add(-sessionExpiryTime).Format(formatGMT)))
+		for _, action := range formActions {
+			if contents.action == action {
+				return contents
+			}
 		}
 	}
-	return form{Fields: getForm(formAction)}
+	return form{Fields: getForm(formActions[0])}
+}
+
+func sessionForms(w http.ResponseWriter, r *http.Request, formActions ...uint8) (*uint8, [][]field) {
+	//Get users session id from request
+	cookies, err := r.Cookie(sessionToken)
+	if err != nil || cookies.Value == "" {
+		//No session found. Return default forms.
+		//		return form{Fields: getForm(formActions[0])}
+		return nil, getForms(formActions...)
+	}
+
+	//Start a read lock to prevent concurrent reads while other parts are executing a write.
+	globalSessions.RLock()
+	contents, ok := globalSessions.m[cookies.Value]
+	globalSessions.RUnlock()
+	if ok {
+		//Clear the session contents as it has been returned to the user.
+		globalSessions.Lock()
+		delete(globalSessions.m, cookies.Value)
+		globalSessions.Unlock()
+
+		//Remove cookie.
+		w.Header().Set("Set-Cookie", fmt.Sprintf("%v=; expires=%v HttpOnly", sessionToken, time.Now().UTC().Add(-sessionExpiryTime).Format(formatGMT)))
+		var forms [][]field
+		for _, action := range formActions {
+			if contents.action == action {
+				//				forms = append(forms, contents)
+				forms = append(forms, contents.Fields)
+			} else {
+				//				forms = append(forms, form{action: action, Fields: getForm(action)})
+				forms = append(forms, getForm(action))
+			}
+		}
+		return &contents.action, forms
+	}
+	return nil, getForms(formActions...)
+}
+
+func getForms(formActions ...uint8) [][]field {
+	var forms [][]field //A group of forms, where each form has several fields
+	for _, action := range formActions {
+		//		forms = append(forms, form{action: action, Fields: getForm(action)})
+		forms = append(forms, getForm(action))
+	}
+	return forms
 }
 
 /*
