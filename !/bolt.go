@@ -55,51 +55,79 @@ func getShooter(ID string) (Shooter, error) {
 	return shooter, getDocument(tblShooter, ID, &shooter)
 }
 
+func nextID(bucket *bolt.Bucket) (string, []byte) {
+	num, _ := bucket.NextSequence()
+	return toB36(num), itob(num)
+}
+
 func insertEvent(event Event) (string, error) {
-	var id string
+	var b36 string
 	err := db.Update(func(tx *bolt.Tx) error {
 		bucket, err := tx.CreateBucketIfNotExists(tblEvent)
 		if err != nil {
 			return err
 		}
+		var id []byte
+		b36, id = nextID(bucket)
 		// Generate ID for the user.
 		// This returns an error only if the Tx is closed or not writeable.
 		// That can't happen in an Update() call so I ignore the error check.
-		num, _ := bucket.NextSequence()
-		id = toB36(num)
-		event.ID = id
+		event.ID = b36
 
 		// Marshal user data into bytes.
 		buf, err := json.Marshal(event)
 		if err != nil {
 			return err
 		}
-		return bucket.Put(itob(num), buf)
+		return bucket.Put(id, buf)
 	})
-	return id, err
+	return b36, err
 }
 
 func insertClub(club Club) (string, error) {
-	var id string
+	var b36 string
 	err := db.Update(func(tx *bolt.Tx) error {
 		bucket, err := tx.CreateBucketIfNotExists(tblClub)
 		if err != nil {
 			return err
 		}
+		var id []byte
+		b36, id = nextID(bucket)
 		// Generate ID for the user.
 		// This returns an error only if the Tx is closed or not writeable.
 		// That can't happen in an Update() call so I ignore the error check.
-		num, _ := bucket.NextSequence()
-		id = toB36(num)
-		club.ID = id
+		club.ID = b36
 		// Marshal user data into bytes.
 		buf, err := json.Marshal(club)
 		if err != nil {
 			return err
 		}
-		return bucket.Put(itob(num), buf)
+		return bucket.Put(id, buf)
 	})
-	return id, err
+	return b36, err
+}
+
+func insertShooter(shooter Shooter) (string, error) {
+	var b36 string
+	err := db.Update(func(tx *bolt.Tx) error {
+		bucket, err := tx.CreateBucketIfNotExists(tblShooter)
+		if err != nil {
+			return err
+		}
+		var id []byte
+		b36, id = nextID(bucket)
+		// Generate ID for the user.
+		// This returns an error only if the Tx is closed or not writeable.
+		// That can't happen in an Update() call so I ignore the error check.
+		shooter.ID = b36
+		// Marshal user data into bytes.
+		buf, err := json.Marshal(shooter)
+		if err != nil {
+			return err
+		}
+		return bucket.Put(id, buf)
+	})
+	return b36, err
 }
 
 // itob returns an 8-byte big endian representation of v.
@@ -223,6 +251,25 @@ func getEvents() ([]Event, error) {
 		})
 	})
 	return events, err
+}
+
+func getShooters() ([]Shooter, error) {
+	var shooters []Shooter
+	var shooter Shooter
+	err := db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(tblShooter)
+		if b == nil {
+			//Shooter Bucket isn't created yet
+			return nil
+		}
+		return b.ForEach(func(_, value []byte) error {
+			if json.Unmarshal(value, &shooter) == nil {
+				shooters = append(shooters, shooter)
+			}
+			return nil
+		})
+	})
+	return shooters, err
 }
 
 func updateAll(collectionName []byte, query, update M) {

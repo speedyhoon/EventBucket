@@ -29,6 +29,7 @@ const (
 	eventShooterNew      = 7
 	eventShooterExisting = 8
 	shooterSearch        = 9
+	shooterNew           = 10
 )
 
 func dataListGrades() []option {
@@ -162,6 +163,18 @@ func getForm(id uint8) []field {
 			name: "s", maxLen: 64, v8: isValidStr,
 		}, {
 			name: "C", maxLen: 64, v8: isValidStr,
+		}}
+	case 10:
+		return []field{{
+			name: "f", Required: true, maxLen: 64, v8: isValidStr,
+		}, {
+			name: "s", Required: true, maxLen: 64, v8: isValidStr,
+		}, {
+			name: "C", Required: true, maxLen: 64, v8: isValidStr,
+		}, {
+			name: "g", Required: true, min: 1, max: 11, step: 1, v8: isValidUint64, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Target A", Value: "1", Selected: false}, {Label: "Target B", Value: "2", Selected: false}, {Label: "Target C", Value: "3", Selected: false}, {Label: "F Class A", Value: "4", Selected: false}, {Label: "F Class B", Value: "5", Selected: false}, {Label: "F Class Open", Value: "6", Selected: false}, {Label: "F/TR", Value: "7", Selected: false}, {Label: "Match Open", Value: "8", Selected: false}, {Label: "Match Reserve", Value: "9", Selected: false}, {Label: "303 Rifle", Value: "10", Selected: false}},
+		}, {
+			name: "r", min: 1, max: 5, step: 1, v8: isValidUint64, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Junior U21", Value: "1", Selected: false}, {Label: "Junior U25", Value: "2", Selected: false}, {Label: "Veteran", Value: "3", Selected: false}, {Label: "Super Veteran", Value: "4", Selected: false}},
 		}}
 	}
 	return []field{}

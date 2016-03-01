@@ -1,2 +1,5 @@
 {{define "page"}}
+	{{template "NewShooter" .NewShooter}}
+	Total Shooters: {{$.QtyShooters}}
+	{{template "tableShooters" .ListShooters}}
 {{end}}

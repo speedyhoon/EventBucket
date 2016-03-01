@@ -153,6 +153,10 @@ type Shooter struct {
 	//When merging set one record to merged, the other to deleted.
 	//Both records must set MergedSID to the other corresponding shooter SID
 	MergedSID int `bson:"m,omitempty"`
+
+	AgeGroup uint64 `bson:"a,omitempty"`
+	ID       string `bson:"i,omitempty"`
+	Grade    uint64 `bson:"g"`
 }
 
 type field struct {
