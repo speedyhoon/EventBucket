@@ -171,28 +171,6 @@ func updateDoc(collectionName []byte, ID string, document interface{}) error {
 	return nil
 }
 
-func getNextID(collectionName []byte) (string, error) {
-	/*var result AutoID
-	if conn == nil {
-		return "", errors.New("Unable to generate the next ID. No database connection.")
-	}
-
-	change := mgo.Change{
-		Update:    M{"$inc": M{schemaName: 1}},
-		Upsert:    true,
-		ReturnNew: true,
-	}
-	_, err := conn.C(tblAutoInc).FindId(collectionName).Apply(change, &result)
-	if err != nil {
-		warn.Println(err)
-		return "", fmt.Errorf("Unable to generate the next ID: '%v'", err)
-	}
-
-	//Convert integer to a alpha-numeric (0-9a-z / 36 base) string
-	return strconv.FormatUint(result.Name, 36), nil*/
-	return "", nil
-}
-
 func eventAddRange(eventID string, newRange Range) error {
 	/*change := mgo.Change{
 		Update: M{
@@ -296,14 +274,28 @@ func hasDefaultClub() bool {
 	return false
 }
 
-/*func getDefaultClub() (Club, error) {
-	var result Club
-	if conn != nil {
-		err := conn.C(tblClub).Find(M{schemaIsDefault: true}).One(&result)
-		return result, err
+func getDefaultClub() (Club, error) {
+	var club Club
+	var found bool
+	err := db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(tblClub)
+		if b == nil {
+			//Club Bucket isn't created yet
+			return nil
+		}
+		return b.ForEach(func(_, value []byte) error {
+			if json.Unmarshal(value, &club) == nil && club.IsDefault {
+				found = true
+				return nil
+			}
+			return nil
+		})
+	})
+	if found {
+		return club, nil
 	}
-	return result, errors.New("Unable to get event with ID: '" + ID + "'")
-}*/
+	return Club{}, err
+}
 
 func eventShooterInsertDB(ID string, shooter EventShooter) error {
 	byteID, err := B36toBy(ID)
