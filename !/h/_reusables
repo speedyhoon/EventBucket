@@ -16,3 +16,28 @@
 		<samp>No Events found</samp>
 	{{end}}
 {{end}}
+
+{{define "tableShooters"}}
+	{{with .}}
+		<table>
+			<thead>
+				<th class=sorted>ID
+				<th>Name
+				<th>Club
+				<th>Grade
+				<th>Age Group
+			</thead>
+			{{range .}}
+				<tr>
+					<td>{{.ID}}
+					<td>{{.FirstName}} {{.Surname}}
+					<td>{{.Club}}
+					<td>{{.Grade}}
+					<td>{{.AgeGroup}}
+				</tr>
+			{{end}}
+		</table>
+	{{else}}
+		<samp>No shooters listed.</samp>
+	{{end}}
+{{end}}
