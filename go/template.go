@@ -67,10 +67,17 @@ func templater(w http.ResponseWriter, page page) {
 				}
 				return nil
 			},
-			"attr": func(attribute, value string) template.HTMLAttr {
+			"attr": func(attribute string, value interface{}) template.HTMLAttr {
 				var output string
-				if value != "" {
-					output = attribute + "=" + addQuotes(value)
+				switch value.(type) {
+				case bool:
+					if value.(bool) {
+						output = attribute
+					}
+				case string:
+					if value.(string) != "" {
+						output = attribute + "=" + addQuotes(value.(string))
+					}
 				}
 				return template.HTMLAttr(output)
 			},
