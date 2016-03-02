@@ -32,8 +32,8 @@
 					<td>{{.ID}}
 					<td>{{.FirstName}} {{.Surname}}
 					<td>{{.Club}}
-					<td>{{.Grade}}
-					<td>{{.AgeGroup}}
+					<td>{{nameGrade .Grade}}
+					<td>{{nameAgeGroup .AgeGroup}}
 				</tr>
 			{{end}}
 		</table>
