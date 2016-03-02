@@ -64,8 +64,8 @@ var (
 type M map[string]interface{}
 
 func init() {
-	//go startDB()
 	go maintainExpiresTime()
+	go maintainSessions()
 
 	port := flag.Uint("port", 80, "Assign a differnet port number for the http server. Range: 0 through 65535.")
 	flag.BoolVar(&debug, "debug", false, "Turn on debugging.")

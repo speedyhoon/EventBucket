@@ -12,25 +12,19 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 	}
 	ranges := filteredRanges(event.Ranges)
 
+	_, forms := sessionForms2(w, r, eventDetails, eventRangeNew, eventAggNew)
+
 	templater(w, page{
 		Title:   "Event Settings",
 		Menu:    urlEvents,
 		MenuID:  eventID,
 		Heading: event.Name,
 		Data: M{
-			"Event":     event,
-			"RangesQty": len(ranges),
-			"AddRange": form{Fields: []field{
-				{},
-				{Value: event.ID},
-			},
-			},
-			"AddAgg": form{Fields: []field{
-				{},
-				{Options: ranges},
-				{Value: event.ID},
-			},
-			},
+			"Event":        event,
+			"EventDetails": forms[0],
+			"RangesQty":    len(ranges),
+			"AddRange":     forms[1],
+			"AddAgg":       forms[2],
 		},
 	})
 }

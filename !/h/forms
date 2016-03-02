@@ -13,7 +13,7 @@
 <label>Postcode: <input{{with hasindex .Fields 3}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=p maxlength=64 autocomplete=off>{{with hasindex .Fields 3}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Latitude: <input{{with hasindex .Fields 4}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=x min=-90 max=90 step=.000001 type=number>{{with hasindex .Fields 4}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Longitude: <input{{with hasindex .Fields 5}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=y min=-180 max=180 step=.000001 type=number>{{with hasindex .Fields 5}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
-<button {{with hasindex .Fields 6}}{{attr " value" .Value}}{{end}} name=C>Save</button></fieldset></form>
+<button{{with hasindex .Fields 6}}{{attr " value" .Value}}{{end}} name=C>Save</button></fieldset></form>
 {{end}}
 
 {{define "NewShootingMound"}}<form method=post action=/2><fieldset><legend>New Shooting <u>M</u>ound</legend>
@@ -21,7 +21,7 @@
 <label>Mound Name: <input{{with hasindex .Fields 0}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=n maxlength=64 autocomplete=off>{{with hasindex .Fields 0}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Distance: <input{{with hasindex .Fields 1}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=e min=10 max=65535 step=.01 accesskey=m type=number>{{with hasindex .Fields 1}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Units: <select{{with hasindex .Fields 2}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=z>{{with hasindex .Fields 2}}{{with .Options}}{{range .}}<option{{attr " value" .Value}}>{{.Label}}{{end}}{{end}}{{else}}<option value=m>Metres<option value=k>Kilometres<option value=y>Yards<option value=f>Feet{{end}}</select>{{with hasindex .Fields 2}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
-<button {{with hasindex .Fields 3}}{{attr " value" .Value}}{{end}} name=C>Save</button></fieldset></form>
+<button{{with hasindex .Fields 3}}{{attr " value" .Value}}{{end}} name=C>Save</button></fieldset></form>
 {{end}}
 
 {{define "NewEvent"}}<form method=post action=/3><fieldset><legend><u>N</u>ew Event</legend>
@@ -39,20 +39,21 @@
 <label>Club Name: <input{{with hasindex .Fields 1}}{{attr " value" .Value}}{{has .Options " list=C"}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=C maxlength=64 type=search>{{with hasindex .Fields 1}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Date: <input{{with hasindex .Fields 2}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=d type=date>{{with hasindex .Fields 2}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Time: <input{{with hasindex .Fields 3}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=t type=time>{{with hasindex .Fields 3}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
-<button {{with hasindex .Fields 4}}{{attr " value" .Value}}{{end}} name=E>Save</button></fieldset></form>
+<label>Close Event: <input{{with hasindex .Fields 4}}{{attr " value" .Value}}{{attr " checked" .Checked}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=c type=checkbox>{{with hasindex .Fields 4}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
+<button{{with hasindex .Fields 5}}{{attr " value" .Value}}{{end}} name=E>Save</button></fieldset></form>
 {{with hasindex .Fields 1}}{{with .Options}}<datalist id=C>{{range .}}<option{{attr " value" .Label}}>{{end}}</datalist>{{end}}{{end}}{{end}}
 
 {{define "AddRange"}}<form method=post action=/5><fieldset><legend>Add <u>R</u>ange</legend>
 {{with .Error}}<samp>{{.}}</samp>{{end}}
 <label>Range Name: <input{{with hasindex .Fields 0}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=n accesskey=r maxlength=64 autocomplete=off>{{with hasindex .Fields 0}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
-<button {{with hasindex .Fields 1}}{{attr " value" .Value}}{{end}} name=E>Save</button></fieldset></form>
+<button{{with hasindex .Fields 1}}{{attr " value" .Value}}{{end}} name=E>Save</button></fieldset></form>
 {{end}}
 
 {{define "AddAggregateRange"}}<form method=post action=/6><fieldset><legend><u>A</u>dd Aggregate Range</legend>
 {{with .Error}}<samp>{{.}}</samp>{{end}}
 <label>Aggregate Name: <input{{with hasindex .Fields 0}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=n accesskey=a maxlength=64 autocomplete=off>{{with hasindex .Fields 0}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Sum up ranges: <select{{with hasindex .Fields 1}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=R multiple>{{with hasindex .Fields 1}}{{with .Options}}{{range .}}<option{{attr " value" .Value}}>{{.Label}}{{end}}{{end}}{{else}}{{end}}</select>{{with hasindex .Fields 1}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
-<button {{with hasindex .Fields 2}}{{attr " value" .Value}}{{end}} name=E>Save</button></fieldset></form>
+<button{{with hasindex .Fields 2}}{{attr " value" .Value}}{{end}} name=E>Save</button></fieldset></form>
 {{end}}
 
 {{define "ShooterEntry"}}<form method=post action=/7 oninput=getter(this)><fieldset><legend><u>S</u>hooter Entry</legend>
@@ -63,8 +64,8 @@
 <label>Existing Shooter: <select{{with hasindex .Fields 3}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=S>{{with hasindex .Fields 3}}{{with .Options}}{{range .}}<option{{attr " value" .Value}}>{{.Label}}{{end}}{{end}}{{else}}{{end}}</select>{{with hasindex .Fields 3}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Grade: <select{{with hasindex .Fields 4}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=g>{{with hasindex .Fields 4}}{{with .Options}}{{range .}}<option{{attr " value" .Value}}>{{.Label}}{{end}}{{end}}{{else}}<option selected disabled><option value=1>Target A<option value=2>Target B<option value=3>Target C<option value=4>F Class A<option value=5>F Class B<option value=6>F Class Open<option value=7>F/TR<option value=8>Match Open<option value=9>Match Reserve<option value=10>303 Rifle{{end}}</select>{{with hasindex .Fields 4}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Age Group: <select{{with hasindex .Fields 5}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=r>{{with hasindex .Fields 5}}{{with .Options}}{{range .}}<option{{attr " value" .Value}}>{{.Label}}{{end}}{{end}}{{else}}<option><option value=1>Junior U21<option value=2>Junior U25<option value=3>Veteran<option value=4>Super Veteran{{end}}</select>{{with hasindex .Fields 5}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
-<button {{with hasindex .Fields 6}}{{attr " value" .Value}}{{end}} name=E formaction=/8 class=clear>Add Existing Shooter</button>
-<button {{with hasindex .Fields 7}}{{attr " value" .Value}}{{end}} name=E class=right>Add New Shooter</button></fieldset></form>
+<button{{with hasindex .Fields 6}}{{attr " value" .Value}}{{end}} name=E formaction=/8 class=clear>Add Existing Shooter</button>
+<button{{with hasindex .Fields 7}}{{attr " value" .Value}}{{end}} name=E class=right>Add New Shooter</button></fieldset></form>
 {{with hasindex .Fields 0}}{{with .Options}}<datalist id=f>{{range .}}<option{{attr " value" .Label}}>{{end}}</datalist>{{end}}{{end}}{{with hasindex .Fields 1}}{{with .Options}}<datalist id=s>{{range .}}<option{{attr " value" .Label}}>{{end}}</datalist>{{end}}{{end}}{{with hasindex .Fields 2}}{{with .Options}}<datalist id=C>{{range .}}<option{{attr " value" .Label}}>{{end}}</datalist>{{end}}{{end}}{{end}}
 
 {{define "NewShooter"}}<form method=post action=/10><fieldset><legend>New <u>S</u>hooter</legend>

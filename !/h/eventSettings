@@ -1,4 +1,5 @@
 {{define "page"}}
+{{template "EventDetails" .EventDetails}}
 {{template "AddRange" .AddRange}}
 	<ul>
 		{{range .Event.Ranges}}
