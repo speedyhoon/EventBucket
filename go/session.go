@@ -119,7 +119,6 @@ func sessionForms(w http.ResponseWriter, r *http.Request, formActions ...uint8) 
 	cookies, err := r.Cookie(sessionToken)
 	if err != nil || cookies.Value == "" {
 		//No session found. Return default forms.
-		//		return form{Fields: getForm(formActions[0])}
 		return nil, getForms(formActions...)
 	}
 
@@ -153,29 +152,73 @@ func sessionForms(w http.ResponseWriter, r *http.Request, formActions ...uint8) 
 func getForms(formActions ...uint8) [][]field {
 	var forms [][]field //A group of forms, where each form has several fields
 	for _, action := range formActions {
-		//		forms = append(forms, form{action: action, Fields: getForm(action)})
 		forms = append(forms, getForm(action))
 	}
 	return forms
 }
 
-/*
-
-
 //Update the expires http header time, every 15 minutes rather than recalculating it on every http request.
-func maintainExpiresTime() {
-	ticker := time.NewTicker(time.Minute * 15)
+func maintainSessions() {
+	ticker := time.NewTicker(time.Second * 60)
 	for range ticker.C {
-	//Can't directly change global variables in a go routine, so call an external function.
-	setExpiresTime()
-}
+		//Can't directly change global variables in a go routine, so call an external function.
+		purgeOldSessions()
+	}
 }
 
-//Set expiry date 1 year, 0 months & 0 days in the future.
-func setExpiresTime() {
-	//Date format is the same as Go`s time.RFC1123 but uses "GMT" timezone instead of "UTC" time standard.
-	expiresTime = time.Now().UTC().AddDate(1, 0, 0).Format(formatGMT)
-	//w3.org says: "All HTTP date/time stamps MUST be represented in Greenwich Mean Time" under 3.3.1 Full Date //www.w3.org/Protocols/rfc2616/rfc2616-sec3.html
-	masterTemplate.CurrentYear = time.Now().Format("2006")
+//Delete sessions where the expiry datetime has already lapsed.
+func purgeOldSessions() {
+	globalSessions.Lock()
+	for sessionID := range globalSessions.m {
+		if globalSessions.m[sessionID].expiry.Before(time.Now()) {
+			trace.Println("deleted sessionID:", sessionID)
+			delete(globalSessions.m, sessionID)
+		}
+	}
+	globalSessions.Unlock()
 }
-*/
+
+func sessionForms2(w http.ResponseWriter, r *http.Request, formActions ...uint8) (*uint8, []form) {
+	//Get users session id from request
+	cookies, err := r.Cookie(sessionToken)
+	if err != nil || cookies.Value == "" {
+		//No session found. Return default forms.
+		//		return form{Fields: getForm(formActions[0])}
+		return nil, getForms2(formActions...)
+	}
+
+	//Start a read lock to prevent concurrent reads while other parts are executing a write.
+	globalSessions.RLock()
+	contents, ok := globalSessions.m[cookies.Value]
+	globalSessions.RUnlock()
+	if ok {
+		//Clear the session contents as it has been returned to the user.
+		globalSessions.Lock()
+		delete(globalSessions.m, cookies.Value)
+		globalSessions.Unlock()
+
+		//Remove cookie.
+		w.Header().Set("Set-Cookie", fmt.Sprintf("%v=; expires=%v HttpOnly", sessionToken, time.Now().UTC().Add(-sessionExpiryTime).Format(formatGMT)))
+		var forms []form
+		for _, action := range formActions {
+			if contents.action == action {
+				//				forms = append(forms, contents)
+				forms = append(forms, form{Fields: contents.Fields})
+			} else {
+				//				forms = append(forms, form{action: action, Fields: getForm(action)})
+				forms = append(forms, form{Fields: getForm(action)})
+			}
+		}
+		return &contents.action, forms
+	}
+	return nil, getForms2(formActions...)
+}
+
+func getForms2(formActions ...uint8) []form {
+	var forms []form
+	for _, action := range formActions {
+		//		forms = append(forms, form{action: action, Fields: getForm(action)})
+		forms = append(forms, form{Fields: getForm(action)})
+	}
+	return forms
+}

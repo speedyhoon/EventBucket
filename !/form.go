@@ -112,6 +112,8 @@ func getForm(id uint8) []field {
 		}, {
 			name: "t", v8: isValidStr,
 		}, {
+			name: "c", v8: isValidBool,
+		}, {
 			name: "E", v8: isValidID,
 		}}
 	case 5:
