@@ -98,6 +98,12 @@ func templater(w http.ResponseWriter, page page) {
 				}
 				return template.HTMLAttr("")
 			},
+			"nameGrade": func(index uint64) string {
+				return dataListGrades()[index].Label
+			},
+			"nameAgeGroup": func(index uint64) string {
+				return dataListAgeGroup()[index].Label
+			},
 		}).ParseFiles(hhh...))
 		html = templates[pageName]
 	}
