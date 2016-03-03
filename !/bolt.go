@@ -130,6 +130,37 @@ func insertShooter(shooter Shooter) (string, error) {
 	return b36, err
 }
 
+func updateShooter(shooter Shooter, eventID string) error {
+	var sID /*, eID*/ []byte
+	var err error
+	var buf []byte
+	sID, err = B36toBy(shooter.ID)
+	if err != nil {
+		return err
+	}
+	// Marshal user data into bytes.
+	buf, err = json.Marshal(shooter)
+	if err != nil {
+		return err
+	}
+	/*if eventID != "" {
+		eID, err = B36toBy(eventID)
+		if err != nil {
+			return err
+		}
+	}*/
+
+	err = db.Update(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(tblShooter)
+		if bucket == nil {
+			//Shooter Bucket isn't created yet
+			return nil
+		}
+		return bucket.Put(sID, buf)
+	})
+	return err
+}
+
 // itob returns an 8-byte big endian representation of v.
 func itob(v uint64) []byte {
 	b := make([]byte, 8)

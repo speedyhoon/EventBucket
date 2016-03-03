@@ -325,4 +325,19 @@ It had sent so many requests that is was bound to cause this error eventually.  
 On the next test run the laptop started to beep at me like a machine gun for 30 seconds! I suspect the temporary trace logging that I had for variables while developing a few pages (that I forgot to remove) had stack overflowed the command console Cmder.
 The test came back with 99 failed pages /club/265-/club/344,/entries/371-/entries/424 probably because I killed the server early with Ctrl + C
 
+<h4>Session troubles</h4>
+<p>
+	sessions:
+	had a hard time trying to figure out a way to get all the forms with their default values as well as getting the submitted session.
+	At one stage I was trying to get a form and if it wasn't the same action id then the session would be cleared without first getting the incorrect submitted fields.
+
+	could almost get rid of the struct form type. But it is needed to keep the sessions in, most importantly the action integer. if it wasn't for the action then it could be removed.
+</p>
+
+<p>Forms todo list</p>
+<p>form to add new shooter to EB - not into event
+	add list to show all shooters
+	finish search lookup database call
+	add existing shooters to event
+	add </p>
 {{end}}
