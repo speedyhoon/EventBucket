@@ -3,7 +3,7 @@ package main
 import "net/http"
 
 func shooters(w http.ResponseWriter, r *http.Request) {
-	_, pageForms := sessionForms2(w, r, shooterNew, shooterDetails)
+	_, pageForms := sessionForms2(w, r, shooterNew, shooterSearch, shooterDetails)
 	shooters, _ := getShooters()
 
 	templater(w, page{
@@ -11,6 +11,7 @@ func shooters(w http.ResponseWriter, r *http.Request) {
 		Data: M{
 			"NewShooter":     pageForms[0],
 			"ListShooters":   shooters,
+			"shooterSearch":  shooterSearch,
 			"ShooterDetails": pageForms[1],
 			"QtyShooters":    len(shooters),
 		},
