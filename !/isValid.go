@@ -111,7 +111,11 @@ func isValidStr(inp []string, field field) (interface{}, string) {
 }
 func isValidID(inp []string, field field) (interface{}, string) {
 	str := strings.TrimSpace(inp[0])
-	if field.regex != nil && field.regex.MatchString(str) {
+	if field.regex == nil {
+		trace.Println("missing regex for field:", field.name)
+		return str, "Missing regex to check against"
+	}
+	if field.regex.MatchString(str) {
 		return str, ""
 	}
 	return str, "ID supplied is incorrect"

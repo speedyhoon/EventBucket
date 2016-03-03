@@ -60,6 +60,7 @@ func pages() {
 	post("POST", eventShooterExisting, eventShooterExistingInsert)
 	post("GET", shooterSearch, searchShooters)
 	post("POST", shooterNew, shooterInsert)
+	post("POST", shooterDetails, shooterUpdate)
 
 	//BUG any url breaks when appending "&*((&*%"
 	get404(urlHome, home)
