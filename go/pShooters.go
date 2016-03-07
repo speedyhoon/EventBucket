@@ -3,11 +3,18 @@ package main
 import "net/http"
 
 func shooters(w http.ResponseWriter, r *http.Request) {
-	_, pageForms := sessionForms2(w, r, shooterNew, shooterSearch, shooterDetails)
-	shooters, _ := getShooters()
+	action, pageForms := sessionForms2(w, r, shooterNew, shooterSearch, shooterDetails)
+	var shooters []Shooter
+	var err error
+	if action != nil && *action == shooterSearch {
+		shooters, err = getSearchShooters(pageForms[1].Fields[0].Value, pageForms[1].Fields[1].Value, pageForms[1].Fields[2].Value)
+	} else {
+		shooters, err = getShooters()
+	}
 
 	templater(w, page{
 		Title: "Shooters",
+		Error: err,
 		Data: M{
 			"NewShooter":     pageForms[0],
 			"ListShooters":   shooters,
@@ -35,7 +42,7 @@ func shooterUpdate(w http.ResponseWriter, r *http.Request, submittedForm form, r
 	http.Redirect(w, r, urlShooters, http.StatusSeeOther)
 }
 
-func searchShooters(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+func eventSearchShooters(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	listShooters := []option{
 		{Value: "sid", Label: "Firstname, Surname, Club"},
 		{Value: "123", Label: "Tom, Dick, Harry"},
@@ -47,6 +54,11 @@ func searchShooters(w http.ResponseWriter, r *http.Request, submittedForm form, 
 			"ListShooters": listShooters,
 		},
 	})
+}
+
+func searchShooters(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+	setSession(w, submittedForm)
+	http.Redirect(w, r, urlShooters, http.StatusSeeOther)
 }
 
 func shooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {

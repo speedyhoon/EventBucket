@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/boltdb/bolt"
 )
@@ -385,4 +386,23 @@ func B36toBy(id string) ([]byte, error) {
 	b := make([]byte, 8)
 	binary.BigEndian.PutUint64(b, num)
 	return b, nil
+}
+
+func getSearchShooters(firstName, surname, club string) ([]Shooter, error) {
+	var shooters []Shooter
+	var shooter Shooter
+	err := db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(tblShooter)
+		if b == nil {
+			return fmt.Errorf("Bucket %q not found!", tblShooter)
+		}
+		return b.ForEach(func(_, value []byte) error {
+			//strings.Contains returns true when substr is "" (empty string)
+			if json.Unmarshal(value, &shooter) == nil && strings.Contains(strings.ToLower(shooter.FirstName), strings.ToLower(firstName)) && strings.Contains(strings.ToLower(shooter.Surname), strings.ToLower(surname)) && strings.Contains(strings.ToLower(shooter.Club), strings.ToLower(club)) {
+				shooters = append(shooters, shooter)
+			}
+			return nil
+		})
+	})
+	return shooters, err
 }
