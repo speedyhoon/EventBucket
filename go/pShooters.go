@@ -11,8 +11,8 @@ func shooters(w http.ResponseWriter, r *http.Request) {
 		Data: M{
 			"NewShooter":     pageForms[0],
 			"ListShooters":   shooters,
-			"shooterSearch":  shooterSearch,
-			"ShooterDetails": pageForms[1],
+			"shooterSearch":  pageForms[1],
+			"ShooterDetails": pageForms[2],
 			"QtyShooters":    len(shooters),
 		},
 	})
