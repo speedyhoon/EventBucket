@@ -19,18 +19,19 @@ type option struct {
 const (
 	fieldMaxLen = 64
 
-	clubNew              = 0
-	clubDetails          = 1
-	clubMoundNew         = 2
-	eventNew             = 3
-	eventDetails         = 4
-	eventRangeNew        = 5
-	eventAggNew          = 6
-	eventShooterNew      = 7
-	eventShooterExisting = 8
-	shooterSearch        = 9
-	shooterNew        = 10
-	shooterDetails        = 11
+	clubNew              uint8 = 0
+	clubDetails          uint8 = 1
+	clubMoundNew         uint8 = 2
+	eventNew             uint8 = 3
+	eventDetails         uint8 = 4
+	eventRangeNew        uint8 = 5
+	eventAggNew          uint8 = 6
+	eventShooterNew      uint8 = 7
+	eventShooterExisting uint8 = 8
+	eventShooterSearch   uint8 = 9
+	shooterNew           uint8 = 10
+	shooterDetails       uint8 = 11
+	shooterSearch        uint8 = 12
 )
 
 func dataListGrades() []option {
@@ -89,7 +90,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "e", Required: true, min: 10, max: 65535, step: .01, v8: isValidFloat32,
 		}, {
-			name: "z", Required: true, v8: isValidStr, Options: []option{option{Label:"Metres", Value:"m", Selected:false}, option{Label:"Kilometres", Value:"k", Selected:false}, option{Label:"Yards", Value:"y", Selected:false}, option{Label:"Feet", Value:"f", Selected:false}},
+			name: "z", Required: true, v8: isValidStr, Options: []option{{Label: "Metres", Value: "m", Selected: false}, {Label: "Kilometres", Value: "k", Selected: false}, {Label: "Yards", Value: "y", Selected: false}, {Label: "Feet", Value: "f", Selected: false}},
 		}, {
 			name: "C", v8: isValidID,
 		}}
@@ -141,9 +142,9 @@ func getForm(id uint8) []field {
 		}, {
 			name: "S", v8: isValidStr,
 		}, {
-			name: "g", Required: true, min: 1, max: 11, step: 1, v8: isValidUint64, Options: []option{option{Label:"", Value:"", Selected:false}, option{Label:"Target A", Value:"1", Selected:false}, option{Label:"Target B", Value:"2", Selected:false}, option{Label:"Target C", Value:"3", Selected:false}, option{Label:"F Class A", Value:"4", Selected:false}, option{Label:"F Class B", Value:"5", Selected:false}, option{Label:"F Class Open", Value:"6", Selected:false}, option{Label:"F/TR", Value:"7", Selected:false}, option{Label:"Match Open", Value:"8", Selected:false}, option{Label:"Match Reserve", Value:"9", Selected:false}, option{Label:"303 Rifle", Value:"10", Selected:false}},
+			name: "g", Required: true, min: 1, max: 11, step: 1, v8: isValidUint64, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Target A", Value: "1", Selected: false}, {Label: "Target B", Value: "2", Selected: false}, {Label: "Target C", Value: "3", Selected: false}, {Label: "F Class A", Value: "4", Selected: false}, {Label: "F Class B", Value: "5", Selected: false}, {Label: "F Class Open", Value: "6", Selected: false}, {Label: "F/TR", Value: "7", Selected: false}, {Label: "Match Open", Value: "8", Selected: false}, {Label: "Match Reserve", Value: "9", Selected: false}, {Label: "303 Rifle", Value: "10", Selected: false}},
 		}, {
-			name: "r", min: 1, max: 5, step: 1, v8: isValidUint64, Options: []option{option{Label:"", Value:"", Selected:false}, option{Label:"Junior U21", Value:"1", Selected:false}, option{Label:"Junior U25", Value:"2", Selected:false}, option{Label:"Veteran", Value:"3", Selected:false}, option{Label:"Super Veteran", Value:"4", Selected:false}},
+			name: "r", min: 1, max: 5, step: 1, v8: isValidUint64, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Junior U21", Value: "1", Selected: false}, {Label: "Junior U25", Value: "2", Selected: false}, {Label: "Veteran", Value: "3", Selected: false}, {Label: "Super Veteran", Value: "4", Selected: false}},
 		}, {
 			name: "E", v8: isValidID, regex: regexID,
 		}, {
@@ -153,9 +154,9 @@ func getForm(id uint8) []field {
 		return []field{{
 			name: "S", Required: true, v8: isValidID,
 		}, {
-			name: "g", Required: true, min: 1, max: 11, step: 1, v8: isValidUint64, Options: []option{option{Label:"", Value:"", Selected:false}, option{Label:"Target A", Value:"1", Selected:false}, option{Label:"Target B", Value:"2", Selected:false}, option{Label:"Target C", Value:"3", Selected:false}, option{Label:"F Class A", Value:"4", Selected:false}, option{Label:"F Class B", Value:"5", Selected:false}, option{Label:"F Class Open", Value:"6", Selected:false}, option{Label:"F/TR", Value:"7", Selected:false}, option{Label:"Match Open", Value:"8", Selected:false}, option{Label:"Match Reserve", Value:"9", Selected:false}, option{Label:"303 Rifle", Value:"10", Selected:false}},
+			name: "g", Required: true, min: 1, max: 11, step: 1, v8: isValidUint64, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Target A", Value: "1", Selected: false}, {Label: "Target B", Value: "2", Selected: false}, {Label: "Target C", Value: "3", Selected: false}, {Label: "F Class A", Value: "4", Selected: false}, {Label: "F Class B", Value: "5", Selected: false}, {Label: "F Class Open", Value: "6", Selected: false}, {Label: "F/TR", Value: "7", Selected: false}, {Label: "Match Open", Value: "8", Selected: false}, {Label: "Match Reserve", Value: "9", Selected: false}, {Label: "303 Rifle", Value: "10", Selected: false}},
 		}, {
-			name: "r", min: 1, max: 5, step: 1, v8: isValidUint64, Options: []option{option{Label:"", Value:"", Selected:false}, option{Label:"Junior U21", Value:"1", Selected:false}, option{Label:"Junior U25", Value:"2", Selected:false}, option{Label:"Veteran", Value:"3", Selected:false}, option{Label:"Super Veteran", Value:"4", Selected:false}},
+			name: "r", min: 1, max: 5, step: 1, v8: isValidUint64, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Junior U21", Value: "1", Selected: false}, {Label: "Junior U25", Value: "2", Selected: false}, {Label: "Veteran", Value: "3", Selected: false}, {Label: "Super Veteran", Value: "4", Selected: false}},
 		}, {
 			name: "E", Required: true, v8: isValidID, regex: regexID,
 		}}
@@ -175,9 +176,9 @@ func getForm(id uint8) []field {
 		}, {
 			name: "C", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
-			name: "g", Required: true, min: 1, max: 11, step: 1, v8: isValidUint64, Options: []option{option{Label:"", Value:"", Selected:false}, option{Label:"Target A", Value:"1", Selected:false}, option{Label:"Target B", Value:"2", Selected:false}, option{Label:"Target C", Value:"3", Selected:false}, option{Label:"F Class A", Value:"4", Selected:false}, option{Label:"F Class B", Value:"5", Selected:false}, option{Label:"F Class Open", Value:"6", Selected:false}, option{Label:"F/TR", Value:"7", Selected:false}, option{Label:"Match Open", Value:"8", Selected:false}, option{Label:"Match Reserve", Value:"9", Selected:false}, option{Label:"303 Rifle", Value:"10", Selected:false}},
+			name: "g", Required: true, min: 1, max: 11, step: 1, v8: isValidUint64, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Target A", Value: "1", Selected: false}, {Label: "Target B", Value: "2", Selected: false}, {Label: "Target C", Value: "3", Selected: false}, {Label: "F Class A", Value: "4", Selected: false}, {Label: "F Class B", Value: "5", Selected: false}, {Label: "F Class Open", Value: "6", Selected: false}, {Label: "F/TR", Value: "7", Selected: false}, {Label: "Match Open", Value: "8", Selected: false}, {Label: "Match Reserve", Value: "9", Selected: false}, {Label: "303 Rifle", Value: "10", Selected: false}},
 		}, {
-			name: "r", min: 1, max: 5, step: 1, v8: isValidUint64, Options: []option{option{Label:"", Value:"", Selected:false}, option{Label:"Junior U21", Value:"1", Selected:false}, option{Label:"Junior U25", Value:"2", Selected:false}, option{Label:"Veteran", Value:"3", Selected:false}, option{Label:"Super Veteran", Value:"4", Selected:false}},
+			name: "r", min: 1, max: 5, step: 1, v8: isValidUint64, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Junior U21", Value: "1", Selected: false}, {Label: "Junior U25", Value: "2", Selected: false}, {Label: "Veteran", Value: "3", Selected: false}, {Label: "Super Veteran", Value: "4", Selected: false}},
 		}}
 	case 11:
 		return []field{{
@@ -189,9 +190,17 @@ func getForm(id uint8) []field {
 		}, {
 			name: "C", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
-			name: "g", Required: true, min: 1, max: 11, step: 1, v8: isValidUint64, Options: []option{option{Label:"", Value:"", Selected:false}, option{Label:"Target A", Value:"1", Selected:false}, option{Label:"Target B", Value:"2", Selected:false}, option{Label:"Target C", Value:"3", Selected:false}, option{Label:"F Class A", Value:"4", Selected:false}, option{Label:"F Class B", Value:"5", Selected:false}, option{Label:"F Class Open", Value:"6", Selected:false}, option{Label:"F/TR", Value:"7", Selected:false}, option{Label:"Match Open", Value:"8", Selected:false}, option{Label:"Match Reserve", Value:"9", Selected:false}, option{Label:"303 Rifle", Value:"10", Selected:false}},
+			name: "g", Required: true, min: 1, max: 11, step: 1, v8: isValidUint64, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Target A", Value: "1", Selected: false}, {Label: "Target B", Value: "2", Selected: false}, {Label: "Target C", Value: "3", Selected: false}, {Label: "F Class A", Value: "4", Selected: false}, {Label: "F Class B", Value: "5", Selected: false}, {Label: "F Class Open", Value: "6", Selected: false}, {Label: "F/TR", Value: "7", Selected: false}, {Label: "Match Open", Value: "8", Selected: false}, {Label: "Match Reserve", Value: "9", Selected: false}, {Label: "303 Rifle", Value: "10", Selected: false}},
 		}, {
-			name: "r", min: 1, max: 5, step: 1, v8: isValidUint64, Options: []option{option{Label:"", Value:"", Selected:false}, option{Label:"Junior U21", Value:"1", Selected:false}, option{Label:"Junior U25", Value:"2", Selected:false}, option{Label:"Veteran", Value:"3", Selected:false}, option{Label:"Super Veteran", Value:"4", Selected:false}},
+			name: "r", min: 1, max: 5, step: 1, v8: isValidUint64, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Junior U21", Value: "1", Selected: false}, {Label: "Junior U25", Value: "2", Selected: false}, {Label: "Veteran", Value: "3", Selected: false}, {Label: "Super Veteran", Value: "4", Selected: false}},
+		}}
+	case 12:
+		return []field{{
+			name: "f", maxLen: 64, v8: isValidStr,
+		}, {
+			name: "s", maxLen: 64, v8: isValidStr,
+		}, {
+			name: "C", maxLen: 64, v8: isValidStr,
 		}}
 	}
 	return []field{}
