@@ -340,4 +340,10 @@ The test came back with 99 failed pages /club/265-/club/344,/entries/371-/entrie
 	finish search lookup database call
 	add existing shooters to event
 	add </p>
+
+<p>One suprising thing about switching to bolt db is that I was no longer referencing data by their column names directly. this was a common thing in mongodb queries. where a map was used</p>
+<pre>qty, err := conn.C(tblClub).Find(M{schemaIsDefault: true}).Count()
+return qty > 0 && err == nil</pre>
+<p>compared to mongodb, bolt loops through all records in the database. marshal the object into a struct if possible and compare using the struct directly in code. this helps to no longer reference the json type directly at all. it saves a far bit of code referencing constant global string variables everywhere.</p>
+<p>it also meant 27 lines of code in buildbot were redundant - updating global constant values.</p>
 {{end}}

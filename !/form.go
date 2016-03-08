@@ -182,7 +182,7 @@ func getForm(id uint8) []field {
 		}}
 	case 11:
 		return []field{{
-			name: "_id", Required: true, maxLen: 64, v8: isValidID, regex: regexID,
+			name: "I", Required: true, maxLen: 64, v8: isValidID, regex: regexID,
 		}, {
 			name: "f", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
