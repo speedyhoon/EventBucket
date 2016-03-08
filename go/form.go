@@ -84,13 +84,13 @@ func getForm(id uint8) []field {
 		}, {
 			name: "b", v8: isValidBool,
 		}, {
+			name: "u", maxLen: 64, v8: isValidStr,
+		}, {
 			name: "C", v8: isValidID, regex: regexID,
 		}}
 	case 2:
 		return []field{{
-			name: "n", maxLen: 64, v8: isValidStr,
-		}, {
-			name: "e", Required: true, min: 10, max: 65535, step: .01, v8: isValidFloat32,
+			name: "e", Required: true, min: .01, max: 65535, step: .01, v8: isValidFloat32,
 		}, {
 			name: "z", Required: true, v8: isValidStr, Options: []option{{Label: "Metres", Value: "m", Selected: false}, {Label: "Kilometres", Value: "k", Selected: false}, {Label: "Yards", Value: "y", Selected: false}, {Label: "Feet", Value: "f", Selected: false}},
 		}, {

@@ -48,9 +48,10 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 func eventInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	//Insert new event into database.
 	ID, err := insertEvent(Event{
-		Club:     submittedForm.Fields[0].Value,
-		Name:     submittedForm.Fields[1].Value,
-		DateTime: submittedForm.Fields[2].Value,
+		Club: submittedForm.Fields[0].Value,
+		Name: submittedForm.Fields[1].Value,
+		Date: submittedForm.Fields[2].Value,
+		Time: submittedForm.Fields[3].Value,
 	})
 
 	//Display any insert errors onscreen.
