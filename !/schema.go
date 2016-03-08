@@ -2,41 +2,9 @@ package main
 
 import "regexp"
 
-const (
-	//Collection property names
-	schemaClub           = "C"
-	schemaEvent          = "E"
-	schemaMound          = "M"
-	schemaRange          = "R"
-	schemaShooter        = "S"
-	schemaAutoInc        = "A"
-	schemaID             = "_id"
-	schemaAddress        = "a"
-	schemaIsDefault      = "b"
-	schemaClose          = "c"
-	schemaDate           = "d"
-	schemaDistance       = "e"
-	schemaGrade          = "g"
-	schemaIsPrizeMeet    = "i"
-	schemaLongName       = "l"
-	schemaName           = "n"
-	schemaSortScoreboard = "o"
-	schemaPostcode       = "p"
-	schemaSort           = "s"
-	schemaTime           = "t"
-	schemaURL            = "u"
-	schemaUnit           = "z"
-	schemaTown           = "w"
-	schemaLatitude       = "x"
-	schemaLongitude      = "y"
-	schemaFirstName      = "f"
-	schemaSurname        = "s"
-	schemaAgeGroup       = "r"
-)
-
 // Club is exported
 type Club struct {
-	ID        string  `json:"_id"`
+	ID        string  `json:"I"`
 	Name      string  `json:"n"`
 	IsDefault bool    `json:"b,omitempty"`
 	Mounds    []Mound `json:"M,omitempty"`
@@ -60,14 +28,14 @@ type AutoInc struct {
 
 // Mound is exported
 type Mound struct {
-	//	ID       string `json:"_id"`
+	//	ID       string `json:"I"`
 	Distance uint64 `json:"e,omitempty"`
 	Unit     string `json:"z,omitempty"`
 }
 
 // Event is exported
 type Event struct {
-	ID       string         `json:"_id"`
+	ID       string         `json:"I"`
 	Name     string         `json:"n"`
 	Club     string         `json:"C"`
 	DateTime string         `json:"d"`

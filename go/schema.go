@@ -2,38 +2,6 @@ package main
 
 import "regexp"
 
-const (
-	//Collection property names
-	schemaClub           = "schemaClub"
-	schemaEvent          = "schemaEvent"
-	schemaMound          = "schemaMound"
-	schemaRange          = "schemaRange"
-	schemaShooter        = "schemaShooter"
-	schemaAutoInc        = "schemaAutoInc"
-	schemaID             = "schemaID"
-	schemaAddress        = "schemaAddress"
-	schemaIsDefault      = "schemaIsDefault"
-	schemaClose          = "schemaClose"
-	schemaDate           = "schemaDate"
-	schemaDistance       = "schemaDistance"
-	schemaGrade          = "schemaGrade"
-	schemaIsPrizeMeet    = "schemaIsPrizeMeet"
-	schemaLongName       = "schemaLongName"
-	schemaName           = "schemaName"
-	schemaSortScoreboard = "schemaSortScoreboard"
-	schemaPostcode       = "schemaPostcode"
-	schemaSort           = "schemaSort"
-	schemaTime           = "schemaTime"
-	schemaURL            = "schemaURL"
-	schemaUnit           = "schemaUnit"
-	schemaTown           = "schemaTown"
-	schemaLatitude       = "schemaLatitude"
-	schemaLongitude      = "schemaLongitude"
-	schemaFirstName      = "schemaFirstName"
-	schemaSurname        = "schemaSurname"
-	schemaAgeGroup       = "schemaAgeGroup"
-)
-
 // Club is exported
 type Club struct {
 	ID        string  `json:"schemaID"`
