@@ -42,26 +42,14 @@ type Event struct {
 	Ranges   []Range        `json:"schemaRange,omitempty"`
 	AutoInc  AutoInc        `json:"schemaAutoInc"`
 	Shooters []EventShooter `json:"schemaSHOOTER,omitempty"`
-}
-
-/*
-// Event is exported
-type Event struct {
-	ID             string         `json:"_id"`
-	Club           string         `json:"c"`
-	Name           string         `json:"n"`
-	Date           string         `json:"d,omitempty"`
-	Time           string         `json:"t,omitempty"`
-	Grades         []int          `json:"^^schemaGRADES^^,omitempty"`
+	/*Grades         []uint          `json:"schemaGrades,omitempty"`
 	SortScoreboard string         `json:"o,omitempty"`
 	IsPrizeMeet    bool           `json:"p,omitempty"`
 	Closed         bool           `json:"l,omitempty"`
-	Ranges         []Range        `json:"^^schemaRANGE^^,omitempty"`
-	Shooters       []EventShooter `json:"^^schemaSHOOTER^^,omitempty"`
-	//TeamCat        map[string]TeamCat      `json:"A,omitempty"`
-	//Teams          map[string]Team         `json:"T,omitempty"`
-	//Datetime string				`json:"d,omitempty"`		No browser currently supports date time, so settling for separate fields that google chrome allows
-}*/
+	TeamCat        map[string]TeamCat      `json:"A,omitempty"`
+	Teams          map[string]Team         `json:"T,omitempty"`
+	*/
+}
 
 // Range is exported
 type Range struct {
@@ -70,7 +58,7 @@ type Range struct {
 	//	ScoreBoard bool                     `json:"s,omitempty"`
 	//	Locked     bool                     `json:"l,omitempty"`
 	//	Hidden     bool                     `json:"h,omitempty"`
-	//	Order      int                      `json:"^^schemaSORT^^,omitempty"`
+	//	Order      int                      `json:"schemaSort,omitempty"`
 	//	Status     int                      `json:"t,omitempty"`      //ENUM change to 1 when the first shooter has recorded their first shot change to 2 when the range is finished. http://stackoverflow.com/questions/14426366/what-is-an-idiomatic-way-of-representing-enums-in-golang
 	//	Class      map[string]RangeProperty `json:"omitempty,inline"` //TODO possibly change it to optional grades per range in future
 	//	ID         *int                     `json:"i,omitempty"`
@@ -90,9 +78,9 @@ type EventShooter struct {
 	SID      int  `json:"d,omitempty"`
 	Disabled bool `json:"b,omitempty"`
 	//SCOREBOARD
-	ID       uint64 `json:"i,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
-	Position string `json:"x,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
-	Warning  uint8  `json:"y,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
+	ID       uint64 `json:"i,omitempty"`
+	position string `json:"x,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
+	warning  uint8  `json:"y,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
 	//		0 = nil
 	//		1 = shoot off
 	//		2 = warning, no score
@@ -100,7 +88,7 @@ type EventShooter struct {
 	//		4 = highest posible score
 
 	//START-SHOOTING & TOTAL-SCORES
-	GradeSeparator bool `json:"z,omitempty"` //DON'T SAVE THIS TO DB! used for start-shooting and total-scores only.
+	gradeSeparator bool `json:"z,omitempty"` //DON'T SAVE THIS TO DB! used for start-shooting and total-scores only.
 	//	ID string									`json:"w,omitempty"`//DON'T SAVE THIS TO DB! used for start-shooting and total-scores only.
 }
 
