@@ -115,8 +115,3 @@ func getDataListClubs() []option {
 	}
 	return dataListClubs(clubs)
 }
-
-func defaultClubName() string {
-	//TODO get Club name.
-	return "thingy Name"
-}

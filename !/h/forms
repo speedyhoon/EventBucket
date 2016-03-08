@@ -13,7 +13,8 @@
 <label>Postcode: <input{{with hasindex .Fields 3}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=p maxlength=64 autocomplete=off>{{with hasindex .Fields 3}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Latitude: <input{{with hasindex .Fields 4}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=x min=-90 max=90 step=.000001 type=number>{{with hasindex .Fields 4}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
 <label>Longitude: <input{{with hasindex .Fields 5}}{{attr " value" .Value}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=y min=-180 max=180 step=.000001 type=number>{{with hasindex .Fields 5}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
-<button{{with hasindex .Fields 6}}{{attr " value" .Value}}{{end}} name=C>Save</button></fieldset></form>
+<label>Default Club: <input{{with hasindex .Fields 6}}{{attr " value" .Value}}{{attr " checked" .Checked}}{{has .Error " class=error"}}{{has .AutoFocus " autofocus"}}{{end}} name=b type=checkbox>{{with hasindex .Fields 6}}{{with .Error}}<samp>{{.}}</samp>{{end}}{{end}}</label>
+<button{{with hasindex .Fields 7}}{{attr " value" .Value}}{{end}} name=C>Save</button></fieldset></form>
 	{{end}}
 
 {{define "NewShootingMound"}}<form method=post action=/2><fieldset><legend>New Shooting <u>M</u>ound</legend>
