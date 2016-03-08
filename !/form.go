@@ -82,6 +82,8 @@ func getForm(id uint8) []field {
 		}, {
 			name: "y", min: -180, max: 180, step: .000001, v8: isValidFloat32,
 		}, {
+			name: "b", v8: isValidBool,
+		}, {
 			name: "C", v8: isValidID,
 		}}
 	case 2:

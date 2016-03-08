@@ -306,7 +306,15 @@ func hasDefaultClub() bool {
 	return false
 }
 
-func getDefaultClub() (Club, error) {
+func defaultClubName() string {
+	club, _ := getDefaultClub()
+	if club != nil {
+		return club.Name
+	}
+	return ""
+}
+
+func getDefaultClub() (*Club, error) {
 	var club Club
 	var found bool
 	err := db.View(func(tx *bolt.Tx) error {
@@ -324,9 +332,9 @@ func getDefaultClub() (Club, error) {
 		})
 	})
 	if found {
-		return club, nil
+		return &club, nil
 	}
-	return Club{}, err
+	return nil, err
 }
 
 func eventShooterInsertDB(ID string, shooter EventShooter) error {
