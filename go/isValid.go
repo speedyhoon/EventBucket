@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-const(
+const (
 	fillItIn = "Please fill in this field"
 )
 
@@ -36,28 +36,6 @@ func isValidUint64(inp []string, field field) (interface{}, string) {
 	}
 	return num, "field integer doesn't pass validation"
 }
-
-//func isValidFloat64(inp []string, field field) (interface{}, string) {
-//	strNum := strings.TrimSpace(inp[0])
-//	if field.step == 0 {
-//		warn.Println("Are you sure about step == 0?")
-//		return 0, "Step supplied = 0"
-//	}
-//	var num float64
-//	var err error
-//	if strNum != "" {
-//		num, err = strconv.ParseFloat(strNum, 64)
-//		if err != nil {
-//			return num, err.Error()
-//		}
-//	} else if field.Required {
-//		return num, fillItIn
-//	}
-//	if num >= float64(field.min) && num <= float64(field.max) && (field.step == 0 || field.step != 0 /*&& num%step == 0*/) || !field.Required && num == 0 {
-//		return num, ""
-//	}
-//	return num, "field integer doesn't pass validation"
-//}
 
 func isValidFloat32(inp []string, field field) (interface{}, string) {
 	strNum := strings.TrimSpace(inp[0])
@@ -115,8 +93,8 @@ func isValidStr(inp []string, field field) (interface{}, string) {
 }
 func isValidID(inp []string, field field) (interface{}, string) {
 	str := strings.TrimSpace(inp[0])
-	if field.regex == nil{
-		trace.Println("missing regex for field:",field.name)
+	if field.regex == nil {
+		trace.Println("missing regex for field:", field.name)
 		return str, "Missing regex to check against"
 	}
 	if field.regex.MatchString(str) {
@@ -133,25 +111,3 @@ func isValidBool(inp []string, field field) (interface{}, string) {
 	}
 	return checked, ""
 }
-/*
-func isValidRangeIDs(ranges []string, field field) (interface{}, string) {
-	var rangeIDs []uint64
-	var num uint64
-	var err error
-	for _, r := range ranges {
-		num, err = strconv.ParseUint(r, 10, 64)
-		if err != nil {
-			return []uint64{}, "Contains invalid range ids."
-		}
-		rangeIDs = append(rangeIDs, num)
-	}
-	return rangeIDs, ""
-
-	//	trace.Println("TODO")
-	//	return "fds", "fsd"
-	//get eventid
-	//get list of ranges
-	//get their ids
-	//check each
-	// 			[]range has index str
-}*/
