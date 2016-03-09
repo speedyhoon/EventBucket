@@ -1,6 +1,6 @@
 {{define "page"}}
 	EventBucket version: 0.92
-	<p>Compiled by Cam Webb using go1.6, on March 1, 2016.</p>
+	<p>Compiled by Cam Webb using go1.6, on March 10, 2016.</p>
 	{{template "networkAdapters" .}}
 	<h2 class=center>
 		Built with:

@@ -1,3 +1,4 @@
+'use strict';
 if (document.styleSheets[0]) {
   var styles = document.styleSheets[0].rules, obj = {}, rule, text, index;
   for (index in styles) {
@@ -17,10 +18,4 @@ if (document.styleSheets[0]) {
       }
     }
   }
-}
-
-function stopDoubleSubmit() {if (submitted) return false; return submitted = true; }
-var submitted = false;
-for (var forms = document.forms, index = forms.length; index--;) {
-  forms[index].onsubmit = stopDoubleSubmit;
 }
