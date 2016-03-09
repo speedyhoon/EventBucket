@@ -40,4 +40,5 @@
 			{{template "page" .Data}}
 		{{end}}
 	</section>
+	<script defer src=/j/main></script>
 {{end}}
