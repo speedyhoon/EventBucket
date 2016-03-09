@@ -346,4 +346,13 @@ The test came back with 99 failed pages /club/265-/club/344,/entries/371-/entrie
 return qty > 0 && err == nil</pre>
 <p>compared to mongodb, bolt loops through all records in the database. marshal the object into a struct if possible and compare using the struct directly in code. this helps to no longer reference the json type directly at all. it saves a far bit of code referencing constant global string variables everywhere.</p>
 <p>it also meant 27 lines of code in buildbot were redundant - updating global constant values.</p>
+
+<p>With the approach of standardising all http methods I can help but wonder if I am boxing myself into a situation where a different way of calling the server will not suit any existing ways. this will mean changing all form http listeners OR adding a new generic function to do similar functionality. This is especially suited to receiving data on both POST and GET requests. POST requests can assign sessions add return an error on the following request after submit. where as GET requests need to return the error directly.</p>
+
+<p>+++ BOLT db. no more weird mongodb query syntax!</p>
+
+<p>Sass has been written to have as few rules as possible. this means that each rule can be more complex. But doesn't involve setting a property and immediately un-setting it below or beforehand. This requires less scrolling to view a page but longer to decipher each rule.</p>
+
+<p>++boltDB Fixed the issue in database connection with mongodb wasn't closed if the app crashed. Mongodb instance was left open. sometimes it would also leave behind a lock file so the db wasn't able to open. this was more common after restarting or hibinating the machine.
+<br>Project has less dependencies. + bolt - mongodb - mgo + less support</p>
 {{end}}

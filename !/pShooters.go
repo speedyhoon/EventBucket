@@ -15,7 +15,7 @@ func shooters(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
 		Title: "Shooters",
 		Error: err,
-		Data: M{
+		Data: map[string]interface{}{
 			"NewShooter":     pageForms[0],
 			"ListShooters":   shooters,
 			"shooterSearch":  pageForms[1],
@@ -50,7 +50,7 @@ func eventSearchShooters(w http.ResponseWriter, r *http.Request, submittedForm f
 	templater(w, page{
 		Title: "Shooter Search",
 		Ajax:  true,
-		Data: M{
+		Data: map[string]interface{}{
 			"ListShooters": listShooters,
 		},
 	})

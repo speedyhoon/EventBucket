@@ -16,7 +16,7 @@ func club(w http.ResponseWriter, r *http.Request, clubID string) {
 		MenuID:  clubID,
 		Menu:    urlClubs,
 		Heading: club.Name,
-		Data: M{
+		Data: map[string]interface{}{
 			"Club": club,
 		},
 	})
@@ -29,7 +29,7 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 	}
 	templater(w, page{
 		Title: "Clubs",
-		Data: M{
+		Data: map[string]interface{}{
 			"NewClub":   getFormSession(w, r, clubNew),
 			"ListClubs": listClubs,
 		},

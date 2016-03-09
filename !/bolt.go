@@ -18,7 +18,7 @@ var (
 )
 
 func getDocument(collection []byte, ID string, result interface{}) error {
-	byteID, err := B36toBy(ID)
+	byteID, err := b36toBy(ID)
 	if err != nil {
 		return err
 	}
@@ -58,7 +58,9 @@ func getShooter(ID string) (Shooter, error) {
 
 func nextID(bucket *bolt.Bucket) (string, []byte) {
 	num, _ := bucket.NextSequence()
-	return toB36(num), itob(num)
+	b := make([]byte, 8)
+	binary.BigEndian.PutUint64(b, num)
+	return strconv.FormatUint(num, 36), b
 }
 
 func insertEvent(event Event) (string, error) {
@@ -135,7 +137,7 @@ func updateShooter(shooter Shooter, eventID string) error {
 	var sID /*, eID*/ []byte
 	var err error
 	var buf []byte
-	sID, err = B36toBy(shooter.ID)
+	sID, err = b36toBy(shooter.ID)
 	if err != nil {
 		return err
 	}
@@ -145,7 +147,7 @@ func updateShooter(shooter Shooter, eventID string) error {
 		return err
 	}
 	/*if eventID != "" {
-		eID, err = B36toBy(eventID)
+		eID, err = b36toBy(eventID)
 		if err != nil {
 			return err
 		}
@@ -160,38 +162,6 @@ func updateShooter(shooter Shooter, eventID string) error {
 		return bucket.Put(sID, buf)
 	})
 	return err
-}
-
-// itob returns an 8-byte big endian representation of v.
-func itob(v uint64) []byte {
-	b := make([]byte, 8)
-	binary.BigEndian.PutUint64(b, v)
-	return b
-}
-
-// stob returns an 8-byte big endian representation of v.
-func stob(v string) []byte {
-	//	b := make([]byte, 8)
-	//	binary.BigEndian.PutUint64(b, v)
-	return []byte(v)
-}
-
-func insertDoc(collectionName []byte, document interface{}) error {
-	/*err := conn.C(collectionName).Insert(document)
-	if err != nil {
-		warn.Println(err)
-	}
-	return err*/
-	return nil
-}
-
-func upsertDoc(collectionName []byte, ID string, document interface{}) error {
-	/*_, err := conn.C(collectionName).UpsertId(ID, document)
-	if err != nil {
-		warn.Println(err)
-	}
-	return err*/
-	return nil
 }
 
 func updateDoc(collectionName []byte, ID string, document interface{}) error {
@@ -282,42 +252,18 @@ func getShooters() ([]Shooter, error) {
 	return shooters, err
 }
 
-func updateAll(collectionName []byte, query, update M) {
-	/*_, err := conn.C(collectionName).UpdateAll(query, update)
-	if err != nil {
-		warn.Println(err)
-	}*/
-}
-
-func collectionQty(collectionName []byte) int {
-	/*qty, err := conn.C(collectionName).Count()
-	if err != nil {
-		warn.Println(err)
-	}
-	return qty*/
-	return 0
-}
-
 func hasDefaultClub() bool {
-	/*if conn != nil {
-		qty, err := conn.C(tblClub).Find(M{schemaIsDefault: true}).Count()
-		return qty > 0 && err == nil
-	}*/
-	return false
+	return getDefaultClub().Name != ""
 }
 
 func defaultClubName() string {
-	club, _ := getDefaultClub()
-	if club != nil {
-		return club.Name
-	}
-	return ""
+	return getDefaultClub().Name
 }
 
-func getDefaultClub() (*Club, error) {
+func getDefaultClub() Club {
 	var club Club
 	var found bool
-	err := db.View(func(tx *bolt.Tx) error {
+	db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(tblClub)
 		if b == nil {
 			//Club Bucket isn't created yet
@@ -326,19 +272,19 @@ func getDefaultClub() (*Club, error) {
 		return b.ForEach(func(_, value []byte) error {
 			if json.Unmarshal(value, &club) == nil && club.IsDefault {
 				found = true
-				return nil
+				return fmt.Errorf("no error")
 			}
 			return nil
 		})
 	})
 	if found {
-		return &club, nil
+		return club
 	}
-	return nil, err
+	return Club{}
 }
 
 func eventShooterInsertDB(ID string, shooter EventShooter) error {
-	byteID, err := B36toBy(ID)
+	byteID, err := b36toBy(ID)
 	if err != nil {
 		return err
 	}
@@ -386,7 +332,7 @@ func eventShooterInsertDB(ID string, shooter EventShooter) error {
 }
 
 //Converts base36 string to uint64 binary used for bolt maps
-func B36toBy(id string) ([]byte, error) {
+func b36toBy(id string) ([]byte, error) {
 	num, err := strconv.ParseUint(id, 36, 64)
 	if err != nil {
 		return []byte{}, err

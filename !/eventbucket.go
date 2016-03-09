@@ -24,16 +24,15 @@ const (
 	subDir = `\EventBucket`
 
 	//HTTP settings
-	address    = "http://localhost"
-	dirRoot    = "./"
-	dirBarcode = "/b/"
-	dirCSS     = "/c/"
-	dirJS      = "/j/"
-	dirGzip    = "./z/"
-	dirPNG     = "/p/"
-	dirGIF     = "/g/"
-	robots     = "robots.txt"
-	favicon    = "favicon.ico"
+	address = "http://localhost"
+	dirRoot = "./"
+	dirCSS  = "/c/"
+	dirJS   = "/j/"
+	dirGzip = "./z/"
+	dirPNG  = "/p/"
+	dirGIF  = "/g/"
+	robots  = "robots.txt"
+	favicon = "favicon.ico"
 
 	//Date formats
 	formatGMT = "Mon, 02 Jan 2006 15:04:05 GMT"
@@ -61,8 +60,6 @@ var (
 	regexBarcode = regexp.MustCompile(`^[a-z0-9]+/[a-z0-9]+/[a-z0-9]+$`)
 )
 
-type M map[string]interface{}
-
 func init() {
 	go maintainExpiresTime()
 	go maintainSessions()
@@ -86,7 +83,6 @@ func init() {
 		warn.Print("Unable to open a web browser for " + fullAddr)
 	}
 
-	//	startLogging()
 	setExpiresTime()
 
 	//Display message during shutdown.
@@ -104,9 +100,13 @@ func init() {
 }
 
 func main() {
-	var err error
-	databasePath := os.Getenv("ProgramData") + subDir + "\\bolt.db"
-	db, err = bolt.Open(databasePath, 0644, nil)
+	dbPath := filepath.Join(os.Getenv("ProgramData"), subDir)
+	err := mkDir(dbPath)
+	dbPath = filepath.Join(dbPath, "EventBucket.db")
+	if err != nil {
+		return
+	}
+	db, err = bolt.Open(dbPath, 0644, nil)
 	if err != nil {
 		warn.Println(err)
 	}
@@ -116,25 +116,6 @@ func main() {
 	info.Print("Starting EventBucket HTTP server...")
 	warn.Printf("ListenAndServe: %v", http.ListenAndServe(portAddr, nil))
 	info.Println("EvenBucket server stopped.")
-}
-
-//Setup logging into temp directory
-func startLogging() {
-	tempPath := os.Getenv("temp") + subDir
-	err := mkDir(tempPath)
-	if err == nil {
-		var f *os.File
-		logFileName := filepath.Join(tempPath, time.Now().Format("20060102")+".log")
-		f, err = os.OpenFile(logFileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-		if err == nil {
-			if debug {
-				trace.SetOutput(f)
-			}
-			info.SetOutput(f)
-			warn.SetOutput(f)
-		}
-		//Not calling defer to close file pointer "f" because we need it open after init has finished. Not witnessing any adverse affects keeping the file open.
-	}
 }
 
 // Attempt to create the path supplied if it doesn't exist.

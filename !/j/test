@@ -1,4 +1,5 @@
-if (document.styleSheets[0]) {
+'use strict';
+/*/if (document.styleSheets[0]) {
   var styles = document.styleSheets[0].rules, obj = {}, rule, text, index;
   for (index in styles) {
     if (styles.hasOwnProperty(index)) {
@@ -12,13 +13,14 @@ if (document.styleSheets[0]) {
       obj[rule] = text;
       for (var rules = rule.split(','), l = rules.length; l--;) {
         if (!document.querySelectorAll(rules[l].trim()).length) {
-          console.error('no targets found for rule: ' + rules[l].trim() /*+ '{' + text + '}'*/);
+          console.error('no targets found for rule: ' + rules[l].trim() /*+ '{' + text + '}'* /);
         }
       }
     }
   }
-}
+}*/
 
+//Prevent users from double/triple clicking on submit buttons that can cause a form to submit more than once with exactly the same data.
 function stopDoubleSubmit() {if (submitted) return false; return submitted = true; }
 var submitted = false;
 for (var forms = document.forms, index = forms.length; index--;) {
