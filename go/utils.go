@@ -73,9 +73,10 @@ func toB36(b uint64) string {
 	return strconv.FormatUint(b, 36)
 }
 
-func B36toUint(b string) (uint64, error) {
+/*
+func b36toUint(b string) (uint64, error) {
 	return strconv.ParseUint(b, 36, 64)
-}
+}*/
 
 func trimFloat(num float32) string {
 	return strings.TrimRight(strings.Trim(fmt.Sprintf("%f", num), "0"), ".")

@@ -13,7 +13,7 @@ type menu struct {
 
 type page struct {
 	Title, Menu, MenuID, Heading string
-	Data                         M
+	Data                         map[string]interface{}
 	Error                        error
 	Ajax                         bool
 }

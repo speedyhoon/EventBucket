@@ -16,7 +16,7 @@ func scorecards(w http.ResponseWriter, r *http.Request, eventID string) {
 		Menu:    urlEvents,
 		MenuID:  eventID,
 		Heading: event.Name,
-		Data: M{
+		Data: map[string]interface{}{
 			"Event": event,
 		},
 	})

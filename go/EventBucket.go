@@ -61,8 +61,6 @@ var (
 	regexBarcode = regexp.MustCompile(`^[a-z0-9]+/[a-z0-9]+/[a-z0-9]+$`)
 )
 
-type M map[string]interface{}
-
 func init() {
 	go maintainExpiresTime()
 	go maintainSessions()
@@ -86,7 +84,7 @@ func init() {
 		warn.Print("Unable to open a web browser for " + fullAddr)
 	}
 
-	//	startLogging()
+	//startLogging()
 	setExpiresTime()
 
 	//Display message during shutdown.

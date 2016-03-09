@@ -7,7 +7,7 @@ func events(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
 		Title: "Events",
 		Error: err,
-		Data: M{
+		Data: map[string]interface{}{
 			"NewEvent":   getFormSession(w, r, eventNew),
 			"ListEvents": listEvents,
 		},
