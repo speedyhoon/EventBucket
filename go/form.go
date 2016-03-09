@@ -60,6 +60,14 @@ func dataListAgeGroup() []option {
 	}
 }
 
+func defaultDate() string {
+	return time.Now().Format("2006-01-02")
+}
+
+func defaultTime() string {
+	return time.Now().Format("15:04")
+}
+
 func getForm(id uint8) []field {
 	switch id {
 	case 0:
@@ -78,9 +86,9 @@ func getForm(id uint8) []field {
 		}, {
 			name: "p", maxLen: 64, v8: isValidStr,
 		}, {
-			name: "x", min: -90, max: 90, step: .000001, v8: isValidFloat32,
+			name: "x", Value: "-29", min: -90, max: 90, step: .000001, v8: isValidFloat32,
 		}, {
-			name: "y", min: -180, max: 180, step: .000001, v8: isValidFloat32,
+			name: "y", Value: "141", min: -180, max: 180, step: .000001, v8: isValidFloat32,
 		}, {
 			name: "b", v8: isValidBool,
 		}, {

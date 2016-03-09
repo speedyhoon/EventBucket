@@ -100,8 +100,9 @@ func init() {
 }
 
 func main() {
-	dbPath := filepath.Join(os.Getenv("ProgramData"), subDir, "bolt.db")
+	dbPath := filepath.Join(os.Getenv("ProgramData"), subDir)
 	err := mkDir(dbPath)
+	dbPath = filepath.Join(dbPath, "EventBucket.db")
 	if err != nil {
 		return
 	}
