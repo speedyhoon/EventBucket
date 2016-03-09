@@ -1,6 +1,10 @@
 package main
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+	"strings"
+)
 
 func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 	club, err := getClub(clubID)
@@ -27,10 +31,14 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 		Menu:    urlClubs,
 		MenuID:  club.ID,
 		Heading: club.Name,
-		Data: M{
+		Data: map[string]interface{}{
 			"Club":        club,
 			"ClubDetails": detailsForm,
 			"ClubMound":   newMoundForm,
 		},
 	})
+}
+
+func trimFloat(num float32) string {
+	return strings.TrimRight(strings.Trim(fmt.Sprintf("%f", num), "0"), ".")
 }

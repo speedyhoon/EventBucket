@@ -58,7 +58,7 @@ func pages() {
 	post("POST", eventAggNew, eventAggInsert)
 	post("POST", eventShooterNew, eventShooterInsert)
 	post("POST", eventShooterExisting, eventShooterExistingInsert)
-	post("GET", eventShooterSearch, eventSearchShooters)
+	post(get, eventShooterSearch, eventSearchShooters)
 	post("POST", shooterNew, shooterInsert)
 	post("POST", shooterDetails, shooterUpdate)
 	post("POST", shooterSearch, searchShooters)
@@ -83,7 +83,7 @@ func post(method string, formID uint8, runner func(http.ResponseWriter, *http.Re
 			action: formID,
 			Fields: submittedFields,
 		}
-		if !isValid && method != "GET" {
+		if !isValid && method != get {
 			setSession(w, newForm)
 			redirect()
 			return

@@ -7,6 +7,10 @@ import (
 	"strings"
 )
 
+const (
+	fillItIn = "Please fill in this field"
+)
+
 func isValidUint64(inp []string, field field) (interface{}, string) {
 	strNum := strings.TrimSpace(inp[0])
 	var num uint64
@@ -22,7 +26,7 @@ func isValidUint64(inp []string, field field) (interface{}, string) {
 			return num, err.Error()
 		}
 	} else if field.Required {
-		return num, "Please fill in this field"
+		return num, fillItIn
 	}
 	if field.max == 0 {
 		field.max = math.MaxInt32
@@ -33,27 +37,27 @@ func isValidUint64(inp []string, field field) (interface{}, string) {
 	return num, "field integer doesn't pass validation"
 }
 
-func isValidFloat64(inp []string, field field) (interface{}, string) {
-	strNum := strings.TrimSpace(inp[0])
-	if field.step == 0 {
-		warn.Println("Are you sure about step == 0?")
-		return 0, "Step supplied = 0"
-	}
-	var num float64
-	var err error
-	if strNum != "" {
-		num, err = strconv.ParseFloat(strNum, 64)
-		if err != nil {
-			return num, err.Error()
-		}
-	} else if field.Required {
-		return num, "Please fill in this field"
-	}
-	if num >= float64(field.min) && num <= float64(field.max) && (field.step == 0 || field.step != 0 /*&& num%step == 0*/) || !field.Required && num == 0 {
-		return num, ""
-	}
-	return num, "field integer doesn't pass validation"
-}
+//func isValidFloat64(inp []string, field field) (interface{}, string) {
+//	strNum := strings.TrimSpace(inp[0])
+//	if field.step == 0 {
+//		warn.Println("Are you sure about step == 0?")
+//		return 0, "Step supplied = 0"
+//	}
+//	var num float64
+//	var err error
+//	if strNum != "" {
+//		num, err = strconv.ParseFloat(strNum, 64)
+//		if err != nil {
+//			return num, err.Error()
+//		}
+//	} else if field.Required {
+//		return num, fillItIn
+//	}
+//	if num >= float64(field.min) && num <= float64(field.max) && (field.step == 0 || field.step != 0 /*&& num%step == 0*/) || !field.Required && num == 0 {
+//		return num, ""
+//	}
+//	return num, "field integer doesn't pass validation"
+//}
 
 func isValidFloat32(inp []string, field field) (interface{}, string) {
 	strNum := strings.TrimSpace(inp[0])
@@ -71,7 +75,7 @@ func isValidFloat32(inp []string, field field) (interface{}, string) {
 		}
 		num = float32(x)
 	} else if field.Required {
-		return num, "Please fill in this field"
+		return num, fillItIn
 	}
 	if num >= float32(field.min) && num <= float32(field.max) && (field.step == 0 || field.step != 0 /*&& num%step == 0*/) || !field.Required && num == 0 {
 		return num, ""
@@ -85,7 +89,7 @@ func isValidStr(inp []string, field field) (interface{}, string) {
 	str := strings.TrimSpace(inp[0])
 	length := uint(len(str))
 	if field.Required && length == 0 {
-		return str, "Please fill in this field"
+		return str, fillItIn
 	}
 
 	if !field.Required && length == 0 {
@@ -107,7 +111,7 @@ func isValidStr(inp []string, field field) (interface{}, string) {
 		}
 		return str, fmt.Sprintf("Please change this text be between %v & %v characters long (you are currently using %v character%v).", field.minLen, field.maxLen, length, plural)
 	}
-	return str, "Please fill in this field"
+	return str, fillItIn
 }
 func isValidID(inp []string, field field) (interface{}, string) {
 	str := strings.TrimSpace(inp[0])
@@ -130,6 +134,7 @@ func isValidBool(inp []string, field field) (interface{}, string) {
 	return checked, ""
 }
 
+/*
 func isValidRangeIDs(ranges []string, field field) (interface{}, string) {
 	var rangeIDs []uint64
 	var num uint64
@@ -150,4 +155,4 @@ func isValidRangeIDs(ranges []string, field field) (interface{}, string) {
 	//get their ids
 	//check each
 	// 			[]range has index str
-}
+}*/

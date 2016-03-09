@@ -60,6 +60,14 @@ func dataListAgeGroup() []option {
 	}
 }
 
+func defaultDate() string {
+	return time.Now().Format("2006-01-02")
+}
+
+func defaultTime() string {
+	return time.Now().Format("15:04")
+}
+
 func getForm(id uint8) []field {
 	switch id {
 	case 0:
@@ -78,23 +86,23 @@ func getForm(id uint8) []field {
 		}, {
 			name: "p", maxLen: 64, v8: isValidStr,
 		}, {
-			name: "x", min: -90, max: 90, step: .000001, v8: isValidFloat32,
+			name: "x", Value: "-29", min: -90, max: 90, step: .000001, v8: isValidFloat32,
 		}, {
-			name: "y", min: -180, max: 180, step: .000001, v8: isValidFloat32,
+			name: "y", Value: "141", min: -180, max: 180, step: .000001, v8: isValidFloat32,
 		}, {
 			name: "b", v8: isValidBool,
 		}, {
-			name: "C", v8: isValidID,
+			name: "u", maxLen: 64, v8: isValidStr,
+		}, {
+			name: "C", v8: isValidID, regex: regexID,
 		}}
 	case 2:
 		return []field{{
-			name: "n", maxLen: 64, v8: isValidStr,
-		}, {
-			name: "e", Required: true, min: 10, max: 65535, step: .01, v8: isValidFloat32,
+			name: "e", Required: true, min: .01, max: 65535, step: .01, v8: isValidFloat32,
 		}, {
 			name: "z", Required: true, v8: isValidStr, Options: []option{{Label: "Metres", Value: "m", Selected: false}, {Label: "Kilometres", Value: "k", Selected: false}, {Label: "Yards", Value: "y", Selected: false}, {Label: "Feet", Value: "f", Selected: false}},
 		}, {
-			name: "C", v8: isValidID,
+			name: "C", v8: isValidID, regex: regexID,
 		}}
 	case 3:
 		return []field{{
@@ -118,13 +126,13 @@ func getForm(id uint8) []field {
 		}, {
 			name: "c", v8: isValidBool,
 		}, {
-			name: "E", v8: isValidID,
+			name: "E", v8: isValidID, regex: regexID,
 		}}
 	case 5:
 		return []field{{
 			name: "n", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
-			name: "E", v8: isValidID,
+			name: "E", v8: isValidID, regex: regexID,
 		}}
 	case 6:
 		return []field{{
@@ -132,7 +140,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "R", Required: true, v8: isValidStr,
 		}, {
-			name: "E", v8: isValidID,
+			name: "E", v8: isValidID, regex: regexID,
 		}}
 	case 7:
 		return []field{{
@@ -154,7 +162,7 @@ func getForm(id uint8) []field {
 		}}
 	case 8:
 		return []field{{
-			name: "S", Required: true, v8: isValidID,
+			name: "S", Required: true, v8: isValidID, regex: regexID,
 		}, {
 			name: "g", Required: true, min: 1, max: 11, step: 1, v8: isValidUint64, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Target A", Value: "1", Selected: false}, {Label: "Target B", Value: "2", Selected: false}, {Label: "Target C", Value: "3", Selected: false}, {Label: "F Class A", Value: "4", Selected: false}, {Label: "F Class B", Value: "5", Selected: false}, {Label: "F Class Open", Value: "6", Selected: false}, {Label: "F/TR", Value: "7", Selected: false}, {Label: "Match Open", Value: "8", Selected: false}, {Label: "Match Reserve", Value: "9", Selected: false}, {Label: "303 Rifle", Value: "10", Selected: false}},
 		}, {

@@ -50,23 +50,23 @@ func setSession(w http.ResponseWriter, returns form) {
 
 //SessionID's should be at least 16 characters length can't have space or semicolon
 //stackoverflow.com/questions/1969232/allowed-characters-in-cookies
-func newSessionID() string {
-	var sessionId string
+/*func newSessionID() string {
+	var sessionID string
 	var i, randInt int
 	for i < 24 {
 		randInt = 33 + rand.Intn(93)
 		if randInt != 59 { //ignore semicolons ;
 			i++
-			sessionId += string(randInt)
+			sessionID += string(randInt)
 		}
 	}
-	return sessionToken + "=" + sessionId
-}
+	return sessionToken + "=" + sessionID
+}*/
 
 //TODO create a ticker that checks the saved sessions every 90 seconds. If the session is older than 1 minute, delete it.
 
 //When a session id is used remove it. Supply a list of expected forms to display error messages for. Don't show errors for different pages.
-func getSession(w http.ResponseWriter, r *http.Request, formActions []uint8) form {
+/*func getSession(w http.ResponseWriter, r *http.Request, formActions []uint8) form {
 	cookies, err := r.Cookie(sessionToken)
 	if err != nil || cookies.Value == "" {
 		return form{}
@@ -88,7 +88,7 @@ func getSession(w http.ResponseWriter, r *http.Request, formActions []uint8) for
 		}
 	}
 	return form{}
-}
+}*/
 
 func getFormSession(w http.ResponseWriter, r *http.Request, formActions ...uint8) form {
 	cookies, err := r.Cookie(sessionToken)
