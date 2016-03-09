@@ -14,6 +14,8 @@ const (
 	nocache        = "nocache"
 	gzip           = "gzip"
 	acceptEncoding = "Accept-Encoding"
+
+	get = "GET"
 )
 
 func serveFile(fileName string) {
@@ -108,7 +110,7 @@ func getRedirectPermanent(url string, pageFunc func(http.ResponseWriter, *http.R
 	http.HandleFunc(url,
 		func(w http.ResponseWriter, r *http.Request) {
 			//Don't accept post or put requests
-			if r.Method != "GET" {
+			if r.Method != get {
 				http.Redirect(w, r, url, http.StatusSeeOther)
 			}
 			pageFunc(w, r)
@@ -127,7 +129,7 @@ func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request,
 	http.HandleFunc(url,
 		func(w http.ResponseWriter, r *http.Request) {
 			//Don't accept post or put requests
-			if r.Method != "GET" {
+			if r.Method != get {
 				http.Redirect(w, r, url, http.StatusSeeOther)
 			}
 
@@ -171,7 +173,7 @@ func errorHandler(w http.ResponseWriter, r *http.Request, status int, errorType 
 	w.WriteHeader(status)
 	templater(w, page{
 		Title: "Error",
-		Data: M{
+		Data: map[string]interface{}{
 			"Type": errorType,
 		},
 	})
@@ -196,7 +198,7 @@ func whoops(w http.ResponseWriter, r *http.Request, url string) {
 	}
 	templater(w, page{
 		Title: "noId",
-		Data: M{
+		Data: map[string]interface{}{
 			"PageName":      pageName,
 			"PageType":      pageType,
 			"ParameterType": parameterType,

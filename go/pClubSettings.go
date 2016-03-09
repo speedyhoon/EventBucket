@@ -27,7 +27,7 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 		Menu:    urlClubs,
 		MenuID:  club.ID,
 		Heading: club.Name,
-		Data: M{
+		Data: map[string]interface{}{
 			"Club":        club,
 			"ClubDetails": detailsForm,
 			"ClubMound":   newMoundForm,

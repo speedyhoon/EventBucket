@@ -19,7 +19,7 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 		Menu:    urlEvents,
 		MenuID:  eventID,
 		Heading: event.Name,
-		Data: M{
+		Data: map[string]interface{}{
 			"Event":        event,
 			"EventDetails": forms[0],
 			"RangesQty":    len(ranges),

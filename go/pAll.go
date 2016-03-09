@@ -9,19 +9,19 @@ func all(w http.ResponseWriter, r *http.Request) {
 	hostname, _ := os.Hostname()
 	templater(w, page{
 		Title: "_All",
-		Data: M{
-			"Event": M{
+		Data: map[string]interface{}{
+			"Event": map[string]interface{}{
 				"Stuff":   "EVENT page!",
 				"EventId": "eventId",
 			},
-			"About": M{
+			"About": map[string]interface{}{
 				"Hostname":    hostname,
 				"IpAddresses": localIPs(),
 			},
-			"Clubs": M{
+			"Clubs": map[string]interface{}{
 				"Stuff": "CLUBS page!",
 			},
-			"Shooters": M{
+			"Shooters": map[string]interface{}{
 				"Stuff": "SHOOTERS page!",
 				"Fds": []field{
 					{
