@@ -63,6 +63,8 @@ fieldset
 
 label, button
 	float: left
+
+label:not(:last-child), button:not(:last-child)
 	margin: 0 $margin $margin 0
 
 input, select
@@ -72,6 +74,12 @@ input, select
 	display: block
 	padding: $menuPadding
 	color: $liteGrey
+
+input[type=checkbox]
+	$size: 2em
+	width: $size
+	height: $size
+	margin: 0
 
 select[required] option:empty
 	display: none
