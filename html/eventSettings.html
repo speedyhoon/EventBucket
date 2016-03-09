@@ -3,9 +3,9 @@
 {{template "AddRange" .AddRange}}
 	<ul>
 		{{range .Event.Ranges}}
-			<li>{{.Name}}</li>
+			<li>{{.Name}}
 		{{else}}
-			<li>No ranges listed</li>
+			<li><samp>No ranges listed</samp>
 		{{end}}
 	</ul>
 	{{if ge .RangesQty 2}}

@@ -2,6 +2,11 @@ package main
 
 import "net/http"
 
+//TODO fix event settings details form
+//TODO fix event settings add range form
+//TODO fix event settings add agg form
+//TODO event details isn't getting default data
+
 func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 	event, err := getEvent(eventID)
 
