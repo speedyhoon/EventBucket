@@ -43,11 +43,11 @@ type Event struct {
 	Ranges   []Range        `json:"schemaRange,omitempty"`
 	AutoInc  AutoInc        `json:"schemaAutoInc"`
 	Shooters []EventShooter `json:"schemaShooter,omitempty"`
-	/*Grades         []uint          `json:"schemaGrades,omitempty"`
+	Closed   bool           `json:"schemaClosed,omitempty"`
+	/*Grades       []uint         `json:"schemaGrades,omitempty"`
 	SortScoreboard string         `json:"o,omitempty"`
 	IsPrizeMeet    bool           `json:"p,omitempty"`
-	Closed         bool           `json:"l,omitempty"`
-	TeamCat        map[string]TeamCat      `json:"A,omitempty"`
+	TeamCats       map[string]TeamCats     `json:"A,omitempty"`
 	Teams          map[string]Team         `json:"T,omitempty"`
 	*/
 }

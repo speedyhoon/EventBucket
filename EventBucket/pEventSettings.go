@@ -15,9 +15,17 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 		errorHandler(w, r, http.StatusNotFound, "event")
 		return
 	}
-	ranges := filteredRanges(event.Ranges)
+	ranges := dataListRanges(event.Ranges)
 
-	_, forms := sessionForms2(w, r, eventDetails, eventRangeNew, eventAggNew)
+	action, forms := sessionForms2(w, r, eventDetails, eventRangeNew, eventAggNew)
+	if action == nil || action != nil && *action != eventDetails {
+		forms[0].Fields[0].Value = event.Name
+		forms[0].Fields[1].Value = event.Club
+		forms[0].Fields[2].Value = event.Date
+		forms[0].Fields[3].Value = event.Time
+		forms[0].Fields[4].Checked = event.Closed
+		forms[0].Fields[5].Value = event.ID
+	}
 
 	templater(w, page{
 		Title:   "Event Settings",
@@ -25,7 +33,7 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 		MenuID:  eventID,
 		Heading: event.Name,
 		Data: map[string]interface{}{
-			"Event":        event,
+			"Ranges":       event.Ranges,
 			"EventDetails": forms[0],
 			"RangesQty":    len(ranges),
 			"AddRange":     forms[1],
@@ -34,7 +42,7 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 	})
 }
 
-func filteredRanges(ranges []Range) []option {
+func dataListRanges(ranges []Range) []option {
 	var options []option
 	for _, r := range ranges {
 		if !r.IsAgg {
