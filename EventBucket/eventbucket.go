@@ -13,7 +13,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"regexp"
 	"time"
 
 	"github.com/boltdb/bolt"
@@ -53,11 +52,6 @@ var (
 	trace = log.New(os.Stdout, "TRACE: ", log.Lshortfile)
 	info  = log.New(os.Stdout, "INFO:  ", log.Lshortfile)
 	warn  = log.New(os.Stderr, "WARN:  ", log.Lshortfile)
-
-	//URL validation matching
-	regexID      = regexp.MustCompile(`^[a-z0-9]+$`)
-	regexPath    = regexp.MustCompile(`^[a-z0-9]+/[a-z0-9]+$`)
-	regexBarcode = regexp.MustCompile(`^[a-z0-9]+/[a-z0-9]+/[a-z0-9]+$`)
 )
 
 func init() {

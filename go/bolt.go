@@ -331,9 +331,14 @@ func eventShooterInsertDB(ID string, shooter EventShooter) error {
 	return err
 }
 
-//Converts base36 string to uint64 binary used for bolt maps
+//Converts base36 string to uint64
+func b36tou(id string) (uint64, error) {
+	return strconv.ParseUint(id, 36, 64)
+}
+
+//Converts base36 string to binary used for bolt maps
 func b36toBy(id string) ([]byte, error) {
-	num, err := strconv.ParseUint(id, 36, 64)
+	num, err := b36tou(id)
 	if err != nil {
 		return []byte{}, err
 	}

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"regexp"
 )
 
 const (
@@ -23,6 +24,13 @@ const (
 	urlScorecards      = "/scorecards/"     //eventID
 	urlPrintScorecards = "/print-cards/"    //eventID/shooterID
 	urlTotalScores     = "/total-scores/"   //eventID
+)
+
+var (
+	//URL validation matching
+	regexID      = regexp.MustCompile(`^[a-z0-9]+$`)
+	regexPath    = regexp.MustCompile(`^[a-z0-9]+/[a-z0-9]+$`)
+	regexBarcode = regexp.MustCompile(`^[a-z0-9]+/[a-z0-9]+/[a-z0-9]+$`)
 )
 
 func pages() {
