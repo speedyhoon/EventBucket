@@ -52,6 +52,23 @@ func dataListRanges(ranges []Range) []option {
 	return options
 }
 
+func eventDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+	eventID := submittedForm.Fields[5].Value
+	err := updateEventDetails(Event{
+		ID:     eventID,
+		Name:   submittedForm.Fields[0].Value,
+		Club:   submittedForm.Fields[1].Value,
+		Date:   submittedForm.Fields[2].Value,
+		Time:   submittedForm.Fields[3].Value,
+		Closed: submittedForm.Fields[4].internalValue.(bool),
+	})
+	if err != nil {
+		formError(w, submittedForm, redirect, err)
+		return
+	}
+	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
+}
+
 func eventRangeInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	eventID := submittedForm.Fields[1].Value
 	err := eventAddRange(eventID, Range{Name: submittedForm.Fields[0].Value})

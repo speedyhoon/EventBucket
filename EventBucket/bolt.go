@@ -32,7 +32,7 @@ func getDocument(collection []byte, ID string, result interface{}) error {
 		if len(document) == 0 {
 			return fmt.Errorf("'%v' document is empty / doesn't exist %q", ID, document)
 		}
-		err = json.Unmarshal(document, result)
+		err = json.Unmarshal(document, &result)
 		if err != nil {
 			warn.Printf("'%v' Query document unmarshaling failed: \n%q\n%#v\n", ID, document, err)
 		}
@@ -159,6 +159,7 @@ func updateShooter(shooter Shooter, eventID string) error {
 			//Shooter Bucket isn't created yet
 			return nil
 		}
+		//TODO This will destroy all the shooters scores. needs a fix!
 		return bucket.Put(sID, buf)
 	})
 	return err
@@ -171,6 +172,43 @@ func updateDoc(collectionName []byte, ID string, document interface{}) error {
 	}
 	return err*/
 	return nil
+}
+
+func updateEventDetails(update Event) error {
+	eID, err := b36toBy(update.ID)
+	if err != nil {
+		return err
+	}
+	err = db.Update(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(tblEvent)
+		if bucket == nil {
+			return fmt.Errorf("Bucket %q not found!", tblEvent)
+		}
+
+		document := bucket.Get(eID)
+		if len(document) == 0 {
+			return fmt.Errorf("'%v' document is empty / doesn't exist %q", update.ID, document)
+		}
+		var event Event
+		err = json.Unmarshal(document, &event)
+		if err != nil {
+			return fmt.Errorf("'%v' Query event unmarshaling failed: \n%q\n%#v\n", update.ID, document, err)
+		}
+		//Manually set each one otherwise it would override the existing event and its details (Ranges, Shooters & their scores) since the form doesn't already have that info.
+		event.Name = update.Name
+		event.Club = update.Club
+		event.Date = update.Date
+		event.Time = update.Time
+		event.Closed = update.Closed
+
+		buf, err := json.Marshal(event)
+		if err != nil {
+			return err
+		}
+
+		return bucket.Put(eID, buf)
+	})
+	return err
 }
 
 func eventAddRange(eventID string, newRange Range) error {
