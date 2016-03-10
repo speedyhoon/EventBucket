@@ -148,7 +148,7 @@ a
 
 .bold
 	font-weight: bold
-.center
+.center, .cp
 	text-align: center
 
 .emptyBucket
@@ -161,3 +161,28 @@ a
 
 .not200
 	background: $darkRed
+
+.barcode
+	width: 80px
+	image-rendering: pixelated
+
+.cp //center text & padding
+	padding: 1em
+
+@media print
+	body
+		color: #000
+
+	header, h1
+		display: none
+
+	section
+		padding: 0
+		width: 100%
+
+	.printCards
+		tr
+			border: 0
+
+		tr:nth-child(3n):not(:last-child)
+			border-bottom: 1px solid $dark
