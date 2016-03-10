@@ -62,6 +62,7 @@ func pages() {
 	post("POST", clubDetails, clubDetailsUpsert)
 	post("POST", clubMoundNew, clubMoundInsert)
 	post("POST", eventNew, eventInsert)
+	post("POST", eventDetails, eventDetailsUpsert)
 	post("POST", eventRangeNew, eventRangeInsert)
 	post("POST", eventAggNew, eventAggInsert)
 	post("POST", eventShooterNew, eventShooterInsert)
