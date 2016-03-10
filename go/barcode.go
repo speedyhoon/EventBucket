@@ -37,23 +37,33 @@ func base64QrH(w http.ResponseWriter, r *http.Request, parameters string) {
 }
 
 func printScorecards(w http.ResponseWriter, r *http.Request, parameters string) {
-	IDs := strings.Split(parameters, "/")
-	if len(IDs) != 2 {
-		return
-	}
-	eventID := IDs[0]
-	shooterID := IDs[1]
-	ranges := []uint64{1, 2, 3, 4, 5, 6}
+	//eventID/shooterID
+	ids := strings.Split(parameters, "/")
+	var shooter EventShooter
+	var ranges []Range
+	event, err := getEvent(ids[0])
 
+	//getParameters() checks that parameters contains a "/" otherwise it would fail.
+	shooterID, sErr := b36tou(ids[1])
+	if sErr == nil && int(shooterID) < len(event.Shooters) {
+		shooter = event.Shooters[shooterID]
+	}
+
+	if err == nil {
+		ranges = event.Ranges
+		//Display the error converting shooter ID to a number (if any) when event was retrieved OK.
+		err = sErr
+	}
 	templater(w, page{
 		Title:  "Print Scorecards",
 		Menu:   urlEvents,
-		MenuID: eventID,
+		MenuID: event.ID,
+		Error:  err,
 		Data: map[string]interface{}{
-			"EventID":   eventID,
-			"ShooterID": shooterID,
+			"EventID":   event.ID,
+			"EventName": event.Name,
 			"Ranges":    ranges,
-			"FirstName": "Cam",
+			"Shooter":   shooter,
 		},
 	})
 }
