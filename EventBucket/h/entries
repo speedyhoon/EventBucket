@@ -1,23 +1,23 @@
 {{define "page"}}
-	{{with .NoRanges}}<samp>This event has no ranges</samp>{{end}}
+	{{with .HasRanges}}<samp>This event has no ranges</samp>{{end}}
 	{{template "ShooterEntry" .ShooterEntry}}
 	{{with .Event.Shooters}}
 		Total Entries: {{$.QtyEntries}}
 		<table>
 			<thead>
 				<th class=sorted>ID
+				<th>
 				<th>Name
 				<th>Club
-				<th>
 				<th>Grade
 				<th>Age Group
 			</thead>
 			{{range .}}
 				<tr>
 					<td>{{.ID}}
+					<td>{{if $.HasRanges}}<a href=/print-cards/{{$.Event.ID}}/{{.ID}}>Scorecards</a>{{end}}
 					<td>{{.FirstName}} {{.Surname}}
 					<td>{{.Club}}
-					<td><a href=/print-cards/{{$.Event.ID}}/{{.ID}}>Scorecards</a>
 					<td>{{nameGrade .Grade}}
 					<td>{{nameAgeGroup .AgeGroup}}
 				</tr>

@@ -39,7 +39,7 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 		Heading: event.Name,
 		Data: map[string]interface{}{
 			"Event":        event,
-			"NoRanges":     len(event.Ranges) == 0,
+			"HasRanges":    len(event.Ranges) > 0,
 			"ShooterEntry": shooterEntry,
 			"QtyEntries":   len(event.Shooters),
 		},
