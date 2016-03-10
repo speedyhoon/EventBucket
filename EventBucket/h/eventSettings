@@ -2,7 +2,7 @@
 {{template "EventDetails" .EventDetails}}
 {{template "AddRange" .AddRange}}
 	<ul>
-		{{range .Event.Ranges}}
+		{{range .Ranges}}
 			<li>{{.Name}}
 		{{else}}
 			<li><samp>No ranges listed</samp>

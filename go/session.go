@@ -144,6 +144,7 @@ func sessionForms(w http.ResponseWriter, r *http.Request, formActions ...uint8) 
 				forms = append(forms, getForm(action))
 			}
 		}
+		//TODO is it possible that reference to contents could possibly blow up?
 		return &contents.action, forms
 	}
 	return nil, getForms(formActions...)
@@ -209,6 +210,7 @@ func sessionForms2(w http.ResponseWriter, r *http.Request, formActions ...uint8)
 				forms = append(forms, form{Fields: getForm(action)})
 			}
 		}
+		//TODO is it possible that reference to contents could possibly blow up?
 		return &contents.action, forms
 	}
 	return nil, getForms2(formActions...)

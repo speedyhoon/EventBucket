@@ -43,11 +43,11 @@ type Event struct {
 	Ranges   []Range        `json:"R,omitempty"`
 	AutoInc  AutoInc        `json:"A"`
 	Shooters []EventShooter `json:"S,omitempty"`
-	/*Grades         []uint          `json:"schemaGrades,omitempty"`
+	Closed   bool           `json:"schemaClosed,omitempty"`
+	/*Grades       []uint         `json:"schemaGrades,omitempty"`
 	SortScoreboard string         `json:"o,omitempty"`
 	IsPrizeMeet    bool           `json:"p,omitempty"`
-	Closed         bool           `json:"l,omitempty"`
-	TeamCat        map[string]TeamCat      `json:"A,omitempty"`
+	TeamCats       map[string]TeamCats     `json:"A,omitempty"`
 	Teams          map[string]Team         `json:"T,omitempty"`
 	*/
 }
@@ -73,7 +73,7 @@ type EventShooter struct {
 	Surname   string `json:"s"`
 	Club      string `json:"C"`
 	Grade     uint64 `json:"g"`
-	Hidden    bool   `json:"schemaHidden,omitempty"`
+	Hidden    bool   `json:"h,omitempty"`
 	AgeGroup  uint64 `json:"r,omitempty"`
 	//	Scores    map[string]Score `json:"omitempty,inline"` //S is not used!
 	LinkedID *int `json:"schemaLinkedID,omitempty"` //For duplicating shooters that are in different classes with the same score
@@ -109,7 +109,7 @@ type Shooter struct {
 	//If shooter details are merged with another existing shooter then this is the other NRAA_SID it was merged with
 	//When merging set one record to merged, the other to deleted.
 	//Both records must set MergedSID to the other corresponding shooter SID
-	MergedSID int `json:"schemaMergedSID,omitempty"`
+	MergedSID int `json:"m,omitempty"`
 
 	AgeGroup uint64 `json:"r,omitempty"`
 	Grade    uint64 `json:"g"`
