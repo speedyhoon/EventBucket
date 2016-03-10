@@ -1,15 +1,14 @@
 {{define "page"}}
-	<div class=tr>
+	<table class=printCards>
 		{{range .Ranges}}
-			<table>
-				<tr>
-					<td rowspan=3><img class=barcode src=/b/{{$.EventID}}/{{$.ShooterID}}/{{.}} alt="{{$.FirstName}}'s Barcode">
-					<td>Event ID: {{$.EventID}}<td>2016 Warrack Prizemeeting
-				<tr>
-					<td>Shooter ID: {{$.ShooterID}}<td>Leesa Webb
-				<tr>
-					<td>Range ID: {{.}}<td>600 yards
-			</table>
+			<tr>
+				<td rowspan=3 class=cp><img class=barcode src=/b/q{{$.EventID}}/{{$.ShooterID}}/{{.}} alt={{$.EventID}}/{{$.ShooterID}}/{{.}}><br>
+					<strong>{{$.EventID}}/{{$.ShooterID}}/{{.}}</strong>
+				<td>Event ID: {{$.EventID}}<td>2016 Warrack Prizemeeting
+			<tr>
+				<td>Shooter ID: {{$.ShooterID}}<td>Leesa Webb
+			<tr>
+				<td>Range ID: {{.}}<td>600 yards
 		{{end}}
-	</div>
+	</table>
 {{end}}

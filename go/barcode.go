@@ -7,20 +7,22 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/boombuler/barcode"
+	"github.com/boombuler/barcode/datamatrix"
 	"github.com/boombuler/barcode/qr"
 )
 
 func base64QrH(w http.ResponseWriter, r *http.Request, parameters string) {
-	IDs := strings.Split(parameters, "/")
-	if len(IDs) != 3 {
-		warn.Println(fmt.Errorf("Three parameters were not in the url /eventID/shooterID/rangeID"))
-		return
-	}
-	eventID := IDs[0]
-	shooterID := IDs[1]
-	rangeID := IDs[2]
+	var qrcode barcode.Barcode
+	var err error
 
-	qrcode, err := qr.Encode(strings.ToUpper(eventID+"/"+shooterID+"/"+rangeID), qr.L, qr.Auto)
+	switch parameters[0] {
+	case 68, 100: //D for datamatrix
+		qrcode, err = datamatrix.Encode(strings.ToUpper(parameters[1:]))
+	default: //qrcode
+		qrcode, err = qr.Encode(strings.ToUpper(parameters[1:]), qr.H, qr.Auto)
+	}
+
 	if err != nil {
 		warn.Println(err)
 		return
@@ -31,7 +33,7 @@ func base64QrH(w http.ResponseWriter, r *http.Request, parameters string) {
 		warn.Println(err)
 		return
 	}
-	fmt.Fprintf(w, string(buf.Bytes()))
+	fmt.Fprintf(w, "%v", buf.String())
 }
 
 func printScorecards(w http.ResponseWriter, r *http.Request, parameters string) {
