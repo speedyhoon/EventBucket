@@ -201,12 +201,12 @@ func updateEventDetails(update Event) error {
 		event.Time = update.Time
 		event.Closed = update.Closed
 
-		buf, err := json.Marshal(event)
+		document, err = json.Marshal(event)
 		if err != nil {
 			return err
 		}
 
-		return bucket.Put(eID, buf)
+		return bucket.Put(eID, document)
 	})
 	return err
 }
@@ -236,12 +236,12 @@ func eventAddRange(eventID string, newRange Range) error {
 		event.Ranges = append(event.Ranges, newRange)
 		event.AutoInc.Range++
 
-		buf, err := json.Marshal(event)
+		document, err = json.Marshal(event)
 		if err != nil {
 			return err
 		}
 
-		return bucket.Put(eID, buf)
+		return bucket.Put(eID, document)
 	})
 	return err
 }
