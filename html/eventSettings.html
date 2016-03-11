@@ -1,14 +1,25 @@
 {{define "page"}}
-{{template "EventDetails" .EventDetails}}
-{{template "AddRange" .AddRange}}
-	<ul>
-		{{range .Ranges}}
-			<li>{{.Name}}
-		{{else}}
-			<li><samp>No ranges listed</samp>
-		{{end}}
-	</ul>
-	{{if ge .RangesQty 2}}
+	{{template "EventDetails" .EventDetails}}
+	{{template "AddRange" .AddRange}}
+	{{if ge .QtyRanges 2}}
 		{{template "AddAggregateRange" .AddAgg}}
+	{{end}}
+	{{with .Ranges}}
+		<p>Total Ranges: {{$.QtyRanges}}
+		<table>
+			<thead>
+				<th class=sorted>ID
+				<th>Name
+				<th>IsAgg
+			</thead>
+			{{range .}}
+				<tr>
+					<td>{{.ID}}
+					<td>{{.Name}}
+					<td>{{.IsAgg}}
+			{{end}}
+		</table>
+	{{else}}
+		<samp>This event has no ranges.</samp>
 	{{end}}
 {{end}}
