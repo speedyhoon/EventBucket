@@ -54,16 +54,16 @@ type Event struct {
 
 // Range is exported
 type Range struct {
+	ID        uint64 `json:"schemaID"`
 	Name      string `json:"schemaName"`
-	Aggregate string `json:"schemaAggregate,omitempty"` //TODO Maybe this one could be a pointer to prevent it from being removed?
+	Aggregate string `json:"schemaAggregate,omitempty"`
+	Locked    bool   `json:"schemaLocked,omitempty"`
+	IsAgg     bool   `json:"schemaIsAgg,omitempty"` //Prevents aggs switching to normal ranges
 	//	ScoreBoard bool                     `json:"s,omitempty"`
-	//	Locked     bool                     `json:"l,omitempty"`
 	//	Hidden     bool                     `json:"h,omitempty"`
 	//	Order      int                      `json:"schemaSort,omitempty"`
 	//	Status     int                      `json:"t,omitempty"`      //ENUM change to 1 when the first shooter has recorded their first shot change to 2 when the range is finished. http://stackoverflow.com/questions/14426366/what-is-an-idiomatic-way-of-representing-enums-in-golang
 	//	Class      map[string]RangeProperty `json:"omitempty,inline"` //TODO possibly change it to optional grades per range in future
-	//	ID         *int                     `json:"i,omitempty"`
-	IsAgg bool `json:"schemaIsAgg,omitempty"` //Prevents aggs switching to normal ranges //TODO is there a better way to determine an empty agg rather than having this separate column?
 }
 
 // EventShooter is exported
