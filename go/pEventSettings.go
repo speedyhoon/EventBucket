@@ -25,7 +25,9 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 		forms[0].Fields[5].Value = event.ID
 	}
 	forms[1].Fields[1].Value = eventID
-	forms[2].Fields[1].Value = eventID
+
+	forms[2].Fields[1].Options = dataListRanges(event.Ranges)
+	forms[2].Fields[2].Value = eventID
 
 	templater(w, page{
 		Title:   "Event Settings",
@@ -81,35 +83,15 @@ func eventRangeInsert(w http.ResponseWriter, r *http.Request, submittedForm form
 
 func eventAggInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	eventID := submittedForm.Fields[2].Value
-	err := eventAddRange(eventID, Range{Name: submittedForm.Fields[0].Value, IsAgg: true})
+	err := eventAddRange(eventID, Range{Name: submittedForm.Fields[0].Value, Aggs: submittedForm.Fields[0].Value, IsAgg: true})
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
 		return
 	}
 	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
+	//TODO trigger calculate shooter scores for this new Aggregate.
 }
 
-/*
-
-
-func rangeAggInsert(validatedValues map[string]string, isAgg bool) {
-	newRange := Range{Name: validatedValues["name"]}
-	if isAgg {
-		newRange.IsAgg = true
-		newRange.Aggregate = validatedValues["agg"]
-	}
-	eventID := validatedValues["eventid"]
-	rangeID, eventData := eventAddRange(eventID, newRange)
-	go calcNewAggRangeScores(eventID, rangeID, eventData)
-}
-
-func aggInsert(w http.ResponseWriter, r *http.Request) {
-	validatedValues := checkForm(eventSettingsAddAggForm("", []Option{}).inputs, r)
-	rangeAggInsert(validatedValues, true)
-	eventID := validatedValues["eventid"]
-	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
-}
-*/
 func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	eventID := submittedForm.Fields[6].Value
 	shooter := EventShooter{

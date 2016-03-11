@@ -54,11 +54,11 @@ type Event struct {
 
 // Range is exported
 type Range struct {
-	ID        uint64 `json:"schemaID"`
-	Name      string `json:"schemaName"`
-	Aggregate string `json:"schemaAggregate,omitempty"`
-	Locked    bool   `json:"schemaLocked,omitempty"`
-	IsAgg     bool   `json:"schemaIsAgg,omitempty"` //Prevents aggs switching to normal ranges
+	ID     uint64 `json:"schemaID"`
+	Name   string `json:"schemaName"`
+	Aggs   string `json:"schemaAggregate,omitempty"`
+	Locked bool   `json:"schemaLocked,omitempty"`
+	IsAgg  bool   `json:"schemaIsAgg,omitempty"` //Prevents aggs switching to normal ranges
 	//	ScoreBoard bool                     `json:"s,omitempty"`
 	//	Hidden     bool                     `json:"h,omitempty"`
 	//	Order      int                      `json:"schemaSort,omitempty"`
