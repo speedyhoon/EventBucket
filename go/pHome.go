@@ -7,7 +7,7 @@ import (
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
-	listEvents, err := getEvents()
+	listEvents, err := getEvents(onlyOpen)
 	templater(w, page{
 		Title: "Home",
 		Error: err,
@@ -16,6 +16,10 @@ func home(w http.ResponseWriter, r *http.Request) {
 			"ListEvents": listEvents,
 		},
 	})
+}
+
+func onlyOpen(event Event) bool {
+	return !event.Closed
 }
 
 func about(w http.ResponseWriter, r *http.Request) {
