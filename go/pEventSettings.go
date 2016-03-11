@@ -2,9 +2,6 @@ package main
 
 import "net/http"
 
-//TODO fix event settings add range form
-//TODO fix event settings add agg form
-
 func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 	event, err := getEvent(eventID)
 
@@ -37,7 +34,7 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 		Data: map[string]interface{}{
 			"Ranges":       event.Ranges,
 			"EventDetails": forms[0],
-			"RangesQty":    len(ranges),
+			"QtyRanges":    len(ranges),
 			"AddRange":     forms[1],
 			"AddAgg":       forms[2],
 		},
