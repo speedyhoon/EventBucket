@@ -212,25 +212,38 @@ func updateEventDetails(update Event) error {
 }
 
 func eventAddRange(eventID string, newRange Range) error {
-	/*change := mgo.Change{
-		Update: M{
-			"$push": M{schemaRange: newRange},
-		},
-		Upsert: true,
-		//		ReturnNew: true,
+	eID, err := b36toBy(eventID)
+	if err != nil {
+		return err
 	}
-	//	returned := Event{}
-	//	conn.C(tblEvent).FindId(eventID).Apply(change, &returned)
-	_, err := conn.C(tblEvent).FindId(eventID).Apply(change, &Event{})
-	//	for rangeID, rangeData := range returned.Ranges {
-	//		if rangeData.Name == newRange.Name && rangeData.Aggregate == newRange.Aggregate && rangeData.ScoreBoard == newRange.ScoreBoard && rangeData.Locked == newRange.Locked && rangeData.Hidden == newRange.Hidden {
-	//			TODO this if check is really hacky!!!
-	//			return rangeID, returned
-	//		}
-	//	}
-	//	return -1, returned
-	return err*/
-	return nil
+	err = db.Update(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(tblEvent)
+		if bucket == nil {
+			return fmt.Errorf("Bucket %q not found!", tblEvent)
+		}
+
+		document := bucket.Get(eID)
+		if len(document) == 0 {
+			return fmt.Errorf("'%v' document is empty / doesn't exist %q", eventID, document)
+		}
+		var event Event
+		err = json.Unmarshal(document, &event)
+		if err != nil {
+			return fmt.Errorf("'%v' Query event unmarshaling failed: \n%q\n%#v\n", eventID, document, err)
+		}
+		//Manually set each one otherwise it would override the existing event and its details (Ranges, Shooters & their scores) since the form doesn't already have that info.
+		newRange.ID = event.AutoInc.Range
+		event.Ranges = append(event.Ranges, newRange)
+		event.AutoInc.Range++
+
+		buf, err := json.Marshal(event)
+		if err != nil {
+			return err
+		}
+
+		return bucket.Put(eID, buf)
+	})
+	return err
 }
 
 func getClubs() ([]Club, error) {

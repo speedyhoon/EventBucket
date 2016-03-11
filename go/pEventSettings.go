@@ -24,6 +24,8 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 		forms[0].Fields[4].Checked = event.Closed
 		forms[0].Fields[5].Value = event.ID
 	}
+	forms[1].Fields[1].Value = eventID
+	forms[2].Fields[1].Value = eventID
 
 	templater(w, page{
 		Title:   "Event Settings",
