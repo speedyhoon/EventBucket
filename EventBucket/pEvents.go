@@ -3,7 +3,7 @@ package main
 import "net/http"
 
 func events(w http.ResponseWriter, r *http.Request) {
-	listEvents, err := getEvents()
+	listEvents, err := getEvents(onlyOpen)
 	templater(w, page{
 		Title: "Events",
 		Error: err,

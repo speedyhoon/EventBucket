@@ -1,5 +1,5 @@
 {{define "page"}}
-	{{with .HasRanges}}<samp>This event has no ranges</samp>{{end}}
+	{{with not .HasRanges}}<samp>This event has no ranges</samp>{{end}}
 	{{template "ShooterEntry" .ShooterEntry}}
 	{{with .Event.Shooters}}
 		Total Entries: {{$.QtyEntries}}
