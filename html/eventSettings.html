@@ -10,17 +10,17 @@
 			<thead>
 				<th class=sorted>ID
 				<th>Name
-				<th>IsAgg
-				<th>Locked
 				<th>Aggs
+				<th>Locked
+				<th>Edit
 			</thead>
 			{{range .}}
 				<tr>
 					<td>{{.ID}}
 					<td>{{.Name}}
-					<td>{{.IsAgg}}
-					<td>{{if not .IsAgg}}{{.Locked}}{{end}}
 					<td>{{if .IsAgg}}{{.Aggs}}{{end}}
+					<td>{{if not .IsAgg}}{{.Locked}}{{end}}
+					<td class=center><img src=dirPNG/edit width="12" alt="edit icon">
 			{{end}}
 		</table>
 	{{else}}
