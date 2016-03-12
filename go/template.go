@@ -27,9 +27,9 @@ type markupEnv struct {
 const (
 	titleSeparator        = " - "
 	htmlDirectory         = "./h/"
-	masterTemplatePath    = htmlDirectory + "_master"
+	masterTemplatePath    = htmlDirectory + "master"
 	formsTemplatePath     = htmlDirectory + "forms"
-	reusablesTemplatePath = htmlDirectory + "_reusables"
+	reusablesTemplatePath = htmlDirectory + "reusables"
 )
 
 var (
