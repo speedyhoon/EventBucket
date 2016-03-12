@@ -7,6 +7,8 @@ import (
 )
 
 const (
+	get         = "GET"
+	pst         = "POST"
 	urlHome     = "/"
 	urlAbout    = "/about"
 	urlArchive  = "/archive"
@@ -36,10 +38,10 @@ var (
 func pages() {
 	serveFile(favicon)
 	serveFile(robots)
-	serveDir(dirCSS, false)
-	serveDir(dirJS, false)
-	serveDir(dirPNG, false)
-	serveDir(dirGIF, false)
+	serveDir(dirCSS, "./cz/")
+	serveDir(dirJS, "./jz/")
+	serveDir(dirPNG, "")
+	serveDir(dirGIF, "")
 	getParameters("/b/", base64QrH, regexBarcode)
 	getRedirectPermanent(urlAbout, about)
 	getRedirectPermanent(urlArchive, eventArchive)
@@ -58,19 +60,19 @@ func pages() {
 	getParameters(urlScorecards, scorecards, regexID)
 	getParameters(urlPrintScorecards, printScorecards, regexPath)
 	getParameters(urlTotalScores, totalScores, regexID)
-	post("POST", clubNew, clubInsert)
-	post("POST", clubDetails, clubDetailsUpsert)
-	post("POST", clubMoundNew, clubMoundInsert)
-	post("POST", eventNew, eventInsert)
-	post("POST", eventDetails, eventDetailsUpsert)
-	post("POST", eventRangeNew, eventRangeInsert)
-	post("POST", eventAggNew, eventAggInsert)
-	post("POST", eventShooterNew, eventShooterInsert)
-	post("POST", eventShooterExisting, eventShooterExistingInsert)
+	post(pst, clubNew, clubInsert)
+	post(pst, clubDetails, clubDetailsUpsert)
+	post(pst, clubMoundNew, clubMoundInsert)
+	post(pst, eventNew, eventInsert)
+	post(pst, eventDetails, eventDetailsUpsert)
+	post(pst, eventRangeNew, eventRangeInsert)
+	post(pst, eventAggNew, eventAggInsert)
+	post(pst, eventShooterNew, eventShooterInsert)
+	post(pst, eventShooterExisting, eventShooterExistingInsert)
 	post(get, eventShooterSearch, eventSearchShooters)
-	post("POST", shooterNew, shooterInsert)
-	post("POST", shooterDetails, shooterUpdate)
-	post("POST", shooterSearch, searchShooters)
+	post(pst, shooterNew, shooterInsert)
+	post(pst, shooterDetails, shooterUpdate)
+	post(pst, shooterSearch, searchShooters)
 
 	//BUG any url breaks when appending "&*((&*%"
 	get404(urlHome, home)
