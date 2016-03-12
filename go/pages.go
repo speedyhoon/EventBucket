@@ -9,6 +9,10 @@ import (
 const (
 	get         = "GET"
 	pst         = "POST"
+	dirCSS      = "dirCSS"
+	dirJS       = "dirJS"
+	dirPNG      = "dirPNG"
+	dirGIF      = "dirGIF"
 	urlHome     = "/"
 	urlAbout    = "/about"
 	urlArchive  = "/archive"
@@ -36,8 +40,8 @@ var (
 )
 
 func pages() {
-	serveFile(favicon)
-	serveFile(robots)
+	serveFile("favicon.ico")
+	serveFile("robots.txt")
 	serveDir(dirCSS, "./cz/")
 	serveDir(dirJS, "./jz/")
 	serveDir(dirPNG, "")

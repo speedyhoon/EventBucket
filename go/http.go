@@ -7,13 +7,16 @@ import (
 )
 
 const (
+	dirRoot        = "./"
 	contentType    = "Content-Type"
 	cacheControl   = "Cache-Control"
 	expires        = "Expires"
 	cache          = "cache"
+	maps           = "maps"
 	nocache        = "nocache"
 	gzip           = "gzip"
 	acceptEncoding = "Accept-Encoding"
+	csp            = "Content-Security-Policy"
 )
 
 func serveFile(fileName string) {
@@ -52,25 +55,21 @@ var headerOptions = map[string][2]string{
 	dirJS:  {contentType, "text/javascript"},
 	dirPNG: {contentType, "image/png"},
 	dirGIF: {contentType, "image/gif"},
+	maps:   {csp, "default-src 'none'; script-src 'self' 'unsafe-inline' maps.googleapis.com; style-src 'self'; connect-src 'self'; img-src 'self' maps.googleapis.com maps.gstatic.com; frame-src maps.google.com www.google.com"}, //"img-src 'self' data:; connect-src 'self'; font-src 'self'"
 	//dirSVG:    {contentType, "image/svg+xml"},
 	//dirWOF2:   {contentType, "application/font-woff2"},
-	//dirJPEG:   {contentType, "image/jpeg"},
 }
 
 //security add Access-Control-Allow-Origin //net.tutsplus.com/tutorials/client-side-security-best-practices/
 func headers(w http.ResponseWriter, setHeaders ...string) {
-	//TODO conditionally add CSP google references
-	//	w.Header().Set("Content-Security-Policy", "default-src 'none'; script-src 'self' 'unsafe-inline' maps.googleapis.com; style-src 'self'; img-src 'self' maps.googleapis.com maps.gstatic.com; frame-src maps.google.com www.google.com") //"img-src 'self' data:; connect-src 'self'; font-src 'self'"
-	//w.Header().Set("Content-Security-Policy", "default-src 'none'; script-src 'self' 'unsafe-inline' maps.googleapis.com; style-src 'self'; connect-src 'self'; img-src 'self' maps.googleapis.com maps.gstatic.com; frame-src maps.google.com www.google.com") //"img-src 'self' data:; connect-src 'self'; font-src 'self'"
-	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'") //connect-src 'self'; font-src 'self'
-
 	//The page cannot be displayed in a frame, regardless of the site attempting to do so. //developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options
 	w.Header().Set("X-Frame-Options", "DENY")
+	var cspIsset bool
 	for _, lookup := range setHeaders {
 		switch lookup {
 		case cache:
 			w.Header().Set(cacheControl, "public")
-			w.Header().Set(expires, expiresTime)
+			w.Header().Set(expires, cacheExpires)
 			w.Header().Set("Vary", acceptEncoding)
 			break
 		case nocache:
@@ -78,9 +77,15 @@ func headers(w http.ResponseWriter, setHeaders ...string) {
 			w.Header().Set(expires, "0")
 			w.Header().Set("Pragma", "no-cache")
 			break
+		case maps:
+			cspIsset = true
+			fallthrough
 		default:
 			w.Header().Set(headerOptions[lookup][0], headerOptions[lookup][1])
 		}
+	}
+	if !cspIsset {
+		w.Header().Set(csp, "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'") //connect-src 'self'; font-src 'self'
 	}
 }
 
@@ -109,7 +114,7 @@ func getRedirectPermanent(url string, pageFunc func(http.ResponseWriter, *http.R
 	http.Handle(url+"/", http.RedirectHandler(url, http.StatusMovedPermanently))
 }
 
-/*TODO if no parameters provided, keep user on the same page but didplay when they need to provide in order for the page to work.
+/*TODO if no parameters provided, keep user on the same page but display when they need to provide in order for the page to work.
 not doing this may frustrate some users who want to get to the club settings page but can't remember the club id.
 then display a list of clubs and status code 404
 */
