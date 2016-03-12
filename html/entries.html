@@ -1,8 +1,12 @@
 {{define "page"}}
+	{{if .Event.Closed}}
+		<samp>Event is closed, no changes can be made.</samp>
+	{{else}}
+		{{template "ShooterEntry" .ShooterEntry}}
+	{{end}}
 	{{with not .HasRanges}}<samp>This event has no ranges</samp>{{end}}
-	{{template "ShooterEntry" .ShooterEntry}}
 	{{with .Event.Shooters}}
-		Total Entries: {{$.QtyEntries}}
+		<p>Total Entries: {{$.QtyEntries}}
 		<table>
 			<thead>
 				<th class=sorted>ID
@@ -11,6 +15,7 @@
 				<th>Club
 				<th>Grade
 				<th>Age Group
+				{{if not $.Event.Closed}}<th>Edit{{end}}
 			</thead>
 			{{range .}}
 				<tr>
@@ -20,10 +25,13 @@
 					<td>{{.Club}}
 					<td>{{nameGrade .Grade}}
 					<td>{{nameAgeGroup .AgeGroup}}
+					{{if not $.Event.Closed}}<td class=center><img src=dirPNG/edit width=12 height=12 alt="edit icon">{{end}}
 			{{end}}
 		</table>
 	{{else}}
 		<samp>No shooters entered in event.</samp>
 	{{end}}
-	<script defer src=dirJS/shooterSearch></script>
+	{{if not .Event.Closed}}
+		<script defer src=dirJS/shooterSearch></script>
+	{{end}}
 {{end}}

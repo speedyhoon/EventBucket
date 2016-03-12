@@ -1,8 +1,12 @@
 {{define "page"}}
 	{{template "EventDetails" .EventDetails}}
-	{{template "AddRange" .AddRange}}
-	{{if ge .QtyRanges 2}}
-		{{template "AddAggregateRange" .AddAgg}}
+	{{if .IsClosed}}
+		<samp>Event is closed, no changes can be made.</samp>
+	{{else}}
+		{{template "AddRange" .AddRange}}
+		{{if ge .QtyRanges 2}}
+			{{template "AddAggregateRange" .AddAgg}}
+		{{end}}
 	{{end}}
 	{{with .Ranges}}
 		<p>Total Ranges: {{$.QtyRanges}}
