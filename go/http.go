@@ -14,8 +14,6 @@ const (
 	nocache        = "nocache"
 	gzip           = "gzip"
 	acceptEncoding = "Accept-Encoding"
-
-	get = "GET"
 )
 
 func serveFile(fileName string) {
@@ -24,21 +22,12 @@ func serveFile(fileName string) {
 		// Unfortunately uncompressed responses may still be required even though all modern browsers support gzip
 		//webmasters.stackexchange.com/questions/22217/which-browsers-handle-content-encoding-gzip-and-which-of-them-has-any-special
 		//www.stevesouders.com/blog/2009/11/11/whos-not-getting-gzip/
-		//BUG gzip serving isn't working
-		/*if strings.Contains(r.Header.Get(acceptEncoding), gzip) {
-			headers(w, cache, gzip)
-			warn.Println("Gzipper", dirGzip+fileName)
-			http.ServeFile(w, r, dirGzip+fileName)
-		} else {*/
 		headers(w, cache)
-		//		warn.Println("no Gzip", dirRoot+fileName)
 		http.ServeFile(w, r, dirRoot+fileName)
-		//		warn.Print("The request didn't contain gzip")
-		//		}
 	})
 }
 
-func serveDir(contentType string, allowGzip bool) {
+func serveDir(contentType, gzipDir string) {
 	http.Handle(contentType,
 		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			//If url is a directory return a 404 to prevent displaying a directory listing.
@@ -46,14 +35,13 @@ func serveDir(contentType string, allowGzip bool) {
 				http.NotFound(w, r)
 				return
 			}
-			if allowGzip && strings.Contains(r.Header.Get(acceptEncoding), gzip) {
-				headers(w, contentType, gzip, cache)
-				http.StripPrefix(contentType, http.FileServer(http.Dir(dirGzip))).ServeHTTP(w, r)
-			} else {
-				headers(w, contentType, cache)
-				http.FileServer(http.Dir(dirRoot)).ServeHTTP(w, r)
-				//				warn.Print("The request didn't contain gzip")
+			headers(w, contentType, cache)
+			if gzipDir != "" && strings.Contains(r.Header.Get(acceptEncoding), gzip) {
+				headers(w, gzip)
+				http.StripPrefix(contentType, http.FileServer(http.Dir(gzipDir))).ServeHTTP(w, r)
+				return
 			}
+			http.FileServer(http.Dir(dirRoot)).ServeHTTP(w, r)
 		}))
 }
 
@@ -71,9 +59,10 @@ var headerOptions = map[string][2]string{
 
 //security add Access-Control-Allow-Origin //net.tutsplus.com/tutorials/client-side-security-best-practices/
 func headers(w http.ResponseWriter, setHeaders ...string) {
-	//TODO remove google references by iframing content
+	//TODO conditionally add CSP google references
 	//	w.Header().Set("Content-Security-Policy", "default-src 'none'; script-src 'self' 'unsafe-inline' maps.googleapis.com; style-src 'self'; img-src 'self' maps.googleapis.com maps.gstatic.com; frame-src maps.google.com www.google.com") //"img-src 'self' data:; connect-src 'self'; font-src 'self'"
-	w.Header().Set("Content-Security-Policy", "default-src 'none'; script-src 'self' 'unsafe-inline' maps.googleapis.com; style-src 'self'; connect-src 'self'; img-src 'self' maps.googleapis.com maps.gstatic.com; frame-src maps.google.com www.google.com") //"img-src 'self' data:; connect-src 'self'; font-src 'self'"
+	//w.Header().Set("Content-Security-Policy", "default-src 'none'; script-src 'self' 'unsafe-inline' maps.googleapis.com; style-src 'self'; connect-src 'self'; img-src 'self' maps.googleapis.com maps.gstatic.com; frame-src maps.google.com www.google.com") //"img-src 'self' data:; connect-src 'self'; font-src 'self'"
+	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'") //connect-src 'self'; font-src 'self'
 
 	//The page cannot be displayed in a frame, regardless of the site attempting to do so. //developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options
 	w.Header().Set("X-Frame-Options", "DENY")
