@@ -238,6 +238,7 @@ func eventAddRange(eventID string, newRange Range) error {
 
 		document, err = json.Marshal(event)
 		if err != nil {
+			warn.Println("error", err)
 			return err
 		}
 

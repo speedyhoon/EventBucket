@@ -59,7 +59,7 @@ func isValid(r *http.Request, fields []field) ([]field, bool) {
 			fieldValue = []string{""}
 		}
 
-		fields[i].internalValue, fields[i].Error = field.v8(fieldValue, field)
+		fields[i].internalValue, fields[i].Error = field.v8(field, fieldValue...)
 		if fields[i].Error != "" {
 			//Set the first field with failed validation to have focus onscreen
 			if valid {
