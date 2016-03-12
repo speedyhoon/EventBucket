@@ -35,8 +35,7 @@ const (
 var (
 	templates      = make(map[string]*template.Template)
 	masterTemplate = markupEnv{
-		CurrentYear: currentYear,
-		Menu:        mainMenu,
+		Menu: mainMenu,
 	}
 )
 

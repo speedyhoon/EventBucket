@@ -15,6 +15,8 @@ const (
 	sessionCharRange  = 126 - sessionCharStart
 	semicolon         = 59
 	sessionExpiryTime = 2 * time.Minute
+	//Date format
+	formatGMT = "Mon, 02 Jan 2006 15:04:05 GMT"
 )
 
 var globalSessions = struct {
