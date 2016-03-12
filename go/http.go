@@ -14,7 +14,7 @@ const (
 	cache          = "cache"
 	maps           = "maps"
 	nocache        = "nocache"
-	gzip           = "gzip"
+	cGzip          = "gzip"
 	acceptEncoding = "Accept-Encoding"
 	csp            = "Content-Security-Policy"
 )
@@ -39,8 +39,8 @@ func serveDir(contentType, gzipDir string) {
 				return
 			}
 			headers(w, contentType, cache)
-			if gzipDir != "" && strings.Contains(r.Header.Get(acceptEncoding), gzip) {
-				headers(w, gzip)
+			if gzipDir != "" && strings.Contains(r.Header.Get(acceptEncoding), cGzip) {
+				headers(w, cGzip)
 				http.StripPrefix(contentType, http.FileServer(http.Dir(gzipDir))).ServeHTTP(w, r)
 				return
 			}
@@ -49,14 +49,14 @@ func serveDir(contentType, gzipDir string) {
 }
 
 var headerOptions = map[string][2]string{
-	gzip:   {"Content-Encoding", "gzip"},
+	cGzip:  {"Content-Encoding", "gzip"},
 	"html": {contentType, "text/html; charset=utf-8"},
 	dirCSS: {contentType, "text/css; charset=utf-8"},
+	dirGIF: {contentType, "image/gif"},
 	dirJS:  {contentType, "text/javascript"},
 	dirPNG: {contentType, "image/png"},
-	dirGIF: {contentType, "image/gif"},
+	dirSVG: {contentType, "image/svg+xml"},
 	maps:   {csp, "default-src 'none'; script-src 'self' 'unsafe-inline' maps.googleapis.com; style-src 'self'; connect-src 'self'; img-src 'self' maps.googleapis.com maps.gstatic.com; frame-src maps.google.com www.google.com"}, //"img-src 'self' data:; connect-src 'self'; font-src 'self'"
-	//dirSVG:    {contentType, "image/svg+xml"},
 	//dirWOF2:   {contentType, "application/font-woff2"},
 }
 
