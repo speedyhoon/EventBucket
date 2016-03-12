@@ -14,25 +14,30 @@ $menuPadding: $margin/6
 $bigPadding: $margin/3
 $fatBorder: 2px solid
 $thinBorder: 1px solid
+html,body
+	height: 100%
 body
 	background: $black
 	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
-	margin: $margin
+	margin: 0
 	color: $liteGrey
 
 section, header
 	float: left
 	display: block
+	padding: $margin
+
+header
+	height: calc(100% - 3em)
+	background: url(/v/bottom_landscape_14) no-repeat bottom
 
 header > div
 	border-right: 1px dashed $dark
-	padding-right: $margin
 	padding-bottom: $menuPadding
-	margin-top: $margin
 
 section
 	padding-left: $margin
-	width: calc(100% - 14em)
+	width: calc(100% - 18em)
 
 //Tables
 table
@@ -171,7 +176,8 @@ a
 
 @media print
 	body
-		color: #000
+		color: $black
+		background: $white
 
 	header, h1
 		display: none

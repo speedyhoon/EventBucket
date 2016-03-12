@@ -13,6 +13,7 @@ const (
 	dirJS       = "dirJS"
 	dirPNG      = "dirPNG"
 	dirGIF      = "dirGIF"
+	dirSVG      = "dirSVG"
 	urlHome     = "/"
 	urlAbout    = "/about"
 	urlArchive  = "/archive"
@@ -43,9 +44,10 @@ func pages() {
 	serveFile("favicon.ico")
 	serveFile("robots.txt")
 	serveDir(dirCSS, "./cz/")
+	serveDir(dirGIF, "")
 	serveDir(dirJS, "./jz/")
 	serveDir(dirPNG, "")
-	serveDir(dirGIF, "")
+	serveDir(dirSVG, "./vz/")
 	getParameters("/b/", base64QrH, regexBarcode)
 	getRedirectPermanent(urlAbout, about)
 	getRedirectPermanent(urlArchive, eventArchive)
