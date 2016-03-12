@@ -11,12 +11,16 @@
 				<th class=sorted>ID
 				<th>Name
 				<th>IsAgg
+				<th>Locked
+				<th>Aggs
 			</thead>
 			{{range .}}
 				<tr>
 					<td>{{.ID}}
 					<td>{{.Name}}
 					<td>{{.IsAgg}}
+					<td>{{if not .IsAgg}}{{.Locked}}{{end}}
+					<td>{{if .IsAgg}}{{.Aggs}}{{end}}
 			{{end}}
 		</table>
 	{{else}}

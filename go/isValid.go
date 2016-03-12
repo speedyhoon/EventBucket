@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"math"
 	"strconv"
 	"strings"
@@ -11,7 +12,36 @@ const (
 	fillItIn = "Please fill in this field"
 )
 
-func isValidUint64(inp []string, field field) (interface{}, string) {
+func listUint64(field field, inp ...string) (interface{}, string) {
+	check := make(map[uint64]bool, 1)
+	var ids []uint64
+	if field.Required && len(inp) == 0 {
+		return check, "There are no items selected"
+	}
+	var oo string
+	var temp interface{}
+	var id uint64
+	for _, in := range inp {
+		temp, oo = isValidUint64(field, in)
+		log.Println("mmm", oo, "'", temp, "'")
+		if oo != "" {
+			return ids, "This value is invalid."
+		} else {
+			id = temp.(uint64)
+			//Using a map here to prevent duplicates
+			_, ok := check[id]
+			if ok {
+				return ids, "duplicate id found in list"
+			}
+			check[id] = true
+			ids = append(ids, id)
+		}
+	}
+	log.Printf("list is ok with me! %#v", check)
+	return ids, ""
+}
+
+func isValidUint64(field field, inp ...string) (interface{}, string) {
 	strNum := strings.TrimSpace(inp[0])
 	var num uint64
 	num = 0
@@ -29,7 +59,9 @@ func isValidUint64(inp []string, field field) (interface{}, string) {
 		return num, fillItIn
 	}
 	if field.max == 0 {
-		field.max = math.MaxInt32
+		if num >= uint64(field.min) && num <= math.MaxUint64 && num%uint64(field.step) == 0 || !field.Required && num == 0 {
+			return num, ""
+		}
 	}
 	if num >= uint64(field.min) && num <= uint64(field.max) && num%uint64(field.step) == 0 || !field.Required && num == 0 {
 		return num, ""
@@ -37,7 +69,7 @@ func isValidUint64(inp []string, field field) (interface{}, string) {
 	return num, "field integer doesn't pass validation"
 }
 
-func isValidFloat32(inp []string, field field) (interface{}, string) {
+func isValidFloat32(field field, inp ...string) (interface{}, string) {
 	strNum := strings.TrimSpace(inp[0])
 	if field.step == 0 {
 		warn.Println("Are you sure about step == 0?")
@@ -61,7 +93,7 @@ func isValidFloat32(inp []string, field field) (interface{}, string) {
 	return num, "field integer doesn't pass validation"
 }
 
-func isValidStr(inp []string, field field) (interface{}, string) {
+func isValidStr(field field, inp ...string) (interface{}, string) {
 	//TODO check if the string passes regex
 	//TODO check if it matches one of the options provided
 	str := strings.TrimSpace(inp[0])
@@ -91,7 +123,7 @@ func isValidStr(inp []string, field field) (interface{}, string) {
 	}
 	return str, fillItIn
 }
-func isValidID(inp []string, field field) (interface{}, string) {
+func isValidID(field field, inp ...string) (interface{}, string) {
 	str := strings.TrimSpace(inp[0])
 	if field.regex == nil {
 		trace.Println("missing regex for field:", field.name)
@@ -103,7 +135,7 @@ func isValidID(inp []string, field field) (interface{}, string) {
 	return str, "ID supplied is incorrect"
 }
 
-func isValidBool(inp []string, field field) (interface{}, string) {
+func isValidBool(field field, inp ...string) (interface{}, string) {
 	str := strings.TrimSpace(inp[0])
 	checked := len(str) >= 1
 	if field.Required && !checked {

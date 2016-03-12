@@ -1,6 +1,9 @@
 package main
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 	event, err := getEvent(eventID)
@@ -44,9 +47,7 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 func dataListRanges(ranges []Range) []option {
 	var options []option
 	for _, r := range ranges {
-		if !r.IsAgg {
-			options = append(options, option{Label: r.Name})
-		}
+		options = append(options, option{Label: r.Name, Value: fmt.Sprintf("%d", r.ID)})
 	}
 	return options
 }
@@ -80,7 +81,11 @@ func eventRangeInsert(w http.ResponseWriter, r *http.Request, submittedForm form
 
 func eventAggInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	eventID := submittedForm.Fields[2].Value
-	err := eventAddRange(eventID, Range{Name: submittedForm.Fields[0].Value, Aggs: submittedForm.Fields[0].Value, IsAgg: true})
+	err := eventAddRange(eventID, Range{
+		Name:  submittedForm.Fields[0].Value,
+		Aggs:  submittedForm.Fields[1].internalValue.([]uint64),
+		IsAgg: true,
+	})
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
 		return

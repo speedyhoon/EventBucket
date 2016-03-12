@@ -54,11 +54,11 @@ type Event struct {
 
 // Range is exported
 type Range struct {
-	ID     uint64 `json:"schemaID"`
-	Name   string `json:"schemaName"`
-	Aggs   string `json:"schemaAggregate,omitempty"`
-	Locked bool   `json:"schemaLocked,omitempty"`
-	IsAgg  bool   `json:"schemaIsAgg,omitempty"` //Prevents aggs switching to normal ranges
+	ID     uint64   `json:"schemaID"`
+	Name   string   `json:"schemaName"`
+	Aggs   []uint64 `json:"schemaAggregate,omitempty"`
+	Locked bool     `json:"schemaLocked,omitempty"`
+	IsAgg  bool     `json:"schemaIsAgg,omitempty"` //Prevents aggs switching to normal ranges
 	//	ScoreBoard bool                     `json:"s,omitempty"`
 	//	Hidden     bool                     `json:"h,omitempty"`
 	//	Order      int                      `json:"schemaSort,omitempty"`
@@ -126,6 +126,6 @@ type field struct {
 	Checked            bool //only used by checkboxes
 	regex              *regexp.Regexp
 	internalValue      interface{}
-	v8                 func([]string, field) (interface{}, string)
+	v8                 func(field, ...string) (interface{}, string)
 	defValue           func() []string
 }
