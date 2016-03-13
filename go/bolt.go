@@ -268,7 +268,6 @@ func getClubs() ([]Club, error) {
 
 func getEvents(query func(Event) bool) ([]Event, error) {
 	var events []Event
-	var event Event
 	err := db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(tblEvent)
 		if b == nil {
@@ -276,6 +275,7 @@ func getEvents(query func(Event) bool) ([]Event, error) {
 			return nil
 		}
 		return b.ForEach(func(_, value []byte) error {
+			var event Event
 			if json.Unmarshal(value, &event) == nil && query(event) {
 				events = append(events, event)
 			}
