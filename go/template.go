@@ -97,13 +97,13 @@ func templater(w http.ResponseWriter, page page) {
 				}
 				return template.HTMLAttr("")
 			},
-			"nameGrade": func(index uint64) string {
+			"grade": func(index uint64) string {
 				if index < uint64(len(dataListGrades())) {
 					return dataListGrades()[index].Label
 				}
 				return ""
 			},
-			"nameAgeGroup": func(index uint64) string {
+			"ageGroup": func(index uint64) string {
 				if index < uint64(len(dataListAgeGroup())) {
 					return dataListAgeGroup()[index].Label
 				}

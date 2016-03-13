@@ -23,8 +23,8 @@
 					<td>{{if $.HasRanges}}<a href=/print-cards/{{$.Event.ID}}/{{.ID}}>Scorecards</a>{{end}}
 					<td>{{.FirstName}} {{.Surname}}
 					<td>{{.Club}}
-					<td>{{nameGrade .Grade}}
-					<td>{{nameAgeGroup .AgeGroup}}
+					<td>{{grade .Grade}}
+					<td>{{ageGroup .AgeGroup}}
 					{{if not $.Event.Closed}}<td class=center><img src=dirPNG/edit width=12 height=12 alt="edit icon">{{end}}
 			{{end}}
 		</table>
