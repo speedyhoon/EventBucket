@@ -65,7 +65,7 @@ func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redi
 		formError(w, submittedForm, redirect, err)
 		return
 	}
-	http.Redirect(w, r, urlClub+ID, http.StatusSeeOther)
+	http.Redirect(w, r, urlClubSettings+ID, http.StatusSeeOther)
 }
 
 func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
