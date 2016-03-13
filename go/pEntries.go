@@ -49,17 +49,13 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 func eventInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	//Insert new event into database.
 	ID, err := insertEvent(Event{
-		Club: submittedForm.Fields[0].Value,
-		Name: submittedForm.Fields[1].Value,
-		Date: submittedForm.Fields[2].Value,
-		Time: submittedForm.Fields[3].Value,
-		Ranges: []Range{
-			{ID: 0, Name: "600 yards"},
-			{ID: 1, Name: "700 yards"},
-			{ID: 2, Name: "Total", IsAgg: true, Aggs: []uint64{0, 1}},
-		},
+		Club:   submittedForm.Fields[0].Value,
+		Name:   submittedForm.Fields[1].Value,
+		Date:   submittedForm.Fields[2].Value,
+		Time:   submittedForm.Fields[3].Value,
+		Closed: false,
 		//The next incremental range id to use.
-		AutoInc: AutoInc{Range: 3},
+		AutoInc: AutoInc{Range: 0},
 	})
 
 	//Display any insert errors onscreen.
