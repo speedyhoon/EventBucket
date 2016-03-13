@@ -249,7 +249,6 @@ func eventAddRange(eventID string, newRange Range) error {
 
 func getClubs() ([]Club, error) {
 	var clubs []Club
-	var club Club
 	err := db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(tblClub)
 		if b == nil {
@@ -257,6 +256,7 @@ func getClubs() ([]Club, error) {
 			return nil
 		}
 		return b.ForEach(func(_, value []byte) error {
+			var club Club
 			if json.Unmarshal(value, &club) == nil {
 				clubs = append(clubs, club)
 			}
