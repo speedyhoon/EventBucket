@@ -9,7 +9,7 @@
 	{{with .}}
 		<ul>
 			{{range .}}
-				<li><a href=/entries/{{.ID}}>{{.Name}}</a>
+				{{if not .Closed}}<li><a href=/entries/{{.ID}}>{{.Name}}</a>{{end}}
 			{{end}}
 		</ul>
 	{{else}}
