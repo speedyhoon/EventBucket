@@ -287,7 +287,6 @@ func getEvents(query func(Event) bool) ([]Event, error) {
 
 func getShooters() ([]Shooter, error) {
 	var shooters []Shooter
-	var shooter Shooter
 	err := db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(tblShooter)
 		if b == nil {
@@ -295,6 +294,7 @@ func getShooters() ([]Shooter, error) {
 			return nil
 		}
 		return b.ForEach(func(_, value []byte) error {
+			var shooter Shooter
 			if json.Unmarshal(value, &shooter) == nil {
 				shooters = append(shooters, shooter)
 			}
