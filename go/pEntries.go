@@ -63,5 +63,5 @@ func eventInsert(w http.ResponseWriter, r *http.Request, submittedForm form, red
 		formError(w, submittedForm, redirect, err)
 		return
 	}
-	http.Redirect(w, r, urlEntries+ID, http.StatusSeeOther)
+	http.Redirect(w, r, urlEventSettings+ID, http.StatusSeeOther)
 }

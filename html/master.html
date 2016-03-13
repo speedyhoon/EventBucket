@@ -34,8 +34,8 @@
 	</header>
 	<section>
 		{{with .Page}}
-			{{with .Heading}}<h4>{{.}}</h4>{{end}}
-			{{with .Title}}<h1>{{.}}</h1>{{end}}
+			{{with .Title}}<h4>{{.}}</h4>{{end}}
+			{{with .Heading}}<h1>{{.}}</h1>{{end}}
 			{{with .Error}}<samp>{{.}}</samp>{{end}}
 			{{template "page" .Data}}
 		{{end}}
