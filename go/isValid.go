@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"math"
 	"strconv"
 	"strings"
@@ -23,7 +22,6 @@ func listUint64(field field, inp ...string) (interface{}, string) {
 	var id uint64
 	for _, in := range inp {
 		temp, oo = isValidUint64(field, in)
-		log.Println("mmm", oo, "'", temp, "'")
 		if oo != "" {
 			return ids, "This value is invalid."
 		} else {
@@ -37,7 +35,6 @@ func listUint64(field field, inp ...string) (interface{}, string) {
 			ids = append(ids, id)
 		}
 	}
-	log.Printf("list is ok with me! %#v", check)
 	return ids, ""
 }
 
