@@ -32,6 +32,7 @@ const (
 	shooterNew           uint8 = 10
 	shooterDetails       uint8 = 11
 	shooterSearch        uint8 = 12
+	eventTotal           uint8 = 13
 )
 
 func dataListGrades() []option {
@@ -138,7 +139,7 @@ func getForm(id uint8) []field {
 		return []field{{
 			name: "n", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
-			name: "R", Required: true, step: 1, v8: listUint64,
+			name: "R", Required: true, min: 1, step: 1, v8: listUint64,
 		}, {
 			name: "E", v8: isValidID, regex: regexID,
 		}}
@@ -211,6 +212,18 @@ func getForm(id uint8) []field {
 			name: "s", maxLen: 64, v8: isValidStr,
 		}, {
 			name: "C", maxLen: 64, v8: isValidStr,
+		}}
+	case 13:
+		return []field{{
+			name: "t", Required: true, max: 60, step: 1, v8: isValidUint64,
+		}, {
+			name: "c", Required: true, max: 10, step: 1, v8: isValidUint64,
+		}, {
+			name: "E", step: 1, v8: isValidID, regex: regexID,
+		}, {
+			name: "R", min: 1, step: 1, v8: isValidUint64,
+		}, {
+			name: "S", v8: isValidUint64,
 		}}
 	}
 	return []field{}

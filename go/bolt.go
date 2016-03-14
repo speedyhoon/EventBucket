@@ -377,8 +377,43 @@ func eventShooterInsertDB(ID string, shooter EventShooter) error {
 			return err
 		}
 
-		err = bucket.Put(byteID, document)
+		return bucket.Put(byteID, document)
+	})
+	return err
+}
+
+func upsertScore(eventID, rID string, sID uint64, score Score) error {
+	byteID, err := b36toBy(eventID)
+	if err != nil {
 		return err
+	}
+	err = db.Update(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(tblEvent)
+		if bucket == nil {
+			return fmt.Errorf("Bucket %q not found!", tblEvent)
+		}
+
+		document := bucket.Get(byteID)
+		if len(document) == 0 {
+			return fmt.Errorf("'%v' document is empty / doesn't exist %q", eventID, document)
+		}
+		var event Event
+		err = json.Unmarshal(document, &event)
+		if err != nil {
+			return err
+		}
+
+		if event.Shooters[sID].Scores == nil {
+			event.Shooters[sID].Scores = make(map[string]Score)
+		}
+		event.Shooters[sID].Scores[rID] = score
+
+		document, err = json.Marshal(event)
+		if err != nil {
+			return err
+		}
+
+		return bucket.Put(byteID, document)
 	})
 	return err
 }
