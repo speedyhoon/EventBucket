@@ -42,8 +42,8 @@ func isValidUint64(field field, inp ...string) (interface{}, string) {
 	strNum := strings.TrimSpace(inp[0])
 	var num uint64
 	num = 0
-	if field.step == 0 {
-		warn.Println("Are you sure about step == 0?")
+	if debug && field.step == 0 {
+		warn.Println("Are you sure about step == 0? isValidUint64", field.name)
 		return num, "Step supplied = 0"
 	}
 	var err error
@@ -68,8 +68,8 @@ func isValidUint64(field field, inp ...string) (interface{}, string) {
 
 func isValidFloat32(field field, inp ...string) (interface{}, string) {
 	strNum := strings.TrimSpace(inp[0])
-	if field.step == 0 {
-		warn.Println("Are you sure about step == 0?")
+	if debug && field.step == 0 {
+		warn.Println("Are you sure about step == 0? isValidFloat32", field.name)
 		return 0, "Step supplied = 0"
 	}
 	var num float32

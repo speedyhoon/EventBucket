@@ -1,6 +1,9 @@
 package main
 
-import "regexp"
+import (
+	"fmt"
+	"regexp"
+)
 
 // Club is exported
 type Club struct {
@@ -60,25 +63,43 @@ type Range struct {
 	Locked bool     `json:"schemaLocked,omitempty"`
 	IsAgg  bool     `json:"schemaIsAgg,omitempty"` //Prevents aggs switching to normal ranges
 	Order  int64    `json:"schemaSort,omitempty"`
-	Status uint8    `json:"t,omitempty"` //ENUM change to 1 when the first shooter has recorded their first shot change to 2 when the range is finished. http://stackoverflow.com/questions/14426366/what-is-an-idiomatic-way-of-representing-enums-in-golang
+	Status uint8    `json:"schemaStatus,omitempty"` //ENUM change to 1 when the first shooter has recorded their first shot change to 2 when the range is finished. http://stackoverflow.com/questions/14426366/what-is-an-idiomatic-way-of-representing-enums-in-golang
 	//Class      map[string]RangeProperty `json:"omitempty,inline"` //TODO possibly change it to optional grades per range in future
 	//ScoreBoard bool                     `json:"s,omitempty"`
 	//Hidden     bool                     `json:"h,omitempty"`
 }
 
+func (r Range) Id() string {
+	return fmt.Sprintf("%v", r.ID)
+}
+
+// Score is exported
+type Score struct {
+	//TODO the schema should change so that it can use unsigned 64 bit numbers instead
+	Total   uint64 `json:"schemaTotal"`
+	Centers uint64 `json:"schemaCenters,omitempty"`
+	//Shots     string `json:"s,omitempty"` //Don't include this in the scoreboard struct when using a different []EventShooter
+	//CountBack string `json:"v,omitempty"`
+	//ShootOff  uint    `json:"f,omitempty"`
+	//position  int    `json:"p,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
+	//warning   uint8    `json:"w,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
+	//Ordinal   string `json:"o,omitempty"`
+	//Info      string `json:"i,omitempty"`
+}
+
 // EventShooter is exported
 type EventShooter struct {
-	ID        uint64 `json:"schemaID"`
-	FirstName string `json:"schemaFirstName"` //TODO change these to point to shooters in the other shooter tables
-	Surname   string `json:"schemaSurname"`
-	Club      string `json:"schemaClub"`
-	Grade     uint64 `json:"schemaGrade"`
-	Hidden    bool   `json:"schemaHidden,omitempty"`
-	AgeGroup  uint64 `json:"schemaAgeGroup,omitempty"`
-	//	Scores    map[string]Score `json:"omitempty,inline"` //S is not used!
-	LinkedID *int `json:"schemaLinkedID,omitempty"` //For duplicating shooters that are in different classes with the same score
-	SID      int  `json:"schemaSID,omitempty"`
-	Disabled bool `json:"schemaDisabled,omitempty"`
+	ID        uint64           `json:"schemaID"`
+	FirstName string           `json:"schemaFirstName"` //TODO change these to point to shooters in the other shooter tables
+	Surname   string           `json:"schemaSurname"`
+	Club      string           `json:"schemaClub"`
+	Grade     uint64           `json:"schemaGrade"`
+	Hidden    bool             `json:"schemaHidden,omitempty"`
+	AgeGroup  uint64           `json:"schemaAgeGroup,omitempty"`
+	Scores    map[string]Score `json:"schemaScores,omitempty"`   //Scores   []Score `json:"schemaScores,omitempty"`   //S is not used!
+	LinkedID  *int             `json:"schemaLinkedID,omitempty"` //For duplicating shooters that are in different classes with the same score
+	SID       int              `json:"schemaSID,omitempty"`
+	Disabled  bool             `json:"schemaDisabled,omitempty"`
 	//SCOREBOARD
 	position string //DON'T SAVE THIS TO DB! used for scoreboard only.
 	warning  uint8  //DON'T SAVE THIS TO DB! used for scoreboard only.
