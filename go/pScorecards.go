@@ -1,9 +1,15 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+	"strconv"
+	"strings"
+)
 
-func scorecards(w http.ResponseWriter, r *http.Request, eventID string) {
-	event, err := getEvent(eventID)
+func scorecards(w http.ResponseWriter, r *http.Request, parameters string) {
+	//eventID/rangeID
+	ids := strings.Split(parameters, "/")
+	event, err := getEvent(ids[0])
 
 	//If event not found in the database return error event not found (404).
 	if err != nil {
@@ -11,13 +17,21 @@ func scorecards(w http.ResponseWriter, r *http.Request, eventID string) {
 		return
 	}
 
+	rangeID, err := strconv.ParseUint(ids[1], 10, 64)
+	if rangeID >= uint64(len(event.Ranges)) {
+		errorHandler(w, r, http.StatusNotFound, "range")
+		return
+	}
+
 	templater(w, page{
 		Title:   "Scorecards",
 		Menu:    urlEvents,
-		MenuID:  eventID,
+		MenuID:  event.ID,
 		Heading: event.Name,
 		Data: map[string]interface{}{
-			"Event": event,
+			"EventID":  event.ID,
+			"Shooters": event.Shooters,
+			"Range":    event.Ranges[rangeID],
 		},
 	})
 }
