@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 	"strings"
@@ -25,17 +26,9 @@ func totalScores(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 		return
 	}
 
-	rangeID, err := strconv.ParseUint(ids[1], 10, 64)
-	var hasRange bool
 	var currentRange Range
-	for i, r := range event.Ranges {
-		if r.ID == rangeID {
-			currentRange = event.Ranges[i]
-			continue
-		}
-	}
-	if !hasRange {
-		errorHandler(w, r, http.StatusNotFound, "range")
+	currentRange, err = eventRange(event.Ranges, ids[1], w, r)
+	if err != nil {
 		return
 	}
 
@@ -70,4 +63,26 @@ func eventTotalUpsert(w http.ResponseWriter, r *http.Request, submittedForm form
 	}
 	http.Redirect(w, r, urlTotalScores+eventID /*+"/"_rangeID*/, http.StatusSeeOther)
 	//TODO trigger agg calculation immediatly. or maybe inline it within the same DB call?
+}
+
+func eventRange(ranges []Range, rID string, w http.ResponseWriter, r *http.Request) (Range, error) {
+	var currentRange Range
+	rangeID, err := strconv.ParseUint(rID, 10, 64)
+	if err != nil {
+		errorHandler(w, r, http.StatusNotFound, "range")
+		return currentRange, err
+	}
+	var hasRange bool
+	for _, r := range ranges {
+		if r.ID == rangeID {
+			currentRange = r
+			hasRange = true
+			continue
+		}
+	}
+	if !hasRange {
+		errorHandler(w, r, http.StatusNotFound, "range")
+		return currentRange, errors.New("Range with that ID doesn't exists in this event")
+	}
+	return currentRange, nil
 }
