@@ -26,7 +26,15 @@ func scorecards(w http.ResponseWriter, r *http.Request, showAll bool, parameters
 	}
 
 	rangeID, err := strconv.ParseUint(ids[1], 10, 64)
-	if rangeID >= uint64(len(event.Ranges)) {
+	var hasRange bool
+	var currentRange Range
+	for i, r := range event.Ranges {
+		if r.ID == rangeID {
+			currentRange = event.Ranges[i]
+			continue
+		}
+	}
+	if !hasRange {
 		errorHandler(w, r, http.StatusNotFound, "range")
 		return
 	}
@@ -39,7 +47,7 @@ func scorecards(w http.ResponseWriter, r *http.Request, showAll bool, parameters
 		Data: map[string]interface{}{
 			"EventID":  event.ID,
 			"Shooters": event.Shooters,
-			"Range":    event.Ranges[rangeID],
+			"Range":    currentRange,
 		},
 	})
 }
