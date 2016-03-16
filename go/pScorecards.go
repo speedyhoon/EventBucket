@@ -6,7 +6,15 @@ import (
 	"strings"
 )
 
-func scorecards(w http.ResponseWriter, r *http.Request, parameters string) {
+func scorecardsAll(w http.ResponseWriter, r *http.Request, parameters string) {
+	scorecards(w, r, true, parameters)
+}
+
+func scorecardsIncomplete(w http.ResponseWriter, r *http.Request, parameters string) {
+	scorecards(w, r, false, parameters)
+}
+
+func scorecards(w http.ResponseWriter, r *http.Request, showAll bool, parameters string) {
 	//eventID/rangeID
 	ids := strings.Split(parameters, "/")
 	event, err := getEvent(ids[0])

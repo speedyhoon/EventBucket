@@ -6,10 +6,17 @@ import (
 	"strings"
 )
 
-func totalScores(w http.ResponseWriter, r *http.Request, parameters string) {
+func totalScoresAll(w http.ResponseWriter, r *http.Request, parameters string) {
+	totalScores(w, r, true, parameters)
+}
+
+func totalScoresIncomplete(w http.ResponseWriter, r *http.Request, parameters string) {
+	totalScores(w, r, false, parameters)
+}
+
+func totalScores(w http.ResponseWriter, r *http.Request, showAll bool, parameters string) {
 	//eventID/rangeID
 	ids := strings.Split(parameters, "/")
-
 	event, err := getEvent(ids[0])
 
 	//If event not found in the database return error event not found (404).
