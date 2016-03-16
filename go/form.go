@@ -223,7 +223,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "R", min: 1, step: 1, v8: isValidUint64,
 		}, {
-			name: "S", v8: isValidUint64,
+			name: "S", step: 1, v8: isValidUint64,
 		}}
 	}
 	return []field{}
