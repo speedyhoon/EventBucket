@@ -14,10 +14,14 @@ $menuPadding: $margin/6
 $bigPadding: $margin/3
 $fatBorder: 2px solid
 $thinBorder: 1px solid
+html
+	background: $black url(/v/bottom_landscape_14) bottom left no-repeat
+	background-size: 14em
+	background-attachment: fixed
+
 html,body
 	height: 100%
 body
-	background: $black
 	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
 	margin: 0
 	color: $liteGrey
@@ -29,9 +33,8 @@ section, header
 
 header
 	height: calc(100% - 3em)
-	background: url(/v/bottom_landscape_14) no-repeat bottom
 
-header > div
+nav
 	border-right: 1px dashed $dark
 	padding-bottom: $menuPadding
 

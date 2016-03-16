@@ -5,7 +5,7 @@
 	<header>
 		<h1><a href=/>EventBucket</a></h1>
 		<span class=small>Making scoring easier for rifle clubs</span>
-		<div>
+		<nav>
 			<ul>
 				{{range .Menu}}
 					{{if eq $.Page.Title .Name}}
@@ -30,7 +30,7 @@
 			</ul>
 			<p class=small>Copyright &copy; 2011-{{.CurrentYear}}</p>
 			<p class=small><a href=/about>vversionNumber</a> <a href=/licence class=right><img src=dirPNG/cc80x15 alt="Creative Commons Licence" height=15 width=80></a></p>
-		</div>
+		</nav>
 	</header>
 	<section>
 		{{with .Page}}
