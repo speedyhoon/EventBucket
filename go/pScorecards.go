@@ -2,7 +2,6 @@ package main
 
 import (
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -25,17 +24,9 @@ func scorecards(w http.ResponseWriter, r *http.Request, showAll bool, parameters
 		return
 	}
 
-	rangeID, err := strconv.ParseUint(ids[1], 10, 64)
-	var hasRange bool
 	var currentRange Range
-	for i, r := range event.Ranges {
-		if r.ID == rangeID {
-			currentRange = event.Ranges[i]
-			continue
-		}
-	}
-	if !hasRange {
-		errorHandler(w, r, http.StatusNotFound, "range")
+	currentRange, err = eventRange(event.Ranges, ids[1], w, r)
+	if err != nil {
 		return
 	}
 
