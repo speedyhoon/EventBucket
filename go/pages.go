@@ -22,15 +22,17 @@ const (
 	urlLicence  = "/licence"
 	urlShooters = "/shooters"
 	//GET with PARAMETERS
-	urlClub            = "/club/"           //clubID
-	urlClubSettings    = "/club-settings/"  //clubID
-	urlEntries         = "/entries/"        //eventID
-	urlEventSettings   = "/event-settings/" //eventID
-	urlEventReport     = "/event-report/"   //eventID
-	urlScoreboard      = "/scoreboard/"     //eventID
-	urlScorecards      = "/scorecards/"     //eventID
-	urlPrintScorecards = "/print-cards/"    //eventID/shooterID
-	urlTotalScores     = "/total-scores/"   //eventID
+	urlClub            = "/club/"             //clubID
+	urlClubSettings    = "/club-settings/"    //clubID
+	urlEntries         = "/entries/"          //eventID
+	urlEventSettings   = "/event-settings/"   //eventID
+	urlEventReport     = "/event-report/"     //eventID
+	urlScoreboard      = "/scoreboard/"       //eventID
+	urlScorecards      = "/scorecards/"       //eventID
+	urlScorecardsAll   = "/scorecards-all/"   //eventID
+	urlPrintScorecards = "/print-cards/"      //eventID/shooterID
+	urlTotalScores     = "/total-scores/"     //eventID
+	urlTotalScoresAll  = "/total-scores-all/" //eventID
 )
 
 var (
@@ -63,9 +65,11 @@ func pages() {
 	getParameters(urlEventSettings, eventSettings, regexID)
 	getParameters(urlEventReport, eventReport, regexID)
 	getParameters(urlScoreboard, scoreboard, regexID)
-	getParameters(urlScorecards, scorecards, regexPath)
+	getParameters(urlScorecards, scorecardsIncomplete, regexPath)
+	getParameters(urlScorecardsAll, scorecardsAll, regexPath)
 	getParameters(urlPrintScorecards, printScorecards, regexPath)
-	getParameters(urlTotalScores, totalScores, regexPath)
+	getParameters(urlTotalScores, totalScoresIncomplete, regexPath)
+	getParameters(urlTotalScoresAll, totalScoresAll, regexPath)
 	post(pst, clubNew, clubInsert)
 	post(pst, clubDetails, clubDetailsUpsert)
 	post(pst, clubMoundNew, clubMoundInsert)
