@@ -350,6 +350,8 @@ return qty > 0 && err == nil</pre>
 <p>With the approach of standardising all http methods I can help but wonder if I am boxing myself into a situation where a different way of calling the server will not suit any existing ways. this will mean changing all form http listeners OR adding a new generic function to do similar functionality. This is especially suited to receiving data on both POST and GET requests. POST requests can assign sessions add return an error on the following request after submit. where as GET requests need to return the error directly.</p>
 
 <p>+++ BOLT db. no more weird mongodb query syntax!</p>
+<p>+BOLT no more using json schema properties in the go files. this was an unexpected advantage. and has simplified the code some what and removed all constant variables from schema.go</p>
+<p>-bolt much less support from community if i'm unable to fix something</p>
 
 <p>Sass has been written to have as few rules as possible. this means that each rule can be more complex. But doesn't involve setting a property and immediately un-setting it below or beforehand. This requires less scrolling to view a page but longer to decipher each rule.</p>
 
@@ -362,5 +364,7 @@ return qty > 0 && err == nil</pre>
 
 <p>found a way to reduce the number of template functions by instead using methods on structs. this makes templates much cleaner by calling inline methods without ().</p>
 
-<p>-----boltDB one big negative is that it is harder to externally edit an event. this is sometimes required at events where something needs to change that EB doesn't support.</p>
+<p>-----boltDB one big negative is that it is harder to externally edit an event. this is sometimes required at events where something needs to change that EB doesn't support. I edited events in robomongo when needing to change shooters details or shots per range needed to be changed.</p>
+<p>+bolt sometimes when EB crashed and took down mongodb with it, it would leave the mongodb lockfile. which would prevent the database opening next time EB started. This would mean the file had to be deleted manually and I had not programed it it find and delete the file.</p>
+
 {{end}}
