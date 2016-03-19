@@ -12,7 +12,7 @@
 		<p>Total Ranges: {{$.QtyRanges}}
 		<table>
 			<thead>
-				<th class=^sorted^>ID
+				<th class=sorted>ID
 				<th>Range
 				<th>Aggs
 				<th>Locked
@@ -24,7 +24,7 @@
 					<td>{{.Name}}
 					<td>{{if .IsAgg}}{{.Aggs}}{{end}}
 					<td>{{if not .IsAgg}}{{.Locked}}{{end}}
-					<td class=^center^><img src=dirPNG/edit width=12 height=12 alt="edit icon">
+					<td class=center><img src=dirPNG/edit width=12 height=12 alt="edit icon">
 			{{end}}
 		</table>
 	{{else}}

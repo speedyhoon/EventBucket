@@ -9,7 +9,7 @@
 		<p>Total Entries: {{$.QtyEntries}}
 		<table>
 			<thead>
-				<th class=^sorted^>ID
+				<th class=sorted>ID
 				<th>
 				<th>Shooter
 				<th>Club
@@ -25,7 +25,7 @@
 					<td>{{.Club}}
 					<td>{{grade .Grade}}
 					<td>{{ageGroup .AgeGroup}}
-					{{if not $.Event.Closed}}<td class=^center^><img src=dirPNG/edit width=12 height=12 alt="edit icon">{{end}}
+					{{if not $.Event.Closed}}<td class=center><img src=dirPNG/edit width=12 height=12 alt="edit icon">{{end}}
 			{{end}}
 		</table>
 	{{else}}
