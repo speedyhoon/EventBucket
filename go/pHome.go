@@ -8,12 +8,17 @@ import (
 
 func home(w http.ResponseWriter, r *http.Request) {
 	listEvents, err := getEvents(onlyOpen)
+	hostname, _ := os.Hostname()
 	templater(w, page{
 		Title: "Home",
 		Error: err,
 		Data: map[string]interface{}{
-			"NewEvent":   getFormSession(w, r, eventNew),
-			"ListEvents": listEvents,
+			"newEvent":   getFormSession(w, r, eventNew),
+			"listEvents": listEvents,
+			"network": map[string]interface{}{
+				"hostname":    hostname,
+				"ipAddresses": localIPs(),
+			},
 		},
 	})
 }
@@ -27,8 +32,8 @@ func about(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
 		Title: "About",
 		Data: map[string]interface{}{
-			"Hostname":    hostname,
-			"IpAddresses": localIPs(),
+			"hostname":    hostname,
+			"ipAddresses": localIPs(),
 		},
 	})
 }
