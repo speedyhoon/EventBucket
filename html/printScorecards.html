@@ -1,8 +1,8 @@
 {{define "page"}}
-	<table class=^printCards^>
+	<table class=printCards>
 		{{range .Ranges}}
 			<tr>
-				<td rowspan=3 class=^centerPadding^><img class=^barcode^ src=dirBarcode/q{{$.EventID}}/{{$.Shooter.ID}}/{{.ID}} alt={{$.EventID}}/{{$.Shooter.ID}}/{{.ID}}><br>
+				<td rowspan=3 class=centerPadding><img class=barcode src=dirBarcode/q{{$.EventID}}/{{$.Shooter.ID}}/{{.ID}} alt={{$.EventID}}/{{$.Shooter.ID}}/{{.ID}}><br>
 					<strong>{{$.EventID}}/{{$.Shooter.ID}}/{{.ID}}</strong>
 				<td>Event ID: {{$.EventID}}<td>{{$.EventName}}
 			<tr>
