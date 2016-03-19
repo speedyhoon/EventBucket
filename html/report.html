@@ -384,4 +384,36 @@ Also want to switch between normal and one shot wonder. I have never tackled thi
 
 
 </p>
+
+<p>Add google closure stylesheets to buildbot.
+	Closure templates didn't fit EB existing structure at all, so made a simple search replace using BuildBot. search for a css class name that is listed in the json file. replace with " class=XYZ". works well for single classes. multiple classes in an attribute can also use carets as separators ` class="^XYZ^ ^ABC^"`
+
+
+trying to add closure linter.
+	install python 3.5.1 x64
+	install silksvn commandline tool.
+	restart
+	pip install https://closure-linter.googlecode.com/svn/trunk/
+	failed - required cmder to be open as an administrator so it could create files within %programfiles%/Python
+
+
+	gjslint main.js
+	failed to create process.
+
+	uninstalled Python
+	resinstalled into current user profile %appdata%
+	still had same issue -- failed to create process.
+
+	downloaded python latest version 2.7.11 instead.
+	default location is C:\python
+	couldn't find pip
+	added path to pip - C:\Python\Scripts
+
+	installed gjslint
+	runs OK
+
+	haven't used it yet though.
+
+fix closure compiler runner for buildbot
+</p>
 {{end}}
