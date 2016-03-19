@@ -1,8 +1,8 @@
 {{define "page"}}
 	{{template "ClubDetails" .ClubDetails}}
 	{{template "NewShootingMound" .ClubMound}}
-	<p>{{.Club.ID}}</p>
-	<p>{{.Club.IsDefault}}</p>
+	<p>{{.Club.ID}}
+	<p>{{.Club.IsDefault}}
 
 	<h2>Mounds</h2>
 	{{with .Club.Mounds}}
@@ -29,14 +29,14 @@
 		<option>-0123456X
 	</select>
 	<h3>Legend</h3>
-	<p>- no shot fired / withdrawn / disqualified</p>
-	<p>0 shot fired, missed target</p>
-	<p>1</p>
-	<p>2</p>
-	<p>3 magpie</p>
-	<p>4</p>
-	<p>5 bullseye</p>
-	<p>6 inner bullseye</p>
-	<p>V Vbull</p>
-	<p>X center bull</p>
+	<p>- no shot fired / withdrawn / disqualified
+	<p>0 shot fired, missed target
+	<p>1
+	<p>2
+	<p>3 magpie
+	<p>4
+	<p>5 bullseye
+	<p>6 inner bullseye
+	<p>V Vbull
+	<p>X center bull
 {{end}}
