@@ -80,7 +80,7 @@ type Score struct {
 	Centers   uint64 `json:"schemaCenters,omitempty"`
 	Shots     string `json:"s,omitempty"` //Don't include this in the scoreboard struct when using a different []EventShooter
 	CountBack string `json:"v,omitempty"`
-	//ShootOff  uint    `json:"f,omitempty"`
+	ShootOff  uint64 `json:"f,omitempty"`
 	//position  int    `json:"p,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
 	//warning   uint8    `json:"w,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
 	//Ordinal   string `json:"o,omitempty"`
@@ -97,7 +97,7 @@ type EventShooter struct {
 	Hidden    bool             `json:"schemaHidden,omitempty"`
 	AgeGroup  uint64           `json:"schemaAgeGroup,omitempty"`
 	Scores    map[string]Score `json:"schemaScores,omitempty"`   //Scores   []Score `json:"schemaScores,omitempty"`   //S is not used!
-	LinkedID  *int             `json:"schemaLinkedID,omitempty"` //For duplicating shooters that are in different classes with the same score
+	LinkedID  uint64           `json:"schemaLinkedID,omitempty"` //For duplicating shooters that are in different classes with the same score
 	SID       int              `json:"schemaSID,omitempty"`
 	Disabled  bool             `json:"schemaDisabled,omitempty"`
 	//SCOREBOARD
