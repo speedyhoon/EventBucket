@@ -111,27 +111,28 @@ button
 	box-shadow: 1em 1em .5em orange
 
 //Menus
-ul
-	list-style: none
-	padding: 0
+nav
+	ul
+		list-style: none
+		padding: 0
 
-li a, .visited
-	padding: $menuPadding
-	display: block
+	li a, .visited
+		padding: $menuPadding
+		display: block
 
-li a, li ul, .visited
-	padding-left: $margin
+	li a, li ul, .visited
+		padding-left: $margin
 
-ul a
-	border-left: $fatBorder transparent
+	ul a
+		border-left: $fatBorder transparent
 
-ul a:hover, button:hover, a:hover
-	border-color: $blue
-	color: $blue
+	ul a:hover, button:hover, a:hover
+		border-color: $blue
+		color: $blue
 
-.visited
-	color: $white
-	border-left: $fatBorder $white
+	.visited
+		color: $white
+		border-left: $fatBorder $white
 
 //Text
 h1,h2,h3,h4,h5,h6
