@@ -1,44 +1,43 @@
 {{define "master"}}<!DOCTYPE html>
 <link rel=stylesheet href=dirCSS/dark>
 <title>EventBucket{{with .Page.Title}} - {{.}}{{end}}</title>
-<body>
-	<header>
-		<h1><a href=/>EventBucket</a></h1>
-		<span class=small>Making scoring easier for rifle clubs</span>
-		<nav>
-			<ul>
-				{{range .Menu}}
-					{{if eq $.Page.Title .Name}}
-						<li class=visited>{{.Name}}
-					{{else}}
-						<li><a href={{.Link}}>{{.Name}}</a>
-							{{if eq $.Page.Menu .Link}}
-								{{with .SubMenu}}
-									<ul>
-										{{range .}}
-											{{if eq $.Page.Title .Name}}
-												<li class=visited>{{.Name}}
-											{{else}}
-												<li><a href={{.Link}}{{$.Page.MenuID}}>{{.Name}}</a>
-											{{end}}
+<header>
+	<h1><a href=/>EventBucket</a></h1>
+	<span class=small>Making scoring easier for rifle clubs</span>
+	<nav>
+		<ul>
+			{{range .Menu}}
+				{{if eq $.Page.Title .Name}}
+					<li class=visited>{{.Name}}
+				{{else}}
+					<li><a href={{.Link}}>{{.Name}}</a>
+						{{if eq $.Page.Menu .Link}}
+							{{with .SubMenu}}
+								<ul>
+									{{range .}}
+										{{if eq $.Page.Title .Name}}
+											<li class=visited>{{.Name}}
+										{{else}}
+											<li><a href={{.Link}}{{$.Page.MenuID}}>{{.Name}}</a>
 										{{end}}
-									</ul>
-								{{end}}
-						{{end}}
+									{{end}}
+								</ul>
+							{{end}}
 					{{end}}
 				{{end}}
-			</ul>
-			<p class=small>Copyright &copy; 2011-{{.CurrentYear}}
-			<p class=small><a href=/about>vversionNumber</a> <a href=/licence class=right><img src=dirPNG/cc80x15 alt="Creative Commons Licence" height=15 width=80></a>
-		</nav>
-	</header>
-	<section>
-		{{with .Page}}
-			{{with .Title}}<h4>{{.}}</h4>{{end}}
-			{{with .Heading}}<h1>{{.}}</h1>{{end}}
-			{{with .Error}}<samp>{{.}}</samp>{{end}}
-			{{template "page" .Data}}
-		{{end}}
-	</section>
-	<script defer src=dirJS/main></script>
+			{{end}}
+		</ul>
+		<p class=small>Copyright &copy; 2011-{{.CurrentYear}}
+		<p class=small><a href=/about>vversionNumber</a> <a href=/licence class=right><img src=dirPNG/cc80x15 alt="Creative Commons Licence" height=15 width=80></a>
+	</nav>
+</header>
+<section>
+	{{with .Page}}
+		{{with .Title}}<h4>{{.}}</h4>{{end}}
+		{{with .Heading}}<h1>{{.}}</h1>{{end}}
+		{{with .Error}}<samp>{{.}}</samp>{{end}}
+		{{template "page" .Data}}
+	{{end}}
+</section>
+<script defer src=dirJS/main></script>
 {{end}}
