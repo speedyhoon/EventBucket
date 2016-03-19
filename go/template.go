@@ -35,7 +35,54 @@ const (
 var (
 	templates      = make(map[string]*template.Template)
 	masterTemplate = markupEnv{
-		Menu: mainMenu,
+		Menu: []menu{{
+			Name: "Home",
+			Link: urlHome,
+		}, {
+			Name: "Events",
+			Link: urlEvents,
+			SubMenu: []menu{{
+				Name: "Entries",
+				Link: urlEntries,
+			}, {
+				Name: "Settings",
+				Link: urlEventSettings,
+			}, {
+				Name: "Scoreboard",
+				Link: urlScoreboard,
+			}, {
+				Name: "Scorecards",
+				Link: urlScorecards,
+			}, {
+				Name: "Total Scores",
+				Link: urlTotalScores,
+			}, {
+				Name: "Report",
+				Link: urlEventReport,
+			}},
+		}, {
+			Name: "Clubs",
+			Link: urlClubs,
+			SubMenu: []menu{{
+				Name: "Club",
+				Link: urlClub,
+			}, {
+				Name: "Settings",
+				Link: urlClubSettings,
+			}},
+		}, {
+			Name: "Shooters",
+			Link: urlShooters,
+		}, {
+			Name: "Archive",
+			Link: urlArchive,
+		}, {
+			Name: "About",
+			Link: urlAbout,
+		}, {
+			Name: "Licence",
+			Link: urlLicence,
+		}},
 	}
 )
 
