@@ -1,6 +1,9 @@
-@import util
+//@import util
 
-+reset()
+//+reset()
+
+=background-gradient($C1, $C2)
+	background: linear-gradient($C1, 0%, $C2, 25%, $C2, 75%, $C1, 100%) //W3C
 
 body
 	font: 700 small Arial,sans-serif
@@ -24,17 +27,17 @@ td
 	border-width: 1px 0 0 1px
 
 //sort by red triangle
-.SB
+.sortBy
 	background: url(/v/sortby.svg) no-repeat 3px 2px #ccc
 
-.rS	//row separator
+.rowSeparator
 	background: none repeat scroll 0 0 #888
 	height: 2px
 
-.classHeadingRow	//Class row
+.classHeadingRow
 	background: none repeat scroll 0 0 #fdd
 
-	//Awarded Postiions
+//Awarded Postiions
 .p1  //First
 	+background-gradient(goldenrod, gold)
 
@@ -57,23 +60,23 @@ td
 	+background-gradient(#faf, grey)
 
 .p8  //Badge Place
-	+background-gradient(lime, green)
+	+background-gradient(#00f, #ff0079)
 
 
 //WARNINGS::
-.w4  //Highest Possible Score
+.highestPossibleScore
 	background: #707
 	color: #faf
 
-.w2	//warning no score
+.noScore
 	background: #00f
 	color: #fff
 
-.w3  //Incomplete Score
+.incompleteScore
 	background: #000
 	color: #fff
 
-.w1  //ShootOff in position column
+.shootOff //used in position column
 	background: #900
 	color: #fff
 
@@ -82,7 +85,7 @@ td
 	padding: 0 5px
 	text-align: left
 
-	.SB
+	.sortBy
 		padding-left: 15px
 
 	label
@@ -93,7 +96,7 @@ td
 		&:first-child
 			border-left: 1px solid #000
 
-+float-right()
+//+float-right()
 
 #scoreSettings
 	background: url(/v/settings.svg) no-repeat center center
@@ -104,8 +107,8 @@ td
 .tc
 	text-transform: capitalize
 
-+menu()
+//+menu()
 
-@media print
+//@media print
 	ul,#scoreboard_settings
 		display: none !important
