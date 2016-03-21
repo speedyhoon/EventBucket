@@ -48,8 +48,8 @@ func eventSearchShooters(w http.ResponseWriter, r *http.Request, submittedForm f
 		{Value: "123", Label: "Tom, Dick, Harry"},
 	}
 	templater(w, page{
-		Title: "Shooter Search",
-		Ajax:  true,
+		Title:    "Shooter Search",
+		template: templateNone,
 		Data: map[string]interface{}{
 			"ListShooters": listShooters,
 		},

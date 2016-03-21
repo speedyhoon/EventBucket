@@ -1,9 +1,8 @@
-//@import util
-
-//+reset()
-
+$black: #000
+$white: #fff
+$solidBorder: solid $black
 =background-gradient($C1, $C2)
-	background: linear-gradient($C1, 0%, $C2, 25%, $C2, 75%, $C1, 100%) //W3C
+	background: linear-gradient(to bottom, $C1 0%, $C2 25%, $C2 75%, $C1 100%) //W3C
 
 body
 	font: 700 small Arial,sans-serif
@@ -11,31 +10,34 @@ body
 h1
 	text-align: center
 
+body, h1
+	margin: 0
+
 td, ul
 	padding: 0
 
 table, td
-	border: 0 solid #000
+	border: 0 $solidBorder
 
 table
 	border-spacing: 0
-	border-width: 0 1px 1px 0
+	border-width: 0 $thinBoarder $thinBoarder 0
 	text-align: center
 	width: 100%
 
 td
-	border-width: 1px 0 0 1px
+	border-width: $thinBoarder 0 0 $thinBoarder
 
 //sort by red triangle
 .sortBy
-	background: url(/v/sortby.svg) no-repeat 3px 2px #ccc
+	background: url(/v/sortby) no-repeat 3px 2px #ccc
 
 .rowSeparator
-	background: none repeat scroll 0 0 #888
+	background: #888
 	height: 2px
 
 .classHeadingRow
-	background: none repeat scroll 0 0 #fdd
+	background: #fdd
 
 //Awarded Postiions
 .p1  //First
@@ -70,15 +72,15 @@ td
 
 .noScore
 	background: #00f
-	color: #fff
+	color: $white
 
 .incompleteScore
-	background: #000
-	color: #fff
+	background: $black
+	color: $white
 
 .shootOff //used in position column
 	background: #900
-	color: #fff
+	color: $white
 
 
 .legend
@@ -89,22 +91,20 @@ td
 		padding-left: 15px
 
 	label
-		border-right: 1px solid #000
+		border-right: $thinBoarder $solidBorder
 		display: inline-block
 		padding: 0 5px
 
 		&:first-child
-			border-left: 1px solid #000
+			border-left: $thinBoarder $solidBorder
 
-//+float-right()
+.floatRight
+	float: right
 
-#scoreSettings
-	background: url(/v/settings.svg) no-repeat center center
+//#scoreSettings
+//	background: url(/v/settings) no-repeat center center
 
-#scoreboard_settings
-	display: none
-
-.tc
+.capitalizeText
 	text-transform: capitalize
 
 //+menu()
