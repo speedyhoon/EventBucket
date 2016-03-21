@@ -1,6 +1,9 @@
 {{define "page"}}
-	{{/*<a href=%v%v>View Incompleted Shooters</a>
-	<a href=%v%v>View All Shooters</a>*/}}
+	{{if.ShowAll}}
+		<a href=/total-scores/{{.EventID}}/{{.Range.ID}}>View Incomplete Shooters</a>
+	{{else}}
+		<a href=/total-scores-all/{{.EventID}}/{{.Range.ID}}>View All Shooters</a>
+	{{end}}
 
 	{{with .Shooters}}
 		<table>
