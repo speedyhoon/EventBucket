@@ -39,6 +39,7 @@ func scorecards(w http.ResponseWriter, r *http.Request, showAll bool, parameters
 			"EventID":  event.ID,
 			"Shooters": event.Shooters,
 			"Range":    currentRange,
+			"ShowAll":  showAll,
 		},
 	})
 }
