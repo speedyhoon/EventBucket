@@ -41,6 +41,7 @@ func totalScores(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 			"EventID":  event.ID,
 			"Shooters": event.Shooters,
 			"Range":    currentRange,
+			"ShowAll":  showAll,
 		},
 	})
 }
@@ -61,7 +62,7 @@ func eventTotalUpsert(w http.ResponseWriter, r *http.Request, submittedForm form
 		formError(w, submittedForm, redirect, err)
 		return
 	}
-	http.Redirect(w, r, urlTotalScores+eventID /*+"/"_rangeID*/, http.StatusSeeOther)
+	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 	//TODO trigger agg calculation immediatly. or maybe inline it within the same DB call?
 }
 
