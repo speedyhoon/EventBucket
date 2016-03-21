@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 	"strings"
@@ -15,7 +16,7 @@ type page struct {
 	Title, Menu, MenuID, Heading string
 	Data                         map[string]interface{}
 	Error                        error
-	Ajax                         bool
+	template                     uint8
 }
 
 type markupEnv struct {
@@ -28,8 +29,13 @@ const (
 	titleSeparator        = " - "
 	htmlDirectory         = "./h/"
 	masterTemplatePath    = htmlDirectory + "master"
+	masterScoreboard      = htmlDirectory + "masterScoreboard"
 	formsTemplatePath     = htmlDirectory + "forms"
 	reusablesTemplatePath = htmlDirectory + "reusables"
+
+	templateDark       = 0
+	templateScoreboard = 1
+	templateNone       = 255
 )
 
 var (
@@ -95,12 +101,16 @@ func templater(w http.ResponseWriter, page page) {
 	pageName = strings.Replace(strings.Title(pageName), " ", "", -1)
 	pageName = strings.ToLower(string([]rune(pageName)[0])) + string([]rune(pageName)[1:])
 
-	hhh := []string{htmlDirectory + pageName, formsTemplatePath, reusablesTemplatePath}
-	if !page.Ajax {
-		//Add page content just generated to the default page environment (which has CSS and JS, etc).
-		masterTemplate.Page = page
-		hhh = append(hhh, masterTemplatePath)
+	var hhh []string
+	switch page.template {
+	case templateDark:
+		hhh = []string{htmlDirectory + pageName, formsTemplatePath, reusablesTemplatePath, masterTemplatePath}
+	case templateScoreboard:
+		hhh = []string{htmlDirectory + pageName, masterScoreboard}
+		//		masterTemplate.Page = page
 	}
+	//Add page content just generated to the default page environment (which has CSS and JS, etc).
+	masterTemplate.Page = page
 
 	html, ok := templates[pageName]
 	//debug is for dynamically re-parsing (reloading) templates on every request
@@ -123,6 +133,10 @@ func templater(w http.ResponseWriter, page page) {
 				case string:
 					if value.(string) != "" {
 						output = attribute + "=" + addQuotes(value.(string))
+					}
+				case int:
+					if value.(int) > 0 {
+						output = attribute + "=" + addQuotes(fmt.Sprintf("%d", value))
 					}
 				}
 				return template.HTMLAttr(output)
@@ -161,11 +175,11 @@ func templater(w http.ResponseWriter, page page) {
 	}
 
 	var err error
-	if page.Ajax {
-		err = html.ExecuteTemplate(w, "page", page.Data)
-	} else {
-		err = html.ExecuteTemplate(w, "master", masterTemplate)
-	}
+	//	if page.Ajax {
+	//		err = html.ExecuteTemplate(w, "page", page.Data)
+	//	} else {
+	err = html.ExecuteTemplate(w, "master", masterTemplate)
+	//	}
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
