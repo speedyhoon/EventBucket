@@ -17,23 +17,31 @@
 				<th>
 			{{range .}}
 				{{if eq false .Hidden}}
-					<tr{{/* id=.ID}} data-class=fclass*/}}>
-						<td>{{.ID}}
-						<td>{{grade .Grade}}
-						<td>{{.Club}}
-						<td{{/* class=name*/}}>{{.FirstName}} {{.Surname}}
-						<td>
-							{{$score := index .Scores $.Range.Id}}
-							<input name=t max=60 min=0 step=1 value={{$score.Total}} type=number autocomplete=off form={{.ID}}>
-						<td>
-							<input name=c max=10 min=0 step=1 value={{$score.Centers}} type=number autocomplete=off form={{.ID}}>
-						<td>
-							<form method=post action=/13 id={{.ID}}>
-								<button name=S value={{.ID}}>Save</button>
-								<input name=E type=hidden value={{$.EventID}}>
-								<input name=R type=hidden value={{$.Range.ID}}>
-							</form>
-							{{/*template "TotalScores"*/}}
+					{{/*
+						if $.ShowAll || !$.ShowAll && .Scores[$.Range.ID].Total <= 0
+					*/}}
+					{{$score := index .Scores $.Range.Id}}
+					{{$noShow := not $.ShowAll}}
+					{{$noScore := not $score.Total}}
+					{{$notAll  := and $noShow $noScore}}
+					{{if or $.ShowAll $notAll}}
+						<tr{{/* id=.ID}} data-class=fclass*/}}>
+							<td>{{.ID}}
+							<td>{{grade .Grade}}
+							<td>{{.Club}}
+							<td{{/* class=name*/}}>{{.FirstName}} {{.Surname}}
+							<td>
+								<input name=t max=60 min=0 step=1 value={{$score.Total}} type=number autocomplete=off form={{.ID}}>
+							<td>
+								<input name=c max=10 min=0 step=1 value={{$score.Centers}} type=number autocomplete=off form={{.ID}}>
+							<td>
+								<form method=post action=/13 id={{.ID}}>
+									<button name=S value={{.ID}}>Save</button>
+									<input name=E type=hidden value={{$.EventID}}>
+									<input name=R type=hidden value={{$.Range.ID}}>
+								</form>
+								{{/*template "TotalScores"*/}}
+					{{end}}
 				{{end}}
 			{{end}}
 		</table>
