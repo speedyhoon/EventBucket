@@ -45,6 +45,7 @@ section
 //Tables
 table
 	border-collapse: collapse
+
 tr
 	border-bottom: $thinBorder $dark
 	padding: $bigPadding
@@ -95,7 +96,7 @@ select[required] option:empty
 label select
 	width: 100%
 
-samp
+samp:not([hidden])
 	color: $red
 	display: block
 
@@ -106,9 +107,17 @@ button
 	padding: $bigPadding
 	border-radius: $bigPadding
 	cursor: pointer
+	margin-top: 1em
 
 \:focus
 	box-shadow: .2em .2em .3em $blue
+
+.inline
+	float: left
+	margin-bottom: 0
+
+	label
+		margin-bottom: 0
 
 //Menus
 nav
