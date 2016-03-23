@@ -5,6 +5,15 @@
 		<a href=/total-scores-all/{{.EventID}}/{{.Range.ID}}>View All Shooters</a>
 	{{end}}
 
+	<form class=inline onsubmit='return shooterBarcode(B,S)'>
+		<legend>Search for Shooter</legend>
+		<label>Barcode: <input type=search name=B pattern=\d+\/\d+#\d+ autocomplete=off>
+		</label>
+		<label>Shooter ID: <input type=number min=1 name=S autocomplete=off></label>
+		<button tabindex=-1>Search</button>
+	</form>
+	<samp id=barcodeErr hidden>Barcode must match: <em>eventID/rangeID#shooterID</em> For example: <em>{{.EventID}}/{{.Range.ID}}#1</em></samp>
+	<samp id=shooterErr hidden>A shooter with that ID doesn't exist in this event.</samp>
 	{{with .Shooters}}
 		<table>
 			<tr>
@@ -31,11 +40,11 @@
 							<td>{{.Club}}
 							<td{{/* class=name*/}}>{{.FirstName}} {{.Surname}}
 							<td>
-								<input name=t max=60 min=0 step=1 value={{$score.Total}} type=number autocomplete=off form={{.ID}}>
+								<input name=t max=60 min=0 step=1 value={{$score.Total}} type=number autocomplete=off id={{.ID}} form=f{{.ID}}>
 							<td>
-								<input name=c max=10 min=0 step=1 value={{$score.Centers}} type=number autocomplete=off form={{.ID}}>
+								<input name=c max=10 min=0 step=1 value={{$score.Centers}} type=number autocomplete=off form=f{{.ID}}>
 							<td>
-								<form method=post action=/13 id={{.ID}}>
+								<form method=post action=/13 id=f{{.ID}}>
 									<button name=S value={{.ID}}>Save</button>
 									<input name=E type=hidden value={{$.EventID}}>
 									<input name=R type=hidden value={{$.Range.ID}}>
