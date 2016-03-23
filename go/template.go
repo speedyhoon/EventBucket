@@ -17,6 +17,7 @@ type page struct {
 	Data                         map[string]interface{}
 	Error                        error
 	template                     uint8
+	JS                           string
 }
 
 type markupEnv struct {
