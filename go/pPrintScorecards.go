@@ -12,7 +12,7 @@ import (
 	"github.com/boombuler/barcode/qr"
 )
 
-func base64QrH(w http.ResponseWriter, r *http.Request, parameters string) {
+func barcode2D(w http.ResponseWriter, r *http.Request, parameters string) {
 	var qrcode barcode.Barcode
 	var err error
 
