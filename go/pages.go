@@ -39,7 +39,7 @@ var (
 	//URL validation matching
 	regexID      = regexp.MustCompile(`^[a-z0-9]+$`)
 	regexPath    = regexp.MustCompile(`^[a-z0-9]+/[a-z0-9]+$`)
-	regexBarcode = regexp.MustCompile(`^[a-z0-9]+/[a-z0-9]+/[a-z0-9]+$`)
+	regexBarcode = regexp.MustCompile(`^[a-z0-9]+/[a-z0-9]+#[a-z0-9]+$`)
 )
 
 func pages() {
@@ -50,7 +50,7 @@ func pages() {
 	serveDir(dirJS, "./jz/")
 	serveDir(dirPNG, "")
 	serveDir(dirSVG, "./vz/")
-	getParameters("/b/", base64QrH, regexBarcode)
+	getParameters("/b/", barcode2D, regexBarcode)
 	getRedirectPermanent(urlAbout, about)
 	getRedirectPermanent(urlArchive, eventArchive)
 	getRedirectPermanent(urlClubs, clubs)

@@ -2,8 +2,9 @@
 	<table class=printCards>
 		{{range .Ranges}}
 			<tr>
-				<td rowspan=3 class=centerPadding><img class=barcode src=dirBarcode/q{{$.EventID}}/{{.ID}}/{{$.Shooter.ID}} alt={{$.EventID}}/{{$.Shooter.ID}}/{{.ID}}><br>
-					<strong>{{$.EventID}}/{{.ID}}/{{$.Shooter.ID}}</strong>
+				{{$barcode := print $.EventID "/" .ID "#" $.Shooter.ID}}
+				<td rowspan=3 class=centerPadding><img class=barcode src=dirBarcode/q{{urlquery $barcode}} alt={{$barcode}}><br>
+					<strong><a href=/total-scores-all/{{$barcode}}>{{$barcode}}</a></strong>
 				<td>Event ID: {{$.EventID}}<td>{{$.EventName}}
 			<tr>
 				<td>Shooter ID: {{$.Shooter.ID}}<td>{{$.Shooter.FirstName}} {{$.Shooter.Surname}}
