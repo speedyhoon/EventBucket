@@ -3,20 +3,21 @@
 function shooterBarcode(search, shooter) {
   document.getElementById('barcodeErr').setAttribute('hidden','');
   document.getElementById('shooterErr').setAttribute('hidden','');
-  if (shooter && shooter.value && !/^\d+$/g.test(shooter.value)) {
 
+  var pathName = window.location.pathname.split('/')[1],
+  eventID = window.location.pathname.split('/')[2],
+  rangeID = window.location.pathname.split('/')[3];
+  if (shooter && shooter.value && /^\d+$/g.test(shooter.value)) {
+    otherFunc(shooter.value, shooter, pathName, eventID, rangeID);
+    return false;
   } else if (!search || !search.value || !/^\d+\/\d+#\d+$/g.test(search.value)) {
     search.select();
-    console.log('fdsafasdfdsa');
     document.getElementById('barcodeErr').removeAttribute('hidden','');
     return false;
   }
   var barcodeEventID = search.value.split('/')[0],
 	  barcodeRangeID = search.value.split('/')[1].split('#')[0],
-	  shooterID = search.value.split('#')[1],
-	  pathName = window.location.pathname.split('/')[1],
-	  eventID = window.location.pathname.split('/')[2],
-	  rangeID = window.location.pathname.split('/')[3];
+	  shooterID = search.value.split('#')[1];
   if (eventID !== barcodeEventID) {
     //Go to a different event if user presses OK.
     if (confirm('event is not the same. do you want to go to event with id X?')) {
@@ -35,6 +36,17 @@ function shooterBarcode(search, shooter) {
     search.select();
     return false;
   }
+  return otherFunc(shooterID, search, pathName, eventID, rangeID);
+}
+
+if (!window.location.hash) {
+  document.querySelector('[name=B]').setAttribute('autofocus','');
+}else if (!document.getElementById(window.location.hash.replace('#',''))) {
+  document.getElementById('shooterErr').removeAttribute('hidden');
+  document.querySelector('[name=B]').select();
+}
+
+function otherFunc(shooterID, search, pathName, eventID, rangeID) {
   //If the shooter textbox exists in the DOM, set focus to their text box.
   var d = document.getElementById(shooterID);
   if (d) {
@@ -51,11 +63,4 @@ function shooterBarcode(search, shooter) {
   //If the shooter doesn't exist go to the scorecards-all OR total-scores-all page
   window.location.href = '/' + pathName + '-all/' + eventID + '/' + rangeID + '#' + shooterID;
   return false;
-}
-
-if (!window.location.hash) {
-  document.querySelector('[name=B]').setAttribute('autofocus','');
-}else if (!document.getElementById(window.location.hash.replace('#',''))) {
-  document.getElementById('shooterErr').removeAttribute('hidden');
-  document.querySelector('[name=B]').select();
 }
