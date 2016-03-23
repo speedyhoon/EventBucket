@@ -39,7 +39,5 @@
 		{{template "page" .Data}}
 	{{end}}
 </section>
-<!--TODO fix-->
-<!--<script defer src=dirJS/main></script>-->
-<script defer src=dirJS/totalScores></script>
+<script defer src=dirJS/{{with.Page.JS}}{{.}}{{else}}main{{end}}></script>
 {{end}}

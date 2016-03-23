@@ -37,6 +37,7 @@ func totalScores(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 		Menu:    urlEvents,
 		MenuID:  event.ID,
 		Heading: event.Name,
+		JS:      "totalScores",
 		Data: map[string]interface{}{
 			"EventID":  event.ID,
 			"Shooters": event.Shooters,
