@@ -1,6 +1,8 @@
 $black: #000
+$lightGrey: #ccc
 $white: #fff
 $solidBorder: solid $black
+$thinBorder: 1px
 =background-gradient($C1, $C2)
 	background: linear-gradient(to bottom, $C1 0%, $C2 25%, $C2 75%, $C1 100%) //W3C
 
@@ -21,16 +23,16 @@ table, td
 
 table
 	border-spacing: 0
-	border-width: 0 $thinBoarder $thinBoarder 0
+	border-width: 0 $thinBorder $thinBorder 0
 	text-align: center
 	width: 100%
 
 td
-	border-width: $thinBoarder 0 0 $thinBoarder
+	border-width: $thinBorder 0 0 $thinBorder
 
 //sort by red triangle
 .sortBy
-	background: url(/v/sortby) no-repeat 3px 2px #ccc
+	background: url(/v/sortby) no-repeat 3px 2px $lightGrey
 
 .rowSeparator
 	background: #888
@@ -64,7 +66,6 @@ td
 .p8  //Badge Place
 	+background-gradient(#00f, #ff0079)
 
-
 //WARNINGS::
 .highestPossibleScore
 	background: #707
@@ -82,7 +83,6 @@ td
 	background: #900
 	color: $white
 
-
 .legend
 	padding: 0 5px
 	text-align: left
@@ -91,12 +91,12 @@ td
 		padding-left: 15px
 
 	label
-		border-right: $thinBoarder $solidBorder
+		border-right: $thinBorder $solidBorder
 		display: inline-block
 		padding: 0 5px
 
 		&:first-child
-			border-left: $thinBoarder $solidBorder
+			border-left: $thinBorder $solidBorder
 
 .floatRight
 	float: right
