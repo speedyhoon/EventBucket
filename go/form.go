@@ -203,7 +203,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "r", min: 1, max: 5, step: 1, v8: isValidUint64, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Junior U21", Value: "1", Selected: false}, {Label: "Junior U25", Value: "2", Selected: false}, {Label: "Veteran", Value: "3", Selected: false}, {Label: "Super Veteran", Value: "4", Selected: false}},
 		}, {
-			name: "I", Required: true, v8: isValidID, regex: regexID,
+			name: "I", Required: true, maxLen: 64, v8: isValidID, regex: regexID,
 		}}
 	case 12:
 		return []field{{

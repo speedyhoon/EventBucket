@@ -80,9 +80,14 @@ input, select
 	background: $dark
 	border: $thinBorder $grey
 	border-radius: $menuPadding
-	display: block
 	padding: $menuPadding
 	color: $liteGrey
+
+fieldset
+	input, select
+		display: block
+	button
+		margin-top: 1em
 
 input[type=checkbox]
 	$size: 2em
@@ -112,9 +117,6 @@ button
 	padding: $bigPadding
 	border-radius: $bigPadding
 	cursor: pointer
-
-section > form button
-	margin-top: 1em
 
 \:focus
 	box-shadow: .2em .2em .3em $blue
@@ -197,6 +199,9 @@ a
 
 .center a img
 	padding: 0 0.25em
+
+td[onclick]
+	cursor: pointer
 
 @media print
 	body
