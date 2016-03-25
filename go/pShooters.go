@@ -2,14 +2,18 @@ package main
 
 import "net/http"
 
+var shooterQty int
+
 func shooters(w http.ResponseWriter, r *http.Request) {
 	action, pageForms := sessionForms2(w, r, shooterNew, shooterSearch, shooterDetails)
 	var shooters []Shooter
 	var err error
 	if action != nil && *action == shooterSearch {
 		shooters, err = getSearchShooters(pageForms[1].Fields[0].Value, pageForms[1].Fields[1].Value, pageForms[1].Fields[2].Value)
-	} else {
-		shooters, err = getShooters()
+	}
+	if shooterQty < 1 {
+		totalShooters, _ := getShooters()
+		shooterQty = len(totalShooters)
 	}
 
 	templater(w, page{
@@ -18,9 +22,9 @@ func shooters(w http.ResponseWriter, r *http.Request) {
 		Data: map[string]interface{}{
 			"NewShooter":     pageForms[0],
 			"ListShooters":   shooters,
-			"shooterSearch":  pageForms[1],
+			"ShooterSearch":  pageForms[1],
 			"ShooterDetails": pageForms[2],
-			"QtyShooters":    len(shooters),
+			"QtyShooters":    shooterQty,
 		},
 	})
 }

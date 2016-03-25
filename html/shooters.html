@@ -2,6 +2,6 @@
 	{{template "NewShooter" .NewShooter}}
 	{{template "ShooterDetails" .ShooterDetails}}
 	{{template "ShooterSearch" .ShooterSearch}}
-	{{with .QtyShooters}}Total Shooters: {{.}}{{end}}
+	<p>Total Shooters: {{.QtyShooters}}.{{with.ListShooters}} Search returned {{len .}} shooters.{{end}}
 	{{template "tableShooters" .ListShooters}}
 {{end}}
