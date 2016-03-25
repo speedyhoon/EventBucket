@@ -26,6 +26,7 @@
 				<th>Club
 				<th>Grade
 				<th>Age Group
+				<th>Edit
 			</thead>
 			{{range .}}
 				<tr>
@@ -34,6 +35,7 @@
 					<td>{{.Club}}
 					<td>{{grade .Grade}}
 					<td>{{ageGroup .AgeGroup}}
+					<td class=center><img src=dirPNG/edit width=12 height=12 alt="edit icon">
 				</tr>
 			{{end}}
 		</table>
