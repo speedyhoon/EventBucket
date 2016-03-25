@@ -19,6 +19,7 @@ func shooters(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
 		Title: "Shooters",
 		Error: err,
+		JS:    "shooterDetails",
 		Data: map[string]interface{}{
 			"NewShooter":     pageForms[0],
 			"ListShooters":   shooters,
@@ -31,12 +32,12 @@ func shooters(w http.ResponseWriter, r *http.Request) {
 
 func shooterUpdate(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	err := updateShooter(Shooter{
-		ID:        submittedForm.Fields[0].Value,
-		FirstName: submittedForm.Fields[1].Value,
-		Surname:   submittedForm.Fields[2].Value,
-		Club:      submittedForm.Fields[3].Value,
-		Grade:     submittedForm.Fields[4].internalValue.(uint64),
-		AgeGroup:  submittedForm.Fields[5].internalValue.(uint64),
+		ID:        submittedForm.Fields[5].Value,
+		FirstName: submittedForm.Fields[0].Value,
+		Surname:   submittedForm.Fields[1].Value,
+		Club:      submittedForm.Fields[2].Value,
+		Grade:     submittedForm.Fields[3].internalValue.(uint64),
+		AgeGroup:  submittedForm.Fields[4].internalValue.(uint64),
 	}, "")
 	//Display any insert errors onscreen.
 	if err != nil {

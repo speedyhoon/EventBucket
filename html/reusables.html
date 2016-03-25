@@ -31,15 +31,51 @@
 			{{range .}}
 				<tr>
 					<td>{{.ID}}
-					<td>{{.FirstName}} {{.Surname}}
+					<td>{{.FirstName}} <span>{{.Surname}}</span>
 					<td>{{.Club}}
 					<td>{{grade .Grade}}
 					<td>{{ageGroup .AgeGroup}}
-					<td class=center><img src=dirPNG/edit width=12 height=12 alt="edit icon">
+					<td class=center onclick=stuff(this)>
+						<img src=dirPNG/edit width=12 height=12 alt="edit icon">
 				</tr>
 			{{end}}
 		</table>
 	{{else}}
 		<samp>No shooters listed.</samp>
 	{{end}}
+
+	<template>
+		<td>
+		<td>
+			<form method=post action=/11 id=editShooter>
+				<input name=f accesskey=d maxlength=64 autocomplete=off>
+				<input name=s maxlength=64 autocomplete=off>
+			</form>
+		<td>
+			<input name=C maxlength=64 autocomplete=off form=editShooter>
+		<td>
+			<select name=g form=editShooter>
+				<option>
+				<option value=1>Target A
+				<option value=2>Target B
+				<option value=3>Target C
+				<option value=4>F Class A
+				<option value=5>F Class B
+				<option value=6>F Class Open
+				<option value=7>F/TR
+				<option value=8>Match Open
+				<option value=9>Match Reserve
+				<option value=10>303 Rifle
+			</select>
+		<td>
+			<select name=r form=editShooter>
+				<option>
+				<option value=1>Junior U21
+				<option value=2>Junior U25
+				<option value=3>Veteran
+				<option value=4>Super Veteran
+			</select>
+		<td>
+			<button name=I value=a form=editShooter>Save</button>
+	</template>
 {{end}}
