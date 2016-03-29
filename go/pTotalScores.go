@@ -28,9 +28,6 @@ func totalScores(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 
 	var currentRange Range
 	currentRange, err = eventRange(event.Ranges, ids[1], w, r)
-	if err != nil {
-		return
-	}
 
 	templater(w, page{
 		Title:   "Total Scores",
@@ -38,6 +35,7 @@ func totalScores(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 		MenuID:  event.ID,
 		Heading: event.Name,
 		JS:      "totalScores",
+		Error:   err,
 		Data: map[string]interface{}{
 			"EventID":  event.ID,
 			"Shooters": event.Shooters,
@@ -68,23 +66,24 @@ func eventTotalUpsert(w http.ResponseWriter, r *http.Request, submittedForm form
 }
 
 func eventRange(ranges []Range, rID string, w http.ResponseWriter, r *http.Request) (Range, error) {
-	var currentRange Range
+	//If range id is not a number, return 404.
 	rangeID, err := strconv.ParseUint(rID, 10, 64)
 	if err != nil {
 		errorHandler(w, r, http.StatusNotFound, "range")
-		return currentRange, err
+		return Range{}, err
 	}
-	var hasRange bool
+
 	for _, r := range ranges {
 		if r.ID == rangeID {
-			currentRange = r
-			hasRange = true
-			continue
+			//If range is an aggregate return an error message.
+			if r.IsAgg {
+				return Range{}, errors.New("Range is an aggregate and scores can't be entered directly.")
+			}
+			//Return valid range.
+			return r, nil
 		}
 	}
-	if !hasRange {
-		errorHandler(w, r, http.StatusNotFound, "range")
-		return currentRange, errors.New("Range with that ID doesn't exists in this event")
-	}
-	return currentRange, nil
+	//Otherwise event doesn't contain a range with that id and return 404.
+	errorHandler(w, r, http.StatusNotFound, "range")
+	return Range{}, errors.New("Range with that ID doesn't exists in this event")
 }
