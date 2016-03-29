@@ -6,7 +6,7 @@
 		<th>Shooter
 		<th>Club
 		<th>Age Group
-		{{range .Event.Ranges}}
+		{{range .Ranges}}
 			{{if eq .ID $.SortByRange}}
 				<th class=sortBy>{{.Name}}
 			{{else}}
@@ -20,7 +20,7 @@
 			<td>{{.Club}}
 			<td>{{ageGroup .AgeGroup}}
 			{{$shooter := .}}
-			{{range $.Event.Ranges}}
+			{{range $.Ranges}}
 				<td>
 					{{with index $shooter.Scores .Id}}
 						{{if.Total}}

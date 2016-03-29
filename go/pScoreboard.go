@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -16,6 +17,14 @@ func scoreboard(w http.ResponseWriter, r *http.Request, parameters string) {
 		return
 	}
 
+	rangeID, err := strconv.ParseUint(ids[1], 10, 64)
+	if err != nil {
+		errorHandler(w, r, http.StatusNotFound, "range")
+		return
+	}
+
+	ranges := findRanges(rangeID, event.Ranges)
+
 	templater(w, page{
 		Title:    "Scoreboard",
 		Menu:     urlEvents,
@@ -24,9 +33,9 @@ func scoreboard(w http.ResponseWriter, r *http.Request, parameters string) {
 		template: templateScoreboard,
 		Data: map[string]interface{}{
 			"Event":       event,
-			"RangeID":     ids[1],
+			"Ranges":      ranges,
 			"Legend":      scoreBoardLegend(),
-			"SortByRange": 3,
+			"SortByRange": rangeID,
 		},
 	})
 }
@@ -34,6 +43,21 @@ func scoreboard(w http.ResponseWriter, r *http.Request, parameters string) {
 type legend struct {
 	//To access a field in HTML a struct, it must start with an uppercase letter. Other wise it will output error: xxx is an unexported field of struct type main.legend
 	Class, Name string
+}
+
+func findRanges(rangeID uint64, ranges []Range) []Range {
+	var rs []Range
+	for _, r := range ranges {
+		if r.ID == rangeID {
+			if r.IsAgg {
+				for _, id := range r.Aggs {
+					rs = append(rs, findRanges(id, ranges)...)
+				}
+			}
+			rs = append(rs, r)
+		}
+	}
+	return rs
 }
 
 func scoreBoardLegend() []legend {
