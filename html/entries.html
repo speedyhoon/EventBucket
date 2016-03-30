@@ -4,9 +4,12 @@
 	{{else}}
 		{{template "ShooterEntry" .ShooterEntry}}
 	{{end}}
-	{{with not .HasRanges}}<samp>This event has no ranges</samp>{{end}}
+	{{$hasRanges := ge (len .Event.Ranges) 1}}
+	{{if not $hasRanges}}<samp>This event has no ranges</samp>{{end}}
 	{{with .Event.Shooters}}
-		<p>Total Entries: {{$.QtyEntries}}
+		<!--TODO Print entry list view-->
+		<!--TODO Fix empty bucket error page size-->
+		<p>Total Entries: {{len .}} <a href=/entry-list/{{$.Event.ID}}>Print entry list</a>
 		<table>
 			<thead>
 				<th class=sorted>ID
@@ -20,7 +23,7 @@
 			{{range .}}
 				<tr>
 					<td>{{.ID}}
-					<td>{{if $.HasRanges}}<a href=/print-cards/{{$.Event.ID}}/{{.ID}}>Scorecards</a>{{end}}
+					<td>{{if $hasRanges}}<a href=/print-cards/{{$.Event.ID}}/{{.ID}}>Scorecards</a>{{end}}
 					<td>{{.FirstName}} {{.Surname}}
 					<td>{{.Club}}
 					<td>{{grade .Grade}}
