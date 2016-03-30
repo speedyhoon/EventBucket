@@ -29,6 +29,10 @@ func scoreboard(w http.ResponseWriter, r *http.Request, parameters string) {
 	event.Shooters = addGradeSeparatorToShooterObject(event.Shooters)
 
 	ranges := findRanges(rangeID, event.Ranges)
+	if len(ranges) < 1 {
+		errorHandler(w, r, http.StatusNotFound, "range")
+		return
+	}
 
 	templater(w, page{
 		Title:    "Scoreboard",
