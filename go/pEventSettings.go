@@ -13,7 +13,6 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 		errorHandler(w, r, http.StatusNotFound, "event")
 		return
 	}
-	ranges := dataListRanges(event.Ranges)
 
 	action, forms := sessionForms2(w, r, eventDetails, eventRangeNew, eventAggNew)
 	if action == nil || action != nil && *action != eventDetails {
@@ -38,7 +37,6 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 			"IsClosed":     event.Closed,
 			"Ranges":       event.Ranges,
 			"EventDetails": forms[0],
-			"QtyRanges":    len(ranges),
 			"AddRange":     forms[1],
 			"AddAgg":       forms[2],
 		},
@@ -48,7 +46,9 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 func dataListRanges(ranges []Range) []option {
 	var options []option
 	for _, r := range ranges {
-		options = append(options, option{Label: r.Name, Value: fmt.Sprintf("%d", r.ID)})
+		if !r.IsAgg {
+			options = append(options, option{Label: r.Name, Value: fmt.Sprintf("%d", r.ID)})
+		}
 	}
 	return options
 }

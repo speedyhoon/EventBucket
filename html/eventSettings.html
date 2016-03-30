@@ -4,12 +4,12 @@
 		<samp>Event is closed, no changes can be made.</samp>
 	{{else}}
 		{{template "AddRange" .AddRange}}
-		{{if ge .QtyRanges 2}}
+		{{if ge (len .Ranges) 2}}
 			{{template "AddAggregateRange" .AddAgg}}
 		{{end}}
 	{{end}}
 	{{with .Ranges}}
-		<p>Total Ranges: {{$.QtyRanges}}
+		<p>Total Ranges: {{len .}}
 		<table>
 			<thead>
 				<th class=sorted>ID
