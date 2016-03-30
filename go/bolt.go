@@ -408,6 +408,8 @@ func upsertScore(eventID, rID string, sID uint64, score Score) error {
 		}
 		event.Shooters[sID].Scores[rID] = score
 
+		event.Shooters[sID].Scores = calcShooterAggs(event.Ranges, event.Shooters[sID].Scores)
+
 		document, err = json.Marshal(event)
 		if err != nil {
 			return err
@@ -416,6 +418,30 @@ func upsertScore(eventID, rID string, sID uint64, score Score) error {
 		return bucket.Put(byteID, document)
 	})
 	return err
+}
+
+func calcShooterAggs(ranges []Range, shooterScores map[string]Score) map[string]Score {
+	//TODO save countBack once scoreCards is saving scores
+	for _, r := range ranges {
+		if r.IsAgg {
+			var total, centers uint64
+			//var countBack, countBack2 string
+			for _, id := range r.Aggs {
+				aggID := fmt.Sprintf("%d", id)
+				total += shooterScores[aggID].Total
+				centers += shooterScores[aggID].Centers
+				//countBack = shooterScores[aggID].CountBack
+				//countBack2 = shooterScores[aggID].CountBack2
+			}
+			shooterScores[r.Id()] = Score{
+				Total:   total,
+				Centers: centers,
+				//CountBack: countBack,
+				//CountBack2: countBack2,
+			}
+		}
+	}
+	return shooterScores
 }
 
 //Converts base36 string to uint64
