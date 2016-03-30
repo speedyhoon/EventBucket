@@ -211,10 +211,11 @@ func updateEventDetails(update Event) error {
 	return err
 }
 
-func eventAddRange(eventID string, newRange Range) error {
+func eventAddRange(eventID string, newRange Range) (uint64, error) {
+	var newRangeID uint64
 	eID, err := b36toBy(eventID)
 	if err != nil {
-		return err
+		return 0, err
 	}
 	err = db.Update(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(tblEvent)
@@ -233,8 +234,9 @@ func eventAddRange(eventID string, newRange Range) error {
 		}
 		//Manually set each one otherwise it would override the existing event and its details (Ranges, Shooters & their scores) since the form doesn't already have that info.
 		newRange.ID = event.AutoInc.Range
-		event.Ranges = append(event.Ranges, newRange)
 		event.AutoInc.Range++
+		event.Ranges = append(event.Ranges, newRange)
+		newRangeID = newRange.ID
 
 		document, err = json.Marshal(event)
 		if err != nil {
@@ -244,7 +246,7 @@ func eventAddRange(eventID string, newRange Range) error {
 
 		return bucket.Put(eID, document)
 	})
-	return err
+	return newRangeID, err
 }
 
 func getClubs() ([]Club, error) {
@@ -424,24 +426,70 @@ func calcShooterAggs(ranges []Range, shooterScores map[string]Score) map[string]
 	//TODO save countBack once scoreCards is saving scores
 	for _, r := range ranges {
 		if r.IsAgg {
-			var total, centers uint64
-			//var countBack, countBack2 string
-			for _, id := range r.Aggs {
-				aggID := fmt.Sprintf("%d", id)
-				total += shooterScores[aggID].Total
-				centers += shooterScores[aggID].Centers
-				//countBack = shooterScores[aggID].CountBack
-				//countBack2 = shooterScores[aggID].CountBack2
-			}
-			shooterScores[r.Id()] = Score{
-				Total:   total,
-				Centers: centers,
-				//CountBack: countBack,
-				//CountBack2: countBack2,
-			}
+			shooterScores[r.Id()] = calcShooterAgg(r.Aggs, shooterScores)
 		}
 	}
 	return shooterScores
+}
+
+func calcShooterAgg(aggRangeIDs []uint64, shooterScores map[string]Score) Score {
+	var total, centers uint64
+	//var countBack, countBack2 string
+	for _, id := range aggRangeIDs {
+		aggID := fmt.Sprintf("%d", id)
+		score, ok := shooterScores[aggID]
+		if ok {
+			total += score.Total
+			centers += score.Centers
+			//countBack = score.CountBack
+			//countBack2 = score.CountBack2
+		}
+	}
+	return Score{
+		Total:   total,
+		Centers: centers,
+		//CountBack: countBack,
+		//CountBack2: countBack2,
+	}
+}
+
+func upsertAggScores(eventID string, rID uint64) error {
+	byteID, err := b36toBy(eventID)
+	if err != nil {
+		return err
+	}
+	err = db.Update(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(tblEvent)
+		if bucket == nil {
+			return fmt.Errorf("Bucket %q not found!", tblEvent)
+		}
+
+		document := bucket.Get(byteID)
+		if len(document) == 0 {
+			return fmt.Errorf("'%v' document is empty / doesn't exist %q", eventID, document)
+		}
+		var event Event
+		err = json.Unmarshal(document, &event)
+		if err != nil {
+			return err
+		}
+
+		aggRange := event.Ranges[rID].Aggs
+		rangeID := event.Ranges[rID].Id()
+		for sID, shooter := range event.Shooters {
+			if shooter.Scores != nil {
+				event.Shooters[sID].Scores[rangeID] = calcShooterAgg(aggRange, shooter.Scores)
+			}
+		}
+
+		document, err = json.Marshal(event)
+		if err != nil {
+			return err
+		}
+
+		return bucket.Put(byteID, document)
+	})
+	return err
 }
 
 //Converts base36 string to uint64
