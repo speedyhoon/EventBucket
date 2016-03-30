@@ -110,7 +110,8 @@ type EventShooter struct {
 	//		4 = highest posible score
 
 	//START-SHOOTING & TOTAL-SCORES
-	gradeSeparator bool //DON'T SAVE THIS TO DB! used for start-shooting and total-scores only.
+	GradeSeparator bool //DON'T SAVE THIS TO DB! used for start-shooting and total-scores only.
+	ClassSeparator bool //DON'T SAVE THIS TO DB! used for start-shooting and total-scores only.
 }
 
 // Shooter is exported

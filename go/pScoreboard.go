@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math"
 	"net/http"
 	"strconv"
 	"strings"
@@ -23,6 +24,10 @@ func scoreboard(w http.ResponseWriter, r *http.Request, parameters string) {
 		return
 	}
 
+	sortShooters(ids[1]).Sort(event.Shooters)
+
+	event.Shooters = addGradeSeparatorToShooterObject(event.Shooters)
+
 	ranges := findRanges(rangeID, event.Ranges)
 
 	templater(w, page{
@@ -36,8 +41,28 @@ func scoreboard(w http.ResponseWriter, r *http.Request, parameters string) {
 			"Ranges":      ranges,
 			"Legend":      scoreBoardLegend(),
 			"SortByRange": rangeID,
+			"Colspan":     4 + len(ranges),
 		},
 	})
+}
+
+func addGradeSeparatorToShooterObject(eventShooters []EventShooter) []EventShooter {
+	//Add a boolean field to each shooter in a list of ordered shooters and is true for the first shooter that has a different grade than the last
+	var previousShooterGrade uint64 = math.MaxUint64
+	var previousShooterClass uint64 = math.MaxUint64
+	allGrades := grades()
+	for shooterID := range eventShooters {
+		if eventShooters[shooterID].Grade != previousShooterGrade {
+			eventShooters[shooterID].GradeSeparator = true
+			previousShooterGrade = eventShooters[shooterID].Grade
+
+			if allGrades[eventShooters[shooterID].Grade].classID != previousShooterClass {
+				eventShooters[shooterID].ClassSeparator = true
+				previousShooterClass = allGrades[eventShooters[shooterID].Grade].classID
+			}
+		}
+	}
+	return eventShooters
 }
 
 type legend struct {
