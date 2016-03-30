@@ -13,7 +13,10 @@
 				<th>{{.Name}}
 			{{end}}
 		{{end}}
-	{{range .Event.Shooters}}
+	{{range.Event.Shooters}}
+		{{if.GradeSeparator}}
+			<tr><td colspan={{$.Colspan}} class=classHeadingRow>{{grade .Grade}}
+		{{end}}
 		<tr>
 			<td>
 			<td class=tc>{{.FirstName}} {{.Surname}}
@@ -31,12 +34,11 @@
 			{{end}}
 	{{end}}
 	<tr>
-		<td colspan=99 class=legend>
-			{{with .Legend}}
+		<td colspan={{.Colspan}} class=legend>
+			<a href=//eventbucket.com.au>EventBucket.com.au</a> {{with .Legend}}
 				Legend: {{range .}}
 					<label class={{.Class}}>{{.Name}}</label>
 				{{end}}
 			{{end}}
-			<span class=floatRight>Powered by <a href=//eventbucket.com.au>EventBucket.com.au</a></span>
 </table>
 {{end}}

@@ -25,7 +25,7 @@ func sorterTotal(rangeID string, c1, c2 *EventShooter) bool {
 func sorterCenters(rangeID string, c1, c2 *EventShooter) bool {
 	return c1.Scores[rangeID].Centers > c2.Scores[rangeID].Centers
 }
-func sorterCountback(rangeID string, c1, c2 *EventShooter) bool {
+func sorterCountBack(rangeID string, c1, c2 *EventShooter) bool {
 	return c1.Scores[rangeID].CountBack > c2.Scores[rangeID].CountBack
 }
 func sorterFirstName(rangeID string, c1, c2 *EventShooter) bool {
@@ -47,10 +47,9 @@ func sorterShootOff(rangeID string, c1, c2 *EventShooter) bool {
 
 func sortShooters(rangeID string) *multiEventShooterSorter {
 	if rangeID != "" {
-		return orderShooters(rangeID, sorterGrade, sorterTotal, sorterCenters, sorterCountback, sorterShootOff)
+		return orderShooters(rangeID, sorterGrade, sorterTotal, sorterCenters, sorterCountBack, sorterShootOff)
 	}
-	var temp multiEventShooterSorter
-	return &temp
+	return &multiEventShooterSorter{}
 }
 
 func orderShooters(rangeID string, sort ...sortEventShooter) *multiEventShooterSorter {

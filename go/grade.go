@@ -21,7 +21,7 @@ var (
 // Grade is exported
 type Grade struct {
 	name, longName, className string
-	classID                   int
+	classID                   uint64
 	settings                  ClassSettings
 }
 
