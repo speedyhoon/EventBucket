@@ -4,7 +4,7 @@ import "net/http"
 
 func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 	event, err := getEvent(eventID)
-	//If club not found in the database return error club not found (404).
+	//If event not found in the database return error event not found (404).
 	if err != nil {
 		errorHandler(w, r, http.StatusNotFound, "event")
 		return

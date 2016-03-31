@@ -1,39 +1,26 @@
 {{define "page"}}
-	{{if .Event.Closed}}
-		<samp>Event is closed, no changes can be made.</samp>
-	{{else}}
-		{{template "ShooterEntry" .ShooterEntry}}
-	{{end}}
 	{{$hasRanges := ge (len .Event.Ranges) 1}}
 	{{if not $hasRanges}}<samp>This event has no ranges</samp>{{end}}
 	{{with .Event.Shooters}}
-		<!--TODO Fix empty bucket error page size-->
 		<p>Total Entries: {{len .}}
 		<table>
 			<thead>
 				<th class=sorted>ID
-				<th>
 				<th>Shooter
 				<th>Club
 				<th>Grade
 				<th>Age Group
-				{{if not $.Event.Closed}}<th>Edit{{end}}
 			</thead>
 			{{range .}}
 				<tr>
 					<td>{{.ID}}
-					<td>{{if $hasRanges}}<a href=/print-cards/{{$.Event.ID}}/{{.ID}}>Scorecards</a>{{end}}
 					<td>{{.FirstName}} {{.Surname}}
 					<td>{{.Club}}
 					<td>{{grade .Grade}}
 					<td>{{ageGroup .AgeGroup}}
-					{{if not $.Event.Closed}}<td class=center><img src=dirPNG/edit width=12 height=12 alt="edit icon">{{end}}
 			{{end}}
 		</table>
 	{{else}}
 		<samp>No shooters entered in event.</samp>
-	{{end}}
-	{{if not .Event.Closed}}
-		<script defer src=dirJS/shooterSearch></script>
 	{{end}}
 {{end}}

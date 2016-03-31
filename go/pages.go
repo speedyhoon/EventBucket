@@ -25,6 +25,7 @@ const (
 	urlClub            = "/club/"             //clubID
 	urlClubSettings    = "/club-settings/"    //clubID
 	urlEntries         = "/entries/"          //eventID
+	urlEntryList       = "/entry-list/"       //eventID
 	urlEventSettings   = "/event-settings/"   //eventID
 	urlEventReport     = "/event-report/"     //eventID
 	urlScoreboard      = "/scoreboard/"       //eventID
@@ -62,6 +63,7 @@ func pages() {
 	getParameters(urlClub, club, regexID)
 	getParameters(urlClubSettings, clubSettings, regexID)
 	getParameters(urlEntries, entries, regexID)
+	getParameters(urlEntryList, entryList, regexID)
 	getParameters(urlEventSettings, eventSettings, regexID)
 	getParameters(urlEventReport, eventReport, regexID)
 	getParameters(urlScoreboard, scoreboard, regexPath)
