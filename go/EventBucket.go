@@ -43,9 +43,9 @@ func init() {
 	flag.BoolVar(&debug, "debug", false, "Turn on debugging and turn off HTML file caching.")
 	flag.Parse()
 
-	if *port > math.MaxUint16 || *port < 0 {
-		warn.Println("Port number must be between 0 and", math.MaxUint16)
-		return
+	if *port >= math.MaxUint16 || *port < 2 {
+		warn.Println("Port number must be between 2 and", math.MaxUint16-1)
+		os.Exit(-3)
 	}
 
 	portAddr = fmt.Sprintf(":%v", *port)
@@ -57,7 +57,7 @@ func init() {
 	if debug {
 		trace.SetOutput(os.Stdout)
 	} else if exec.Command("rundll32.exe", "url.dll,FileProtocolHandler", fullAddr).Start() != nil {
-		warn.Print("Unable to open a web browser for " + fullAddr)
+		warn.Println("Unable to open a web browser for", fullAddr)
 	}
 
 	setExpiresTime()
