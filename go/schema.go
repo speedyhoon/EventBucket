@@ -81,6 +81,7 @@ type Score struct {
 	Shots     string `json:"s,omitempty"` //Don't include this in the scoreboard struct when using a different []EventShooter
 	CountBack string `json:"v,omitempty"`
 	ShootOff  uint64 `json:"f,omitempty"`
+	//TODO add CoundBack2 in the future for class Target Rifle XV5
 	//position  int    `json:"p,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
 	//warning   uint8    `json:"w,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
 	//Ordinal   string `json:"o,omitempty"`
