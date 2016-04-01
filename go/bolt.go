@@ -474,13 +474,14 @@ func upsertAggScores(eventID string, rID uint64) error {
 			return err
 		}
 
-		//TODO change to a for loop to go through the list of ranges as the order will change in the future.
-		trace.Println(rID, event.Ranges)
-		aggRange := event.Ranges[rID].Aggs
-		rangeID := event.Ranges[rID].Id()
+		aggRange, err := findRange(event.Ranges, rID)
+		if err != nil {
+			return err
+		}
+		rangeID := aggRange.Id()
 		for sID, shooter := range event.Shooters {
 			if shooter.Scores != nil {
-				event.Shooters[sID].Scores[rangeID] = calcShooterAgg(aggRange, shooter.Scores)
+				event.Shooters[sID].Scores[rangeID] = calcShooterAgg(aggRange.Aggs, shooter.Scores)
 			}
 		}
 
@@ -492,6 +493,15 @@ func upsertAggScores(eventID string, rID uint64) error {
 		return bucket.Put(byteID, document)
 	})
 	return err
+}
+
+func findRange(ranges []Range, rangeID uint64) (Range, error) {
+	for _, r := range ranges {
+		if r.ID == rangeID {
+			return r, nil
+		}
+	}
+	return Range{}, fmt.Errorf("Can't find range with ID: %d", rangeID)
 }
 
 //Converts base36 string to uint64

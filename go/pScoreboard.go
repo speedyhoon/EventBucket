@@ -74,6 +74,7 @@ type legend struct {
 	Class, Name string
 }
 
+//TODO rename function it is really find Aggs
 func findRanges(rangeID uint64, ranges []Range) []Range {
 	var rs []Range
 	for _, r := range ranges {
