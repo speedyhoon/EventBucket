@@ -44,7 +44,7 @@ func init() {
 	flag.Parse()
 
 	if *port >= math.MaxUint16 || *port < 2 {
-		warn.Println("Port number must be between 2 and", math.MaxUint16-1)
+		warn.Printf("Port number must be between 2 and %d. Default port number is 80.", math.MaxUint16-1)
 		os.Exit(-3)
 	}
 
