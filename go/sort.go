@@ -374,6 +374,7 @@ func calculateAggs(shooterScores map[string]Score, ranges []uint64, shooterIDs [
 	for _, aggID := range ranges {
 		total = 0
 		centres = 0
+		//TODO bug don't access ranges by range ID directly coz it won't work when the order of the ranges change.
 		for _, rID := range eventRanges[aggID].Aggs {
 			rangeID := fmt.Sprintf("%d", rID)
 			total += shooterScores[rangeID].Total

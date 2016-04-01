@@ -474,6 +474,8 @@ func upsertAggScores(eventID string, rID uint64) error {
 			return err
 		}
 
+		//TODO change to a for loop to go through the list of ranges as the order will change in the future.
+		trace.Println(rID, event.Ranges)
 		aggRange := event.Ranges[rID].Aggs
 		rangeID := event.Ranges[rID].Id()
 		for sID, shooter := range event.Shooters {
