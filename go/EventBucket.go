@@ -39,7 +39,7 @@ func init() {
 	go maintainSessions()
 
 	//Add support for changing the port number as a command line flag
-	port := flag.Uint("port", 80, "Assign a differnet port number for the http server. Range: 0 through 65535.")
+	port := flag.Uint("port", 80, "Assign a differnet port number for the HTTP server. Range: 2 through 65534. Some port numbers may already be in use on this system.")
 	flag.BoolVar(&debug, "debug", false, "Turn on debugging and turn off HTML file caching.")
 	flag.Parse()
 
