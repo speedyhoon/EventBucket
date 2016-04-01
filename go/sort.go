@@ -363,6 +363,7 @@ func ordinal(x uint64) string {
 	return fmt.Sprintf("%d%v", x, suffix)
 }
 
+//TODO possibly delete this whole code. it's a bit poor with all the for loops
 func calculateAggs(shooterScores map[string]Score, ranges []uint64, shooterIDs []uint64, eventRanges []Range) map[string]interface{} {
 	updateBson := make(map[string]interface{})
 	if shooterScores == nil {
@@ -375,6 +376,7 @@ func calculateAggs(shooterScores map[string]Score, ranges []uint64, shooterIDs [
 		total = 0
 		centres = 0
 		//TODO bug don't access ranges by range ID directly coz it won't work when the order of the ranges change.
+		//TODO finding the range with ID aggID will cause another loop which is bad in this context because it is already a double loop :(
 		for _, rID := range eventRanges[aggID].Aggs {
 			rangeID := fmt.Sprintf("%d", rID)
 			total += shooterScores[rangeID].Total
