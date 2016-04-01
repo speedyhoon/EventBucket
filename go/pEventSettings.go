@@ -101,7 +101,7 @@ func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm fo
 		FirstName: submittedForm.Fields[0].Value,
 		Surname:   submittedForm.Fields[1].Value,
 		Club:      submittedForm.Fields[2].Value,
-		Grade:     submittedForm.Fields[4].internalValue.(uint64),
+		Grade:     submittedForm.Fields[4].internalValue.(uint),
 		AgeGroup:  submittedForm.Fields[5].internalValue.(uint64),
 	}
 	err := eventShooterInsertDB(eventID, shooter)
@@ -119,7 +119,7 @@ func eventShooterExistingInsert(w http.ResponseWriter, r *http.Request, submitte
 		return
 	}
 	eventShooter := EventShooter{
-		Grade:     submittedForm.Fields[1].internalValue.(uint64),
+		Grade:     submittedForm.Fields[1].internalValue.(uint),
 		AgeGroup:  submittedForm.Fields[2].internalValue.(uint64),
 		FirstName: shooter.NickName,
 		Surname:   shooter.Surname,

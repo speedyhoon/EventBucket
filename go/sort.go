@@ -150,8 +150,9 @@ type calculateShooter struct {
 	shooterID, rangeID  uint64
 }
 type calculateGrade struct {
-	eventID          string
-	gradeID, rangeID uint64
+	eventID string
+	gradeID uint
+	rangeID uint64
 }
 
 type myShooterMutex struct {
@@ -295,9 +296,9 @@ func recalculateGradePositions(updates map[string]calculateGrade) {
 	info.Println("finished grade recalculation")
 }
 
-func hasShootFinished(shots string, grade uint64) bool {
-	classSettings := defaultClassSettings[grades()[grade].classID]
-	return uint64(len(strings.Replace(shots[classSettings.SightersQty:], "-", "", -1))) == classSettings.ShotsQty
+func hasShootFinished(shots string, grade uint) bool {
+	classSettings := globalClassSettings[globalGrades[grade].classID]
+	return uint(len(strings.Replace(shots[classSettings.QtySighters:], "-", "", -1))) == classSettings.QtyShots
 }
 
 func searchForAggs(ranges []Range, rangeID uint64) []uint64 {
@@ -342,7 +343,7 @@ func searchForAggs(ranges []Range, rangeID uint64) []uint64 {
 
 // Ordinal gives you the input number in a rank/ordinal format.
 // Ordinal(3) -> 3rd
-//author github.com/dustin/go-humanize/blob/master/ordinals.go
+//author: github.com/dustin/go-humanize/blob/master/ordinals.go
 func ordinal(x uint64) string {
 	suffix := "th"
 	switch x % 10 {

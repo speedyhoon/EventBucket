@@ -93,7 +93,7 @@ type EventShooter struct {
 	FirstName string           `json:"schemaFirstName"` //TODO change these to point to shooters in the other shooter tables
 	Surname   string           `json:"schemaSurname"`
 	Club      string           `json:"schemaClub"`
-	Grade     uint64           `json:"schemaGrade"`
+	Grade     uint             `json:"schemaGrade"`
 	Hidden    bool             `json:"schemaHidden,omitempty"`
 	AgeGroup  uint64           `json:"schemaAgeGroup,omitempty"`
 	Scores    map[string]Score `json:"schemaScores,omitempty"`   //Scores   []Score `json:"schemaScores,omitempty"`   //S is not used!

@@ -52,17 +52,17 @@ func scoreboard(w http.ResponseWriter, r *http.Request, parameters string) {
 
 func addGradeSeparatorToShooterObject(eventShooters []EventShooter) []EventShooter {
 	//Add a boolean field to each shooter in a list of ordered shooters and is true for the first shooter that has a different grade than the last
-	var previousShooterGrade uint64 = math.MaxUint64
-	var previousShooterClass uint64 = math.MaxUint64
-	allGrades := grades()
+	var previousShooterGrade uint = math.MaxUint32
+	var previousShooterClass uint = math.MaxUint32
+
 	for shooterID := range eventShooters {
 		if eventShooters[shooterID].Grade != previousShooterGrade {
 			eventShooters[shooterID].GradeSeparator = true
 			previousShooterGrade = eventShooters[shooterID].Grade
 
-			if allGrades[eventShooters[shooterID].Grade].classID != previousShooterClass {
+			if globalGrades[eventShooters[shooterID].Grade].classID != previousShooterClass {
 				eventShooters[shooterID].ClassSeparator = true
-				previousShooterClass = allGrades[eventShooters[shooterID].Grade].classID
+				previousShooterClass = globalGrades[eventShooters[shooterID].Grade].classID
 			}
 		}
 	}
