@@ -17,7 +17,9 @@
 				<th>Club
 				<th>Grade
 				<th>Age Group
-				{{if not $.Event.Closed}}<th>Edit{{end}}
+				{{if not $.Event.Closed}}
+					<th>Edit
+				{{end}}
 			</thead>
 			{{range .}}
 				<tr>
@@ -27,7 +29,10 @@
 					<td>{{.Club}}
 					<td>{{grade .Grade}}
 					<td>{{ageGroup .AgeGroup}}
-					{{if not $.Event.Closed}}<td class=center><img src=dirPNG/edit width=12 height=12 alt="edit icon">{{end}}
+					{{if not $.Event.Closed}}
+						<td class=center onclick='console.log("edit")'>
+							<img src=dirPNG/edit width=12 height=12 alt="edit icon">
+					{{end}}
 			{{end}}
 		</table>
 	{{else}}
