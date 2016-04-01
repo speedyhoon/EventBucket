@@ -77,6 +77,7 @@ func (ms *multiEventShooterSorter) Swap(i, j int) {
 	ms.shooter[i], ms.shooter[j] = ms.shooter[j], ms.shooter[i]
 }
 
+//TODO change the functions to return -1, 0, 1 and reduce the number of calls for greater efficiency
 func (ms *multiEventShooterSorter) Less(i, j int) bool {
 	p, q := &ms.shooter[i], &ms.shooter[j]
 	// Try all but the last comparison.
