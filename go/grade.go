@@ -6,15 +6,15 @@ type ClassSettings struct {
 	ID                    uint
 	QtySighters, QtyShots uint
 	Grades                []Grade
-	Shotput               Shotput
+	Marking               MarkAs
 	ShootOff              bool
 }
 
-//TODO rename to something useful
-type Shotput struct {
-	Buttons       string
-	ValidShots    map[string]Score
-	ValidSighters []string
+type MarkAs struct {
+	Buttons      string
+	Shots        map[string]Score
+	Sighters     []string
+	DoCountBack2 bool
 }
 
 var (
@@ -41,40 +41,27 @@ func defaultGrades(classes []ClassSettings) []Grade {
 }
 
 func defaultGlobalClassSettings() []ClassSettings {
-	V5 := Shotput{
-		Buttons:       "012345V",
-		ValidSighters: []string{")", "!", "@", "#", "$", "%", "v", "^", "x"},
-		ValidShots: map[string]Score{
-			"-": {Total: 0, Centers: 0, CountBack: "0"},
-			"0": {Total: 0, Centers: 0, CountBack: "0"},
-			"1": {Total: 1, Centers: 0, CountBack: "1"},
-			"2": {Total: 2, Centers: 0, CountBack: "2"},
-			"3": {Total: 3, Centers: 0, CountBack: "3"},
-			"4": {Total: 4, Centers: 0, CountBack: "4"},
-			"5": {Total: 5, Centers: 0, CountBack: "5"},
-			"V": {Total: 5, Centers: 1, CountBack: "6"},
-			"6": {Total: 5, Centers: 1, CountBack: "6"},
-			"X": {Total: 5, Centers: 1, CountBack: "6"},
+	XV5 := MarkAs{Buttons: "012345VX",
+		DoCountBack2: true,
+		Sighters:     []string{")", "!", "@", "#", "$", "%", "v", "^", "x"},
+		Shots: map[string]Score{
+			"-": {Total: 0, Centers: 0, CountBack: "0", CountBack2: "0"},
+			"0": {Total: 0, Centers: 0, CountBack: "0", CountBack2: "0"},
+			"1": {Total: 1, Centers: 0, CountBack: "1", CountBack2: "1"},
+			"2": {Total: 2, Centers: 0, CountBack: "2", CountBack2: "2"},
+			"3": {Total: 3, Centers: 0, CountBack: "3", CountBack2: "3"},
+			"4": {Total: 4, Centers: 0, CountBack: "4", CountBack2: "4"},
+			"5": {Total: 5, Centers: 0, CountBack: "5", CountBack2: "5"},
+			"V": {Total: 5, Centers: 1, CountBack: "6", CountBack2: "6"},
+			"6": {Total: 5, Centers: 1, CountBack: "6", CountBack2: "6"},
+			"X": {Total: 5, Centers: 1, CountBack: "6", CountBack2: "7"},
 		}}
 	return []ClassSettings{{
 		ID:          0,
 		Name:        "Target Rifle",
 		QtySighters: 2,
 		QtyShots:    10,
-		Shotput: Shotput{Buttons: "012345VX",
-			ValidSighters: []string{")", "!", "@", "#", "$", "%", "v", "^", "x"},
-			ValidShots: map[string]Score{
-				"-": {Total: 0, Centers: 0, CountBack: "0"},
-				"0": {Total: 0, Centers: 0, CountBack: "0"},
-				"1": {Total: 1, Centers: 0, CountBack: "1"},
-				"2": {Total: 2, Centers: 0, CountBack: "2"},
-				"3": {Total: 3, Centers: 0, CountBack: "3"},
-				"4": {Total: 4, Centers: 0, CountBack: "4"},
-				"5": {Total: 5, Centers: 0, CountBack: "5"},
-				"V": {Total: 5, Centers: 1, CountBack: "6"},
-				"6": {Total: 5, Centers: 1, CountBack: "6"},
-				"X": {Total: 5, Centers: 1, CountBack: "7"},
-			}},
+		Marking:     XV5,
 		Grades: []Grade{{short: "A", name: "Target A"},
 			{short: "B", name: "Target B"},
 			{short: "C", name: "Target C"}},
@@ -83,10 +70,10 @@ func defaultGlobalClassSettings() []ClassSettings {
 		Name:        "F Class",
 		QtyShots:    12,
 		QtySighters: 3,
-		Shotput: Shotput{
-			Buttons:       "0123456X",
-			ValidSighters: []string{")", "!", "@", "#", "$", "%", "v", "^", "x"},
-			ValidShots: map[string]Score{
+		Marking: MarkAs{
+			Buttons:  "0123456X",
+			Sighters: []string{")", "!", "@", "#", "$", "%", "v", "^", "x"},
+			Shots: map[string]Score{
 				"-": {Total: 0, Centers: 0, CountBack: "0"},
 				"0": {Total: 0, Centers: 0, CountBack: "0"},
 				"1": {Total: 1, Centers: 0, CountBack: "1"},
@@ -107,7 +94,7 @@ func defaultGlobalClassSettings() []ClassSettings {
 		Name:        "Match Rifle",
 		QtySighters: 3,
 		QtyShots:    15,
-		Shotput:     V5,
+		Marking:     XV5,
 		Grades: []Grade{{short: "Open", name: "Match Open"},
 			{short: "Reserve", name: "Match Reserve"}},
 	}, {
@@ -115,7 +102,21 @@ func defaultGlobalClassSettings() []ClassSettings {
 		Name:        "Service Rifle",
 		QtySighters: 1,
 		QtyShots:    8,
-		Shotput:     V5,
-		Grades:      []Grade{{short: "303", name: "303 Rifle"}},
+		Marking: MarkAs{
+			Buttons:  "012345V",
+			Sighters: []string{")", "!", "@", "#", "$", "%", "v", "^", "x"},
+			Shots: map[string]Score{
+				"-": {Total: 0, Centers: 0, CountBack: "0"},
+				"0": {Total: 0, Centers: 0, CountBack: "0"},
+				"1": {Total: 1, Centers: 0, CountBack: "1"},
+				"2": {Total: 2, Centers: 0, CountBack: "2"},
+				"3": {Total: 3, Centers: 0, CountBack: "3"},
+				"4": {Total: 4, Centers: 0, CountBack: "4"},
+				"5": {Total: 5, Centers: 0, CountBack: "5"},
+				"V": {Total: 5, Centers: 1, CountBack: "6"},
+				"6": {Total: 5, Centers: 1, CountBack: "6"},
+				"X": {Total: 5, Centers: 1, CountBack: "6"},
+			}},
+		Grades: []Grade{{short: "303", name: "303 Rifle"}},
 	}}
 }
