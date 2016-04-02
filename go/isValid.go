@@ -12,6 +12,7 @@ const (
 )
 
 func listUint64(field field, inp ...string) (interface{}, string) {
+	//TODO add a minimum qty of items. most lists should be at least one or two items long.
 	check := make(map[uint64]bool, 1)
 	var ids []uint64
 	if field.Required && len(inp) == 0 {
@@ -21,19 +22,19 @@ func listUint64(field field, inp ...string) (interface{}, string) {
 	var temp interface{}
 	var id uint64
 	for _, in := range inp {
+		trace.Println("unvalidated rangeID", in, "Isn't empty", in != "")
 		temp, oo = isValidUint64(field, in)
 		if oo != "" {
 			return ids, "This value is invalid."
-		} else {
-			id = temp.(uint64)
-			//Using a map here to prevent duplicates
-			_, ok := check[id]
-			if ok {
-				return ids, "duplicate id found in list"
-			}
-			check[id] = true
-			ids = append(ids, id)
 		}
+		id = temp.(uint64)
+		//Using a map here to prevent duplicates
+		_, ok := check[id]
+		if ok {
+			return ids, "duplicate id found in list"
+		}
+		check[id] = true
+		ids = append(ids, id)
 	}
 	return ids, ""
 }

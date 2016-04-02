@@ -1,12 +1,6 @@
 package main
 
-import (
-	"fmt"
-	"sort"
-	"strings"
-	"sync"
-	"time"
-)
+import "sort"
 
 type sortEventShooter func(r1 string, p1, p2 *EventShooter) bool
 
@@ -32,9 +26,10 @@ func sorterCountBack2(rangeID string, c1, c2 *EventShooter) bool {
 	trace.Println("sorterCountBack2", rangeID, c1.ID, c1.FirstName, c1.Surname, c2.ID, c2.FirstName, c2.Surname)
 	return c1.Scores[rangeID].CountBack2 > c2.Scores[rangeID].CountBack2
 }
-func sorterFirstName(rangeID string, c1, c2 *EventShooter) bool {
+
+/*func sorterFirstName(rangeID string, c1, c2 *EventShooter) bool {
 	return c1.FirstName < c2.FirstName
-}
+}*/
 func sorterShootOff(rangeID string, c1, c2 *EventShooter) bool {
 	trace.Println("sorterShootOff", rangeID, c1.ID, c1.FirstName, c1.Surname, c2.ID, c2.FirstName, c2.Surname)
 	if c1.Scores[rangeID].CountBack != "" && c1.Scores[rangeID].CountBack == c2.Scores[rangeID].CountBack {
@@ -94,7 +89,7 @@ func (ms *multiEventShooterSorter) Less(i, j int) bool {
 	return ms.sort[k](ms.rangeID, p, q)
 }
 
-func triggerScoreCalculation(newScore Score, rangeID uint64, shooter EventShooter, event Event) {
+/*func triggerScoreCalculation(newScore Score, rangeID uint64, shooter EventShooter, event Event) {
 	shootFinished := hasShootFinished(newScore.Shots, shooter.Grade)
 
 	shooterIDs := []uint64{shooter.ID}
@@ -230,100 +225,100 @@ func recalculateShootersAggs(updates map[string]calculateShooter) {
 		}
 	}
 	trace.Println("finished recalculateShooterAggs")
-}
+}*/
 
-func recalculateGradePositions(updates map[string]calculateGrade) {
-	trace.Println("executing grade recalculation")
-	var event Event
-	var err error
-	//var updateBson map[string]interface{}
-	var shooterQty /*position, */, shouldBePosition uint64
-	var shootEqual, updateRequired bool
-	var previousEventID /* positionEqual,*/ /*positionOrdinal,*/, strRangeID string
+//func recalculateGradePositions(updates map[string]calculateGrade) {
+//	trace.Println("executing grade recalculation")
+//	var event Event
+//	var err error
+//	//var updateBson map[string]interface{}
+//	var shooterQty /*position, */, shouldBePosition uint64
+//	var shootEqual, updateRequired bool
+//	var previousEventID /* positionEqual,*/ /*positionOrdinal,*/, strRangeID string
+//
+//	for _, updateData := range updates {
+//		//Only get the event when it is different
+//		if updateData.eventID != previousEventID {
+//			if updateRequired {
+//				//tableUpdateData(tblEvent, updateData.eventID, updateBson)
+//				updateRequired = false
+//			}
+//			//updateBson = make(map[string]interface{})
+//			event, err = getEvent(updateData.eventID)
+//
+//			if err != nil {
+//				warn.Println(err)
+//				break
+//			}
+//
+//			//TODO remove adding shooter ids!
+//			//Add shooter ids to the shooter objects
+//			//event.Shooters = addShooterIDsToShooterObjects(event.Shooters)
+//
+//			shooterQty = uint64(len(event.Shooters))
+//		}
+//		strRangeID = fmt.Sprintf("%v", updateData.rangeID)
+//
+//		//sort shooters by the current rangeID
+//		sortShooters(strRangeID).Sort(event.Shooters)
+//
+//		shouldBePosition = 0
+//		shootEqual = false
+//		//positionEqual = ""
+//		for index, shooter := range event.Shooters {
+//			if shooter.Grade == updateData.gradeID {
+//				shouldBePosition++
+//				if !shootEqual {
+//					//position = shouldBePosition
+//					//positionEqual = ""
+//				} else {
+//					//positionEqual = "="
+//					shootEqual = false
+//				}
+//				if shooter.Scores[strRangeID].ShootOff < 0 {
+//					//Shooter has the same score as the previous shooter (index-1)
+//					//positionEqual = "="
+//					if uint64(index+1) < shooterQty && shooter.Grade == event.Shooters[index+1].Grade && shooter.Scores[strRangeID] == event.Shooters[index+1].Scores[strRangeID] {
+//						shootEqual = true
+//					}
+//				}
+//				/*positionOrdinal = positionEqual + ordinal(position)
+//				if shooter.Scores[strRangeID].Total != 0 && (shooter.Scores[strRangeID].Position != position || shooter.Scores[strRangeID].Ordinal != positionOrdinal) {
+//					updateRequired = true
+//					updateBson[dot("S", shooter.ID, updateData.rangeID, "o")] = positionOrdinal
+//					updateBson[dot("S", shooter.ID, updateData.rangeID, "p")] = position
+//				}*/
+//			}
+//		}
+//	}
+//	if updateRequired {
+//		//tableUpdateData(tblEvent, event.ID, updateBson)
+//	}
+//	info.Println("finished grade recalculation")
+//}
 
-	for _, updateData := range updates {
-		//Only get the event when it is different
-		if updateData.eventID != previousEventID {
-			if updateRequired {
-				//tableUpdateData(tblEvent, updateData.eventID, updateBson)
-				updateRequired = false
-			}
-			//updateBson = make(map[string]interface{})
-			event, err = getEvent(updateData.eventID)
-
-			if err != nil {
-				warn.Println(err)
-				break
-			}
-
-			//TODO remove adding shooter ids!
-			//Add shooter ids to the shooter objects
-			//event.Shooters = addShooterIDsToShooterObjects(event.Shooters)
-
-			shooterQty = uint64(len(event.Shooters))
-		}
-		strRangeID = fmt.Sprintf("%v", updateData.rangeID)
-
-		//sort shooters by the current rangeID
-		sortShooters(strRangeID).Sort(event.Shooters)
-
-		shouldBePosition = 0
-		shootEqual = false
-		//positionEqual = ""
-		for index, shooter := range event.Shooters {
-			if shooter.Grade == updateData.gradeID {
-				shouldBePosition++
-				if !shootEqual {
-					//position = shouldBePosition
-					//positionEqual = ""
-				} else {
-					//positionEqual = "="
-					shootEqual = false
-				}
-				if shooter.Scores[strRangeID].ShootOff < 0 {
-					//Shooter has the same score as the previous shooter (index-1)
-					//positionEqual = "="
-					if uint64(index+1) < shooterQty && shooter.Grade == event.Shooters[index+1].Grade && shooter.Scores[strRangeID] == event.Shooters[index+1].Scores[strRangeID] {
-						shootEqual = true
-					}
-				}
-				/*positionOrdinal = positionEqual + ordinal(position)
-				if shooter.Scores[strRangeID].Total != 0 && (shooter.Scores[strRangeID].Position != position || shooter.Scores[strRangeID].Ordinal != positionOrdinal) {
-					updateRequired = true
-					updateBson[dot("S", shooter.ID, updateData.rangeID, "o")] = positionOrdinal
-					updateBson[dot("S", shooter.ID, updateData.rangeID, "p")] = position
-				}*/
-			}
-		}
-	}
-	if updateRequired {
-		//tableUpdateData(tblEvent, event.ID, updateBson)
-	}
-	info.Println("finished grade recalculation")
-}
-
-func hasShootFinished(shots string, grade uint) bool {
+/*func hasShootFinished(shots string, grade uint) bool {
 	classSettings := globalClassSettings[globalGrades[grade].classID]
 	return uint(len(strings.Replace(shots[classSettings.QtySighters:], "-", "", -1))) == classSettings.QtyShots
-}
+}*/
 
-func searchForAggs(ranges []Range, rangeID uint64) []uint64 {
-	var aggsFound []uint64
-	//var foundRangeID uint64
-	//var err error
-	for indexRangeID, rangeObj := range ranges {
-		if len(rangeObj.Aggs) > 0 {
-			for range rangeObj.Aggs {
-				//for _, rangeID := range rangeObj.Aggs {
-				//foundRangeID, err = strconv.Atoi(strRangeID)
-				//if err == nil /*&& rangeID == rangeID*/ {
-				aggsFound = append(aggsFound, uint64(indexRangeID))
-				//}
-			}
-		}
-	}
-	return aggsFound
-}
+//func searchForAggs(ranges []Range, rangeID uint64) []uint64 {
+//	var aggsFound []uint64
+//	//var foundRangeID uint64
+//	//var err error
+//	for indexRangeID, rangeObj := range ranges {
+//		if len(rangeObj.Aggs) > 0 {
+//			for range rangeObj.Aggs {
+//				//for _, rangeID := range rangeObj.Aggs {
+//				//foundRangeID, err = strconv.Atoi(strRangeID)
+//				//if err == nil /*&& rangeID == rangeID*/ {
+//				aggsFound = append(aggsFound, uint64(indexRangeID))
+//				//}
+//			}
+//		}
+//	}
+//	return aggsFound
+//}
 
 /*func eventTotalScoreUpdate(eventID string, rangeID uint64, shooterIDs []uint64, score Score) Event {
 	var event Event
@@ -350,7 +345,7 @@ func searchForAggs(ranges []Range, rangeID uint64) []uint64 {
 // Ordinal gives you the input number in a rank/ordinal format.
 // Ordinal(3) -> 3rd
 //author: github.com/dustin/go-humanize/blob/master/ordinals.go
-func ordinal(x uint64) string {
+/*func ordinal(x uint64) string {
 	suffix := "th"
 	switch x % 10 {
 	case 1:
@@ -367,10 +362,10 @@ func ordinal(x uint64) string {
 		}
 	}
 	return fmt.Sprintf("%d%v", x, suffix)
-}
+}*/
 
 //TODO possibly delete this whole code. it's a bit poor with all the for loops
-func calculateAggs(shooterScores map[string]Score, ranges []uint64, shooterIDs []uint64, eventRanges []Range) map[string]interface{} {
+/*func calculateAggs(shooterScores map[string]Score, ranges []uint64, shooterIDs []uint64, eventRanges []Range) map[string]interface{} {
 	updateBson := make(map[string]interface{})
 	if shooterScores == nil {
 		return updateBson
@@ -394,7 +389,7 @@ func calculateAggs(shooterScores map[string]Score, ranges []uint64, shooterIDs [
 		}
 	}
 	return updateBson
-}
+}*/
 
 /*func tableUpdateData(collectionName, documentID string, data map[string]interface{}) {
 	if conn != nil {
@@ -409,6 +404,7 @@ func calculateAggs(shooterScores map[string]Score, ranges []uint64, shooterIDs [
 }*/
 
 //Used for database schema translation dot notation
+/*
 func dot(elem ...interface{}) string {
 	var dots []string
 	for _, element := range elem {
@@ -416,3 +412,4 @@ func dot(elem ...interface{}) string {
 	}
 	return strings.Join(dots, ".")
 }
+*/

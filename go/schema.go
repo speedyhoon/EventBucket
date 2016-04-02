@@ -69,7 +69,8 @@ type Range struct {
 	//Hidden     bool                     `json:"h,omitempty"`
 }
 
-func (r Range) Id() string {
+//Id method returns Range.ID as a string instead of an unsigned integer
+func (r Range) strID() string {
 	return fmt.Sprintf("%v", r.ID)
 }
 

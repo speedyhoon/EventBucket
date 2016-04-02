@@ -426,7 +426,7 @@ func calcShooterAggs(ranges []Range, shooterScores map[string]Score) map[string]
 	//TODO save countBack once scoreCards is saving scores
 	for _, r := range ranges {
 		if r.IsAgg {
-			shooterScores[r.Id()] = calcShooterAgg(r.Aggs, shooterScores)
+			shooterScores[r.strID()] = calcShooterAgg(r.Aggs, shooterScores)
 		}
 	}
 	return shooterScores
@@ -474,11 +474,12 @@ func upsertAggScores(eventID string, rID uint64) error {
 			return err
 		}
 
-		aggRange, err := findRange(event.Ranges, rID)
+		var aggRange Range
+		aggRange, err = findRange(event.Ranges, rID)
 		if err != nil {
 			return err
 		}
-		rangeID := aggRange.Id()
+		rangeID := aggRange.strID()
 		for sID, shooter := range event.Shooters {
 			if shooter.Scores != nil {
 				event.Shooters[sID].Scores[rangeID] = calcShooterAgg(aggRange.Aggs, shooter.Scores)

@@ -1,16 +1,17 @@
 package main
 
-// ClassSettings is exported
-type ClassSettings struct {
+// Discipline separates different types of shooting so the number of shots & sighters can be easily changed while still using the same targets and Mark as another Discipline, e.g. Target rifles and Match rifles are vastly different disciplines but use the same scoring standard.
+type Discipline struct {
 	Name                  string
 	ID                    uint
 	QtySighters, QtyShots uint
 	Grades                []Grade
-	Marking               MarkAs
+	Marking               Mark
 	ShootOff              bool
 }
 
-type MarkAs struct {
+// Mark is a group of settings associated with possible shooter scores on a target also known as "marking". Each type of target scoring standard can be specified by a Mark and be reused within several Disciplines.
+type Mark struct {
 	Buttons      string
 	Shots        map[string]Score
 	Sighters     []string
@@ -18,18 +19,18 @@ type MarkAs struct {
 }
 
 var (
-	globalClassSettings = defaultGlobalClassSettings()
-	globalGrades        = defaultGrades(globalClassSettings)
+	globalDiscipline = defaultGlobalDiscipline()
+	globalGrades     = defaultGrades(globalDiscipline)
 )
 
-// Grade is exported
+// Grade are subcategories of each discipline that shooters can be grouped together by similar skill levels.
 type Grade struct {
 	name    string //Target A, F Class B, Match Reserve
-	short   string //A,B,C,FA,FB,FO,MO,MR
+	abbr    string //Abbreviation of name: A,B,C,FA,FB,FO,MO,MR
 	classID uint
 }
 
-func defaultGrades(classes []ClassSettings) []Grade {
+func defaultGrades(classes []Discipline) []Grade {
 	var grades []Grade
 	for classID, class := range classes {
 		for _, grade := range class.Grades {
@@ -40,8 +41,8 @@ func defaultGrades(classes []ClassSettings) []Grade {
 	return grades
 }
 
-func defaultGlobalClassSettings() []ClassSettings {
-	XV5 := MarkAs{Buttons: "012345VX",
+func defaultGlobalDiscipline() []Discipline {
+	XV5 := Mark{Buttons: "012345VX",
 		DoCountBack2: true,
 		Sighters:     []string{")", "!", "@", "#", "$", "%", "v", "^", "x"},
 		Shots: map[string]Score{
@@ -56,21 +57,21 @@ func defaultGlobalClassSettings() []ClassSettings {
 			"6": {Total: 5, Centers: 1, CountBack: "6", CountBack2: "6"},
 			"X": {Total: 5, Centers: 1, CountBack: "6", CountBack2: "7"},
 		}}
-	return []ClassSettings{{
+	return []Discipline{{
 		ID:          0,
 		Name:        "Target Rifle",
 		QtySighters: 2,
 		QtyShots:    10,
 		Marking:     XV5,
-		Grades: []Grade{{short: "A", name: "Target A"},
-			{short: "B", name: "Target B"},
-			{short: "C", name: "Target C"}},
+		Grades: []Grade{{abbr: "A", name: "Target A"},
+			{abbr: "B", name: "Target B"},
+			{abbr: "C", name: "Target C"}},
 	}, {
 		ID:          1,
 		Name:        "F Class",
 		QtyShots:    12,
 		QtySighters: 3,
-		Marking: MarkAs{
+		Marking: Mark{
 			Buttons:  "0123456X",
 			Sighters: []string{")", "!", "@", "#", "$", "%", "v", "^", "x"},
 			Shots: map[string]Score{
@@ -85,24 +86,24 @@ func defaultGlobalClassSettings() []ClassSettings {
 				"6": {Total: 6, Centers: 0, CountBack: "6"},
 				"X": {Total: 6, Centers: 1, CountBack: "7"},
 			}},
-		Grades: []Grade{{short: "FA", name: "F Class A"},
-			{short: "FB", name: "F Class B"},
-			{short: "FO", name: "F Class Open"},
-			{short: "F/TR", name: "F/TR"}},
+		Grades: []Grade{{abbr: "FA", name: "F Class A"},
+			{abbr: "FB", name: "F Class B"},
+			{abbr: "FO", name: "F Class Open"},
+			{abbr: "F/TR", name: "F/TR"}},
 	}, {
 		ID:          2,
 		Name:        "Match Rifle",
 		QtySighters: 3,
 		QtyShots:    15,
 		Marking:     XV5,
-		Grades: []Grade{{short: "Open", name: "Match Open"},
-			{short: "Reserve", name: "Match Reserve"}},
+		Grades: []Grade{{abbr: "Open", name: "Match Open"},
+			{abbr: "Reserve", name: "Match Reserve"}},
 	}, {
 		ID:          3,
 		Name:        "Service Rifle",
 		QtySighters: 1,
 		QtyShots:    8,
-		Marking: MarkAs{
+		Marking: Mark{
 			Buttons:  "012345V",
 			Sighters: []string{")", "!", "@", "#", "$", "%", "v", "^", "x"},
 			Shots: map[string]Score{
@@ -117,6 +118,6 @@ func defaultGlobalClassSettings() []ClassSettings {
 				"6": {Total: 5, Centers: 1, CountBack: "6"},
 				"X": {Total: 5, Centers: 1, CountBack: "6"},
 			}},
-		Grades: []Grade{{short: "303", name: "303 Rifle"}},
+		Grades: []Grade{{abbr: "303", name: "303 Rifle"}},
 	}}
 }

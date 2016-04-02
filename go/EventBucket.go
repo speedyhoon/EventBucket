@@ -55,6 +55,13 @@ func init() {
 		fullAddr += portAddr
 	}
 
+	//Create database directory if needed.
+	err := mkDir(dbPath)
+	if err != nil {
+		warn.Println(err)
+		os.Exit(2)
+	}
+
 	if debug {
 		trace.SetOutput(os.Stdout)
 	} else if exec.Command("rundll32.exe", "url.dll,FileProtocolHandler", fullAddr).Start() != nil {
@@ -66,14 +73,9 @@ func init() {
 
 func main() {
 	//Database save location
-	err := mkDir(dbPath)
-	if err != nil {
-		warn.Println(err)
-		os.Exit(2)
-	}
 	dbPath = filepath.Join(dbPath, "EventBucket.db")
-
 	info.Println("Opening database...", dbPath)
+	var err error
 	db, err = bolt.Open(dbPath, 0644, nil)
 	if err != nil {
 		warn.Println(err)
