@@ -38,22 +38,11 @@ func init() {
 	go maintainExpiresTime()
 	go maintainSessions()
 
-	//Add support for changing the port number as a command line flag
-	port := flag.Uint("port", 80, "Assign a differnet port number for the HTTP server. Range: 2 through 65534. Some port numbers may already be in use on this system.")
+	//Command line flags
 	flag.StringVar(&dbPath, "dbpath", filepath.Join(os.Getenv("ProgramData"), `\EventBucket`), "Directory for datafiles.")
 	flag.BoolVar(&debug, "debug", false, "Turn on debugging and turn off HTML file caching.")
+	port := flag.Uint("port", 80, "Assign a differnet port number for the HTTP server. Range: 1 through 65535. Some port numbers may already be in use on this system.")
 	flag.Parse()
-
-	if *port >= math.MaxUint16 || *port < 2 {
-		warn.Printf("Port number must be between 2 and %d. Default port number is 80.", math.MaxUint16-1)
-		os.Exit(1)
-	}
-
-	portAddr = fmt.Sprintf(":%d", *port)
-	fullAddr := "http://localhost"
-	if *port != 80 {
-		fullAddr += portAddr
-	}
 
 	//Create database directory if needed.
 	err := mkDir(dbPath)
@@ -64,9 +53,14 @@ func init() {
 
 	if debug {
 		trace.SetOutput(os.Stdout)
-	} else if exec.Command("rundll32.exe", "url.dll,FileProtocolHandler", fullAddr).Start() != nil {
-		warn.Println("Unable to open a web browser for", fullAddr)
 	}
+
+	//Check port number
+	if *port > math.MaxUint16 || *port < 1 {
+		warn.Println("Port number must be between 1 and 65535. (default 80)")
+		os.Exit(1)
+	}
+	portAddr = fmt.Sprintf(":%d", *port)
 
 	setExpiresTime()
 }
@@ -86,6 +80,16 @@ func main() {
 
 	pages()
 	info.Print("Starting EventBucket HTTP server...")
+	//Open default browser
+	if !debug {
+		fullAddr := "http://localhost"
+		if portAddr != ":80" {
+			fullAddr += portAddr
+		}
+		if exec.Command("rundll32.exe", "url.dll,FileProtocolHandler", fullAddr).Start() != nil {
+			warn.Println("Unable to open a web browser for", fullAddr)
+		}
+	}
 	warn.Printf("ListenAndServe: %v", http.ListenAndServe(portAddr, nil))
 	info.Println("EvenBucket server stopped.")
 }
