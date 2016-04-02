@@ -24,7 +24,7 @@
 					{{/*
 						if $.ShowAll || !$.ShowAll && .Scores[$.Range.ID].Total <= 0
 					*/}}
-					{{$score := index .Scores $.Range.Id}}
+					{{$score := index .Scores $.Range.strID}}
 					{{$noShow := not $.ShowAll}}
 					{{$noScore := not $score.Total}}
 					{{$notAll  := and $noShow $noScore}}

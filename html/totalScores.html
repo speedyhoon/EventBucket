@@ -26,7 +26,7 @@
 				<th>
 			{{range .}}
 				{{if eq false .Hidden}}
-					{{$score := index .Scores $.Range.Id}}
+					{{$score := index .Scores $.Range.strID}}
 					{{if or $.ShowAll (and (not $score.Total) (not $.ShowAll))}}
 						<tr{{/* id=.ID}} data-class=fclass*/}}>
 							<td>{{.ID}}

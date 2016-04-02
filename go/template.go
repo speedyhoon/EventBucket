@@ -163,8 +163,10 @@ func templater(w http.ResponseWriter, page page) {
 				return template.HTMLAttr("")
 			},
 			"grade": func(index uint64) string {
-				if index < uint64(len(dataListGrades())) {
-					return dataListGrades()[index].Label
+				//if index < uint64(len(dataListGrades())) {
+				if index < uint64(len(globalGrades)) {
+					//return dataListGrades()[index].Label
+					return globalGrades[index].name
 				}
 				return ""
 			},
@@ -186,7 +188,6 @@ func templater(w http.ResponseWriter, page page) {
 	//	}
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
 	}
 }
 

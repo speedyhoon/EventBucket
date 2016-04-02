@@ -25,7 +25,7 @@
 			{{$shooter := .}}
 			{{range $.Ranges}}
 				<td>
-					{{with index $shooter.Scores .Id}}
+					{{with index $shooter.Scores .strID}}
 						{{if.Total}}
 							{{.Total}}
 							{{if.Centers}}<sup>{{.Centers}}{{end}}
