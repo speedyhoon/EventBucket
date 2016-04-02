@@ -60,9 +60,9 @@ func addGradeSeparatorToShooterObject(eventShooters []EventShooter) []EventShoot
 			eventShooters[shooterID].GradeSeparator = true
 			previousShooterGrade = eventShooters[shooterID].Grade
 
-			if globalGrades[eventShooters[shooterID].Grade].classID != previousShooterClass {
+			if globalGrades[eventShooters[shooterID].Grade].ClassID != previousShooterClass {
 				eventShooters[shooterID].ClassSeparator = true
-				previousShooterClass = globalGrades[eventShooters[shooterID].Grade].classID
+				previousShooterClass = globalGrades[eventShooters[shooterID].Grade].ClassID
 			}
 		}
 	}

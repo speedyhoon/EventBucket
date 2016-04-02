@@ -39,8 +39,9 @@ func init() {
 	go maintainSessions()
 
 	//Command line flags
-	flag.StringVar(&dbPath, "dbpath", filepath.Join(os.Getenv("ProgramData"), `\EventBucket`), "Directory for datafiles.")
+	flag.StringVar(&dbPath, "dbpath", filepath.Join(os.Getenv("ProgramData"), `EventBucket`), "Directory for datafiles.")
 	flag.BoolVar(&debug, "debug", false, "Turn on debugging and turn off HTML file caching.")
+	gradesFilePath := flag.String("grades", "", "Load grade settings from a JSON file. If the file doesn't exist, EventBucket will try to create it & exit")
 	port := flag.Uint("port", 80, "Assign a differnet port number for the HTTP server. Range: 1 through 65535. Some port numbers may already be in use on this system.")
 	flag.Parse()
 
@@ -48,17 +49,22 @@ func init() {
 	err := mkDir(dbPath)
 	if err != nil {
 		warn.Println(err)
-		os.Exit(2)
+		os.Exit(1)
 	}
 
 	if debug {
 		trace.SetOutput(os.Stdout)
 	}
 
+	//If grades file specified & it doesn't exist exit
+	if loadGrades(*gradesFilePath) != nil {
+		os.Exit(2)
+	}
+
 	//Check port number
 	if *port > math.MaxUint16 || *port < 1 {
 		warn.Println("Port number must be between 1 and 65535. (default 80)")
-		os.Exit(1)
+		os.Exit(3)
 	}
 	portAddr = fmt.Sprintf(":%d", *port)
 
@@ -74,7 +80,7 @@ func main() {
 	if err != nil {
 		warn.Println(err)
 		db.Close()
-		os.Exit(3)
+		os.Exit(4)
 	}
 	defer db.Close()
 
@@ -82,12 +88,12 @@ func main() {
 	info.Print("Starting EventBucket HTTP server...")
 	//Open default browser
 	if !debug {
-		fullAddr := "http://localhost"
+		fullAddress := "http://localhost"
 		if portAddr != ":80" {
-			fullAddr += portAddr
+			fullAddress += portAddr
 		}
-		if exec.Command("rundll32.exe", "url.dll,FileProtocolHandler", fullAddr).Start() != nil {
-			warn.Println("Unable to open a web browser for", fullAddr)
+		if exec.Command("rundll32.exe", "url.dll,FileProtocolHandler", fullAddress).Start() != nil {
+			warn.Println("Unable to open a web browser for", fullAddress)
 		}
 	}
 	warn.Printf("ListenAndServe: %v", http.ListenAndServe(portAddr, nil))
