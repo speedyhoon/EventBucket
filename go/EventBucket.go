@@ -22,8 +22,8 @@ var (
 	db *bolt.DB
 
 	//Command line flags.
-	portAddr string
-	debug    bool
+	portAddr, dbPath string
+	debug            bool
 
 	//Used for every HTTP request with cache headers set.
 	cacheExpires string
@@ -40,15 +40,16 @@ func init() {
 
 	//Add support for changing the port number as a command line flag
 	port := flag.Uint("port", 80, "Assign a differnet port number for the HTTP server. Range: 2 through 65534. Some port numbers may already be in use on this system.")
+	flag.StringVar(&dbPath, "dbpath", filepath.Join(os.Getenv("ProgramData"), `\EventBucket`), "Directory for datafiles.")
 	flag.BoolVar(&debug, "debug", false, "Turn on debugging and turn off HTML file caching.")
 	flag.Parse()
 
 	if *port >= math.MaxUint16 || *port < 2 {
 		warn.Printf("Port number must be between 2 and %d. Default port number is 80.", math.MaxUint16-1)
-		os.Exit(-3)
+		os.Exit(1)
 	}
 
-	portAddr = fmt.Sprintf(":%v", *port)
+	portAddr = fmt.Sprintf(":%d", *port)
 	fullAddr := "http://localhost"
 	if *port != 80 {
 		fullAddr += portAddr
@@ -65,17 +66,19 @@ func init() {
 
 func main() {
 	//Database save location
-	dbPath := filepath.Join(os.Getenv("ProgramData"), `\EventBucket`)
 	err := mkDir(dbPath)
-	dbPath = filepath.Join(dbPath, "EventBucket.db")
 	if err != nil {
-		return
+		warn.Println(err)
+		os.Exit(2)
 	}
+	dbPath = filepath.Join(dbPath, "EventBucket.db")
 
-	//Open database connection
+	info.Println("Opening database...", dbPath)
 	db, err = bolt.Open(dbPath, 0644, nil)
 	if err != nil {
 		warn.Println(err)
+		db.Close()
+		os.Exit(3)
 	}
 	defer db.Close()
 
