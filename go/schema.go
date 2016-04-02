@@ -81,7 +81,7 @@ type Score struct {
 	Centers    uint64 `json:"schemaCenters,omitempty"`
 	Shots      string `json:"s,omitempty"` //Don't include this in the scoreboard struct when using a different []EventShooter
 	CountBack  string `json:"v,omitempty"`
-	CountBack2 string `json:"v,omitempty"`
+	CountBack2 string `json:"x,omitempty"`
 	ShootOff   uint64 `json:"f,omitempty"`
 	//position  int    `json:"p,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
 	//warning   uint8    `json:"w,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.

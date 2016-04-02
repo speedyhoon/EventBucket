@@ -166,7 +166,7 @@ func templater(w http.ResponseWriter, page page) {
 				//if index < uint64(len(dataListGrades())) {
 				if index < uint64(len(globalGrades)) {
 					//return dataListGrades()[index].Label
-					return globalGrades[index].name
+					return globalGrades[index].Name
 				}
 				return ""
 			},
