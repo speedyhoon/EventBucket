@@ -60,6 +60,9 @@ func init() {
 	if loadGrades(*gradesFilePath) != nil {
 		os.Exit(2)
 	}
+	if gradesFilePath == nil {
+		redoGlobals([]Discipline{})
+	}
 
 	//Check port number
 	if *port > math.MaxUint16 || *port < 1 {

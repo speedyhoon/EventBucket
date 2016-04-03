@@ -42,9 +42,20 @@ type Shot struct {
 }
 
 var (
-	globalDisciplines = defaultGlobalDisciplines()
-	globalGrades      = defaultGrades(globalDisciplines)
+	globalDisciplines    []Discipline
+	globalGrades         []Grade
+	globalGradesDataList []option
 )
+
+func redoGlobals(disciplines []Discipline) {
+	if len(disciplines) > 0 {
+		globalDisciplines = disciplines
+	} else {
+		globalDisciplines = defaultGlobalDisciplines()
+	}
+	globalGrades = defaultGrades(globalDisciplines)
+	globalGradesDataList = dataListGrades(globalGrades)
+}
 
 func defaultGrades(classes []Discipline) []Grade {
 	var grades []Grade
@@ -55,6 +66,14 @@ func defaultGrades(classes []Discipline) []Grade {
 		}
 	}
 	return grades
+}
+
+func dataListGrades(grades []Grade) []option {
+	options := []option{{}}
+	for id, grade := range grades {
+		options = append(options, option{Value: fmt.Sprintf("%d", id), Label: grade.Name})
+	}
+	return options
 }
 
 func defaultGlobalDisciplines() []Discipline {
@@ -154,15 +173,15 @@ func loadGrades(filePath string) error {
 		//Return an error because EventBucket was unable to load the original settings file specified.
 		return fmt.Errorf("Unable to load settings file: %v", filePath)
 	}
-	var discipline []Discipline
-	err := json.Unmarshal(contents, &discipline)
+	var disciplines []Discipline
+	err := json.Unmarshal(contents, &disciplines)
 	if err != nil {
 		//Unable to unmarshal settings from JSON file.
 		warn.Println("error:", err)
 		return fmt.Errorf("Error: %v, File: %v", err, filePath)
 	}
 	info.Println("Loaded grade settings from:", filePath)
-	globalDisciplines = discipline
+	redoGlobals(disciplines)
 	return nil
 }
 
