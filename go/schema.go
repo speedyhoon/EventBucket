@@ -22,17 +22,17 @@ type Club struct {
 
 // AutoInc is a auto increment counter
 type AutoInc struct {
-	Mound   uint64 `json:"schemaMound,omitempty"`
-	Event   uint64 `json:"schemaEvent,omitempty"`
-	Club    uint64 `json:"schemaClub,omitempty"`
-	Range   uint64 `json:"schemaRange,omitempty"`
-	Shooter uint64 `json:"schemaShooter,omitempty"`
+	Mound   uint `json:"schemaMound,omitempty"`
+	Event   uint `json:"schemaEvent,omitempty"`
+	Club    uint `json:"schemaClub,omitempty"`
+	Range   uint `json:"schemaRange,omitempty"`
+	Shooter uint `json:"schemaShooter,omitempty"`
 }
 
 // Mound is exported
 type Mound struct {
 	//	ID       string `json:"schemaID"`
-	Distance uint64 `json:"schemaDistance,omitempty"`
+	Distance uint   `json:"schemaDistance,omitempty"`
 	Unit     string `json:"schemaUnit,omitempty"`
 }
 
@@ -57,13 +57,13 @@ type Event struct {
 
 // Range is exported
 type Range struct {
-	ID     uint64   `json:"schemaID"`
-	Name   string   `json:"schemaName"`
-	Aggs   []uint64 `json:"schemaAggregate,omitempty"`
-	Locked bool     `json:"schemaLocked,omitempty"`
-	IsAgg  bool     `json:"schemaIsAgg,omitempty"` //Prevents aggs switching to normal ranges
-	Order  int64    `json:"schemaSort,omitempty"`
-	Status uint8    `json:"schemaStatus,omitempty"` //ENUM change to 1 when the first shooter has recorded their first shot change to 2 when the range is finished. http://stackoverflow.com/questions/14426366/what-is-an-idiomatic-way-of-representing-enums-in-golang
+	ID     uint   `json:"schemaID"`
+	Name   string `json:"schemaName"`
+	Aggs   []uint `json:"schemaAggregate,omitempty"`
+	Locked bool   `json:"schemaLocked,omitempty"`
+	IsAgg  bool   `json:"schemaIsAgg,omitempty"` //Prevents aggs switching to normal ranges
+	Order  int    `json:"schemaSort,omitempty"`
+	Status uint8  `json:"schemaStatus,omitempty"` //ENUM change to 1 when the first shooter has recorded their first shot change to 2 when the range is finished. http://stackoverflow.com/questions/14426366/what-is-an-idiomatic-way-of-representing-enums-in-golang
 	//Class      map[string]RangeProperty `json:"omitempty,inline"` //TODO possibly change it to optional grades per range in future
 	//ScoreBoard bool                     `json:"s,omitempty"`
 	//Hidden     bool                     `json:"h,omitempty"`
@@ -76,13 +76,13 @@ func (r Range) strID() string {
 
 // Score is exported
 type Score struct {
-	//TODO the schema should change so that it can use unsigned 64 bit numbers instead
-	Total      uint64 `json:"schemaTotal"`
-	Centers    uint64 `json:"schemaCenters,omitempty"`
+	//TODO the schema should change so that it can use unsigned  bit numbers instead
+	Total      uint   `json:"schemaTotal"`
+	Centers    uint   `json:"schemaCenters,omitempty"`
 	Shots      string `json:"s,omitempty"` //Don't include this in the scoreboard struct when using a different []EventShooter
 	CountBack  string `json:"v,omitempty"`
 	CountBack2 string `json:"x,omitempty"`
-	ShootOff   uint64 `json:"f,omitempty"`
+	ShootOff   uint   `json:"f,omitempty"`
 	//position  int    `json:"p,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
 	//warning   uint8    `json:"w,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
 	//Ordinal   string `json:"o,omitempty"`
@@ -91,15 +91,15 @@ type Score struct {
 
 // EventShooter is exported
 type EventShooter struct {
-	ID        uint64           `json:"schemaID"`
+	ID        uint             `json:"schemaID"`
 	FirstName string           `json:"schemaFirstName"` //TODO change these to point to shooters in the other shooter tables
 	Surname   string           `json:"schemaSurname"`
 	Club      string           `json:"schemaClub"`
 	Grade     uint             `json:"schemaGrade"`
 	Hidden    bool             `json:"schemaHidden,omitempty"`
-	AgeGroup  uint64           `json:"schemaAgeGroup,omitempty"`
+	AgeGroup  uint             `json:"schemaAgeGroup,omitempty"`
 	Scores    map[string]Score `json:"schemaScores,omitempty"`   //Scores   []Score `json:"schemaScores,omitempty"`   //S is not used!
-	LinkedID  uint64           `json:"schemaLinkedID,omitempty"` //For duplicating shooters that are in different classes with the same score
+	LinkedID  uint             `json:"schemaLinkedID,omitempty"` //For duplicating shooters that are in different classes with the same score
 	SID       int              `json:"schemaSID,omitempty"`
 	Disabled  bool             `json:"schemaDisabled,omitempty"`
 	//SCOREBOARD
@@ -135,8 +135,8 @@ type Shooter struct {
 	//Both records must set MergedSID to the other corresponding shooter SID
 	MergedSID int `json:"schemaMergedSID,omitempty"`
 
-	AgeGroup uint64 `json:"schemaAgeGroup,omitempty"`
-	Grade    uint64 `json:"schemaGrade"`
+	AgeGroup uint `json:"schemaAgeGroup,omitempty"`
+	Grade    uint `json:"schemaGrade"`
 }
 
 type field struct {
@@ -153,7 +153,6 @@ type field struct {
 	v8                 func(*field, ...string)
 	defValue           func() []string
 	valueUint          uint
-	valueUint64        uint64
-	valueUint64Slice   []uint64
+	valueUintSlice     []uint
 	valueFloat32       float32
 }

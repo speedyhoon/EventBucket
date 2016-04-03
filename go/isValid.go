@@ -7,43 +7,43 @@ import (
 	"strings"
 )
 
-func listUint64(f *field, inp ...string) {
+func listUint(f *field, inp ...string) {
 	//TODO add a minimum qty of items. most lists should be at least one or two items long.
-	check := make(map[uint64]bool, len(inp))
-	var list []uint64
+	check := make(map[uint]bool, len(inp))
+	var list []uint
 
-	//Use a temporary field as a pointer so isValidUint64 can assign values & errors.
+	//Use a temporary field as a pointer so isValidUint can assign values & errors.
 	var g field
 
 	for _, in := range inp {
 		trace.Println("unvalidated rangeID", in, "Isn't empty", in != "")
 
 		g.Error = ""
-		isValidUint64(&g, in)
+		isValidUint(&g, in)
 		if g.Error != "" {
 			f.Error = "This value is invalid."
 			return
 		}
 
-		_, ok := check[g.valueUint64]
+		_, ok := check[g.valueUint]
 		if ok {
 			f.Error = "Duplicate value found in list"
 			return
 		}
-		check[g.valueUint64] = true
-		list = append(list, g.valueUint64)
+		check[g.valueUint] = true
+		list = append(list, g.valueUint)
 	}
 
-	f.valueUint64Slice = list
+	f.valueUintSlice = list
 	return
 }
 
-func isValidUint(f *field, inp ...string){
-	if debug{
+func isValidUint(f *field, inp ...string) {
+	if debug {
 		if f.step == 0 {
 			warn.Println("Are you sure about step == 0? isValidUint", f.name)
 		}
-		if f.max == 0{
+		if f.max == 0 {
 			warn.Println("Are you sure about max == 0? isValidUint", f.name)
 		}
 	}
@@ -57,15 +57,15 @@ func isValidUint(f *field, inp ...string){
 	}
 	num := uint(n64)
 
-	if !f.Required && num == 0{
+	if !f.Required && num == 0 {
 		//f.valueUint is zero by default so assigning zero isn't required
 		return
 	}
-	if num < uint(f.min) || num > uint(f.max){
+	if num < uint(f.min) || num > uint(f.max) {
 		f.Error = fmt.Sprintf("Must be between %d and %d", f.min, f.max)
 		return
 	}
-	if num % uint(f.step) != 0{
+	if num%uint(f.step) != 0 {
 		//TODO calculate next and previous valid values
 		f.Error = "Please enter a valid value. The two nearest values are %d and %d"
 		return
@@ -74,44 +74,11 @@ func isValidUint(f *field, inp ...string){
 	return
 }
 
-func isValidUint64(f *field, inp ...string) {
-	if debug{
-		if f.step == 0 {
-			warn.Println("Are you sure about step == 0? isValidUint64", f.name)
-		}
-		if f.max == 0{
-			warn.Println("Are you sure about max == 0? isValidUint64", f.name)
-		}
-	}
-
-	num, err := strconv.ParseUint(strings.TrimSpace(inp[0]), 10, 64)
-	if err != nil {
-		//Return error if input string failed to convert.
-		f.Error = err.Error()
-		return
-	}
-	if !f.Required && num == 0{
-		//f.valueUint is zero by default so assigning zero isn't required
-		return
-	}
-	if num < uint64(f.min) || num > uint64(f.max){
-		f.Error = fmt.Sprintf("Must be between %d and %d", f.min, f.max)
-		return
-	}
-	if num % uint64(f.step) != 0{
-		//TODO calculate next and previous valid values
-		f.Error = "Please enter a valid value. The two nearest values are %d and %d"
-		return
-	}
-	f.valueUint64 = num
-	return
-}
-
 func isValidFloat32(f *field, inp ...string) {
 	if f.step == 0 {
 		warn.Println("Are you sure about step == 0? isValidFloat32", f.name)
 	}
-	if f.max == 0{
+	if f.max == 0 {
 		warn.Println("Are you sure about max == 0? isValidFloat32", f.name)
 	}
 
@@ -123,16 +90,16 @@ func isValidFloat32(f *field, inp ...string) {
 	}
 	num := float32(f64)
 
-	if !f.Required && num == 0{
+	if !f.Required && num == 0 {
 		//f.ValueFloat32 is zero by default so assigning zero isn't required
 		return
 	}
-	if num < float32(f.min) || num > float32(f.max){
+	if num < float32(f.min) || num > float32(f.max) {
 		f.Error = fmt.Sprintf("Must be between %d and %d", f.min, f.max)
 		return
 	}
 
-	if math.Mod(float64(num), float64(f.step))  != 0{
+	if math.Mod(float64(num), float64(f.step)) != 0 {
 		//TODO calculate next and previous valid values
 		f.Error = "Please enter a valid value. The two nearest values are %d and %d"
 		return
@@ -173,11 +140,11 @@ func isValidStr(f *field, inp ...string) {
 		matched := false
 		for _, option := range f.Options {
 			matched = option.Value == f.Value
-			if matched{
+			if matched {
 				break
 			}
 		}
-		if !matched{
+		if !matched {
 			f.Error = "Value doesn't match any of the options"
 			return
 		}
@@ -209,7 +176,7 @@ func isValidBool(f *field, inp ...string) {
 	return
 }
 
-func plural(length int)string{
+func plural(length int) string {
 	if length != 1 {
 		return "s"
 	}

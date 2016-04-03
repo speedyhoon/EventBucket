@@ -162,16 +162,16 @@ func templater(w http.ResponseWriter, page page) {
 				}
 				return template.HTMLAttr("")
 			},
-			"grade": func(index uint64) string {
-				//if index < uint64(len(dataListGrades())) {
-				if index < uint64(len(globalGrades)) {
+			"grade": func(index uint) string {
+				//if index < uint(len(dataListGrades())) {
+				if index < uint(len(globalGrades)) {
 					//return dataListGrades()[index].Label
 					return globalGrades[index].Name
 				}
 				return ""
 			},
-			"ageGroup": func(index uint64) string {
-				if index < uint64(len(dataListAgeGroup())) {
+			"ageGroup": func(index uint) string {
+				if index < uint(len(dataListAgeGroup())) {
 					return dataListAgeGroup()[index].Label
 				}
 				return ""

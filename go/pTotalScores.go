@@ -48,12 +48,12 @@ func totalScores(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 func eventTotalUpsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	eventID := submittedForm.Fields[2].Value
 	rangeID := submittedForm.Fields[3].Value
-	shooterID := submittedForm.Fields[4].internalValue.(uint64)
+	shooterID := submittedForm.Fields[4].valueUint
 
 	//Insert new event into database.
 	err := upsertScore(eventID, rangeID, shooterID, Score{
-		Total:   submittedForm.Fields[0].internalValue.(uint64),
-		Centers: submittedForm.Fields[1].internalValue.(uint64),
+		Total:   submittedForm.Fields[0].valueUint,
+		Centers: submittedForm.Fields[1].valueUint,
 	})
 
 	//Display any upsert errors onscreen.
@@ -65,9 +65,14 @@ func eventTotalUpsert(w http.ResponseWriter, r *http.Request, submittedForm form
 	//TODO trigger agg calculation immediatly. or maybe inline it within the same DB call?
 }
 
+func strToUint(in string) (uint, error) {
+	u, err := strconv.ParseUint(in, 10, 64)
+	return uint(u), err
+}
+
 func eventRange(ranges []Range, rID string, w http.ResponseWriter, r *http.Request) (Range, error) {
 	//If range id is not a number, return 404.
-	rangeID, err := strconv.ParseUint(rID, 10, 64)
+	rangeID, err := strToUint(rID)
 	if err != nil {
 		errorHandler(w, r, http.StatusNotFound, "range")
 		return Range{}, err
