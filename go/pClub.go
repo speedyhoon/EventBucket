@@ -90,7 +90,7 @@ func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm for
 func clubMoundInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	clubID := submittedForm.Fields[2].Value
 	err := updateDoc(tblClub, clubID, Mound{
-		Distance: submittedForm.Fields[0].internalValue.(uint64),
+		Distance: submittedForm.Fields[0].valueUint,
 		Unit:     submittedForm.Fields[1].Value,
 	})
 	if err != nil {

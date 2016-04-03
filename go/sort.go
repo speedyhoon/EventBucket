@@ -89,10 +89,10 @@ func (ms *multiEventShooterSorter) Less(i, j int) bool {
 	return ms.sort[k](ms.rangeID, p, q)
 }
 
-/*func triggerScoreCalculation(newScore Score, rangeID uint64, shooter EventShooter, event Event) {
+/*func triggerScoreCalculation(newScore Score, rangeID uint, shooter EventShooter, event Event) {
 	shootFinished := hasShootFinished(newScore.Shots, shooter.Grade)
 
-	shooterIDs := []uint64{shooter.ID}
+	shooterIDs := []uint{shooter.ID}
 	if shooter.LinkedID != 0 {
 		linkedShooterID := shooter.LinkedID
 		//Add the linked shooter to the update
@@ -148,12 +148,12 @@ func (ms *multiEventShooterSorter) Less(i, j int) bool {
 
 type calculateShooter struct {
 	eventID, strRangeID string
-	shooterID, rangeID  uint64
+	shooterID, rangeID  uint
 }
 type calculateGrade struct {
 	eventID string
 	gradeID uint
-	rangeID uint64
+	rangeID uint
 }
 
 type myShooterMutex struct {
@@ -202,7 +202,7 @@ func recalculateShootersAggs(updates map[string]calculateShooter) {
 	trace.Println("executing recalculateShooterAggs")
 	var event Event
 	var err error
-	var aggsFound []uint64
+	var aggsFound []uint
 	var updateBson map[string]interface{}
 	var previousEventID string
 	for _, updateData := range updates {
@@ -215,7 +215,7 @@ func recalculateShootersAggs(updates map[string]calculateShooter) {
 			aggsFound = searchForAggs(event.Ranges, updateData.rangeID)
 			if len(aggsFound) > 0 {
 				updateBson = make(map[string]interface{})
-				for index, data := range calculateAggs(event.Shooters[updateData.shooterID].Scores, aggsFound, []uint64{updateData.shooterID}, event.Ranges) {
+				for index, data := range calculateAggs(event.Shooters[updateData.shooterID].Scores, aggsFound, []uint{updateData.shooterID}, event.Ranges) {
 					updateBson[index] = data
 				}
 				if len(updateBson) > 0 {
@@ -232,7 +232,7 @@ func recalculateShootersAggs(updates map[string]calculateShooter) {
 //	var event Event
 //	var err error
 //	//var updateBson map[string]interface{}
-//	var shooterQty /*position, */, shouldBePosition uint64
+//	var shooterQty /*position, */, shouldBePosition uint
 //	var shootEqual, updateRequired bool
 //	var previousEventID /* positionEqual,*/ /*positionOrdinal,*/, strRangeID string
 //
@@ -255,7 +255,7 @@ func recalculateShootersAggs(updates map[string]calculateShooter) {
 //			//Add shooter ids to the shooter objects
 //			//event.Shooters = addShooterIDsToShooterObjects(event.Shooters)
 //
-//			shooterQty = uint64(len(event.Shooters))
+//			shooterQty = uint(len(event.Shooters))
 //		}
 //		strRangeID = fmt.Sprintf("%v", updateData.rangeID)
 //
@@ -278,7 +278,7 @@ func recalculateShootersAggs(updates map[string]calculateShooter) {
 //				if shooter.Scores[strRangeID].ShootOff < 0 {
 //					//Shooter has the same score as the previous shooter (index-1)
 //					//positionEqual = "="
-//					if uint64(index+1) < shooterQty && shooter.Grade == event.Shooters[index+1].Grade && shooter.Scores[strRangeID] == event.Shooters[index+1].Scores[strRangeID] {
+//					if uint(index+1) < shooterQty && shooter.Grade == event.Shooters[index+1].Grade && shooter.Scores[strRangeID] == event.Shooters[index+1].Scores[strRangeID] {
 //						shootEqual = true
 //					}
 //				}
@@ -302,9 +302,9 @@ func recalculateShootersAggs(updates map[string]calculateShooter) {
 	return uint(len(strings.Replace(shots[classSettings.QtySighters:], "-", "", -1))) == classSettings.QtyShots
 }*/
 
-//func searchForAggs(ranges []Range, rangeID uint64) []uint64 {
-//	var aggsFound []uint64
-//	//var foundRangeID uint64
+//func searchForAggs(ranges []Range, rangeID uint) []uint {
+//	var aggsFound []uint
+//	//var foundRangeID uint
 //	//var err error
 //	for indexRangeID, rangeObj := range ranges {
 //		if len(rangeObj.Aggs) > 0 {
@@ -312,7 +312,7 @@ func recalculateShootersAggs(updates map[string]calculateShooter) {
 //				//for _, rangeID := range rangeObj.Aggs {
 //				//foundRangeID, err = strconv.Atoi(strRangeID)
 //				//if err == nil /*&& rangeID == rangeID*/ {
-//				aggsFound = append(aggsFound, uint64(indexRangeID))
+//				aggsFound = append(aggsFound, uint(indexRangeID))
 //				//}
 //			}
 //		}
@@ -320,7 +320,7 @@ func recalculateShootersAggs(updates map[string]calculateShooter) {
 //	return aggsFound
 //}
 
-/*func eventTotalScoreUpdate(eventID string, rangeID uint64, shooterIDs []uint64, score Score) Event {
+/*func eventTotalScoreUpdate(eventID string, rangeID uint, shooterIDs []uint, score Score) Event {
 	var event Event
 	if conn != nil {
 		updateSetter := make(map[string]interface{})
@@ -345,7 +345,7 @@ func recalculateShootersAggs(updates map[string]calculateShooter) {
 // Ordinal gives you the input number in a rank/ordinal format.
 // Ordinal(3) -> 3rd
 //author: github.com/dustin/go-humanize/blob/master/ordinals.go
-/*func ordinal(x uint64) string {
+/*func ordinal(x uint) string {
 	suffix := "th"
 	switch x % 10 {
 	case 1:
@@ -365,12 +365,12 @@ func recalculateShootersAggs(updates map[string]calculateShooter) {
 }*/
 
 //TODO possibly delete this whole code. it's a bit poor with all the for loops
-/*func calculateAggs(shooterScores map[string]Score, ranges []uint64, shooterIDs []uint64, eventRanges []Range) map[string]interface{} {
+/*func calculateAggs(shooterScores map[string]Score, ranges []uint, shooterIDs []uint, eventRanges []Range) map[string]interface{} {
 	updateBson := make(map[string]interface{})
 	if shooterScores == nil {
 		return updateBson
 	}
-	var total, centres uint64
+	var total, centres uint
 	var countBack string
 
 	for _, aggID := range ranges {

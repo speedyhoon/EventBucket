@@ -3,7 +3,6 @@ package main
 import (
 	"math"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -18,7 +17,7 @@ func scoreboard(w http.ResponseWriter, r *http.Request, parameters string) {
 		return
 	}
 
-	rangeID, err := strconv.ParseUint(ids[1], 10, 64)
+	rangeID, err := strToUint(ids[1])
 	if err != nil {
 		errorHandler(w, r, http.StatusNotFound, "range")
 		return
@@ -75,7 +74,7 @@ type legend struct {
 }
 
 //TODO rename function it is really find Aggs
-func findRanges(rangeID uint64, ranges []Range) []Range {
+func findRanges(rangeID uint, ranges []Range) []Range {
 	var rs []Range
 	for _, r := range ranges {
 		if r.ID == rangeID {

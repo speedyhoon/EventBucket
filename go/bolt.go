@@ -211,8 +211,8 @@ func updateEventDetails(update Event) error {
 	return err
 }
 
-func eventAddRange(eventID string, newRange Range) (uint64, error) {
-	var newRangeID uint64
+func eventAddRange(eventID string, newRange Range) (uint, error) {
+	var newRangeID uint
 	eID, err := b36toBy(eventID)
 	if err != nil {
 		return 0, err
@@ -384,7 +384,7 @@ func eventShooterInsertDB(ID string, shooter EventShooter) error {
 	return err
 }
 
-func upsertScore(eventID, rID string, sID uint64, score Score) error {
+func upsertScore(eventID, rID string, sID uint, score Score) error {
 	byteID, err := b36toBy(eventID)
 	if err != nil {
 		return err
@@ -432,8 +432,8 @@ func calcShooterAggs(ranges []Range, shooterScores map[string]Score) map[string]
 	return shooterScores
 }
 
-func calcShooterAgg(aggRangeIDs []uint64, shooterScores map[string]Score) Score {
-	var total, centers uint64
+func calcShooterAgg(aggRangeIDs []uint, shooterScores map[string]Score) Score {
+	var total, centers uint
 	//var countBack, countBack2 string
 	for _, id := range aggRangeIDs {
 		aggID := fmt.Sprintf("%d", id)
@@ -453,7 +453,7 @@ func calcShooterAgg(aggRangeIDs []uint64, shooterScores map[string]Score) Score 
 	}
 }
 
-func upsertAggScores(eventID string, rID uint64) error {
+func upsertAggScores(eventID string, rID uint) error {
 	byteID, err := b36toBy(eventID)
 	if err != nil {
 		return err
@@ -496,7 +496,7 @@ func upsertAggScores(eventID string, rID uint64) error {
 	return err
 }
 
-func findRange(ranges []Range, rangeID uint64) (Range, error) {
+func findRange(ranges []Range, rangeID uint) (Range, error) {
 	for _, r := range ranges {
 		if r.ID == rangeID {
 			return r, nil
@@ -505,7 +505,7 @@ func findRange(ranges []Range, rangeID uint64) (Range, error) {
 	return Range{}, fmt.Errorf("Can't find range with ID: %d", rangeID)
 }
 
-//Converts base36 string to uint64
+//Converts base36 string to uint
 func b36tou(id string) (uint64, error) {
 	return strconv.ParseUint(id, 36, 64)
 }
