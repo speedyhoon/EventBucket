@@ -143,13 +143,17 @@ type field struct {
 	name, Error, Value string
 	Required           bool
 	Options            []option
-	maxLen, minLen     uint
+	maxLen, minLen     int
 	min, max, step     float32
 	AutoFocus          bool
 	size               uint8
 	Checked            bool //only used by checkboxes
 	regex              *regexp.Regexp
 	internalValue      interface{}
-	v8                 func(field, ...string) (interface{}, string)
+	v8                 func(*field, ...string)
 	defValue           func() []string
+	valueUint          uint
+	valueUint64        uint64
+	valueUint64Slice   []uint64
+	valueFloat32       float32
 }

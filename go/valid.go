@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 )
@@ -34,19 +33,22 @@ func isValid(r *http.Request, fields []field) ([]field, bool) {
 		//TODO change fieldValue to a string instead of slice of strings. Almost all fields submit a string instead of an array.
 		fieldValue, ok = r.Form[field.name]
 
-		//if fieldValue is empty
+		//if fieldValue is empty and...
 		if !ok || len(fieldValue) == 0 || (len(fieldValue) == 1 && strings.TrimSpace(fieldValue[0]) == "") {
 			if field.Required {
-				fields[i].Error = "Value is required"
+				fields[i].Error = "Please fill in this field"
 			}
+			//else if field is not required - do nothing.
+
 			//If field is empty and it has a default value function assign the default value.
 			if field.defValue != nil {
 				trace.Println("set default value")
 				fieldValue = field.defValue()
 			}
+			//else if field doesn't have a default value - do nothing.
 		} else {
 			//Otherwise validate user input
-			fields[i].internalValue, fields[i].Error = field.v8(field, fieldValue...)
+			field.v8(&fields[i], fieldValue...)
 		}
 
 		if fields[i].Error != "" {
@@ -54,12 +56,6 @@ func isValid(r *http.Request, fields []field) ([]field, bool) {
 			if valid {
 				fields[i].AutoFocus = true
 				valid = false
-			}
-		} else {
-			fields[i].Value = fmt.Sprintf("%v", fields[i].internalValue)
-			switch fields[i].internalValue.(type) {
-			case bool:
-				fields[i].Checked = fields[i].internalValue.(bool)
 			}
 		}
 	}

@@ -7,167 +7,211 @@ import (
 	"strings"
 )
 
-const (
-	fillItIn = "Please fill in this field"
-)
-
-func listUint64(field field, inp ...string) (interface{}, string) {
+func listUint64(f *field, inp ...string) {
 	//TODO add a minimum qty of items. most lists should be at least one or two items long.
-	check := make(map[uint64]bool, 1)
-	var ids []uint64
-	if field.Required && len(inp) == 0 {
-		return check, "There are no items selected"
-	}
-	var oo string
-	var temp interface{}
-	var id uint64
+	check := make(map[uint64]bool, len(inp))
+	var list []uint64
+
+	//Use a temporary field as a pointer so isValidUint64 can assign values & errors.
+	var g field
+
 	for _, in := range inp {
 		trace.Println("unvalidated rangeID", in, "Isn't empty", in != "")
-		temp, oo = isValidUint64(field, in)
-		if oo != "" {
-			return ids, "This value is invalid."
+
+		g.Error = ""
+		isValidUint64(&g, in)
+		if g.Error != "" {
+			f.Error = "This value is invalid."
+			return
 		}
-		id = temp.(uint64)
-		//Using a map here to prevent duplicates
-		_, ok := check[id]
+
+		_, ok := check[g.valueUint64]
 		if ok {
-			return ids, "duplicate id found in list"
+			f.Error = "Duplicate value found in list"
+			return
 		}
-		check[id] = true
-		ids = append(ids, id)
+		check[g.valueUint64] = true
+		list = append(list, g.valueUint64)
 	}
-	return ids, ""
+
+	f.valueUint64Slice = list
+	return
 }
 
-func isValidUint(field field, inp ...string)(interface{}, string){
+func isValidUint(f *field, inp ...string){
 	if debug{
-		if field.step == 0 {
-			warn.Println("Are you sure about step == 0? isValidUint", field.name)
-			return 0, "Step supplied = 0"
+		if f.step == 0 {
+			warn.Println("Are you sure about step == 0? isValidUint", f.name)
 		}
-		if field.max == 0{
-			warn.Println("Are you sure about max == 0? isValidUint", field.name)
+		if f.max == 0{
+			warn.Println("Are you sure about max == 0? isValidUint", f.name)
 		}
 	}
 
 	//TODO switch between 64 and 32 on different architectures.
 	n64, err := strconv.ParseUint(strings.TrimSpace(inp[0]), 10, 64)
-	num := uint(n64)
 	if err != nil {
 		//Return error if input string failed to convert.
-		return num, err.Error()
+		f.Error = err.Error()
+		return
 	}
-	if !field.Required && num == 0{
-		return 0, ""
+	num := uint(n64)
+
+	if !f.Required && num == 0{
+		//f.valueUint is zero by default so assigning zero isn't required
+		return
 	}
-	if num < uint(field.min) || num > uint(field.max){
-		return num, fmt.Sprintf("Must be between %d and %d", field.min, field.max)
+	if num < uint(f.min) || num > uint(f.max){
+		f.Error = fmt.Sprintf("Must be between %d and %d", f.min, f.max)
+		return
 	}
-	if num % uint(field.step) != 0{
-		return num, "Please enter a valid value. The two nearest values are %d and %d"
+	if num % uint(f.step) != 0{
+		//TODO calculate next and previous valid values
+		f.Error = "Please enter a valid value. The two nearest values are %d and %d"
+		return
 	}
-	return num, ""
+	f.valueUint = num
+	return
 }
 
-func isValidUint64(field field, inp ...string) (interface{}, string) {
-	strNum := strings.TrimSpace(inp[0])
-	var num uint64
-	num = 0
-	if debug && field.step == 0 {
-		warn.Println("Are you sure about step == 0? isValidUint64", field.name)
-		return num, "Step supplied = 0"
-	}
-	var err error
-	if strNum != "" {
-		num, err = strconv.ParseUint(strNum, 10, 64)
-		if err != nil {
-			return num, err.Error()
+func isValidUint64(f *field, inp ...string) {
+	if debug{
+		if f.step == 0 {
+			warn.Println("Are you sure about step == 0? isValidUint64", f.name)
 		}
-	} else if field.Required {
-		return num, fillItIn
-	}
-	if field.max == 0 {
-		if num >= uint64(field.min) && num <= math.MaxUint64 && num%uint64(field.step) == 0 || !field.Required && num == 0 {
-			return num, ""
+		if f.max == 0{
+			warn.Println("Are you sure about max == 0? isValidUint64", f.name)
 		}
 	}
-	if num >= uint64(field.min) && num <= uint64(field.max) && num%uint64(field.step) == 0 || !field.Required && num == 0 {
-		return num, ""
+
+	num, err := strconv.ParseUint(strings.TrimSpace(inp[0]), 10, 64)
+	if err != nil {
+		//Return error if input string failed to convert.
+		f.Error = err.Error()
+		return
 	}
-	return num, "field integer doesn't pass validation"
+	if !f.Required && num == 0{
+		//f.valueUint is zero by default so assigning zero isn't required
+		return
+	}
+	if num < uint64(f.min) || num > uint64(f.max){
+		f.Error = fmt.Sprintf("Must be between %d and %d", f.min, f.max)
+		return
+	}
+	if num % uint64(f.step) != 0{
+		//TODO calculate next and previous valid values
+		f.Error = "Please enter a valid value. The two nearest values are %d and %d"
+		return
+	}
+	f.valueUint64 = num
+	return
 }
 
-func isValidFloat32(field field, inp ...string) (interface{}, string) {
-	strNum := strings.TrimSpace(inp[0])
-	if debug && field.step == 0 {
-		warn.Println("Are you sure about step == 0? isValidFloat32", field.name)
-		return 0, "Step supplied = 0"
+func isValidFloat32(f *field, inp ...string) {
+	if f.step == 0 {
+		warn.Println("Are you sure about step == 0? isValidFloat32", f.name)
 	}
-	var num float32
-	var x float64
-	var err error
-	if strNum != "" {
-		x, err = strconv.ParseFloat(strNum, 64)
-		if err != nil {
-			return num, err.Error()
+	if f.max == 0{
+		warn.Println("Are you sure about max == 0? isValidFloat32", f.name)
+	}
+
+	f64, err := strconv.ParseFloat(strings.TrimSpace(inp[0]), 32)
+	if err != nil {
+		//Return error if input string failed to convert.
+		f.Error = err.Error()
+		return
+	}
+	num := float32(f64)
+
+	if !f.Required && num == 0{
+		//f.ValueFloat32 is zero by default so assigning zero isn't required
+		return
+	}
+	if num < float32(f.min) || num > float32(f.max){
+		f.Error = fmt.Sprintf("Must be between %d and %d", f.min, f.max)
+		return
+	}
+
+	if math.Mod(float64(num), float64(f.step))  != 0{
+		//TODO calculate next and previous valid values
+		f.Error = "Please enter a valid value. The two nearest values are %d and %d"
+		return
+	}
+	f.valueFloat32 = num
+	return
+}
+
+func isValidStr(f *field, inp ...string) {
+	//Developer checks
+	if f.maxLen == 0 {
+		trace.Println("f.maxLen should be set: isValidStr", f.name)
+	}
+	if f.minLen == 0 {
+		trace.Println("f.minLen should be set: isValidStr", f.name)
+	}
+
+	f.Value = strings.TrimSpace(inp[0])
+	length := len(f.Value)
+
+	//Check value matches regex
+	if f.regex != nil && !f.regex.MatchString(f.Value) {
+		f.Error = "Failed pattern"
+		return
+	}
+
+	if length > f.maxLen {
+		f.Error = fmt.Sprintf("Please shorten this text to %d characters or less (you are currently using %d character%v).", f.maxLen, length, plural(length))
+		return
+	}
+	if length < f.minLen || length > f.maxLen {
+		f.Error = fmt.Sprintf("Please lengthen this text to %d characters or more (you are currently using %d character%v).", f.minLen, length, plural(length))
+		return
+	}
+
+	//Check value matches one of the options (optional).
+	if len(f.Options) > 0 {
+		matched := false
+		for _, option := range f.Options {
+			matched = option.Value == f.Value
+			if matched{
+				break
+			}
 		}
-		num = float32(x)
-	} else if field.Required {
-		return num, fillItIn
-	}
-	if num >= float32(field.min) && num <= float32(field.max) && (field.step == 0 || field.step != 0 /*&& num%step == 0*/) || !field.Required && num == 0 {
-		return num, ""
-	}
-	return num, "field integer doesn't pass validation"
-}
-
-func isValidStr(field field, inp ...string) (interface{}, string) {
-	//TODO check if the string passes regex
-	//TODO check if it matches one of the options provided
-	str := strings.TrimSpace(inp[0])
-	length := uint(len(str))
-	if field.Required && length == 0 {
-		return str, fillItIn
-	}
-
-	if !field.Required && length == 0 {
-		return "", ""
-	}
-
-	if field.maxLen == 0 {
-		field.maxLen = fieldMaxLen
-	}
-
-	if length >= field.minLen && length <= field.maxLen {
-		return str, ""
-	}
-
-	if length < field.minLen || length > field.maxLen {
-		plural := "s"
-		if length == 1 {
-			plural = ""
+		if !matched{
+			f.Error = "Value doesn't match any of the options"
+			return
 		}
-		return str, fmt.Sprintf("Please change this text be between %v & %v characters long (you are currently using %v character%v).", field.minLen, field.maxLen, length, plural)
 	}
-	return str, fillItIn
-}
-func isValidID(field field, inp ...string) (interface{}, string) {
-	str := strings.TrimSpace(inp[0])
-	if field.regex == nil {
-		trace.Println("missing regex for field:", field.name)
-		return str, "Missing regex to check against"
-	}
-	if field.regex.MatchString(str) {
-		return str, ""
-	}
-	return str, "ID supplied is incorrect"
+	return
 }
 
-func isValidBool(field field, inp ...string) (interface{}, string) {
-	str := strings.TrimSpace(inp[0])
-	checked := len(str) >= 1
-	if field.Required && !checked {
-		return false, "Please check this field"
+//TODO look into using isValidStr instead of isValidID
+func isValidID(f *field, inp ...string) {
+	//TODO remove developer check
+	if f.regex == nil {
+		trace.Println("missing regex for field:", f.name)
+		f.Error = "Missing regex to check against"
+		return
 	}
-	return checked, ""
+
+	f.Value = strings.TrimSpace(inp[0])
+	if !f.regex.MatchString(f.Value) {
+		f.Error = "ID supplied is incorrect"
+	}
+	return
+}
+
+func isValidBool(f *field, inp ...string) {
+	f.Checked = len(strings.TrimSpace(inp[0])) >= 1
+	if f.Required && !f.Checked {
+		f.Error = "Please check this field"
+	}
+	return
+}
+
+func plural(length int)string{
+	if length != 1 {
+		return "s"
+	}
+	return ""
 }
