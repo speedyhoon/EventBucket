@@ -39,6 +39,36 @@ func listUint64(field field, inp ...string) (interface{}, string) {
 	return ids, ""
 }
 
+func isValidUint(field field, inp ...string)(interface{}, string){
+	if debug{
+		if field.step == 0 {
+			warn.Println("Are you sure about step == 0? isValidUint", field.name)
+			return 0, "Step supplied = 0"
+		}
+		if field.max == 0{
+			warn.Println("Are you sure about max == 0? isValidUint", field.name)
+		}
+	}
+
+	//TODO switch between 64 and 32 on different architectures.
+	n64, err := strconv.ParseUint(strings.TrimSpace(inp[0]), 10, 64)
+	num := uint(n64)
+	if err != nil {
+		//Return error if input string failed to convert.
+		return num, err.Error()
+	}
+	if !field.Required && num == 0{
+		return 0, ""
+	}
+	if num < uint(field.min) || num > uint(field.max){
+		return num, fmt.Sprintf("Must be between %d and %d", field.min, field.max)
+	}
+	if num % uint(field.step) != 0{
+		return num, "Please enter a valid value. The two nearest values are %d and %d"
+	}
+	return num, ""
+}
+
 func isValidUint64(field field, inp ...string) (interface{}, string) {
 	strNum := strings.TrimSpace(inp[0])
 	var num uint64
