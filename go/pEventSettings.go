@@ -32,6 +32,7 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 		Title:   "Event Settings",
 		Menu:    urlEvents,
 		MenuID:  eventID,
+		JS:      "tableSort",
 		Heading: event.Name,
 		Data: map[string]interface{}{
 			"IsClosed":     event.Closed,
