@@ -110,12 +110,12 @@ func templater(w http.ResponseWriter, page page) {
 	pageName = strings.ToLower(string([]rune(pageName)[0])) + string([]rune(pageName)[1:])
 
 	htmlFileNames := []string{htmlDirectory + pageName}
-
 	if page.template != templateNone {
-		//Add page content just generated to the default page environment (which has CSS and JS, etc).
-		masterTemplate.Page = page
 		htmlFileNames = append(htmlFileNames, masterStuff[page.template]...)
 	}
+
+	//Add page content just generated to the default page environment (which has CSS and JS, etc).
+	masterTemplate.Page = page
 
 	html, ok := templates[pageName]
 	//debug is for dynamically re-parsing (reloading) templates on every request
@@ -181,13 +181,7 @@ func templater(w http.ResponseWriter, page page) {
 		html = templates[pageName]
 	}
 
-	var err error
-	if page.template == templateNone {
-		err = html.ExecuteTemplate(w, "page", page.Data)
-	} else {
-		err = html.ExecuteTemplate(w, "master", masterTemplate)
-	}
-	if err != nil {
+	if err := html.ExecuteTemplate(w, "master", masterTemplate); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
