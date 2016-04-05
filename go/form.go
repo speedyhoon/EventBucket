@@ -137,7 +137,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "S", v8: isValidStr,
 		}, {
-			name: "g", Required: true, max: float32(len(globalGradesDataList)), step: 1, v8: isValidUint, Options: globalGradesDataList,
+			name: "g", Required: true, min: 1, max: float32(len(globalGradesDataList)), step: 1, v8: isValidUint, Options: globalGradesDataList,
 		}, {
 			name: "r", min: 1, max: 5, step: 1, v8: isValidUint, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Junior U21", Value: "1", Selected: false}, {Label: "Junior U25", Value: "2", Selected: false}, {Label: "Veteran", Value: "3", Selected: false}, {Label: "Super Veteran", Value: "4", Selected: false}},
 		}, {
@@ -149,7 +149,7 @@ func getForm(id uint8) []field {
 		return []field{{
 			name: "S", Required: true, v8: isValidID, regex: regexID,
 		}, {
-			name: "g", Required: true, max: float32(len(globalGradesDataList)), step: 1, v8: isValidUint, Options: globalGradesDataList,
+			name: "g", Required: true, min: 1, max: float32(len(globalGradesDataList)), step: 1, v8: isValidUint, Options: globalGradesDataList,
 		}, {
 			name: "r", min: 1, max: 5, step: 1, v8: isValidUint, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Junior U21", Value: "1", Selected: false}, {Label: "Junior U25", Value: "2", Selected: false}, {Label: "Veteran", Value: "3", Selected: false}, {Label: "Super Veteran", Value: "4", Selected: false}},
 		}, {
@@ -171,7 +171,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "C", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
-			name: "g", Required: true, max: float32(len(globalGradesDataList)), step: 1, v8: isValidUint, Options: globalGradesDataList,
+			name: "g", Required: true, min: 1, max: float32(len(globalGradesDataList)), step: 1, v8: isValidUint, Options: globalGradesDataList,
 		}, {
 			name: "r", min: 1, max: 5, step: 1, v8: isValidUint, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Junior U21", Value: "1", Selected: false}, {Label: "Junior U25", Value: "2", Selected: false}, {Label: "Veteran", Value: "3", Selected: false}, {Label: "Super Veteran", Value: "4", Selected: false}},
 		}}
@@ -183,7 +183,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "C", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
-			name: "g", Required: true, max: float32(len(globalGradesDataList)), step: 1, v8: isValidUint, Options: globalGradesDataList,
+			name: "g", Required: true, min: 1, max: float32(len(globalGradesDataList)), step: 1, v8: isValidUint, Options: globalGradesDataList,
 		}, {
 			name: "r", min: 1, max: 5, step: 1, v8: isValidUint, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Junior U21", Value: "1", Selected: false}, {Label: "Junior U25", Value: "2", Selected: false}, {Label: "Veteran", Value: "3", Selected: false}, {Label: "Super Veteran", Value: "4", Selected: false}},
 		}, {

@@ -13,7 +13,7 @@ func listUint(f *field, inp ...string) {
 	var list []uint
 
 	//Use a temporary field as a pointer so isValidUint can assign values & errors.
-	var g field
+	g := *f
 
 	for _, in := range inp {
 		trace.Println("unvalidated rangeID", in, "Isn't empty", in != "")

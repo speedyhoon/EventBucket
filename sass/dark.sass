@@ -50,8 +50,12 @@ tr
 	border-bottom: $thinBorder $dark
 	padding: $bigPadding
 
-th
+th, thead td
+	text-align: center
+	font-weight: 700
 	border-bottom: $fatBorder $dark
+
+th:not(:empty)
 	cursor: pointer
 
 .asc, .desc, legend u
