@@ -60,7 +60,7 @@ func init() {
 	if loadGrades(*gradesFilePath) != nil {
 		os.Exit(2)
 	}
-	if gradesFilePath == nil {
+	if *gradesFilePath == "" {
 		redoGlobals([]Discipline{})
 	}
 
