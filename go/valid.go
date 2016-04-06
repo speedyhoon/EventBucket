@@ -27,7 +27,7 @@ func isValid(r *http.Request, fields []field) ([]field, bool) {
 			if len(fieldValue) > 0 {
 				g = fieldValue[0]
 			}
-			trace.Println("validation -- ok", ok, "len()", len(fieldValue), "value", g)
+			t.Println("validation -- ok", ok, "len()", len(fieldValue), "value", g)
 		}
 
 		//TODO change fieldValue to a string instead of slice of strings. Almost all fields submit a string instead of an array.
@@ -42,7 +42,7 @@ func isValid(r *http.Request, fields []field) ([]field, bool) {
 
 			//If field is empty and it has a default value function assign the default value.
 			if field.defValue != nil {
-				trace.Println("set default value")
+				t.Println("set default value")
 				fieldValue = field.defValue()
 			}
 			//else if field doesn't have a default value - do nothing.

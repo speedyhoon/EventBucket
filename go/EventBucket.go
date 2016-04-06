@@ -29,9 +29,9 @@ var (
 	cacheExpires string
 
 	//Logging
-	trace = log.New(ioutil.Discard, "TRACE: ", log.Lshortfile) //Flags can be log.Lshortfile|log.Ltime
-	info  = log.New(os.Stdout, "INFO:  ", log.Lshortfile)
-	warn  = log.New(os.Stderr, "WARN:  ", log.Lshortfile)
+	t    = log.New(ioutil.Discard, "TRACE: ", log.Lshortfile) //Flags can be log.Lshortfile|log.Ltime
+	info = log.New(os.Stdout, "INFO:  ", log.Lshortfile)
+	warn = log.New(os.Stderr, "WARN:  ", log.Lshortfile)
 )
 
 func init() {
@@ -53,7 +53,7 @@ func init() {
 	}
 
 	if debug {
-		trace.SetOutput(os.Stdout)
+		t.SetOutput(os.Stdout)
 	}
 
 	//If grades file specified & it doesn't exist exit

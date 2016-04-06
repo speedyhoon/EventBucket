@@ -174,7 +174,7 @@ func purgeOldSessions() {
 	globalSessions.Lock()
 	for sessionID := range globalSessions.m {
 		if globalSessions.m[sessionID].expiry.Before(time.Now()) {
-			trace.Println("deleted sessionID:", sessionID)
+			t.Println("deleted sessionID:", sessionID, len(globalSessions.m))
 			delete(globalSessions.m, sessionID)
 		}
 	}

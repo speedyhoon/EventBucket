@@ -16,7 +16,7 @@ func listUint(f *field, inp ...string) {
 	g := *f
 
 	for _, in := range inp {
-		trace.Println("unvalidated rangeID", in, "Isn't empty", in != "")
+		t.Println("unvalidated rangeID", in, "Isn't empty", in != "")
 
 		g.Error = ""
 		isValidUint(&g, in)
@@ -109,10 +109,10 @@ func isValidFloat32(f *field, inp ...string) {
 func isValidStr(f *field, inp ...string) {
 	//Developer checks
 	if f.maxLen == 0 {
-		trace.Println("f.maxLen should be set: isValidStr", f.name)
+		t.Println("f.maxLen should be set: isValidStr", f.name)
 	}
 	if f.minLen == 0 {
-		trace.Println("f.minLen should be set: isValidStr", f.name)
+		t.Println("f.minLen should be set: isValidStr", f.name)
 	}
 
 	f.Value = strings.TrimSpace(inp[0])
@@ -154,7 +154,7 @@ func isValidStr(f *field, inp ...string) {
 func isValidID(f *field, inp ...string) {
 	//TODO remove developer check
 	if f.regex == nil {
-		trace.Println("missing regex for field:", f.name)
+		t.Println("missing regex for field:", f.name)
 		f.Error = "Missing regex to check against"
 		return
 	}
