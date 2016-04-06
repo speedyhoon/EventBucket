@@ -27,7 +27,7 @@ func scoreboard(w http.ResponseWriter, r *http.Request, parameters string) {
 
 	event.Shooters = addGradeSeparatorToShooterObject(event.Shooters)
 
-	ranges := findRanges(rangeID, event.Ranges)
+	ranges := findAggs(rangeID, event.Ranges)
 	if len(ranges) < 1 {
 		errorHandler(w, r, http.StatusNotFound, "range")
 		return
@@ -73,14 +73,13 @@ type legend struct {
 	Class, Name string
 }
 
-//TODO rename function it is really find Aggs
-func findRanges(rangeID uint, ranges []Range) []Range {
+func findAggs(rangeID uint, ranges []Range) []Range {
 	var rs []Range
 	for _, r := range ranges {
 		if r.ID == rangeID {
 			if r.IsAgg {
 				for _, id := range r.Aggs {
-					rs = append(rs, findRanges(id, ranges)...)
+					rs = append(rs, findAggs(id, ranges)...)
 				}
 			}
 			rs = append(rs, r)
