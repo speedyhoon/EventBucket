@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -63,11 +62,6 @@ func eventTotalUpsert(w http.ResponseWriter, r *http.Request, submittedForm form
 	}
 	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 	//TODO trigger agg calculation immediatly. or maybe inline it within the same DB call?
-}
-
-func strToUint(in string) (uint, error) {
-	u, err := strconv.ParseUint(in, 10, 64)
-	return uint(u), err
 }
 
 func eventRange(ranges []Range, rID string, w http.ResponseWriter, r *http.Request) (Range, error) {
