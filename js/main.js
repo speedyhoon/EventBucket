@@ -33,8 +33,20 @@ function tableSort(th) {
   th.className = direction > 0 ? '^asc^' : '^desc^';
 }
 
+//Add table sort to TH elements within a THEAD
 document.onclick = function(event) {
-  if (event.target.nodeName === 'TH') {
+  if (event.target.nodeName === 'TH' && event.target.parentElement.parentElement.nodeName === 'THEAD') {
     tableSort(event);
   }
 };
+
+//Add a shortcut to select boxes that allow their parent form to submit when Ctrl + Enter is pressed.
+var selectBoxes = document.querySelectorAll('select'), qty = selectBoxes.length, formShortcut = function(event) {
+  if (event.keyCode === 13 && event.ctrlKey && event.target.form) {
+    event.target.form.submit();
+    return false;
+  }
+};
+while (qty--) {
+  selectBoxes[qty].onkeydown = formShortcut;
+}

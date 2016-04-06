@@ -4,7 +4,7 @@
 		{{range .Event.Ranges}}
 			<tr>
 				{{$barcode := print $.Event.ID "/" .ID "#" $shooter.ID}}
-				<td rowspan=3 class=paddingCenter>
+				<td rowspan=3 class=^centerPadding^>
 					<img class=barcode src=dirBarcode/q{{urlquery $barcode}} alt={{$barcode}}><br>
 					<strong><a href=/total-scores-all/{{$barcode}}>{{$barcode}}</a></strong>
 				<td>Event ID: {{$.Event.ID}}<td>{{$.Event.Name}}
