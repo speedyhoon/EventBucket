@@ -79,7 +79,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "u", maxLen: 64, v8: isValidStr,
 		}, {
-			name: "C", v8: isValidID, regex: regexID,
+			name: "C", v8: isValidRegex, regex: regexID,
 		}}
 	case 2:
 		return []field{{
@@ -87,7 +87,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "z", Required: true, v8: isValidStr, Options: []option{{Label: "Metres", Value: "m", Selected: false}, {Label: "Kilometres", Value: "k", Selected: false}, {Label: "Yards", Value: "y", Selected: false}, {Label: "Feet", Value: "f", Selected: false}},
 		}, {
-			name: "C", v8: isValidID, regex: regexID,
+			name: "C", v8: isValidRegex, regex: regexID,
 		}}
 	case 3:
 		return []field{{
@@ -111,21 +111,21 @@ func getForm(id uint8) []field {
 		}, {
 			name: "c", v8: isValidBool,
 		}, {
-			name: "E", v8: isValidID, regex: regexID,
+			name: "E", v8: isValidRegex, regex: regexID,
 		}}
 	case 5:
 		return []field{{
 			name: "n", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
-			name: "E", v8: isValidID, regex: regexID,
+			name: "E", v8: isValidRegex, regex: regexID,
 		}}
 	case 6:
 		return []field{{
 			name: "n", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
-			name: "R", Required: true, min: 1, max: 999, step: 1, v8: listUint,
+			name: "R", Required: true, minLen: 2, min: 1, step: 1, v8: listUint,
 		}, {
-			name: "E", v8: isValidID, regex: regexID,
+			name: "E", v8: isValidRegex, regex: regexID,
 		}}
 	case 7:
 		return []field{{
@@ -141,19 +141,19 @@ func getForm(id uint8) []field {
 		}, {
 			name: "r", min: 1, max: 5, step: 1, v8: isValidUint, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Junior U21", Value: "1", Selected: false}, {Label: "Junior U25", Value: "2", Selected: false}, {Label: "Veteran", Value: "3", Selected: false}, {Label: "Super Veteran", Value: "4", Selected: false}},
 		}, {
-			name: "E", Required: true, v8: isValidID, regex: regexID,
+			name: "E", Required: true, v8: isValidRegex, regex: regexID,
 		}, {
-			name: "E", v8: isValidID, regex: regexID,
+			name: "E", v8: isValidRegex, regex: regexID,
 		}}
 	case 8:
 		return []field{{
-			name: "S", Required: true, v8: isValidID, regex: regexID,
+			name: "S", Required: true, v8: isValidRegex, regex: regexID,
 		}, {
 			name: "g", Required: true, min: 1, max: float32(len(globalGradesDataList)), step: 1, v8: isValidUint, Options: globalGradesDataList,
 		}, {
 			name: "r", min: 1, max: 5, step: 1, v8: isValidUint, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Junior U21", Value: "1", Selected: false}, {Label: "Junior U25", Value: "2", Selected: false}, {Label: "Veteran", Value: "3", Selected: false}, {Label: "Super Veteran", Value: "4", Selected: false}},
 		}, {
-			name: "E", Required: true, v8: isValidID, regex: regexID,
+			name: "E", Required: true, v8: isValidRegex, regex: regexID,
 		}}
 	case 9:
 		return []field{{
@@ -187,7 +187,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "r", min: 1, max: 5, step: 1, v8: isValidUint, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Junior U21", Value: "1", Selected: false}, {Label: "Junior U25", Value: "2", Selected: false}, {Label: "Veteran", Value: "3", Selected: false}, {Label: "Super Veteran", Value: "4", Selected: false}},
 		}, {
-			name: "I", Required: true, maxLen: 64, v8: isValidID, regex: regexID,
+			name: "I", Required: true, maxLen: 64, v8: isValidRegex, regex: regexID,
 		}}
 	case 12:
 		return []field{{
@@ -203,7 +203,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "c", Required: true, max: 10, step: 1, v8: isValidUint,
 		}, {
-			name: "E", step: 1, v8: isValidID, regex: regexID,
+			name: "E", step: 1, v8: isValidRegex, regex: regexID,
 		}, {
 			name: "R", min: 1, step: 1, v8: isValidUint,
 		}, {
