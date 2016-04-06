@@ -61,7 +61,7 @@ func eventDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm fo
 		Club:   submittedForm.Fields[1].Value,
 		Date:   submittedForm.Fields[2].Value,
 		Time:   submittedForm.Fields[3].Value,
-		Closed: submittedForm.Fields[4].internalValue.(bool),
+		Closed: submittedForm.Fields[4].Checked,
 	})
 	if err != nil {
 		formError(w, submittedForm, redirect, err)

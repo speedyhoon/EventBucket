@@ -38,7 +38,7 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 
 func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	name := submittedForm.Fields[0].Value
-	isDefault := submittedForm.Fields[1].internalValue.(bool)
+	isDefault := submittedForm.Fields[1].Checked
 
 	/*//TODO these several db calls are not atomic.
 	ID, err := getNextID(tblClub)
@@ -76,9 +76,9 @@ func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm for
 		Address:   submittedForm.Fields[1].Value,
 		Town:      submittedForm.Fields[2].Value,
 		Postcode:  submittedForm.Fields[3].Value,
-		Latitude:  submittedForm.Fields[4].internalValue.(float32),
-		Longitude: submittedForm.Fields[5].internalValue.(float32),
-		IsDefault: submittedForm.Fields[6].internalValue.(bool),
+		Latitude:  submittedForm.Fields[4].valueFloat32,
+		Longitude: submittedForm.Fields[5].valueFloat32,
+		IsDefault: submittedForm.Fields[6].Checked,
 	})
 	if err != nil {
 		formError(w, submittedForm, redirect, err)

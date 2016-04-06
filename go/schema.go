@@ -149,7 +149,6 @@ type field struct {
 	size               uint8
 	Checked            bool //only used by checkboxes
 	regex              *regexp.Regexp
-	internalValue      interface{}
 	v8                 func(*field, ...string)
 	defValue           func() []string
 	valueUint          uint
