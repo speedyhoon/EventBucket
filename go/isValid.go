@@ -8,7 +8,11 @@ import (
 )
 
 func listUint(f *field, inp ...string) {
-	//TODO add a minimum qty of items. most lists should be at least one or two items long.
+	if len(inp) < f.minLen{
+		f.Error = "not enough items selected"
+		return
+	}
+
 	check := make(map[uint]bool, len(inp))
 	var list []uint
 
@@ -150,8 +154,7 @@ func isValidStr(f *field, inp ...string) {
 	return
 }
 
-//TODO look into using isValidStr instead of isValidID
-func isValidID(f *field, inp ...string) {
+func isValidRegex(f *field, inp ...string) {
 	//TODO remove developer check
 	if f.regex == nil {
 		t.Println("missing regex for field:", f.name)
