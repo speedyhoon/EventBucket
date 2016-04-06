@@ -30,8 +30,7 @@
 					<td>{{grade .Grade}}
 					<td>{{ageGroup .AgeGroup}}
 					{{if not $.Event.Closed}}
-						<td class=center onclick='console.log("edit")'>
-							<img src=dirPNG/edit width=12 height=12 alt="edit icon">
+						<td onclick='console.log("edit")'>
 					{{end}}
 			{{end}}
 		</table>
