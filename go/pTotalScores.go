@@ -61,7 +61,6 @@ func eventTotalUpsert(w http.ResponseWriter, r *http.Request, submittedForm form
 		return
 	}
 	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
-	//TODO trigger agg calculation immediatly. or maybe inline it within the same DB call?
 }
 
 func eventRange(ranges []Range, rID string, w http.ResponseWriter, r *http.Request) (Range, error) {
