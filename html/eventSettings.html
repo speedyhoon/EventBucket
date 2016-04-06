@@ -24,7 +24,7 @@
 					<td>{{.Name}}
 					<td>{{if .IsAgg}}{{.Aggs}}{{end}}
 					<td>{{if not .IsAgg}}{{.Locked}}{{end}}
-					<td class=center><img src=dirPNG/edit width=12 height=12 alt="edit icon">
+					<td onclick="console.log('hello')">
 			{{end}}
 		</table>
 	{{else}}
