@@ -505,12 +505,6 @@ func findRange(ranges []Range, rangeID uint) (Range, error) {
 	return Range{}, fmt.Errorf("Can't find range with ID: %d", rangeID)
 }
 
-//Converts base36 string to uint
-func b36tou(id string) (uint, error) {
-	u, err := strconv.ParseUint(id, 36, 64)
-	return uint(u), err
-}
-
 //Converts base36 string to binary used for bolt maps
 func b36toBy(id string) ([]byte, error) {
 	num, err := strconv.ParseUint(id, 36, 64)

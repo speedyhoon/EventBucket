@@ -48,14 +48,12 @@ func isValidUint(f *field, inp ...string) {
 		}
 	}
 
-	//TODO switch between 64 and 32 on different architectures.
-	n64, err := strconv.ParseUint(strings.TrimSpace(inp[0]), 10, 64)
+	num, err := strToUint(inp[0])
 	if err != nil {
 		//Return error if input string failed to convert.
 		f.Error = err.Error()
 		return
 	}
-	num := uint(n64)
 
 	if !f.Required && num == 0 {
 		//f.valueUint is zero by default so assigning zero isn't required
@@ -65,7 +63,7 @@ func isValidUint(f *field, inp ...string) {
 		f.Error = fmt.Sprintf("Must be between %d and %d", f.min, f.max)
 		return
 	}
-	if num % uint(f.step) != 0 {
+	if num%uint(f.step) != 0 {
 		//TODO calculate next and previous valid values
 		f.Error = "Please enter a valid value. The two nearest values are %d and %d"
 		return
@@ -99,7 +97,7 @@ func isValidFloat32(f *field, inp ...string) {
 		return
 	}
 
-	if math.Mod(float64(num), float64(f.step)) != 0 {
+	if math.Mod(f64, float64(f.step)) != 0 {
 		//TODO calculate next and previous valid values
 		f.Error = "Please enter a valid value. The two nearest values are %d and %d"
 		return
