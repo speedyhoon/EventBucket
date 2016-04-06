@@ -23,7 +23,7 @@ func sorterCountBack(rangeID string, c1, c2 *EventShooter) bool {
 	return c1.Scores[rangeID].CountBack > c2.Scores[rangeID].CountBack
 }
 func sorterCountBack2(rangeID string, c1, c2 *EventShooter) bool {
-	trace.Println("sorterCountBack2", rangeID, c1.ID, c1.FirstName, c1.Surname, c2.ID, c2.FirstName, c2.Surname)
+	t.Println("sorterCountBack2", rangeID, c1.ID, c1.FirstName, c1.Surname, c2.ID, c2.FirstName, c2.Surname)
 	return c1.Scores[rangeID].CountBack2 > c2.Scores[rangeID].CountBack2
 }
 
@@ -31,7 +31,7 @@ func sorterCountBack2(rangeID string, c1, c2 *EventShooter) bool {
 	return c1.FirstName < c2.FirstName
 }*/
 func sorterShootOff(rangeID string, c1, c2 *EventShooter) bool {
-	trace.Println("sorterShootOff", rangeID, c1.ID, c1.FirstName, c1.Surname, c2.ID, c2.FirstName, c2.Surname)
+	t.Println("sorterShootOff", rangeID, c1.ID, c1.FirstName, c1.Surname, c2.ID, c2.FirstName, c2.Surname)
 	if c1.Scores[rangeID].CountBack != "" && c1.Scores[rangeID].CountBack == c2.Scores[rangeID].CountBack {
 		info.Printf("shooters scores are the same? c1= g:%v t:%v c:%v b:%v h:%v c2= g:%v t:%v c:%v b:%v h:%v", c1.Grade, c1.Scores[rangeID].Total, c1.Scores[rangeID].Centers, c1.Scores[rangeID].CountBack, c1.Scores[rangeID].ShootOff, c2.Grade, c2.Scores[rangeID].Total, c2.Scores[rangeID].Centers, c2.Scores[rangeID].CountBack, c2.Scores[rangeID].ShootOff)
 		temp := c1.Scores[rangeID]
@@ -199,7 +199,7 @@ func startTicker() {
 }
 
 func recalculateShootersAggs(updates map[string]calculateShooter) {
-	trace.Println("executing recalculateShooterAggs")
+	t.Println("executing recalculateShooterAggs")
 	var event Event
 	var err error
 	var aggsFound []uint
@@ -224,11 +224,11 @@ func recalculateShootersAggs(updates map[string]calculateShooter) {
 			}
 		}
 	}
-	trace.Println("finished recalculateShooterAggs")
+	t.Println("finished recalculateShooterAggs")
 }*/
 
 //func recalculateGradePositions(updates map[string]calculateGrade) {
-//	trace.Println("executing grade recalculation")
+//	t.Println("executing grade recalculation")
 //	var event Event
 //	var err error
 //	//var updateBson map[string]interface{}
