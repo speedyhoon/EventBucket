@@ -53,7 +53,7 @@ func eventInsert(w http.ResponseWriter, r *http.Request, submittedForm form, red
 		Time:   submittedForm.Fields[3].Value,
 		Closed: false,
 		//The next incremental range id to use.
-		AutoInc: AutoInc{Range: 1, Shooter: 1},
+		AutoInc: AutoInc{Range: 1},
 	})
 
 	//Display any insert errors onscreen.
