@@ -1,17 +1,17 @@
 {{define "page"}}
 	<table class=printCards>
-		{{range .Ranges}}
+		{{$shooter := index .Event.Shooters .ShooterID}}
+		{{range .Event.Ranges}}
 			<tr>
-				{{$barcode := print $.EventID "/" .ID "#" $.Shooter.ID}}
-				<td rowspan=3 class=centerPadding><img class=barcode src=dirBarcode/q{{urlquery $barcode}} alt={{$barcode}}><br>
+				{{$barcode := print $.Event.ID "/" .ID "#" $shooter.ID}}
+				<td rowspan=3 class=paddingCenter>
+					<img class=barcode src=dirBarcode/q{{urlquery $barcode}} alt={{$barcode}}><br>
 					<strong><a href=/total-scores-all/{{$barcode}}>{{$barcode}}</a></strong>
-				<td>Event ID: {{$.EventID}}<td>{{$.EventName}}
+				<td>Event ID: {{$.Event.ID}}<td>{{$.Event.Name}}
 			<tr>
-				<td>Shooter ID: {{$.Shooter.ID}}<td>{{$.Shooter.FirstName}} {{$.Shooter.Surname}}
+				<td>Shooter ID: {{$shooter.ID}}<td>{{$shooter.FirstName}} {{$shooter.Surname}}
 			<tr>
 				<td>Range ID: {{.ID}}<td>{{.Name}}
-		{{else}}
-			<tr><td><samp>No ranges in {{$.Event.Name}} event. Unable generate scorecards</samp>
 		{{end}}
 	</table>
 {{end}}

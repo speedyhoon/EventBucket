@@ -65,7 +65,7 @@ func isValidUint(f *field, inp ...string) {
 		f.Error = fmt.Sprintf("Must be between %d and %d", f.min, f.max)
 		return
 	}
-	if num%uint(f.step) != 0 {
+	if num % uint(f.step) != 0 {
 		//TODO calculate next and previous valid values
 		f.Error = "Please enter a valid value. The two nearest values are %d and %d"
 		return
@@ -130,7 +130,7 @@ func isValidStr(f *field, inp ...string) {
 		f.Error = fmt.Sprintf("Please shorten this text to %d characters or less (you are currently using %d character%v).", f.maxLen, length, plural(length))
 		return
 	}
-	if length < f.minLen || length > f.maxLen {
+	if length < f.minLen {
 		f.Error = fmt.Sprintf("Please lengthen this text to %d characters or more (you are currently using %d character%v).", f.minLen, length, plural(length))
 		return
 	}

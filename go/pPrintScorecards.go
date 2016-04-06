@@ -39,31 +39,30 @@ func barcode2D(w http.ResponseWriter, r *http.Request, parameters string) {
 func printScorecards(w http.ResponseWriter, r *http.Request, parameters string) {
 	//eventID/shooterID
 	ids := strings.Split(parameters, "/")
-	var shooter EventShooter
-	var ranges []Range
 	event, err := getEvent(ids[0])
-
-	//getParameters() checks that parameters contains a "/" otherwise it would fail.
-	shooterID, sErr := b36tou(ids[1])
-	if sErr == nil && int(shooterID) < len(event.Shooters) {
-		shooter = event.Shooters[shooterID]
+	if err != nil {
+		errorHandler(w, r, http.StatusNotFound, "event")
+		return
 	}
 
-	if err == nil {
-		ranges = event.Ranges
-		//Display the error converting shooter ID to a number (if any) when event was retrieved OK.
-		err = sErr
+	var shooterID uint
+	shooterID, err = b36tou(ids[1])
+	if err != nil || shooterID > uint(len(event.Shooters)) {
+		errorHandler(w, r, http.StatusNotFound, "shooter")
+		return
+	}
+
+	if len(event.Ranges) < 1 {
+		errorHandler(w, r, http.StatusNotFound, "range")
+		return
 	}
 	templater(w, page{
 		Title:  "Print Scorecards",
 		Menu:   urlEvents,
 		MenuID: event.ID,
-		Error:  err,
 		Data: map[string]interface{}{
-			"EventID":   event.ID,
-			"EventName": event.Name,
-			"Ranges":    ranges,
-			"Shooter":   shooter,
+			"Event":     event,
+			"ShooterID": shooterID,
 		},
 	})
 }

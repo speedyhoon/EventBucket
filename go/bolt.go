@@ -506,13 +506,14 @@ func findRange(ranges []Range, rangeID uint) (Range, error) {
 }
 
 //Converts base36 string to uint
-func b36tou(id string) (uint64, error) {
-	return strconv.ParseUint(id, 36, 64)
+func b36tou(id string) (uint, error) {
+	u, err := strconv.ParseUint(id, 36, 64)
+	return uint(u), err
 }
 
 //Converts base36 string to binary used for bolt maps
 func b36toBy(id string) ([]byte, error) {
-	num, err := b36tou(id)
+	num, err := strconv.ParseUint(id, 36, 64)
 	if err != nil {
 		return []byte{}, err
 	}
