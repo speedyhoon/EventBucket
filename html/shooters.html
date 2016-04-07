@@ -1,6 +1,9 @@
 {{define "page"}}
 	{{template "NewShooter" .NewShooter}}
-	{{template "ShooterSearch" .ShooterSearch}}
+	{{if.QtyShooters}}
+		{{template "ShooterSearch" .ShooterSearch}}
+	{{end}}
+	<!--TODO .QtyShooters doesn't return the correct qty-->
 	<p>Total Shooters: {{.QtyShooters}}{{with.ListShooters}}, Search returned {{len .}} shooters.{{end}}
 	{{template "tableShooters" .ListShooters}}
 {{end}}

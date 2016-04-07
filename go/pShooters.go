@@ -16,6 +16,8 @@ func shooters(w http.ResponseWriter, r *http.Request) {
 		shooterQty = len(totalShooters)
 	}
 
+	//TODO add query string so search is bookmarkable?
+
 	templater(w, page{
 		Title: "Shooters",
 		Error: err,
