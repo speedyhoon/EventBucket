@@ -11,7 +11,7 @@ func isValid(r *http.Request, fields []field) ([]field, bool) {
 	if len(r.Form) == 0 {
 		return fields, false
 	}
-	//Process the post request as normal if len(r.Form) > len(fields).
+	//Process the post request as normal if len(r.Form) >= len(fields).
 	var fieldValue []string
 	var ok bool
 	valid := true
@@ -30,7 +30,6 @@ func isValid(r *http.Request, fields []field) ([]field, bool) {
 			t.Println("validation -- ok", ok, "len()", len(fieldValue), "value", g)
 		}
 
-		//TODO change fieldValue to a string instead of slice of strings. Almost all fields submit a string instead of an array.
 		fieldValue, ok = r.Form[field.name]
 
 		//if fieldValue is empty and...
@@ -49,6 +48,25 @@ func isValid(r *http.Request, fields []field) ([]field, bool) {
 		} else {
 			//Otherwise validate user input
 			field.v8(&fields[i], fieldValue...)
+		}
+
+		//TODO write comments!
+		if field.manyRequiredQty >= 1 && len(field.manyRequired) >= 2 {
+			pass := true
+			for _, index := range field.manyRequired {
+				if fields[index].Value == "" || fields[index].Error != "" {
+					pass = false
+					continue
+				}
+			}
+			if !pass {
+				//Assign the error message to the first field in the list
+				fields[field.manyRequired[0]].Error = "Please fill out one of these fields"
+				valid = false
+			}
+			//TODO remove developer warning
+		} else if field.manyRequiredQty > 0 || len(field.manyRequired) > 0 {
+			warn.Println("manyRequiredQty:", field.manyRequiredQty, "field.manyRequired:", field.manyRequired)
 		}
 
 		if fields[i].Error != "" {

@@ -161,7 +161,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "s", maxLen: 64, v8: isValidStr,
 		}, {
-			name: "C", maxLen: 64, v8: isValidStr,
+			name: "C", maxLen: 64, v8: isValidStr, manyRequired: []int{0, 1, 2}, manyRequiredQty: 1,
 		}}
 	case 10:
 		return []field{{
@@ -195,7 +195,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "s", maxLen: 64, v8: isValidStr,
 		}, {
-			name: "C", maxLen: 64, v8: isValidStr,
+			name: "C", maxLen: 64, v8: isValidStr, manyRequired: []int{0, 1, 2}, manyRequiredQty: 1,
 		}}
 	case 13:
 		return []field{{
