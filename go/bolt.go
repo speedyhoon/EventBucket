@@ -17,6 +17,11 @@ var (
 	tblShooter = []byte("S")
 )
 
+const (
+	eNoBucket   = "Bucket %q not found!"
+	eNoDocument = "'%v' document is empty / doesn't exist %q"
+)
+
 func getDocument(collection []byte, ID string, result interface{}) error {
 	byteID, err := b36toBy(ID)
 	if err != nil {
@@ -25,12 +30,12 @@ func getDocument(collection []byte, ID string, result interface{}) error {
 	err = db.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(collection)
 		if bucket == nil {
-			return fmt.Errorf("Bucket %q not found!", collection)
+			return fmt.Errorf(eNoBucket, collection)
 		}
 
 		document := bucket.Get(byteID)
 		if len(document) == 0 {
-			return fmt.Errorf("'%v' document is empty / doesn't exist %q", ID, document)
+			return fmt.Errorf(eNoDocument, ID, document)
 		}
 		err = json.Unmarshal(document, &result)
 		if err != nil {
@@ -88,6 +93,10 @@ func insertEvent(event Event) (string, error) {
 }
 
 func insertClub(club Club) (string, error) {
+	if !club.IsDefault && !hasDefaultClub() {
+		club.IsDefault = true
+	}
+
 	var b36 string
 	err := db.Update(func(tx *bolt.Tx) error {
 		bucket, err := tx.CreateBucketIfNotExists(tblClub)
@@ -182,12 +191,12 @@ func updateEventDetails(update Event) error {
 	err = db.Update(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(tblEvent)
 		if bucket == nil {
-			return fmt.Errorf("Bucket %q not found!", tblEvent)
+			return fmt.Errorf(eNoBucket, tblEvent)
 		}
 
 		document := bucket.Get(eID)
 		if len(document) == 0 {
-			return fmt.Errorf("'%v' document is empty / doesn't exist %q", update.ID, document)
+			return fmt.Errorf(eNoDocument, update.ID, document)
 		}
 		var event Event
 		err = json.Unmarshal(document, &event)
@@ -220,12 +229,12 @@ func eventAddRange(eventID string, newRange Range) (uint, error) {
 	err = db.Update(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(tblEvent)
 		if bucket == nil {
-			return fmt.Errorf("Bucket %q not found!", tblEvent)
+			return fmt.Errorf(eNoBucket, tblEvent)
 		}
 
 		document := bucket.Get(eID)
 		if len(document) == 0 {
-			return fmt.Errorf("'%v' document is empty / doesn't exist %q", eventID, document)
+			return fmt.Errorf(eNoDocument, eventID, document)
 		}
 		var event Event
 		err = json.Unmarshal(document, &event)
@@ -345,12 +354,12 @@ func eventShooterInsertDB(ID string, shooter EventShooter) error {
 	err = db.Update(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(tblEvent)
 		if bucket == nil {
-			return fmt.Errorf("Bucket %q not found!", tblEvent)
+			return fmt.Errorf(eNoBucket, tblEvent)
 		}
 
 		document := bucket.Get(byteID)
 		if len(document) == 0 {
-			return fmt.Errorf("'%v' document is empty / doesn't exist %q", ID, document)
+			return fmt.Errorf(eNoDocument, ID, document)
 		}
 		var event Event
 		err = json.Unmarshal(document, &event)
@@ -392,12 +401,12 @@ func upsertScore(eventID, rID string, sID uint, score Score) error {
 	err = db.Update(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(tblEvent)
 		if bucket == nil {
-			return fmt.Errorf("Bucket %q not found!", tblEvent)
+			return fmt.Errorf(eNoBucket, tblEvent)
 		}
 
 		document := bucket.Get(byteID)
 		if len(document) == 0 {
-			return fmt.Errorf("'%v' document is empty / doesn't exist %q", eventID, document)
+			return fmt.Errorf(eNoDocument, eventID, document)
 		}
 		var event Event
 		err = json.Unmarshal(document, &event)
@@ -461,12 +470,12 @@ func upsertAggScores(eventID string, rID uint) error {
 	err = db.Update(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(tblEvent)
 		if bucket == nil {
-			return fmt.Errorf("Bucket %q not found!", tblEvent)
+			return fmt.Errorf(eNoBucket, tblEvent)
 		}
 
 		document := bucket.Get(byteID)
 		if len(document) == 0 {
-			return fmt.Errorf("'%v' document is empty / doesn't exist %q", eventID, document)
+			return fmt.Errorf(eNoDocument, eventID, document)
 		}
 		var event Event
 		err = json.Unmarshal(document, &event)
@@ -519,18 +528,45 @@ func b36toBy(id string) ([]byte, error) {
 func getSearchShooters(firstName, surname, club string) ([]Shooter, error) {
 	var shooters []Shooter
 	var shooter Shooter
+
+	firstName = strings.ToLower(firstName)
+	surname = strings.ToLower(surname)
+	club = strings.ToLower(club)
+
 	err := db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(tblShooter)
 		if b == nil {
-			return fmt.Errorf("Bucket %q not found!", tblShooter)
+			return fmt.Errorf(eNoBucket, tblShooter)
 		}
 		return b.ForEach(func(_, value []byte) error {
 			//strings.Contains returns true when substr is "" (empty string)
-			if json.Unmarshal(value, &shooter) == nil && strings.Contains(strings.ToLower(shooter.FirstName), strings.ToLower(firstName)) && strings.Contains(strings.ToLower(shooter.Surname), strings.ToLower(surname)) && strings.Contains(strings.ToLower(shooter.Club), strings.ToLower(club)) {
+			if json.Unmarshal(value, &shooter) == nil && strings.Contains(strings.ToLower(shooter.FirstName), firstName) && strings.Contains(strings.ToLower(shooter.Surname), surname) && strings.Contains(strings.ToLower(shooter.Club), club) {
 				shooters = append(shooters, shooter)
 			}
 			return nil
 		})
 	})
 	return shooters, err
+}
+
+func getClubByName(clubName string) (Club, error) {
+	var club Club
+	const success = "Found the club you were looking for"
+
+	err := db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(tblClub)
+		if b == nil {
+			return fmt.Errorf(eNoBucket, tblClub)
+		}
+		return b.ForEach(func(_, value []byte) error {
+			if json.Unmarshal(value, &club) == nil && club.Name == clubName {
+				return fmt.Errorf(success)
+			}
+			return nil
+		})
+	})
+	if err != nil && err.Error() == success {
+		return club, nil
+	}
+	return Club{}, fmt.Errorf("Couldn't find club with name %v", clubName)
 }
