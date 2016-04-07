@@ -40,12 +40,12 @@ type Mound struct {
 type Event struct {
 	ID       string         `json:"I"`
 	Name     string         `json:"n"`
-	ClubID   string         `json:"C"`
-	Club     string         `json:"c"`
-	Date     string         `json:"d"`
-	Time     string         `json:"t"`
+	ClubID   string         `json:"C,omitempty"`
+	Club     string         `json:"c,omitempty"`
+	Date     string         `json:"d,omitempty"`
+	Time     string         `json:"t,omitempty"`
 	Ranges   []Range        `json:"R,omitempty"`
-	AutoInc  AutoInc        `json:"A"`
+	AutoInc  AutoInc        `json:"A,omitempty"`
 	Shooters []EventShooter `json:"S,omitempty"`
 	Closed   bool           `json:"schemaClosed,omitempty"`
 	/*Grades       []uint         `json:"schemaGrades,omitempty"`

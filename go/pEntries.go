@@ -45,15 +45,23 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 }
 
 func eventInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+	//Try to find an existing club
+	club, err := getClubByName(submittedForm.Fields[0].Value)
+	clubID := club.ID
+	if err != nil {
+		//Insert a new club
+		clubID, err = insertClub(Club{Name: submittedForm.Fields[0].Value})
+	}
+
 	//Insert new event into database.
 	ID, err := insertEvent(Event{
-		Club:   submittedForm.Fields[0].Value,
-		Name:   submittedForm.Fields[1].Value,
-		Date:   submittedForm.Fields[2].Value,
-		Time:   submittedForm.Fields[3].Value,
-		Closed: false,
-		//The next incremental range id to use.
-		AutoInc: AutoInc{Range: 1},
+		Club:    submittedForm.Fields[0].Value,
+		ClubID:  clubID,
+		Name:    submittedForm.Fields[1].Value,
+		Date:    submittedForm.Fields[2].Value,
+		Time:    submittedForm.Fields[3].Value,
+		Closed:  false,
+		AutoInc: AutoInc{Range: 1}, //The next incremental range id to use.
 	})
 
 	//Display any insert errors onscreen.
