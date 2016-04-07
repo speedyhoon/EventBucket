@@ -28,6 +28,7 @@
 				<th>Age Group
 				<th>Edit
 			</thead>
+			<!--TODO in debug mode allow empty search otherwise disallow empty search-->
 			{{range .}}
 				<tr>
 					<td>{{.ID}}
@@ -48,13 +49,15 @@
 		<td>
 		<td>
 			<form method=post action=/11 id=editShooter>
-				<input name=f accesskey=d maxlength=64 autocomplete=off>
-				<input name=s maxlength=64 autocomplete=off>
+				<input name=f required placeholder="First name" accesskey=d maxlength=64 autocomplete=off>
+				<input name=s required placeholder=Surname maxlength=64 autocomplete=off>
 			</form>
 		<td>
-			<input name=C maxlength=64 autocomplete=off form=editShooter>
+			<input name=C required maxlength=64 autocomplete=off form=editShooter>
+			<!--TODO load club data list-->
 		<td>
-			<select name=g form=editShooter>
+			<select name=g required form=editShooter>
+				<!--TODO load dynamic grades-->
 				<option>
 				<option value=1>Target A
 				<option value=2>Target B
@@ -69,6 +72,7 @@
 			</select>
 		<td>
 			<select name=r form=editShooter>
+				<!--TODO load dynamic age groups-->
 				<option>
 				<option value=1>Junior U21
 				<option value=2>Junior U25
@@ -77,5 +81,6 @@
 			</select>
 		<td>
 			<button name=I value=a form=editShooter>Save</button>
+			<!--TODO on save return page to original state with search queries-->
 	</template>
 {{end}}

@@ -8,7 +8,7 @@ import (
 )
 
 func listUint(f *field, inp ...string) {
-	if len(inp) < f.minLen{
+	if len(inp) < f.minLen {
 		f.Error = "not enough items selected"
 		return
 	}
@@ -64,7 +64,7 @@ func isValidUint(f *field, inp ...string) {
 		return
 	}
 	if num < uint(f.min) || num > uint(f.max) {
-		f.Error = fmt.Sprintf("Must be between %d and %d", f.min, f.max)
+		f.Error = fmt.Sprintf("Must be between %v and %v", f.min, f.max)
 		return
 	}
 	if num%uint(f.step) != 0 {
