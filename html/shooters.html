@@ -6,4 +6,8 @@
 	<!--TODO .QtyShooters doesn't return the correct qty-->
 	<p>Total Shooters: {{.QtyShooters}}{{with.ListShooters}}, Search returned {{len .}} shooters.{{end}}
 	{{template "tableShooters" .ListShooters}}
+
+	<h6>??</h6>
+	Should all shooters be shown by default?<br>
+	Do users need to know how many shooters are in the database?<br>
 {{end}}
