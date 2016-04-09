@@ -119,7 +119,7 @@ func getForm(id uint8) []field {
 		return []field{{
 			name: "n", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
-			name: "R", Required: true, minLen: 2, min: 1, step: 1, v8: listUint,
+			name: "R", Required: true, minLen: 2, min: 1, max: 65535, step: 1, v8: listUint,
 		}, {
 			name: "E", v8: isValidRegex, regex: regexID,
 		}}

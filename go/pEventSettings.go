@@ -71,7 +71,7 @@ func eventDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm fo
 
 func eventRangeInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	eventID := submittedForm.Fields[1].Value
-	_, err := eventAddRange(eventID, Range{Name: submittedForm.Fields[0].Value})
+	err := updateDocument(tblEvent, eventID, &Range{Name: submittedForm.Fields[0].Value}, &Event{}, eventAddRange)
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
 		return
@@ -81,17 +81,19 @@ func eventRangeInsert(w http.ResponseWriter, r *http.Request, submittedForm form
 
 func eventAggInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	eventID := submittedForm.Fields[2].Value
-	rangeID, err := eventAddRange(eventID, Range{
+	rangeUpdate := Range{
 		Name:  submittedForm.Fields[0].Value,
 		Aggs:  submittedForm.Fields[1].valueUintSlice,
 		IsAgg: true,
-	})
+	}
+	err := updateDocument(tblEvent, eventID, &rangeUpdate, &Event{}, eventAddRange)
+	t.Println(rangeUpdate.ID)
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
 		return
 	}
 	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
-	go upsertAggScores(eventID, rangeID)
+	go upsertAggScores(eventID, rangeUpdate.ID)
 }
 
 func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
