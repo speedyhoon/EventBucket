@@ -1,6 +1,9 @@
 package main
 
-import "sort"
+import (
+	"fmt"
+	"sort"
+)
 
 type sortEventShooter func(r1 string, p1, p2 *EventShooter) bool
 
@@ -345,7 +348,7 @@ func recalculateShootersAggs(updates map[string]calculateShooter) {
 // Ordinal gives you the input number in a rank/ordinal format.
 // Ordinal(3) -> 3rd
 //author: github.com/dustin/go-humanize/blob/master/ordinals.go
-/*func ordinal(x uint) string {
+func ordinal(x int) string {
 	suffix := "th"
 	switch x % 10 {
 	case 1:
@@ -362,7 +365,7 @@ func recalculateShootersAggs(updates map[string]calculateShooter) {
 		}
 	}
 	return fmt.Sprintf("%d%v", x, suffix)
-}*/
+}
 
 //TODO possibly delete this whole code. it's a bit poor with all the for loops
 /*func calculateAggs(shooterScores map[string]Score, ranges []uint, shooterIDs []uint, eventRanges []Range) map[string]interface{} {

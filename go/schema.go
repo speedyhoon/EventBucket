@@ -47,7 +47,7 @@ type Event struct {
 	Ranges   []Range        `json:"R,omitempty"`
 	AutoInc  AutoInc        `json:"A,omitempty"`
 	Shooters []EventShooter `json:"S,omitempty"`
-	Closed   bool           `json:"schemaClosed,omitempty"`
+	Closed   bool           `json:"z,omitempty"`
 	/*Grades       []uint         `json:"schemaGrades,omitempty"`
 	SortScoreboard string         `json:"o,omitempty"`
 	IsPrizeMeet    bool           `json:"p,omitempty"`

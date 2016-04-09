@@ -1,5 +1,40 @@
 {{define "page"}}
+	<p>EventBucket is designed to assist with collecting scores during shooting events. Has your rifle club ever had difficulty keeping up with scoring for weekly matches, pennants or even prize meetings? EventBucket will solve these issues. It does not require electronic targets and can complement existing scoring and check scoring using cards and blackboards.</p>
 	{{template "networkAdapters" .network}}
 	{{template "NewEvent" .newEvent}}
-	{{template "listEvents" .listEvents}}
+
+	{{with .Events}}
+		<h2>Open Events</h2>
+		<div class=events>
+			{{range .}}
+				{{if not .Closed}}
+					<div>
+						{{ordinal .ISO.Day}}
+						<br>{{.ISO.Weekday}}
+						<br>{{.ISO.Month}}
+						<br>{{.ISO.Year}}
+
+						<li><strong><a href=/entries/{{.ID}}>{{.Name}}</a></strong> <a href=/club/{{.ClubID}}>{{.Club}}</a>{{range .Ranges}}, {{.Name}}{{end}}
+					</div>
+				{{end}}
+			{{end}}
+		</div>
+	{{else}}
+		<samp>No Events found</samp>
+		<p>Please view <a href=/archive>Archive</a> too browse closed events.
+	{{end}}
 {{end}}
+
+
+
+{{/*HTM .FormNewEvent}}<h2>Open Events</h2>{{with .FutureEvents}}
+	<div class=events>{{range .}}
+		<div>
+			<time>{{with.Day}}{{.}}{{else}}&nbsp;{{end}}<br>{{if or .Date .Month .Year}}{{with.Date}}<b>{{.}}</b>{{end}}{{with.Month}}{{.}}{{end}}
+				{{with.Year}}{{.}}{{end}}{{else}}&nbsp;{{end}}</time>
+			<p>{{if.ID}}<a href=/event/{{.ID}}>{{.Name}}</a> {{with.Time}}starts at {{.}}{{end}}{{end}}</p>{{if.Club}}<a href=/club/{{.ClubID}}>{{.Club}}</a>
+			<br>{{end}}{{with.Ranges}}{{.}}{{end}}
+		</div>
+		{{end}}
+	</div>{{else}}No events listed. <a href={{$.ArchiveLink}}>Archive</a>
+{{end*/}}

@@ -177,6 +177,7 @@ func templater(w http.ResponseWriter, page page) {
 				}
 				return ""
 			},
+			"ordinal": ordinal,
 		}).ParseFiles(htmlFileNames...))
 		html = templates[pageName]
 	}

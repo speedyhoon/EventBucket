@@ -13,3 +13,7 @@ func events(w http.ResponseWriter, r *http.Request) {
 		},
 	})
 }
+
+func onlyOpen(event Event) bool {
+	return !event.Closed
+}
