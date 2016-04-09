@@ -64,12 +64,12 @@ func isValidUint(f *field, inp ...string) {
 		return
 	}
 	if num < uint(f.min) || num > uint(f.max) {
-		f.Error = fmt.Sprintf("Must be between %v and %v", f.min, f.max)
+		f.Error = fmt.Sprintf("Must be between %d and %d", f.min, f.max)
 		return
 	}
 	if num%uint(f.step) != 0 {
-		//TODO calculate next and previous valid values
-		f.Error = "Please enter a valid value. The two nearest values are %d and %d"
+		below := num - (num % uint(f.step))
+		f.Error = fmt.Sprintf("Please enter a valid value. The two nearest values are %d and %d", below, below+uint(f.step))
 		return
 	}
 	f.valueUint = num
@@ -96,18 +96,23 @@ func isValidFloat32(f *field, inp ...string) {
 		//f.ValueFloat32 is zero by default so assigning zero isn't required
 		return
 	}
-	if num < float32(f.min) || num > float32(f.max) {
-		f.Error = fmt.Sprintf("Must be between %d and %d", f.min, f.max)
+	if num < f.min || num > f.max {
+		f.Error = fmt.Sprintf("Must be between %v and %v", f.min, f.max)
 		return
 	}
 
-	if math.Mod(f64, float64(f.step)) != 0 {
-		//TODO calculate next and previous valid values
-		f.Error = "Please enter a valid value. The two nearest values are %d and %d"
+	if rem := toFixed(math.Mod(f64, float64(f.step))); rem != 0 {
+		f.Error = fmt.Sprintf("Please enter a valid value. The two nearest values are %v and %v", num-rem, num-rem+f.step)
 		return
 	}
 	f.valueFloat32 = num
 	return
+}
+
+func toFixed(num /*, precision*/ float64) float32 {
+	//output := math.Pow(10, precision)
+	//return float64(int(num * output)) / output
+	return float32(int(num*1000000)) / 1000000
 }
 
 func isValidStr(f *field, inp ...string) {
@@ -138,7 +143,7 @@ func isValidStr(f *field, inp ...string) {
 	}
 
 	//Check value matches one of the options (optional).
-	if len(f.Options) > 0 {
+	/*if len(f.Options) > 0 {
 		matched := false
 		for _, option := range f.Options {
 			matched = option.Value == f.Value
@@ -150,7 +155,7 @@ func isValidStr(f *field, inp ...string) {
 			f.Error = "Value doesn't match any of the options"
 			return
 		}
-	}
+	}*/
 	return
 }
 

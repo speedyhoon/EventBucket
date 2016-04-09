@@ -23,11 +23,9 @@ func isValid(r *http.Request, fields []field) ([]field, bool) {
 				warn.Println("No v8 function setup! for", field.name)
 				continue
 			}
-			var g string
-			if len(fieldValue) > 0 {
-				g = fieldValue[0]
+			if field.manyRequiredQty > 0 || len(field.manyRequired) > 0 {
+				t.Println("manyRequiredQty:", field.manyRequiredQty, "field.manyRequired:", field.manyRequired)
 			}
-			t.Println("validation -- ok", ok, "len()", len(fieldValue), "value", g)
 		}
 
 		fieldValue, ok = r.Form[field.name]
@@ -64,9 +62,6 @@ func isValid(r *http.Request, fields []field) ([]field, bool) {
 				fields[field.manyRequired[0]].Error = "Please fill out one of these fields"
 				valid = false
 			}
-			//TODO remove developer warning
-		} else if field.manyRequiredQty > 0 || len(field.manyRequired) > 0 {
-			warn.Println("manyRequiredQty:", field.manyRequiredQty, "field.manyRequired:", field.manyRequired)
 		}
 
 		if fields[i].Error != "" {
