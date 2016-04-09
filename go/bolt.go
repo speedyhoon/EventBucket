@@ -239,42 +239,13 @@ func updateEventDetails(decode interface{}, contents interface{}) interface{} {
 	return event
 }
 
-func eventAddRange(eventID string, newRange Range) (uint, error) {
-	var newRangeID uint
-	eID, err := b36toBy(eventID)
-	if err != nil {
-		return 0, err
-	}
-	err = db.Update(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(tblEvent)
-		if bucket == nil {
-			return fmt.Errorf(eNoBucket, tblEvent)
-		}
-
-		document := bucket.Get(eID)
-		if len(document) == 0 {
-			return fmt.Errorf(eNoDocument, eventID, document)
-		}
-		var event Event
-		err = json.Unmarshal(document, &event)
-		if err != nil {
-			return fmt.Errorf("'%v' Query event unmarshaling failed: \n%q\n%#v\n", eventID, document, err)
-		}
-		//Manually set each one otherwise it would override the existing event and its details (Ranges, Shooters & their scores) since the form doesn't already have that info.
-		newRange.ID = event.AutoInc.Range
-		event.AutoInc.Range++
-		event.Ranges = append(event.Ranges, newRange)
-		newRangeID = newRange.ID
-
-		document, err = json.Marshal(event)
-		if err != nil {
-			warn.Println("error", err)
-			return err
-		}
-
-		return bucket.Put(eID, document)
-	})
-	return newRangeID, err
+func eventAddRange(decode interface{}, contents interface{}) interface{} {
+	event := decode.(*Event)
+	newRange := contents.(*Range)
+	newRange.ID = event.AutoInc.Range
+	event.AutoInc.Range++
+	event.Ranges = append(event.Ranges, *newRange)
+	return event
 }
 
 func getClubs() ([]Club, error) {
