@@ -81,7 +81,7 @@ func purgeOldSessions() {
 			delete(globalSessions.m, sessionID)
 		}
 	}
-	t.Println("remaining:", len(globalSessions.m))
+	t.Println("remaining sessions:", len(globalSessions.m))
 	globalSessions.Unlock()
 }
 
