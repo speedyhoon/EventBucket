@@ -201,9 +201,9 @@ func getForm(id uint8) []field {
 		}, {
 			name: "E", step: 1, v8: isValidRegex, regex: regexID,
 		}, {
-			name: "R", min: 1, max: 65535, step: 1, v8: isValidUint,
+			name: "R", v8: isValidRegex, regex: regexID,
 		}, {
-			name: "S", step: 1, max: 65535, v8: isValidUint,
+			name: "S", v8: isValidRegex, regex: regexID,
 		}}
 	}
 	return []field{}
