@@ -322,7 +322,11 @@ func getCalendarEvents() ([]CalendarEvent, error) {
 func collectionSize(collectionName []byte) (uint, error) {
 	var qty uint
 	err := db.View(func(tx *bolt.Tx) error {
-		qty = uint(tx.Bucket(collectionName).Stats().KeyN)
+		b := tx.Bucket(collectionName)
+		if b == nil {
+			return fmt.Errorf(eNoBucket, tblShooter)
+		}
+		qty = uint(b.Stats().KeyN)
 		return nil
 	})
 	return qty, err
@@ -571,7 +575,7 @@ func getSearchShooters(firstName, surname, club string) ([]Shooter, error, uint)
 		if b == nil {
 			return fmt.Errorf(eNoBucket, tblShooter)
 		}
-		totalQty = uint(tx.Bucket(collectionName).Stats().KeyN)
+		totalQty = uint(tx.Bucket(tblShooter).Stats().KeyN)
 		return b.ForEach(func(_, value []byte) error {
 			//strings.Contains returns true when substr is "" (empty string)
 			if json.Unmarshal(value, &shooter) == nil && strings.Contains(strings.ToLower(shooter.FirstName), firstName) && strings.Contains(strings.ToLower(shooter.Surname), surname) && strings.Contains(strings.ToLower(shooter.Club), club) {
