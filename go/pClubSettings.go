@@ -40,5 +40,6 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 }
 
 func trimFloat(num float32) string {
+	//TODO 100 is returned as 1
 	return strings.TrimRight(strings.Trim(fmt.Sprintf("%f", num), "0"), ".")
 }
