@@ -1,6 +1,6 @@
 {{define "page"}}
 	{{template "EventDetails" .EventDetails}}
-	{{if .IsClosed}}
+	{{if .Closed}}
 		<samp>Event is closed, no changes can be made.</samp>
 	{{else}}
 		{{template "AddRange" .AddRange}}
@@ -16,7 +16,9 @@
 				<th>Range
 				<th>Aggs
 				<th>Locked
-				<td>Edit
+				{{if not $.Closed}}
+					<td>Edit
+				{{end}}
 			</thead>
 			{{range .}}
 				<tr>
@@ -24,7 +26,9 @@
 					<td>{{.Name}}
 					<td>{{if .IsAgg}}{{.Aggs}}{{end}}
 					<td>{{if not .IsAgg}}{{.Locked}}{{end}}
-					<td onclick="console.log('hello')">
+					{{if not $.Closed}}
+						<td onclick='console.log("edit")'>
+					{{end}}
 			{{end}}
 		</table>
 	{{else}}

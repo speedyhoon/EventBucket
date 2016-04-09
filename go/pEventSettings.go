@@ -34,7 +34,7 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 		MenuID:  eventID,
 		Heading: event.Name,
 		Data: map[string]interface{}{
-			"IsClosed":     event.Closed,
+			"Closed":       event.Closed,
 			"Ranges":       event.Ranges,
 			"EventDetails": forms[0],
 			"AddRange":     forms[1],
