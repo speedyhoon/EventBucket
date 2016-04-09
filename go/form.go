@@ -17,22 +17,20 @@ type option struct {
 }
 
 const (
-	fieldMaxLen = 64
-
-	clubNew              uint8 = 0
-	clubDetails          uint8 = 1
-	clubMoundNew         uint8 = 2
-	eventNew             uint8 = 3
-	eventDetails         uint8 = 4
-	eventRangeNew        uint8 = 5
-	eventAggNew          uint8 = 6
-	eventShooterNew      uint8 = 7
-	eventShooterExisting uint8 = 8
-	eventShooterSearch   uint8 = 9
-	shooterNew           uint8 = 10
-	shooterDetails       uint8 = 11
-	shooterSearch        uint8 = 12
-	eventTotal           uint8 = 13
+	clubNew              uint8 = 1
+	clubDetails          uint8 = 2
+	clubMoundNew         uint8 = 3
+	eventNew             uint8 = 4
+	eventDetails         uint8 = 5
+	eventRangeNew        uint8 = 6
+	eventAggNew          uint8 = 7
+	eventShooterNew      uint8 = 8
+	eventShooterExisting uint8 = 9
+	eventShooterSearch   uint8 = 10
+	shooterNew           uint8 = 11
+	shooterDetails       uint8 = 12
+	shooterSearch        uint8 = 13
+	eventTotal           uint8 = 14
 )
 
 func dataListAgeGroup() []option {
@@ -55,13 +53,13 @@ func defaultTime() string {
 
 func getForm(id uint8) []field {
 	switch id {
-	case 0:
+	case 1:
 		return []field{{
 			name: "n", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
 			name: "b", v8: isValidBool,
 		}}
-	case 1:
+	case 2:
 		return []field{{
 			name: "n", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
@@ -81,15 +79,13 @@ func getForm(id uint8) []field {
 		}, {
 			name: "C", v8: isValidRegex, regex: regexID,
 		}}
-	case 2:
+	case 3:
 		return []field{{
-			name: "e", Required: true, min: .01, max: 65535, step: .01, v8: isValidFloat32,
-		}, {
-			name: "z", Required: true, v8: isValidStr, Options: []option{{Label: "Metres", Value: "m", Selected: false}, {Label: "Kilometres", Value: "k", Selected: false}, {Label: "Yards", Value: "y", Selected: false}, {Label: "Feet", Value: "f", Selected: false}},
+			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
 			name: "C", v8: isValidRegex, regex: regexID,
 		}}
-	case 3:
+	case 4:
 		return []field{{
 			name: "C", Value: defaultClubName(), Required: hasDefaultClub(), maxLen: 64, v8: isValidStr, Options: getDataListClubs(),
 		}, {
@@ -99,7 +95,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "t", Value: defaultTime(), maxLen: 5, step: 300, v8: isValidStr,
 		}}
-	case 4:
+	case 5:
 		return []field{{
 			name: "n", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
@@ -113,13 +109,13 @@ func getForm(id uint8) []field {
 		}, {
 			name: "E", v8: isValidRegex, regex: regexID,
 		}}
-	case 5:
+	case 6:
 		return []field{{
 			name: "n", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
 			name: "E", v8: isValidRegex, regex: regexID,
 		}}
-	case 6:
+	case 7:
 		return []field{{
 			name: "n", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
@@ -127,7 +123,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "E", v8: isValidRegex, regex: regexID,
 		}}
-	case 7:
+	case 8:
 		return []field{{
 			name: "f", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
@@ -145,7 +141,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "E", v8: isValidRegex, regex: regexID,
 		}}
-	case 8:
+	case 9:
 		return []field{{
 			name: "S", Required: true, v8: isValidRegex, regex: regexID,
 		}, {
@@ -155,7 +151,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "E", Required: true, v8: isValidRegex, regex: regexID,
 		}}
-	case 9:
+	case 10:
 		return []field{{
 			name: "f", maxLen: 64, v8: isValidStr,
 		}, {
@@ -163,7 +159,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "C", maxLen: 64, v8: isValidStr, manyRequired: []int{0, 1, 2}, manyRequiredQty: 1,
 		}}
-	case 10:
+	case 11:
 		return []field{{
 			name: "f", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
@@ -175,7 +171,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "r", min: 1, max: 5, step: 1, v8: isValidUint, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Junior U21", Value: "1", Selected: false}, {Label: "Junior U25", Value: "2", Selected: false}, {Label: "Veteran", Value: "3", Selected: false}, {Label: "Super Veteran", Value: "4", Selected: false}},
 		}}
-	case 11:
+	case 12:
 		return []field{{
 			name: "f", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
@@ -189,7 +185,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "I", Required: true, maxLen: 64, v8: isValidRegex, regex: regexID,
 		}}
-	case 12:
+	case 13:
 		return []field{{
 			name: "f", maxLen: 64, v8: isValidStr,
 		}, {
@@ -197,7 +193,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "C", maxLen: 64, v8: isValidStr, manyRequired: []int{0, 1, 2}, manyRequiredQty: 1,
 		}}
-	case 13:
+	case 14:
 		return []field{{
 			name: "t", Required: true, max: 60, step: 1, v8: isValidUint,
 		}, {

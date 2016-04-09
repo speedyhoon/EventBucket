@@ -15,7 +15,7 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 	}
 
 	action, forms := sessionForms2(w, r, eventDetails, eventRangeNew, eventAggNew)
-	if action == nil || action != nil && *action != eventDetails {
+	if action != eventDetails {
 		forms[0].Fields[0].Value = event.Name
 		forms[0].Fields[1].Value = event.Club
 		forms[0].Fields[2].Value = event.Date
