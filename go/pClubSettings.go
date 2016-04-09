@@ -14,7 +14,7 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 		return
 	}
 
-	action, forms := sessionForms2(w, r, clubDetails, clubMoundNew)
+	action, forms := sessionForms(w, r, clubDetails, clubMoundNew)
 
 	//Club Details Form
 	if action != clubDetails {

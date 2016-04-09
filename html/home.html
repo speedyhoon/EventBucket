@@ -1,7 +1,7 @@
 {{define "page"}}
 	<p>EventBucket is designed to assist with collecting scores during shooting events. Has your rifle club ever had difficulty keeping up with scoring for weekly matches, pennants or even prize meetings? EventBucket will solve these issues. It does not require electronic targets and can complement existing scoring and check scoring using cards and blackboards.</p>
-	{{template "networkAdapters" .network}}
-	{{template "NewEvent" .newEvent}}
+	{{template "networkAdapters" .Network}}
+	{{template "NewEvent" .NewEvent}}
 
 	{{with .Events}}
 		<h2>Open Events</h2>

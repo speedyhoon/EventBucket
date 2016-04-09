@@ -2,10 +2,8 @@ package main
 
 import "net/http"
 
-var shooterQty int
-
 func shooters(w http.ResponseWriter, r *http.Request) {
-	action, pageForms := sessionForms2(w, r, shooterNew, shooterSearch, shooterDetails)
+	action, pageForms := sessionForms(w, r, shooterNew, shooterSearch, shooterDetails)
 	var shooters []Shooter
 	var err error
 	var shooterQty uint

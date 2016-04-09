@@ -14,7 +14,7 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 		return
 	}
 
-	action, forms := sessionForms2(w, r, eventDetails, eventRangeNew, eventAggNew)
+	action, forms := sessionForms(w, r, eventDetails, eventRangeNew, eventAggNew)
 	if action != eventDetails {
 		forms[0].Fields[0].Value = event.Name
 		forms[0].Fields[1].Value = event.Club
