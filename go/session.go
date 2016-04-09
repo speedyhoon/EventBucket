@@ -43,10 +43,10 @@ func setSession(w http.ResponseWriter, returns form) {
 		}
 	}
 	//	}
+	returns.expiry = time.Now().Add(sessionExpiryTime)
 	globalSessions.Lock()
 	globalSessions.m[sessionID] = returns
 	globalSessions.Unlock()
-	returns.expiry = time.Now().Add(sessionExpiryTime)
 	w.Header().Add("Set-Cookie", fmt.Sprintf("%v=%v; expires=%v HttpOnly", sessionToken, sessionID, returns.expiry.Format(formatGMT)))
 }
 
@@ -64,8 +64,6 @@ func setSession(w http.ResponseWriter, returns form) {
 	}
 	return sessionToken + "=" + sessionID
 }*/
-
-//TODO create a ticker that checks the saved sessions every 90 seconds. If the session is older than 1 minute, delete it.
 
 //When a session id is used remove it. Supply a list of expected forms to display error messages for. Don't show errors for different pages.
 /*func getSession(w http.ResponseWriter, r *http.Request, formActions []uint8) form {
@@ -106,6 +104,7 @@ func getFormSession(w http.ResponseWriter, r *http.Request, formActions ...uint8
 		globalSessions.Lock()
 		delete(globalSessions.m, cookies.Value)
 		globalSessions.Unlock()
+		//Using minus sessionExpiryTime so the session expires time is set to the past
 		w.Header().Set("Set-Cookie", fmt.Sprintf("%v=; expires=%v HttpOnly", sessionToken, time.Now().UTC().Add(-sessionExpiryTime).Format(formatGMT)))
 		for _, action := range formActions {
 			if contents.action == action {
@@ -116,12 +115,12 @@ func getFormSession(w http.ResponseWriter, r *http.Request, formActions ...uint8
 	return form{Fields: getForm(formActions[0])}
 }
 
-func sessionForms(w http.ResponseWriter, r *http.Request, formActions ...uint8) (*uint8, [][]field) {
+func sessionForms(w http.ResponseWriter, r *http.Request, formActions ...uint8) (uint8, [][]field) {
 	//Get users session id from request
 	cookies, err := r.Cookie(sessionToken)
 	if err != nil || cookies.Value == "" {
 		//No session found. Return default forms.
-		return nil, getForms(formActions...)
+		return 0, getForms(formActions...)
 	}
 
 	//Start a read lock to prevent concurrent reads while other parts are executing a write.
@@ -135,6 +134,7 @@ func sessionForms(w http.ResponseWriter, r *http.Request, formActions ...uint8) 
 		globalSessions.Unlock()
 
 		//Remove cookie.
+		//Using minus sessionExpiryTime so the session expires time is set to the past
 		w.Header().Set("Set-Cookie", fmt.Sprintf("%v=; expires=%v HttpOnly", sessionToken, time.Now().UTC().Add(-sessionExpiryTime).Format(formatGMT)))
 		var forms [][]field
 		for _, action := range formActions {
@@ -146,10 +146,9 @@ func sessionForms(w http.ResponseWriter, r *http.Request, formActions ...uint8) 
 				forms = append(forms, getForm(action))
 			}
 		}
-		//TODO is it possible that reference to contents could possibly blow up?
-		return &contents.action, forms
+		return contents.action, forms
 	}
-	return nil, getForms(formActions...)
+	return 0, getForms(formActions...)
 }
 
 func getForms(formActions ...uint8) [][]field {
@@ -162,7 +161,7 @@ func getForms(formActions ...uint8) [][]field {
 
 //Update the expires http header time, every 15 minutes rather than recalculating it on every http request.
 func maintainSessions() {
-	ticker := time.NewTicker(time.Second * 60)
+	ticker := time.NewTicker(sessionExpiryTime)
 	for range ticker.C {
 		//Can't directly change global variables in a go routine, so call an external function.
 		purgeOldSessions()
@@ -171,23 +170,31 @@ func maintainSessions() {
 
 //Delete sessions where the expiry datetime has already lapsed.
 func purgeOldSessions() {
+	globalSessions.RLock()
+	qty := len(globalSessions.m)
+	globalSessions.RUnlock()
+	if qty == 0 {
+		return
+	}
 	globalSessions.Lock()
+	t.Println("about to purge sessions, qty", len(globalSessions.m))
 	for sessionID := range globalSessions.m {
 		if globalSessions.m[sessionID].expiry.Before(time.Now()) {
 			t.Println("deleted sessionID:", sessionID, len(globalSessions.m))
 			delete(globalSessions.m, sessionID)
 		}
 	}
+	t.Println("remaining:", len(globalSessions.m))
 	globalSessions.Unlock()
 }
 
-func sessionForms2(w http.ResponseWriter, r *http.Request, formActions ...uint8) (*uint8, []form) {
+func sessionForms2(w http.ResponseWriter, r *http.Request, formActions ...uint8) (uint8, []form) {
 	//Get users session id from request
 	cookies, err := r.Cookie(sessionToken)
 	if err != nil || cookies.Value == "" {
 		//No session found. Return default forms.
 		//		return form{Fields: getForm(formActions[0])}
-		return nil, getForms2(formActions...)
+		return 0, getForms2(formActions...)
 	}
 
 	//Start a read lock to prevent concurrent reads while other parts are executing a write.
@@ -201,21 +208,24 @@ func sessionForms2(w http.ResponseWriter, r *http.Request, formActions ...uint8)
 		globalSessions.Unlock()
 
 		//Remove cookie.
+		//.UTC() Sets the location to UTC
+		//Using minus sessionExpiryTime so the session expires time is set to the past
+		//HttpOnly means the cookie can't be accessed by JavaScript
 		w.Header().Set("Set-Cookie", fmt.Sprintf("%v=; expires=%v HttpOnly", sessionToken, time.Now().UTC().Add(-sessionExpiryTime).Format(formatGMT)))
 		var forms []form
 		for _, action := range formActions {
 			if contents.action == action {
 				//				forms = append(forms, contents)
-				forms = append(forms, form{Fields: contents.Fields})
+				forms = append(forms, contents)
 			} else {
 				//				forms = append(forms, form{action: action, Fields: getForm(action)})
 				forms = append(forms, form{Fields: getForm(action)})
 			}
 		}
 		//TODO is it possible that reference to contents could possibly blow up?
-		return &contents.action, forms
+		return contents.action, forms
 	}
-	return nil, getForms2(formActions...)
+	return 0, getForms2(formActions...)
 }
 
 func getForms2(formActions ...uint8) []form {

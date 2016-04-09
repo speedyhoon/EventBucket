@@ -1,42 +1,14 @@
 {{define "page"}}
 	{{template "ClubDetails" .ClubDetails}}
 	{{template "NewShootingMound" .ClubMound}}
-	<p>{{.Club.ID}}
-	<p>{{.Club.IsDefault}}
-
 	<h2>Mounds</h2>
 	{{with .Club.Mounds}}
 		<ul>
 			{{range .}}
-				<li>{{.Distance}} {{.Unit}}</li>
+				<li>{{.Name}}</li>
 			{{end}}
 		</ul>
 	{{else}}
 		<samp>No mounds listed</samp>
 	{{end}}
-
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-
-	<select>
-		<option>-012345V
-		<option>-012345VX
-		<option>-0123456X
-	</select>
-	<h3>Legend</h3>
-	<p>- no shot fired / withdrawn / disqualified
-	<p>0 shot fired, missed target
-	<p>1
-	<p>2
-	<p>3 magpie
-	<p>4
-	<p>5 bullseye
-	<p>6 inner bullseye
-	<p>V Vbull
-	<p>X center bull
 {{end}}

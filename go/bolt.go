@@ -175,13 +175,77 @@ func updateShooter(shooter Shooter, eventID string) error {
 	return err
 }
 
-func updateDoc(collectionName []byte, ID string, document interface{}) error {
-	/*err := conn.C(collectionName).UpdateId(ID, document)
+func updateClubDetails(update Club) error {
+	eID, err := b36toBy(update.ID)
 	if err != nil {
-		warn.Println(err)
+		return err
 	}
-	return err*/
-	return nil
+	err = db.Update(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(tblClub)
+		if bucket == nil {
+			return fmt.Errorf(eNoBucket, tblClub)
+		}
+
+		document := bucket.Get(eID)
+		if len(document) == 0 {
+			return fmt.Errorf(eNoDocument, update.ID, document)
+		}
+		var club Club
+		err = json.Unmarshal(document, &club)
+		if err != nil {
+			return fmt.Errorf("'%v' Query club unmarshaling failed: \n%q\n%#v\n", update.ID, document, err)
+		}
+		//Manually set each one otherwise it would override the existing club and its details (Ranges, Shooters & their scores) since the form doesn't already have that info.
+		club.Name = update.Name
+		club.Address = update.Address
+		club.Town = update.Town
+		club.Postcode = update.Postcode
+		club.Latitude = update.Latitude
+		club.Longitude = update.Longitude
+		club.IsDefault = update.IsDefault
+		club.URL = update.URL
+
+		document, err = json.Marshal(club)
+		if err != nil {
+			return err
+		}
+
+		return bucket.Put(eID, document)
+	})
+	return err
+}
+
+func insertClubMound(clubID string, mound Mound) error {
+	eID, err := b36toBy(clubID)
+	if err != nil {
+		return err
+	}
+	err = db.Update(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(tblClub)
+		if bucket == nil {
+			return fmt.Errorf(eNoBucket, tblClub)
+		}
+
+		document := bucket.Get(eID)
+		if len(document) == 0 {
+			return fmt.Errorf(eNoDocument, clubID, document)
+		}
+		var club Club
+		err = json.Unmarshal(document, &club)
+		if err != nil {
+			return fmt.Errorf("'%v' Query club unmarshaling failed: \n%q\n%#v\n", clubID, document, err)
+		}
+
+		club.Mounds = append(club.Mounds, mound)
+
+		document, err = json.Marshal(club)
+		if err != nil {
+			return err
+		}
+
+		return bucket.Put(eID, document)
+	})
+	return err
 }
 
 func updateEventDetails(update Event) error {

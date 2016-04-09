@@ -31,9 +31,7 @@ type AutoInc struct {
 
 // Mound is exported
 type Mound struct {
-	//	ID       string `json:"I"`
-	Distance uint   `json:"d,omitempty"`
-	Unit     string `json:"u,omitempty"`
+	Name string `json:"n,omitempty"`
 }
 
 // Event is exported

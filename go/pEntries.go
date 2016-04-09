@@ -16,7 +16,7 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 	if err != nil {
 		shooterEntry.Error = err.Error()
 	}
-	if action != nil && *action == eventShooterExisting {
+	if action == eventShooterExisting {
 		shooterEntry.Fields[3].Error = pageForms[1][0].Error
 		//Grade
 		shooterEntry.Fields[4].Error = pageForms[1][1].Error

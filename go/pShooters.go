@@ -8,14 +8,12 @@ func shooters(w http.ResponseWriter, r *http.Request) {
 	action, pageForms := sessionForms2(w, r, shooterNew, shooterSearch, shooterDetails)
 	var shooters []Shooter
 	var err error
-	if action != nil && *action == shooterSearch {
-		shooters, err = getSearchShooters(pageForms[1].Fields[0].Value, pageForms[1].Fields[1].Value, pageForms[1].Fields[2].Value)
+	var shooterQty uint
+	if action == shooterSearch {
+		shooters, err, shooterQty = getSearchShooters(pageForms[1].Fields[0].Value, pageForms[1].Fields[1].Value, pageForms[1].Fields[2].Value)
+	} else {
+		shooterQty, err = collectionSize(tblShooter)
 	}
-	if shooterQty < 1 {
-		totalShooters, _ := getShooters()
-		shooterQty = len(totalShooters)
-	}
-
 	//TODO add query string so search is bookmarkable?
 
 	templater(w, page{

@@ -14,17 +14,23 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 		return
 	}
 
-	detailsForm := getFormSession(w, r, clubDetails)
-	detailsForm.Fields[0].Value = club.Name
-	detailsForm.Fields[1].Value = club.Address
-	detailsForm.Fields[2].Value = club.Town
-	detailsForm.Fields[3].Value = club.Postcode
-	detailsForm.Fields[4].Value = trimFloat(club.Latitude)
-	detailsForm.Fields[5].Value = trimFloat(club.Longitude)
-	detailsForm.Fields[6].Value = club.ID
+	action, forms := sessionForms2(w, r, clubDetails, clubMoundNew)
 
-	newMoundForm := getFormSession(w, r, clubMoundNew)
-	newMoundForm.Fields[0].Value = club.ID
+	//Club Details Form
+	if action != clubDetails {
+		forms[0].Fields[0].Value = club.Name
+		forms[0].Fields[1].Value = club.Address
+		forms[0].Fields[2].Value = club.Town
+		forms[0].Fields[3].Value = club.Postcode
+		forms[0].Fields[4].Value = trimFloat(club.Latitude)
+		forms[0].Fields[5].Value = trimFloat(club.Longitude)
+		forms[0].Fields[6].Checked = club.IsDefault
+		forms[0].Fields[7].Value = club.URL
+	}
+	forms[0].Fields[8].Value = club.ID
+
+	//Club Mound form
+	forms[1].Fields[1].Value = club.ID
 
 	templater(w, page{
 		Title:   "Club Settings",
@@ -33,8 +39,8 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 		Heading: club.Name,
 		Data: map[string]interface{}{
 			"Club":        club,
-			"ClubDetails": detailsForm,
-			"ClubMound":   newMoundForm,
+			"ClubDetails": forms[0],
+			"ClubMound":   forms[1],
 		},
 	})
 }
