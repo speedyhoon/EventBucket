@@ -27,6 +27,12 @@ func totalScores(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 
 	var currentRange Range
 	currentRange, err = eventRange(event.Ranges, ids[1], w, r)
+	if err != nil {
+		return
+	}
+
+	_, forms := sessionForms(w, r, eventTotalScores)
+	t.Printf("%+v\n", forms[0])
 
 	templater(w, page{
 		Title:   "Total Scores",
@@ -45,15 +51,14 @@ func totalScores(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 }
 
 func eventTotalUpsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
-	eventID := submittedForm.Fields[2].Value
-	rangeID := submittedForm.Fields[3].Value
-	shooterID := submittedForm.Fields[4].valueUint
-
 	//Insert new event into database.
-	err := upsertScore(eventID, rangeID, shooterID, Score{
-		Total:   submittedForm.Fields[0].valueUint,
-		Centers: submittedForm.Fields[1].valueUint,
-	})
+	err := updateDocument(tblEvent, submittedForm.Fields[2].Value, &shooterScore{
+		rangeID: submittedForm.Fields[3].Value,
+		id:      submittedForm.Fields[4].valueUint,
+		score: Score{
+			Total:   submittedForm.Fields[0].valueUint,
+			Centers: submittedForm.Fields[1].valueUint,
+		}}, &Event{}, upsertScore)
 
 	//Display any upsert errors onscreen.
 	if err != nil {

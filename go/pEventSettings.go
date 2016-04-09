@@ -55,14 +55,13 @@ func dataListRanges(ranges []Range) []option {
 
 func eventDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	eventID := submittedForm.Fields[5].Value
-	err := updateEventDetails(Event{
-		ID:     eventID,
+	err := updateDocument(tblEvent, eventID, &Event{
 		Name:   submittedForm.Fields[0].Value,
 		Club:   submittedForm.Fields[1].Value,
 		Date:   submittedForm.Fields[2].Value,
 		Time:   submittedForm.Fields[3].Value,
 		Closed: submittedForm.Fields[4].Checked,
-	})
+	}, &Event{}, updateEventDetails)
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
 		return
@@ -97,14 +96,13 @@ func eventAggInsert(w http.ResponseWriter, r *http.Request, submittedForm form, 
 
 func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	eventID := submittedForm.Fields[6].Value
-	shooter := EventShooter{
+	err := updateDocument(tblEvent, eventID, &EventShooter{
 		FirstName: submittedForm.Fields[0].Value,
 		Surname:   submittedForm.Fields[1].Value,
 		Club:      submittedForm.Fields[2].Value,
 		Grade:     submittedForm.Fields[4].valueUint,
 		AgeGroup:  submittedForm.Fields[5].valueUint,
-	}
-	err := eventShooterInsertDB(eventID, shooter)
+	}, &Event{}, eventShooterInsertDB)
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
 		return
@@ -118,14 +116,13 @@ func eventShooterExistingInsert(w http.ResponseWriter, r *http.Request, submitte
 		formError(w, submittedForm, redirect, err)
 		return
 	}
-	eventShooter := EventShooter{
+	err = updateDocument(tblEvent, eventID, &EventShooter{
 		Grade:     submittedForm.Fields[1].valueUint,
 		AgeGroup:  submittedForm.Fields[2].valueUint,
 		FirstName: shooter.NickName,
 		Surname:   shooter.Surname,
 		Club:      shooter.Club,
-	}
-	err = eventShooterInsertDB(eventID, eventShooter)
+	}, &Event{}, eventShooterInsertDB)
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
 		return
