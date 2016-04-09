@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/boltdb/bolt"
 )
@@ -296,6 +297,28 @@ func getEvents(query func(Event) bool) ([]Event, error) {
 	return events, err
 }
 
+func getCalendarEvents() ([]CalendarEvent, error) {
+	var events []CalendarEvent
+	err := db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(tblEvent)
+		if b == nil {
+			//Event Bucket isn't created yet
+			return nil
+		}
+		return b.ForEach(func(_, value []byte) error {
+			var event CalendarEvent
+			if json.Unmarshal(value, &event) == nil && !event.Closed {
+				if event.Date != "" {
+					event.ISO, _ = time.Parse("2006-01-02", event.Date)
+				}
+				events = append(events, event)
+			}
+			return nil
+		})
+	})
+	return events, err
+}
+
 func getShooters() ([]Shooter, error) {
 	var shooters []Shooter
 	err := db.View(func(tx *bolt.Tx) error {
@@ -525,9 +548,10 @@ func b36toBy(id string) ([]byte, error) {
 	return b, nil
 }
 
-func getSearchShooters(firstName, surname, club string) ([]Shooter, error) {
+func getSearchShooters(firstName, surname, club string) ([]Shooter, error, uint) {
 	var shooters []Shooter
 	var shooter Shooter
+	var totalQty uint
 
 	firstName = strings.ToLower(firstName)
 	surname = strings.ToLower(surname)
@@ -539,6 +563,7 @@ func getSearchShooters(firstName, surname, club string) ([]Shooter, error) {
 			return fmt.Errorf(eNoBucket, tblShooter)
 		}
 		return b.ForEach(func(_, value []byte) error {
+			totalQty++
 			//strings.Contains returns true when substr is "" (empty string)
 			if json.Unmarshal(value, &shooter) == nil && strings.Contains(strings.ToLower(shooter.FirstName), firstName) && strings.Contains(strings.ToLower(shooter.Surname), surname) && strings.Contains(strings.ToLower(shooter.Club), club) {
 				shooters = append(shooters, shooter)
@@ -546,7 +571,7 @@ func getSearchShooters(firstName, surname, club string) ([]Shooter, error) {
 			return nil
 		})
 	})
-	return shooters, err
+	return shooters, err, totalQty
 }
 
 func getClubByName(clubName string) (Club, error) {
