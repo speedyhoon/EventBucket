@@ -71,8 +71,7 @@ func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redi
 
 func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	clubID := submittedForm.Fields[8].Value
-	err := updateClubDetails(Club{
-		ID:        clubID,
+	err := updateDocument(tblClub, clubID, &Club{
 		Name:      submittedForm.Fields[0].Value,
 		Address:   submittedForm.Fields[1].Value,
 		Town:      submittedForm.Fields[2].Value,
@@ -81,7 +80,7 @@ func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm for
 		Longitude: submittedForm.Fields[5].valueFloat32,
 		IsDefault: submittedForm.Fields[6].Checked,
 		URL:       submittedForm.Fields[7].Value,
-	})
+	}, &Club{}, updateClubDetails)
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
 		return
@@ -91,9 +90,9 @@ func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm for
 
 func clubMoundInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	clubID := submittedForm.Fields[1].Value
-	err := insertClubMound(clubID, Mound{
+	err := updateDocument(tblClub, clubID, &Mound{
 		Name: submittedForm.Fields[0].Value,
-	})
+	}, &Club{}, insertClubMound)
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
 		return

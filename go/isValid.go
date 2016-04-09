@@ -72,6 +72,7 @@ func isValidUint(f *field, inp ...string) {
 		f.Error = fmt.Sprintf("Please enter a valid value. The two nearest values are %d and %d", below, below+uint(f.step))
 		return
 	}
+	f.Value = fmt.Sprintf("%v", num)
 	f.valueUint = num
 	return
 }
@@ -105,6 +106,7 @@ func isValidFloat32(f *field, inp ...string) {
 		f.Error = fmt.Sprintf("Please enter a valid value. The two nearest values are %v and %v", num-rem, num-rem+f.step)
 		return
 	}
+	f.Value = fmt.Sprintf("%v", num)
 	f.valueFloat32 = num
 	return
 }

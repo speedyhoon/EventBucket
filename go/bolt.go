@@ -175,114 +175,68 @@ func updateShooter(shooter Shooter, eventID string) error {
 	return err
 }
 
-func updateClubDetails(update Club) error {
-	eID, err := b36toBy(update.ID)
+func updateClubDetails(decode interface{}, contents interface{}) interface{} {
+	club := decode.(*Club)
+	update := contents.(*Club)
+	//Manually set each one otherwise it would override the existing club and its details (Ranges, Shooters & their scores) since the form doesn't already have that info.
+	club.Name = update.Name
+	club.Address = update.Address
+	club.Town = update.Town
+	club.Postcode = update.Postcode
+	club.Latitude = update.Latitude
+	club.Longitude = update.Longitude
+	club.IsDefault = update.IsDefault
+	club.URL = update.URL
+	return club
+}
+
+func insertClubMound(decode interface{}, contents interface{}) interface{} {
+	club := decode.(*Club)
+	club.Mounds = append(club.Mounds, *contents.(*Mound))
+	return club
+}
+
+func updateDocument(collectionName []byte, colID string, update interface{}, decode interface{}, function func(interface{}, interface{}) interface{}) error {
+	ID, err := b36toBy(colID)
 	if err != nil {
 		return err
 	}
 	err = db.Update(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(tblClub)
+		bucket := tx.Bucket(collectionName)
 		if bucket == nil {
-			return fmt.Errorf(eNoBucket, tblClub)
+			return fmt.Errorf(eNoBucket, collectionName)
 		}
 
-		document := bucket.Get(eID)
+		document := bucket.Get(ID)
 		if len(document) == 0 {
-			return fmt.Errorf(eNoDocument, update.ID, document)
+			return fmt.Errorf(eNoDocument, ID, document)
 		}
-		var club Club
-		err = json.Unmarshal(document, &club)
-		if err != nil {
-			return fmt.Errorf("'%v' Query club unmarshaling failed: \n%q\n%#v\n", update.ID, document, err)
-		}
-		//Manually set each one otherwise it would override the existing club and its details (Ranges, Shooters & their scores) since the form doesn't already have that info.
-		club.Name = update.Name
-		club.Address = update.Address
-		club.Town = update.Town
-		club.Postcode = update.Postcode
-		club.Latitude = update.Latitude
-		club.Longitude = update.Longitude
-		club.IsDefault = update.IsDefault
-		club.URL = update.URL
 
-		document, err = json.Marshal(club)
+		err = json.Unmarshal(document, &decode)
+		if err != nil {
+			return fmt.Errorf("'%v' Query club unmarshaling failed: \n%q\n%#v\n", ID, document, err)
+		}
+
+		document, err = json.Marshal(function(decode, update))
 		if err != nil {
 			return err
 		}
 
-		return bucket.Put(eID, document)
+		return bucket.Put(ID, document)
 	})
 	return err
 }
 
-func insertClubMound(clubID string, mound Mound) error {
-	eID, err := b36toBy(clubID)
-	if err != nil {
-		return err
-	}
-	err = db.Update(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(tblClub)
-		if bucket == nil {
-			return fmt.Errorf(eNoBucket, tblClub)
-		}
-
-		document := bucket.Get(eID)
-		if len(document) == 0 {
-			return fmt.Errorf(eNoDocument, clubID, document)
-		}
-		var club Club
-		err = json.Unmarshal(document, &club)
-		if err != nil {
-			return fmt.Errorf("'%v' Query club unmarshaling failed: \n%q\n%#v\n", clubID, document, err)
-		}
-
-		club.Mounds = append(club.Mounds, mound)
-
-		document, err = json.Marshal(club)
-		if err != nil {
-			return err
-		}
-
-		return bucket.Put(eID, document)
-	})
-	return err
-}
-
-func updateEventDetails(update Event) error {
-	eID, err := b36toBy(update.ID)
-	if err != nil {
-		return err
-	}
-	err = db.Update(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(tblEvent)
-		if bucket == nil {
-			return fmt.Errorf(eNoBucket, tblEvent)
-		}
-
-		document := bucket.Get(eID)
-		if len(document) == 0 {
-			return fmt.Errorf(eNoDocument, update.ID, document)
-		}
-		var event Event
-		err = json.Unmarshal(document, &event)
-		if err != nil {
-			return fmt.Errorf("'%v' Query event unmarshaling failed: \n%q\n%#v\n", update.ID, document, err)
-		}
-		//Manually set each one otherwise it would override the existing event and its details (Ranges, Shooters & their scores) since the form doesn't already have that info.
-		event.Name = update.Name
-		event.Club = update.Club
-		event.Date = update.Date
-		event.Time = update.Time
-		event.Closed = update.Closed
-
-		document, err = json.Marshal(event)
-		if err != nil {
-			return err
-		}
-
-		return bucket.Put(eID, document)
-	})
-	return err
+func updateEventDetails(decode interface{}, contents interface{}) interface{} {
+	event := decode.(*Event)
+	update := contents.(*Event)
+	//Manually set each one otherwise it would override the existing event and its details (Ranges, Shooters & their scores) since the form doesn't already have that info.
+	event.Name = update.Name
+	event.Club = update.Club
+	event.Date = update.Date
+	event.Time = update.Time
+	event.Closed = update.Closed
+	return event
 }
 
 func eventAddRange(eventID string, newRange Range) (uint, error) {
@@ -446,96 +400,46 @@ func getDefaultClub() Club {
 	return Club{}
 }
 
-func eventShooterInsertDB(ID string, shooter EventShooter) error {
-	byteID, err := b36toBy(ID)
-	if err != nil {
-		return err
-	}
-	err = db.Update(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(tblEvent)
-		if bucket == nil {
-			return fmt.Errorf(eNoBucket, tblEvent)
-		}
+func eventShooterInsertDB(decode interface{}, contents interface{}) interface{} {
+	event := decode.(*Event)
+	shooter := *contents.(*EventShooter)
 
-		document := bucket.Get(byteID)
-		if len(document) == 0 {
-			return fmt.Errorf(eNoDocument, ID, document)
-		}
-		var event Event
-		err = json.Unmarshal(document, &event)
-		if err != nil {
-			return err
-		}
+	//Assign shooter ID
+	shooter.ID = event.AutoInc.Shooter
+	event.Shooters = append(event.Shooters, shooter)
 
-		//Assign shooter ID
+	//Increment Event Shooter ID
+	event.AutoInc.Shooter++
+
+	//If shooter is Match Reserve, duplicate them in the Match Open category
+	if shooter.Grade == 8 {
 		shooter.ID = event.AutoInc.Shooter
+		shooter.Grade = 7
+		shooter.Hidden = true
 		event.Shooters = append(event.Shooters, shooter)
-
-		//Increment Event Shooter ID
 		event.AutoInc.Shooter++
-
-		//If shooter is Match Reserve, duplicate them in the Match Open category
-		if shooter.Grade == 8 {
-			shooter.ID = event.AutoInc.Shooter
-			shooter.Grade = 7
-			shooter.Hidden = true
-			event.Shooters = append(event.Shooters, shooter)
-			event.AutoInc.Shooter++
-		}
-
-		document, err = json.Marshal(event)
-		if err != nil {
-			return err
-		}
-
-		return bucket.Put(byteID, document)
-	})
-	return err
+	}
+	return event
 }
 
-func upsertScore(eventID, rID string, sID uint, score Score) error {
-	byteID, err := b36toBy(eventID)
-	if err != nil {
-		return err
+func upsertScore(decode interface{}, contents interface{}) interface{} {
+	event := decode.(*Event)
+	shooter := *contents.(*shooterScore)
+
+	if event.Shooters[shooter.id].Scores == nil {
+		event.Shooters[shooter.id].Scores = make(map[string]Score)
 	}
-	err = db.Update(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(tblEvent)
-		if bucket == nil {
-			return fmt.Errorf(eNoBucket, tblEvent)
-		}
+	event.Shooters[shooter.id].Scores[shooter.rangeID] = shooter.score
 
-		document := bucket.Get(byteID)
-		if len(document) == 0 {
-			return fmt.Errorf(eNoDocument, eventID, document)
-		}
-		var event Event
-		err = json.Unmarshal(document, &event)
-		if err != nil {
-			return err
-		}
-
-		if event.Shooters[sID].Scores == nil {
-			event.Shooters[sID].Scores = make(map[string]Score)
-		}
-		event.Shooters[sID].Scores[rID] = score
-
-		event.Shooters[sID].Scores = calcShooterAggs(event.Ranges, event.Shooters[sID].Scores)
-
-		document, err = json.Marshal(event)
-		if err != nil {
-			return err
-		}
-
-		return bucket.Put(byteID, document)
-	})
-	return err
+	event.Shooters[shooter.id].Scores = calcShooterAggs(event.Ranges, event.Shooters[shooter.id].Scores)
+	return event
 }
 
 func calcShooterAggs(ranges []Range, shooterScores map[string]Score) map[string]Score {
 	//TODO save countBack once scoreCards is saving scores
 	for _, r := range ranges {
 		if r.IsAgg {
-			shooterScores[r.strID()] = calcShooterAgg(r.Aggs, shooterScores)
+			shooterScores[r.StrID()] = calcShooterAgg(r.Aggs, shooterScores)
 		}
 	}
 	return shooterScores
@@ -588,7 +492,7 @@ func upsertAggScores(eventID string, rID uint) error {
 		if err != nil {
 			return err
 		}
-		rangeID := aggRange.strID()
+		rangeID := aggRange.StrID()
 		for sID, shooter := range event.Shooters {
 			if shooter.Scores != nil {
 				event.Shooters[sID].Scores[rangeID] = calcShooterAgg(aggRange.Aggs, shooter.Scores)

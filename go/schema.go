@@ -138,6 +138,12 @@ type Shooter struct {
 	Grade    uint `json:"g"` //TODO change to a slice in future
 }
 
+type shooterScore struct {
+	rangeID string
+	id      uint
+	score   Score
+}
+
 type field struct {
 	name, Error, Value string
 	Required           bool
