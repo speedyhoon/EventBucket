@@ -30,7 +30,7 @@ const (
 	shooterNew           uint8 = 11
 	shooterDetails       uint8 = 12
 	shooterSearch        uint8 = 13
-	eventTotal           uint8 = 14
+	eventTotalScores     uint8 = 14
 )
 
 func dataListAgeGroup() []option {
