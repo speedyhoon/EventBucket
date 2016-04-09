@@ -4,11 +4,12 @@ import "net/http"
 
 func events(w http.ResponseWriter, r *http.Request) {
 	listEvents, err := getEvents(onlyOpen)
+	_, forms := sessionForms(w, r, eventNew)
 	templater(w, page{
 		Title: "Events",
 		Error: err,
 		Data: map[string]interface{}{
-			"NewEvent":   getFormSession(w, r, eventNew),
+			"NewEvent":   forms[0],
 			"ListEvents": listEvents,
 		},
 	})

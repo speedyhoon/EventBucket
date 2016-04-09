@@ -11,21 +11,21 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 	}
 
 	action, pageForms := sessionForms(w, r, eventShooterNew, eventShooterExisting)
-	shooterEntry := form{Fields: pageForms[0]}
+	shooterEntry := pageForms[0]
 	listClubs, err := getClubs()
 	if err != nil {
 		shooterEntry.Error = err.Error()
 	}
 	if action == eventShooterExisting {
-		shooterEntry.Fields[3].Error = pageForms[1][0].Error
+		shooterEntry.Fields[3].Error = pageForms[1].Fields[0].Error
 		//Grade
-		shooterEntry.Fields[4].Error = pageForms[1][1].Error
-		shooterEntry.Fields[4].Value = pageForms[1][1].Value
+		shooterEntry.Fields[4].Error = pageForms[1].Fields[1].Error
+		shooterEntry.Fields[4].Value = pageForms[1].Fields[1].Value
 		//Age Group
-		shooterEntry.Fields[5].Error = pageForms[1][2].Error
-		shooterEntry.Fields[5].Value = pageForms[1][2].Value
+		shooterEntry.Fields[5].Error = pageForms[1].Fields[2].Error
+		shooterEntry.Fields[5].Value = pageForms[1].Fields[2].Value
 		//Add Existing Shooter button
-		shooterEntry.Fields[6].Error = pageForms[1][3].Error
+		shooterEntry.Fields[6].Error = pageForms[1].Fields[3].Error
 	}
 	shooterEntry.Fields[2].Options = dataListClubs(listClubs)
 

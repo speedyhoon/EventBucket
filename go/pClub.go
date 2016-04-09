@@ -27,10 +27,11 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		warn.Println(err)
 	}
+	_, forms := sessionForms(w, r, clubNew)
 	templater(w, page{
 		Title: "Clubs",
 		Data: map[string]interface{}{
-			"NewClub":   getFormSession(w, r, clubNew),
+			"NewClub":   forms[0],
 			"ListClubs": listClubs,
 		},
 	})

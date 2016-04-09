@@ -5,7 +5,7 @@ import (
 	"regexp"
 )
 
-// Club is exported
+//Club is exported
 type Club struct {
 	ID        string  `json:"I"`
 	Name      string  `json:"n"`
@@ -20,7 +20,7 @@ type Club struct {
 	AutoInc   AutoInc `json:"A,omitempty"`
 }
 
-// AutoInc is a auto increment counter
+//AutoInc is a auto increment counter
 type AutoInc struct {
 	Mound   uint `json:"M,omitempty"`
 	Event   uint `json:"E,omitempty"`
@@ -29,12 +29,12 @@ type AutoInc struct {
 	Shooter uint `json:"S,omitempty"`
 }
 
-// Mound is exported
+//Mound could in future contain additional details like distance
 type Mound struct {
 	Name string `json:"n,omitempty"`
 }
 
-// Event is exported
+//Event is exported
 type Event struct {
 	ID       string         `json:"I"`
 	Name     string         `json:"n"`
@@ -54,7 +54,7 @@ type Event struct {
 	*/
 }
 
-// Range is exported
+//Range is exported
 type Range struct {
 	ID     uint   `json:"I"`
 	Name   string `json:"n"`
@@ -73,7 +73,7 @@ func (r Range) strID() string {
 	return fmt.Sprintf("%v", r.ID)
 }
 
-// Score is exported
+//Score is exported
 type Score struct {
 	//TODO the schema should change so that it can use unsigned  bit numbers instead
 	Total      uint   `json:"t"`
@@ -88,7 +88,7 @@ type Score struct {
 	//Info      string `json:"i,omitempty"`
 }
 
-// EventShooter is exported
+//EventShooter is exported
 type EventShooter struct {
 	ID        uint             `json:"I"`
 	FirstName string           `json:"f"` //TODO change these to point to shooters in the other shooter tables
@@ -115,7 +115,7 @@ type EventShooter struct {
 	ClassSeparator bool //DON'T SAVE THIS TO DB! used for start-shooting and total-scores only.
 }
 
-// Shooter is exported
+//Shooter is exported
 type Shooter struct {
 	ID        string `json:"I"`
 	SID       int    `json:"M,omitempty"`
@@ -135,7 +135,7 @@ type Shooter struct {
 	MergedSID int `json:"m,omitempty"`
 
 	AgeGroup uint `json:"r,omitempty"`
-	Grade    uint `json:"g"`
+	Grade    uint `json:"g"` //TODO change to a slice in future
 }
 
 type field struct {

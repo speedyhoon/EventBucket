@@ -14,15 +14,16 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 	//Sort list of events by date then by name
 	orderedByEvent(sortByDate, sortByName).Sort(events)
+	_, forms := sessionForms(w, r, eventNew)
 
 	hostname, _ := os.Hostname()
 	templater(w, page{
 		Title: "Home",
 		Error: err,
 		Data: map[string]interface{}{
-			"newEvent": getFormSession(w, r, eventNew),
+			"NewEvent": forms[0],
 			"Events":   events,
-			"network": map[string]interface{}{
+			"Network": map[string]interface{}{
 				"hostname":    hostname,
 				"ipAddresses": localIPs(),
 			},
