@@ -9,12 +9,14 @@
 			{{range .}}
 				{{if not .Closed}}
 					<div>
-						{{ordinal .ISO.Day}}
-						<br>{{.ISO.Weekday}}
-						<br>{{.ISO.Month}}
-						<br>{{.ISO.Year}}
-
-						<li><strong><a href=/entries/{{.ID}}>{{.Name}}</a></strong> <a href=/club/{{.ClubID}}>{{.Club}}</a>{{range .Ranges}}, {{.Name}}{{end}}
+						<time>
+							{{.ISO.Weekday}}
+							<b>{{ordinal .ISO.Day}}</b>
+							{{.ISO.Month}} {{.ISO.Year}}
+						</time>
+						<p>{{if.ID}}<a href=/entries/{{.ID}}>{{.Name}}</a>{{end}} {{with.Time}}starts at {{.}}{{end}}</p>
+						{{if.Club}}<a href=/club/{{.ClubID}}>{{.Club}}</a>{{end}}
+						<br>{{range .Ranges}}{{.Name}}, {{end}}
 					</div>
 				{{end}}
 			{{end}}
@@ -27,17 +29,3 @@
 	<h6>??</h6>
 	What type of info is needed on the home page?
 {{end}}
-
-
-
-{{/*HTM .FormNewEvent}}<h2>Open Events</h2>{{with .FutureEvents}}
-	<div class=events>{{range .}}
-		<div>
-			<time>{{with.Day}}{{.}}{{else}}&nbsp;{{end}}<br>{{if or .Date .Month .Year}}{{with.Date}}<b>{{.}}</b>{{end}}{{with.Month}}{{.}}{{end}}
-				{{with.Year}}{{.}}{{end}}{{else}}&nbsp;{{end}}</time>
-			<p>{{if.ID}}<a href=/event/{{.ID}}>{{.Name}}</a> {{with.Time}}starts at {{.}}{{end}}{{end}}</p>{{if.Club}}<a href=/club/{{.ClubID}}>{{.Club}}</a>
-			<br>{{end}}{{with.Ranges}}{{.}}{{end}}
-		</div>
-		{{end}}
-	</div>{{else}}No events listed. <a href={{$.ArchiveLink}}>Archive</a>
-{{end*/}}

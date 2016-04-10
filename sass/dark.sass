@@ -1,6 +1,7 @@
 $margin: 1.5em
 //Colours
 $black: #000
+$charcoal: #222
 $dark: #445
 $grey: #777
 $liteGrey: #cdd
@@ -212,8 +213,30 @@ a
 //TODO remove question styling
 h6
 	color: #f70
-	border-bottom: 1px solid
+	border-bottom: $thinBorder
 	font-size: 1.5em
+
+.events
+	div
+		margin-bottom: $bigPadding
+		display: inline-block
+		width: 100%
+	time
+		background: $charcoal
+		border: $thinBorder $dark
+		text-align: center
+		width: 130px
+		float: left
+		margin-right: $bigPadding
+	b
+		display: block
+		font-size: 26px
+		line-height: 23px
+	p
+		padding: 0 $bigPadding
+		text-decoration: none
+		border-bottom: $thinBorder $dark
+		margin: 0
 
 td[onclick]
 	background: url(/v/edit) center center no-repeat
@@ -236,4 +259,4 @@ td[onclick]
 			border: 0
 
 		tr:nth-child(3n):not(:last-child)
-			border-bottom: 1px solid $dark
+			border-bottom: $thinBorder $dark
