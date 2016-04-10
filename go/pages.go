@@ -86,6 +86,7 @@ func pages() {
 	post(pst, shooterDetails, shooterUpdate)
 	post(pst, shooterSearch, searchShooters)
 	post(pst, eventTotalScores, eventTotalUpsert)
+	post(pst, eventAvailableGrades, eventAvailableGradesUpsert)
 
 	//BUG any url breaks when appending "&*((&*%"
 	get404(urlHome, home)
