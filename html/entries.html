@@ -44,4 +44,9 @@
 
 	<h6>??</h6>
 	Where should the help icon and messages go? into a dialog?<br>
+	Where should I put list of scorecards link?<br>
+
+	{{if not .Event.Closed}}
+		{{template "AvailableGrades" .AvailableGrades}}
+	{{end}}
 {{end}}

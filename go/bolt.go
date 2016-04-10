@@ -239,6 +239,13 @@ func eventAddAgg(decode interface{}, contents interface{}) interface{} {
 	return event
 }
 
+func updateEventGrades(decode interface{}, contents interface{}) interface{} {
+	event := decode.(*Event)
+	grades := contents.([]uint)
+	event.Grades = grades
+	return event
+}
+
 func getClubs() ([]Club, error) {
 	var clubs []Club
 	err := db.View(func(tx *bolt.Tx) error {
