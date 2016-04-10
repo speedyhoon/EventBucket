@@ -55,13 +55,13 @@ func getForm(id uint8) []field {
 	switch id {
 	case 1:
 		return []field{{
-			name: "n", Required: true, maxLen: 64, v8: isValidStr,
+			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
 			name: "b", v8: isValidBool,
 		}}
 	case 2:
 		return []field{{
-			name: "n", Required: true, maxLen: 64, v8: isValidStr,
+			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
 			name: "a", maxLen: 64, v8: isValidStr,
 		}, {
@@ -125,11 +125,11 @@ func getForm(id uint8) []field {
 		}}
 	case 8:
 		return []field{{
-			name: "f", Required: true, maxLen: 64, v8: isValidStr,
+			name: "f", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
-			name: "s", Required: true, maxLen: 64, v8: isValidStr,
+			name: "s", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
-			name: "C", Required: true, maxLen: 64, v8: isValidStr,
+			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
 			name: "S", v8: isValidStr,
 		}, {
@@ -161,11 +161,11 @@ func getForm(id uint8) []field {
 		}}
 	case 11:
 		return []field{{
-			name: "f", Required: true, maxLen: 64, v8: isValidStr,
+			name: "f", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
-			name: "s", Required: true, maxLen: 64, v8: isValidStr,
+			name: "s", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
-			name: "C", Required: true, maxLen: 64, v8: isValidStr,
+			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
 			name: "g", Required: true, min: 1, max: float32(len(globalGradesDataList)), step: 1, v8: isValidUint, Options: globalGradesDataList,
 		}, {
@@ -173,11 +173,11 @@ func getForm(id uint8) []field {
 		}}
 	case 12:
 		return []field{{
-			name: "f", Required: true, maxLen: 64, v8: isValidStr,
+			name: "f", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
-			name: "s", Required: true, maxLen: 64, v8: isValidStr,
+			name: "s", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
-			name: "C", Required: true, maxLen: 64, v8: isValidStr,
+			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
 			name: "g", Required: true, min: 1, max: float32(len(globalGradesDataList)), step: 1, v8: isValidUint, Options: globalGradesDataList,
 		}, {

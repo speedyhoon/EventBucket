@@ -143,36 +143,15 @@ func insertShooter(shooter Shooter) (string, error) {
 	return b36, err
 }
 
-func updateShooter(shooter Shooter, eventID string) error {
-	var sID /*, eID*/ []byte
-	var err error
-	var buf []byte
-	sID, err = b36toBy(shooter.ID)
-	if err != nil {
-		return err
-	}
-	// Marshal user data into bytes.
-	buf, err = json.Marshal(shooter)
-	if err != nil {
-		return err
-	}
-	/*if eventID != "" {
-		eID, err = b36toBy(eventID)
-		if err != nil {
-			return err
-		}
-	}*/
-
-	err = db.Update(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(tblShooter)
-		if bucket == nil {
-			//Shooter Bucket isn't created yet
-			return nil
-		}
-		//TODO This will destroy all the shooters scores. needs a fix!
-		return bucket.Put(sID, buf)
-	})
-	return err
+func updateShooterDetails(decode interface{}, contents interface{}) interface{} {
+	shooter := decode.(*Shooter)
+	update := *contents.(*Shooter)
+	shooter.FirstName = update.FirstName
+	shooter.Surname = update.Surname
+	shooter.Club = update.Club
+	shooter.Grade = update.Grade
+	shooter.AgeGroup = update.AgeGroup
+	return shooter
 }
 
 func updateClubDetails(decode interface{}, contents interface{}) interface{} {
