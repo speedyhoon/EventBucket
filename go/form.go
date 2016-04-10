@@ -208,7 +208,7 @@ func getForm(id uint8) []field {
 		}}
 	case 15:
 		return []field{{
-			name: "g", Required: true, minLen: 1, step: 1, v8: listUint, Options: dataListGrades2(globalGrades),
+			name: "g", Required: true, minLen: 1, max: 65535, step: 1, v8: listUint, Options: dataListGrades2(globalGrades),
 		}, {
 			name: "I", v8: isValidRegex, regex: regexID,
 		}}
