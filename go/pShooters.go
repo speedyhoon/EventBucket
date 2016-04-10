@@ -24,6 +24,7 @@ func shooters(w http.ResponseWriter, r *http.Request) {
 			"ShooterSearch":  pageForms[1],
 			"ShooterDetails": pageForms[2],
 			"QtyShooters":    shooterQty,
+			"Grades":         globalGradesDataList,
 		},
 	})
 }
