@@ -84,6 +84,15 @@ func dataListGrades2(grades []Grade) []option {
 	return options
 }
 
+func dataListGrades3(gradeIDs []uint) []option {
+	options := []option{}
+	for _, gradeID := range gradeIDs {
+		grade := globalGrades[gradeID]
+		options = append(options, option{Value: fmt.Sprintf("%d", gradeID), Label: grade.Name, Selected: true})
+	}
+	return options
+}
+
 func defaultGlobalDisciplines() []Discipline {
 	XV5 := Mark{Buttons: "012345VX",
 		DoCountBack2: true,

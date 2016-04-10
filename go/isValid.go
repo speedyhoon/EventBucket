@@ -20,12 +20,12 @@ func listUint(f *field, inp ...string) {
 	g := *f
 
 	for _, in := range inp {
-		t.Println("unvalidated rangeID", in, "Isn't empty", in != "")
+		//t.Println("unvalidated rangeID", in, "Isn't empty", in != "")
 
 		g.Error = ""
 		isValidUint(&g, in)
 		if g.Error != "" {
-			f.Error = "This value is invalid."
+			f.Error = g.Error
 			return
 		}
 
