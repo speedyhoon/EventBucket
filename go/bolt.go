@@ -248,6 +248,18 @@ func eventAddRange(decode interface{}, contents interface{}) interface{} {
 	return event
 }
 
+func eventAddAgg(decode interface{}, contents interface{}) interface{} {
+	event := eventAddRange(decode, contents).(*Event)
+	aggRange := contents.(*Range)
+	rangeID := aggRange.StrID()
+	for sID, shooter := range event.Shooters {
+		if shooter.Scores != nil {
+			event.Shooters[sID].Scores[rangeID] = calcShooterAgg(aggRange.Aggs, shooter.Scores)
+		}
+	}
+	return event
+}
+
 func getClubs() ([]Club, error) {
 	var clubs []Club
 	err := db.View(func(tx *bolt.Tx) error {
@@ -435,58 +447,6 @@ func calcShooterAgg(aggRangeIDs []uint, shooterScores map[string]Score) Score {
 		//CountBack: countBack,
 		//CountBack2: countBack2,
 	}
-}
-
-func upsertAggScores(eventID string, rID uint) error {
-	byteID, err := b36toBy(eventID)
-	if err != nil {
-		return err
-	}
-	err = db.Update(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(tblEvent)
-		if bucket == nil {
-			return fmt.Errorf(eNoBucket, tblEvent)
-		}
-
-		document := bucket.Get(byteID)
-		if len(document) == 0 {
-			return fmt.Errorf(eNoDocument, eventID, document)
-		}
-		var event Event
-		err = json.Unmarshal(document, &event)
-		if err != nil {
-			return err
-		}
-
-		var aggRange Range
-		aggRange, err = findRange(event.Ranges, rID)
-		if err != nil {
-			return err
-		}
-		rangeID := aggRange.StrID()
-		for sID, shooter := range event.Shooters {
-			if shooter.Scores != nil {
-				event.Shooters[sID].Scores[rangeID] = calcShooterAgg(aggRange.Aggs, shooter.Scores)
-			}
-		}
-
-		document, err = json.Marshal(event)
-		if err != nil {
-			return err
-		}
-
-		return bucket.Put(byteID, document)
-	})
-	return err
-}
-
-func findRange(ranges []Range, rangeID uint) (Range, error) {
-	for _, r := range ranges {
-		if r.ID == rangeID {
-			return r, nil
-		}
-	}
-	return Range{}, fmt.Errorf("Can't find range with ID: %d", rangeID)
 }
 
 //Converts base36 string to binary used for bolt maps
