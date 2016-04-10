@@ -135,7 +135,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "g", Required: true, max: float32(len(globalGrades) - 1), step: 1, v8: isValidUint, Options: globalGradesDataList,
 		}, {
-			name: "r", max: 4, step: 1, v8: isValidUint, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Junior U21", Value: "1", Selected: false}, {Label: "Junior U25", Value: "2", Selected: false}, {Label: "Veteran", Value: "3", Selected: false}, {Label: "Super Veteran", Value: "4", Selected: false}},
+			name: "r", max: 4, step: 1, v8: isValidUint, Options: dataListAgeGroup(),
 		}, {
 			name: "E", Required: true, v8: isValidRegex, regex: regexID,
 		}, {
@@ -147,7 +147,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "g", Required: true, max: float32(len(globalGrades) - 1), step: 1, v8: isValidUint, Options: globalGradesDataList,
 		}, {
-			name: "r", max: 4, step: 1, v8: isValidUint, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Junior U21", Value: "1", Selected: false}, {Label: "Junior U25", Value: "2", Selected: false}, {Label: "Veteran", Value: "3", Selected: false}, {Label: "Super Veteran", Value: "4", Selected: false}},
+			name: "r", max: 4, step: 1, v8: isValidUint, Options: dataListAgeGroup(),
 		}, {
 			name: "E", Required: true, v8: isValidRegex, regex: regexID,
 		}}
@@ -169,7 +169,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "g", Required: true, max: float32(len(globalGrades) - 1), step: 1, v8: isValidUint, Options: globalGradesDataList,
 		}, {
-			name: "r", max: 4, step: 1, v8: isValidUint, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Junior U21", Value: "1", Selected: false}, {Label: "Junior U25", Value: "2", Selected: false}, {Label: "Veteran", Value: "3", Selected: false}, {Label: "Super Veteran", Value: "4", Selected: false}},
+			name: "r", max: 4, step: 1, v8: isValidUint, Options: dataListAgeGroup(),
 		}}
 	case 12:
 		return []field{{
@@ -181,7 +181,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "g", Required: true, max: float32(len(globalGrades) - 1), step: 1, v8: isValidUint, Options: globalGradesDataList,
 		}, {
-			name: "r", max: 4, step: 1, v8: isValidUint, Options: []option{{Label: "", Value: "", Selected: false}, {Label: "Junior U21", Value: "1", Selected: false}, {Label: "Junior U25", Value: "2", Selected: false}, {Label: "Veteran", Value: "3", Selected: false}, {Label: "Super Veteran", Value: "4", Selected: false}},
+			name: "r", max: 4, step: 1, v8: isValidUint, Options: dataListAgeGroup(),
 		}, {
 			name: "I", Required: true, maxLen: 64, v8: isValidRegex, regex: regexID,
 		}}
