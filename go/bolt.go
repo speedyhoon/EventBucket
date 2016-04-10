@@ -143,6 +143,37 @@ func insertShooter(shooter Shooter) (string, error) {
 	return b36, err
 }
 
+func updateDocument(collectionName []byte, colID string, update interface{}, decode interface{}, function func(interface{}, interface{}) interface{}) error {
+	ID, err := b36toBy(colID)
+	if err != nil {
+		return err
+	}
+	err = db.Update(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(collectionName)
+		if bucket == nil {
+			return fmt.Errorf(eNoBucket, collectionName)
+		}
+
+		document := bucket.Get(ID)
+		if len(document) == 0 {
+			return fmt.Errorf(eNoDocument, ID, document)
+		}
+
+		err = json.Unmarshal(document, &decode)
+		if err != nil {
+			return fmt.Errorf("'%v' Query club unmarshaling failed: \n%q\n%#v\n", ID, document, err)
+		}
+
+		document, err = json.Marshal(function(decode, update))
+		if err != nil {
+			return err
+		}
+
+		return bucket.Put(ID, document)
+	})
+	return err
+}
+
 func updateShooterDetails(decode interface{}, contents interface{}) interface{} {
 	shooter := decode.(*Shooter)
 	update := *contents.(*Shooter)
@@ -173,37 +204,6 @@ func insertClubMound(decode interface{}, contents interface{}) interface{} {
 	club := decode.(*Club)
 	club.Mounds = append(club.Mounds, *contents.(*Mound))
 	return club
-}
-
-func updateDocument(collectionName []byte, colID string, update interface{}, decode interface{}, function func(interface{}, interface{}) interface{}) error {
-	ID, err := b36toBy(colID)
-	if err != nil {
-		return err
-	}
-	err = db.Update(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(collectionName)
-		if bucket == nil {
-			return fmt.Errorf(eNoBucket, collectionName)
-		}
-
-		document := bucket.Get(ID)
-		if len(document) == 0 {
-			return fmt.Errorf(eNoDocument, ID, document)
-		}
-
-		err = json.Unmarshal(document, &decode)
-		if err != nil {
-			return fmt.Errorf("'%v' Query club unmarshaling failed: \n%q\n%#v\n", ID, document, err)
-		}
-
-		document, err = json.Marshal(function(decode, update))
-		if err != nil {
-			return err
-		}
-
-		return bucket.Put(ID, document)
-	})
-	return err
 }
 
 func updateEventDetails(decode interface{}, contents interface{}) interface{} {
@@ -299,7 +299,7 @@ func getCalendarEvents() ([]CalendarEvent, error) {
 	return events, err
 }
 
-func collectionSize(collectionName []byte) (uint, error) {
+/*func collectionSize(collectionName []byte) (uint, error) {
 	var qty uint
 	err := db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(collectionName)
@@ -310,7 +310,7 @@ func collectionSize(collectionName []byte) (uint, error) {
 		return nil
 	})
 	return qty, err
-}
+}*/
 
 func getShooters() ([]Shooter, error) {
 	var shooters []Shooter
@@ -398,7 +398,6 @@ func upsertScore(decode interface{}, contents interface{}) interface{} {
 }
 
 func calcShooterAggs(ranges []Range, shooterScores map[string]Score) map[string]Score {
-	//TODO save countBack once scoreCards is saving scores
 	for _, r := range ranges {
 		if r.IsAgg {
 			shooterScores[r.StrID()] = calcShooterAgg(r.Aggs, shooterScores)
@@ -409,22 +408,22 @@ func calcShooterAggs(ranges []Range, shooterScores map[string]Score) map[string]
 
 func calcShooterAgg(aggRangeIDs []uint, shooterScores map[string]Score) Score {
 	var total, centers uint
-	//var countBack, countBack2 string
+	var countBack, countBack2 string
 	for _, id := range aggRangeIDs {
 		aggID := fmt.Sprintf("%d", id)
 		score, ok := shooterScores[aggID]
 		if ok {
 			total += score.Total
 			centers += score.Centers
-			//countBack = score.CountBack
-			//countBack2 = score.CountBack2
+			countBack = score.CountBack
+			countBack2 = score.CountBack2
 		}
 	}
 	return Score{
-		Total:   total,
-		Centers: centers,
-		//CountBack: countBack,
-		//CountBack2: countBack2,
+		Total:      total,
+		Centers:    centers,
+		CountBack:  countBack,
+		CountBack2: countBack2,
 	}
 }
 
@@ -486,3 +485,24 @@ func getClubByName(clubName string) (Club, error) {
 	}
 	return Club{}, fmt.Errorf("Couldn't find club with name %v", clubName)
 }
+
+/*func findDocument(collectionName []byte, decode interface{}, query func(interface{}) bool) error {
+	temp := decode
+	err := db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(collectionName)
+		if b == nil {
+			return fmt.Errorf(eNoBucket, collectionName)
+		}
+		return b.ForEach(func(_, document []byte) error {
+			if json.Unmarshal(document, &temp) == nil && query(decode) {
+				return fmt.Errorf("success")
+			}
+			return nil
+		})
+	})
+	if err.Error() == "success" {
+		decode = temp
+		return nil
+	}
+	return err
+}*/
