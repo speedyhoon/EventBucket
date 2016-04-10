@@ -95,6 +95,7 @@ func main() {
 		if portAddr != ":80" {
 			fullAddress += portAddr
 		}
+		info.Print(fullAddress)
 		if exec.Command("rundll32.exe", "url.dll,FileProtocolHandler", fullAddress).Start() != nil {
 			warn.Println("Unable to open a web browser for", fullAddress)
 		}
