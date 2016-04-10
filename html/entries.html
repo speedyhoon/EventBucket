@@ -12,7 +12,7 @@
 		<table>
 			<thead>
 				<th class=asc>ID
-				<td>
+				<td class=textLeft colspan=2>Disabled
 				<th>Shooter
 				<th>Club
 				<th>Grade
@@ -24,6 +24,7 @@
 			{{range .}}
 				<tr>
 					<td>{{.ID}}
+					<td>{{.Disabled}}
 					<td>{{if $hasRanges}}<a href=/print-cards/{{$.Event.ID}}/{{.ID}}>Scorecards</a>{{end}}
 					<td>{{.FirstName}} {{.Surname}}
 					<td>{{.Club}}
