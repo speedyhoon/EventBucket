@@ -50,3 +50,9 @@ var selectBoxes = document.querySelectorAll('select'), qty = selectBoxes.length,
 while (qty--) {
   selectBoxes[qty].onkeydown = formShortcut;
 }
+
+//Help message popup
+var abbrs = document.querySelectorAll('label abbr'), qty = abbrs.length, onClick = function() {alert(this.title);};
+while (qty--) {
+  abbrs[qty].onclick = onClick;
+}
