@@ -10,7 +10,7 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 		return
 	}
 
-	action, pageForms := sessionForms(w, r, eventShooterNew, eventShooterExisting)
+	action, pageForms := sessionForms(w, r, eventShooterNew, eventShooterExisting, eventAvailableGrades)
 	shooterEntry := pageForms[0]
 	listClubs, err := getClubs()
 	if err != nil {
@@ -29,8 +29,13 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 	}
 	shooterEntry.Fields[2].Options = dataListClubs(listClubs)
 
+	shooterEntry.Fields[4].Options = eventGrades(event.Grades)
 	shooterEntry.Fields[6].Value = eventID
 	shooterEntry.Fields[7].Value = eventID
+
+	//AvailableGrades
+	pageForms[2].Fields[0].Options = availableGrades(event.Grades)
+	pageForms[2].Fields[1].Value = eventID
 
 	templater(w, page{
 		Title:   "Entries",
@@ -38,8 +43,9 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 		MenuID:  eventID,
 		Heading: event.Name,
 		Data: map[string]interface{}{
-			"Event":        event,
-			"ShooterEntry": shooterEntry,
+			"Event":           event,
+			"ShooterEntry":    shooterEntry,
+			"AvailableGrades": pageForms[2],
 		},
 	})
 }
@@ -70,4 +76,16 @@ func eventInsert(w http.ResponseWriter, r *http.Request, submittedForm form, red
 		return
 	}
 	http.Redirect(w, r, urlEventSettings+ID, http.StatusSeeOther)
+}
+
+func eventAvailableGradesUpsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+	eventID := submittedForm.Fields[1].Value
+	err := updateDocument(tblEvent, eventID, &submittedForm.Fields[0].valueUintSlice, &Event{}, updateEventGrades)
+
+	//Display any insert errors onscreen.
+	if err != nil {
+		formError(w, submittedForm, redirect, err)
+		return
+	}
+	http.Redirect(w, r, urlEntries+eventID, http.StatusSeeOther)
 }

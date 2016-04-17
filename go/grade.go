@@ -42,9 +42,10 @@ type Shot struct {
 }
 
 var (
-	globalDisciplines    []Discipline
-	globalGrades         []Grade
-	globalGradesDataList []option
+	globalDisciplines     []Discipline
+	globalGrades          []Grade
+	globalGradesDataList  []option
+	globalAvailableGrades []option
 )
 
 func redoGlobals(disciplines []Discipline) {
@@ -55,6 +56,7 @@ func redoGlobals(disciplines []Discipline) {
 	}
 	globalGrades = defaultGrades(globalDisciplines)
 	globalGradesDataList = dataListGrades(globalGrades)
+	globalAvailableGrades = availableGrades([]uint{})
 }
 
 func defaultGrades(classes []Discipline) []Grade {
@@ -69,26 +71,42 @@ func defaultGrades(classes []Discipline) []Grade {
 }
 
 func dataListGrades(grades []Grade) []option {
-	options := []option{{}}
+	var options []option
 	for id, grade := range grades {
 		options = append(options, option{Value: fmt.Sprintf("%d", id), Label: grade.Name})
 	}
 	return options
 }
 
-func dataListGrades2(grades []Grade) []option {
-	options := []option{}
-	for id, grade := range grades {
-		options = append(options, option{Value: fmt.Sprintf("%d", id), Label: grade.Name, Selected: true})
+func availableGrades(grades []uint) []option {
+	var options []option
+	for id, grade := range globalGrades {
+		selected := len(grades) == 0
+		if !selected {
+			for _, gradeID := range grades {
+				if uint(id) == gradeID {
+					selected = true
+					break
+				}
+			}
+		}
+		options = append(options, option{Value: fmt.Sprintf("%d", id), Label: grade.Name, Selected: selected})
 	}
 	return options
 }
 
-func dataListGrades3(gradeIDs []uint) []option {
-	options := []option{}
-	for _, gradeID := range gradeIDs {
-		grade := globalGrades[gradeID]
-		options = append(options, option{Value: fmt.Sprintf("%d", gradeID), Label: grade.Name, Selected: true})
+func eventGrades(grades []uint) []option {
+	if len(grades) == 0 {
+		return globalGradesDataList
+	}
+	var options []option
+	for id, grade := range globalGrades {
+		for _, gradeID := range grades {
+			if uint(id) == gradeID {
+				options = append(options, option{Value: fmt.Sprintf("%d", id), Label: grade.Name})
+				break
+			}
+		}
 	}
 	return options
 }
