@@ -52,28 +52,28 @@ func isValidUint(f *field, inp ...string) {
 		}
 	}
 
-	num, err := strToUint(inp[0])
+	var err error
+	f.Value = inp[0]
+	f.valueUint, err = strToUint(f.Value)
 	if err != nil {
 		//Return error if input string failed to convert.
 		f.Error = err.Error()
 		return
 	}
 
-	if !f.Required && num == 0 {
+	if !f.Required && f.valueUint == 0 {
 		//f.valueUint is zero by default so assigning zero isn't required
 		return
 	}
-	if num < uint(f.min) || num > uint(f.max) {
+	if f.valueUint < uint(f.min) || f.valueUint > uint(f.max) {
 		f.Error = fmt.Sprintf("Must be between %v and %v", f.min, f.max)
 		return
 	}
-	if num%uint(f.step) != 0 {
-		below := num - (num % uint(f.step))
+	if f.valueUint%uint(f.step) != 0 {
+		below := f.valueUint - (f.valueUint % uint(f.step))
 		f.Error = fmt.Sprintf("Please enter a valid value. The two nearest values are %d and %d", below, below+uint(f.step))
 		return
 	}
-	f.Value = fmt.Sprintf("%v", num)
-	f.valueUint = num
 	return
 }
 
