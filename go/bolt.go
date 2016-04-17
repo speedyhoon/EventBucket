@@ -241,8 +241,7 @@ func eventAddAgg(decode interface{}, contents interface{}) interface{} {
 
 func updateEventGrades(decode interface{}, contents interface{}) interface{} {
 	event := decode.(*Event)
-	grades := contents.(*[]uint)
-	event.Grades = *grades
+	event.Grades = *contents.(*[]uint)
 	return event
 }
 
