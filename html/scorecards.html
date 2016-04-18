@@ -1,14 +1,6 @@
 {{define "page"}}
-	{{if.ShowAll}}
-		<a href=/scorecards/{{.EventID}}/{{.Range.ID}}>View Incomplete Shooters</a>
-	{{else}}
-		<a href=/scorecards-all/{{.EventID}}/{{.Range.ID}}>View All Shooters</a>
-	{{end}}
-	{{/*<a href=%v%v>View Incompleted Shooters</a>
-	<a href=%v%v>View All Shooters</a>*/}}
-
-	<form><label>Barcode: <input type=search autofocus></label><button>Search</button></form>
-
+	{{template "incompleteShooters" .}}
+	{{template "barcodeSearch"}}
 	{{with .Shooters}}
 		<table>
 			<tr>
