@@ -160,15 +160,17 @@ nav
 		border-left: $fatBorder transparent
 
 	div
-		color: $briteBlue
 		cursor: pointer
 		padding: $menuPadding $menuPadding $menuPadding calc(#{$margin} + #{$fatWidth})
+
+	.open
+		padding-left: $margin
 
 	ul a:hover, button:hover, a:hover
 		border-color: $blue
 		color: $blue
 
-	.visited
+	.visited, .open
 		color: $white
 		border-left: $fatBorder $white
 
@@ -192,7 +194,7 @@ h1,h2,h3
 .small
 	font-size: .7em
 
-a
+a, nav li
 	text-decoration: none
 	color: $briteBlue
 

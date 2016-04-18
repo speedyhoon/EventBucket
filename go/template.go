@@ -57,7 +57,7 @@ var (
 				Name: "Entries",
 				Link: urlEntries,
 			}, {
-				Name: "Settings",
+				Name: "Event Settings",
 				Link: urlEventSettings,
 			}, {
 				Name:      "Scoreboard",
@@ -72,9 +72,8 @@ var (
 				Link:      urlTotalScores,
 				RangeMenu: true,
 			}, {
-				Name:      "Report",
-				Link:      urlEventReport,
-				RangeMenu: true,
+				Name: "Event Report",
+				Link: urlEventReport,
 			}, {
 				Name: "Entry List",
 				Link: urlEntryList,
