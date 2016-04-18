@@ -44,3 +44,21 @@
 		<samp>No shooters listed.</samp>
 	{{end}}
 {{end}}
+
+{{define "incompleteShooters"}}
+	{{if.ShowAll}}
+		<a href=/{{.URL}}/{{.EventID}}/{{.Range.ID}}>View Incomplete Shooters</a>
+	{{else}}
+		<a href=/{{.URL}}-all/{{.EventID}}/{{.Range.ID}}>View All Shooters</a>
+	{{end}}
+{{end}}
+
+{{define "barcodeSearch"}}
+	<form class=inline onsubmit='return shooterBarcode(B)'>
+		<legend>Search for Shooter</legend>
+		<label>Barcode: <input name=B pattern=(\d+\/\d+#)?\d+ autocomplete=off></label>{{/* www.debuggex.com */}}
+		<button tabindex=-1>Search</button>
+	</form>
+	<samp id=barcodeErr hidden>Barcode must match: <em>eventID/rangeID#shooterID</em> For example: <em>{{.EventID}}/{{.Range.ID}}#1</em></samp>
+	<samp id=shooterErr hidden>A shooter with that ID doesn't exist in this event.</samp>
+{{end}}

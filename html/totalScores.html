@@ -1,19 +1,6 @@
 {{define "page"}}
-	{{if.ShowAll}}
-		<a href=/total-scores/{{.EventID}}/{{.Range.ID}}>View Incomplete Shooters</a>
-	{{else}}
-		<a href=/total-scores-all/{{.EventID}}/{{.Range.ID}}>View All Shooters</a>
-	{{end}}
-
-	<form class=inline onsubmit='return shooterBarcode(B,S)'>
-		<legend>Search for Shooter</legend>
-		<label>Barcode: <input type=search name=B pattern=\d+\/\d+#\d+ autocomplete=off>
-		</label>
-		<label>Shooter ID: <input type=number min=1 name=S autocomplete=off></label>
-		<button tabindex=-1>Search</button>
-	</form>
-	<samp id=barcodeErr hidden>Barcode must match: <em>eventID/rangeID#shooterID</em> For example: <em>{{.EventID}}/{{.Range.ID}}#1</em></samp>
-	<samp id=shooterErr hidden>A shooter with that ID doesn't exist in this event.</samp>
+	{{template "incompleteShooters" .}}
+	{{template "barcodeSearch"}}
 	{{with .Shooters}}
 		<table>
 			<tr>
