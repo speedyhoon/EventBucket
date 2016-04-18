@@ -21,7 +21,8 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 		forms[0].Fields[2].Value = event.Date
 		forms[0].Fields[3].Value = event.Time
 		forms[0].Fields[4].Checked = event.Closed
-		forms[0].Fields[5].Value = event.ID
+		forms[0].Fields[5].Checked = event.AverTwin
+		forms[0].Fields[6].Value = event.ID
 	}
 	forms[1].Fields[1].Value = eventID
 
@@ -54,13 +55,14 @@ func dataListRanges(ranges []Range) []option {
 }
 
 func eventDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
-	eventID := submittedForm.Fields[5].Value
+	eventID := submittedForm.Fields[6].Value
 	err := updateDocument(tblEvent, eventID, &Event{
-		Name:   submittedForm.Fields[0].Value,
-		Club:   submittedForm.Fields[1].Value,
-		Date:   submittedForm.Fields[2].Value,
-		Time:   submittedForm.Fields[3].Value,
-		Closed: submittedForm.Fields[4].Checked,
+		Name:     submittedForm.Fields[0].Value,
+		Club:     submittedForm.Fields[1].Value,
+		Date:     submittedForm.Fields[2].Value,
+		Time:     submittedForm.Fields[3].Value,
+		Closed:   submittedForm.Fields[4].Checked,
+		AverTwin: submittedForm.Fields[5].Checked,
 	}, &Event{}, updateEventDetails)
 	if err != nil {
 		formError(w, submittedForm, redirect, err)

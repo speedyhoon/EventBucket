@@ -98,15 +98,17 @@ func getForm(id uint8) []field {
 		}}
 	case 5:
 		return []field{{
-			name: "n", Required: true, maxLen: 64, v8: isValidStr,
+			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
-			name: "C", Required: true, maxLen: 64, v8: isValidStr,
+			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
-			name: "d", maxLen: 10, v8: isValidStr,
+			name: "d", maxLen: 10, minLen: 1, v8: isValidStr,
 		}, {
-			name: "t", maxLen: 5, v8: isValidStr,
+			name: "t", maxLen: 5, minLen: 5, v8: isValidStr,
 		}, {
 			name: "c", v8: isValidBool,
+		}, {
+			name: "a", v8: isValidBool,
 		}, {
 			name: "E", v8: isValidRegex, regex: regexID,
 		}}

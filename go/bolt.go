@@ -215,6 +215,7 @@ func updateEventDetails(decode interface{}, contents interface{}) interface{} {
 	event.Date = update.Date
 	event.Time = update.Time
 	event.Closed = update.Closed
+	event.AverTwin = update.AverTwin
 	return event
 }
 
