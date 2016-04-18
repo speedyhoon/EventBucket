@@ -45,6 +45,8 @@ func totalScores(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 			"EventID":  event.ID,
 			"Shooters": event.Shooters,
 			"Range":    currentRange,
+			"Event":    event,
+			"URL":      "total-scores",
 			"ShowAll":  showAll,
 		},
 	})

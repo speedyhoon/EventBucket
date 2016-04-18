@@ -15,20 +15,29 @@
 							{{with .SubMenu}}
 								<ul>
 									{{range .}}
-										{{$link := .Link}}
-										{{if eq $.Page.Title .Name}}
-											<li class=visited>{{.Name}}
-										{{else if not .RangeMenu}}
-											<li><a href={{.Link}}{{$.Page.MenuID}}>{{.Name}}</a>
+										{{if not .RangeMenu}}
+											{{if eq $.Page.Title .Name}}
+												<li class=visited>{{.Name}}
+											{{else}}
+												<li><a href={{.Link}}{{$.Page.MenuID}}>{{.Name}}</a>
+											{{end}}
 										{{end}}
-										{{if and .RangeMenu $.Page.Data.Ranges}}
+										{{if and .RangeMenu $.Page.Data.Event.Ranges}}
 											<li>
-												<div>{{.Name}}</div>
-												<ul>
-													{{range $.Page.Data.Ranges}}
+												{{if eq $.Page.Title .Name}}
+													<div class=open>
+												{{else}}
+													<div>
+												{{end}}
+												{{.Name}}</div>
+											<ul>
+												{{$link := .Link}}
+												{{range $.Page.Data.Event.Ranges}}
+													{{if not .IsAgg}}
 														<li><a href={{$link}}{{$.Page.MenuID}}/{{.ID}}>{{.Name}}</a>
 													{{end}}
-												</ul>
+												{{end}}
+											</ul>
 										{{end}}
 									{{end}}
 								</ul>

@@ -37,6 +37,7 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 		Data: map[string]interface{}{
 			"Closed":       event.Closed,
 			"Ranges":       event.Ranges,
+			"Event":        event,
 			"EventDetails": forms[0],
 			"AddRange":     forms[1],
 			"AddAgg":       forms[2],
