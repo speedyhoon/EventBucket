@@ -42,12 +42,10 @@ func totalScores(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 		JS:      "totalScores",
 		Error:   err,
 		Data: map[string]interface{}{
-			"EventID":  event.ID,
-			"Shooters": event.Shooters,
-			"Range":    currentRange,
-			"Event":    event,
-			"URL":      "total-scores",
-			"ShowAll":  showAll,
+			"Range":   currentRange,
+			"Event":   event,
+			"URL":     "total-scores",
+			"ShowAll": showAll,
 		},
 	})
 }

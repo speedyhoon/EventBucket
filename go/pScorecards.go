@@ -36,12 +36,10 @@ func scorecards(w http.ResponseWriter, r *http.Request, showAll bool, parameters
 		MenuID:  event.ID,
 		Heading: event.Name,
 		Data: map[string]interface{}{
-			"EventID":  event.ID,
-			"Shooters": event.Shooters,
-			"Range":    currentRange,
-			"Event":    event,
-			"URL":      "scorecards",
-			"ShowAll":  showAll,
+			"Range":   currentRange,
+			"Event":   event,
+			"URL":     "scorecards",
+			"ShowAll": showAll,
 		},
 	})
 }
