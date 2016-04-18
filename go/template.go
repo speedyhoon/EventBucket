@@ -10,6 +10,7 @@ import (
 type menu struct {
 	Name, Link string
 	SubMenu    []menu
+	RangeMenu  bool
 }
 
 type page struct {
@@ -59,17 +60,21 @@ var (
 				Name: "Settings",
 				Link: urlEventSettings,
 			}, {
-				Name: "Scoreboard",
-				Link: urlScoreboard,
+				Name:      "Scoreboard",
+				Link:      urlScoreboard,
+				RangeMenu: true,
 			}, {
-				Name: "Scorecards",
-				Link: urlScorecards,
+				Name:      "Scorecards",
+				Link:      urlScorecards,
+				RangeMenu: true,
 			}, {
-				Name: "Total Scores",
-				Link: urlTotalScores,
+				Name:      "Total Scores",
+				Link:      urlTotalScores,
+				RangeMenu: true,
 			}, {
-				Name: "Report",
-				Link: urlEventReport,
+				Name:      "Report",
+				Link:      urlEventReport,
+				RangeMenu: true,
 			}, {
 				Name: "Entry List",
 				Link: urlEntryList,

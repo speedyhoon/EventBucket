@@ -1,5 +1,5 @@
 {{define "master"}}<!DOCTYPE html>
-<link rel=stylesheet href=dirCSS/lite>
+<link rel=stylesheet href=dirCSS/dark>
 <title>EventBucket{{with .Page.Title}} - {{.}}{{end}}</title>
 <header>
 	<h1><a href=/>EventBucket</a></h1>
@@ -15,10 +15,20 @@
 							{{with .SubMenu}}
 								<ul>
 									{{range .}}
+										{{$link := .Link}}
 										{{if eq $.Page.Title .Name}}
 											<li class=visited>{{.Name}}
-										{{else}}
+										{{else if not .RangeMenu}}
 											<li><a href={{.Link}}{{$.Page.MenuID}}>{{.Name}}</a>
+										{{end}}
+										{{if and .RangeMenu $.Page.Data.Ranges}}
+											<li>
+												<div>{{.Name}}</div>
+												<ul>
+													{{range $.Page.Data.Ranges}}
+														<li><a href={{$link}}{{$.Page.MenuID}}/{{.ID}}>{{.Name}}</a>
+													{{end}}
+												</ul>
 										{{end}}
 									{{end}}
 								</ul>
