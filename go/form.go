@@ -140,6 +140,8 @@ func getForm(id uint8) []field {
 		}, {
 			name: "r", max: 4, step: 1, v8: isValidUint, Options: dataListAgeGroup(),
 		}, {
+			name: "x", v8: isValidBool,
+		}, {
 			name: "E", Required: true, v8: isValidRegex, regex: regexID,
 		}, {
 			name: "E", v8: isValidRegex, regex: regexID,

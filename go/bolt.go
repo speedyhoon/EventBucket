@@ -380,7 +380,7 @@ func eventShooterInsertDB(decode interface{}, contents interface{}) interface{} 
 	//Increment Event Shooter ID
 	event.AutoInc.Shooter++
 
-	//If shooter is Match Reserve, duplicate them in the Match Open category
+	//If shooter is Match Reserve, duplicate them in the Match Open category. Used for Victorian Match Rifle Championships.
 	if shooter.Grade == 8 {
 		shooter.ID = event.AutoInc.Shooter
 		shooter.Grade = 7

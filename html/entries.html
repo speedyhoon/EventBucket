@@ -17,6 +17,7 @@
 				<th>Club
 				<th>Grade
 				<th>Age Group
+				<th>Ladies
 				{{if not $.Event.Closed}}
 					<td>Edit
 				{{end}}
@@ -30,8 +31,9 @@
 					<td>{{.Club}}
 					<td>{{grade .Grade}}
 					<td>{{ageGroup .AgeGroup}}
+					<td>{{if.Ladies}}Ladies{{end}}
 					{{if not $.Event.Closed}}
-						<td onclick='console.log("edit")'>
+						<td onclick='console.log("Not implemented yet")'>
 					{{end}}
 			{{end}}
 		</table>
