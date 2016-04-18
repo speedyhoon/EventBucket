@@ -102,6 +102,7 @@ type EventShooter struct {
 	LinkedID  uint             `json:"l,omitempty"` //For duplicating shooters that are in different classes with the same score
 	SID       int              `json:"M,omitempty"`
 	Disabled  bool             `json:"d,omitempty"`
+	Ladies    bool             `json:"x,omitempty"`
 	//SCOREBOARD
 	position string //DON'T SAVE THIS TO DB! used for scoreboard only.
 	warning  uint8  //DON'T SAVE THIS TO DB! used for scoreboard only.
