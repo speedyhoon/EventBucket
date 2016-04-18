@@ -12,7 +12,7 @@
 		<table>
 			<thead>
 				<th class=asc>ID
-				<td class=textLeft colspan=2>Disabled
+				<td class=textLeft>Disabled
 				<th>Shooter
 				<th>Club
 				<th>Grade
@@ -26,8 +26,7 @@
 				<tr>
 					<td>{{.ID}}
 					<td>{{.Disabled}}
-					<td>{{if $hasRanges}}<a href=/print-cards/{{$.Event.ID}}/{{.ID}}>Scorecards</a>{{end}}
-					<td>{{.FirstName}} {{.Surname}}
+					<td>{{if $hasRanges}}<a href=/print-cards/{{$.Event.ID}}/{{.ID}} title="Print scorecards for {{.FirstName}}">{{end}}{{.FirstName}} {{.Surname}}{{if $hasRanges}}</a>{{end}}
 					<td>{{.Club}}
 					<td>{{grade .Grade}}
 					<td>{{ageGroup .AgeGroup}}
