@@ -46,6 +46,7 @@ type Event struct {
 	AutoInc  AutoInc        `json:"A,omitempty"`
 	Shooters []EventShooter `json:"S,omitempty"`
 	Closed   bool           `json:"z,omitempty"`
+	AverTwin bool           `json:"a,omitempty"`
 	Grades   []uint         `json:"g,omitempty"`
 	/*SortScoreboard string         `json:"o,omitempty"`
 	IsPrizeMeet    bool           `json:"p,omitempty"`
