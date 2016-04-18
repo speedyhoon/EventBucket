@@ -1,7 +1,7 @@
 {{define "page"}}
 	{{template "incompleteShooters" .}}
 	{{template "barcodeSearch"}}
-	{{with .Shooters}}
+	{{with .Event.Shooters}}
 		<table>
 			<tr>
 				<th>ID
@@ -27,7 +27,7 @@
 							<td>
 								<form method=post action=/14 id=f{{.ID}}>
 									<button name=S value={{.ID}}>Save</button>
-									<input name=E type=hidden value={{$.EventID}}>
+									<input name=E type=hidden value={{$.Event.ID}}>
 									<input name=R type=hidden value={{$.Range.ID}}>
 								</form>
 								{{/*template "TotalScores"*/}}
