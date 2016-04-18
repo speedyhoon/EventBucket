@@ -1,0 +1,255 @@
+$margin: 1.5em
+//Colours
+$black: #000
+$grey: #777
+$blue: #08b
+$briteBlue: #0bf
+$red: #c24
+//menu
+$menuPadding: $margin/6
+$bigPadding: $margin/3
+$fatBorder: 2px solid
+$thinBorder: 1px solid
+html
+	background: url(/v/bottom_landscape_14) bottom left no-repeat
+	background-size: 14em
+	background-attachment: fixed
+
+html,body
+	height: 100%
+body
+	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+	margin: 0
+
+section, header
+	float: left
+	display: block
+	padding: $margin
+
+header
+	height: calc(100% - 3em)
+
+nav
+	border-right: 1px dashed $grey
+	padding-bottom: $menuPadding
+
+section
+	padding-left: $margin
+	width: calc(100% - 18em)
+
+//Tables
+table
+	border-collapse: collapse
+
+tr
+	border-bottom: $thinBorder $grey
+	padding: $bigPadding
+
+th, thead td
+	text-align: center
+	font-weight: 700
+	border-bottom: $fatBorder $grey
+
+th:not(:empty)
+	cursor: pointer
+
+.asc, .desc, legend u
+	color: $briteBlue
+	border-color: $briteBlue
+
+.asc
+	background: url(/v/asc) no-repeat
+
+.desc
+	background: url(/v/desc) no-repeat bottom left
+
+section > form, table
+	margin-bottom: $margin
+	width: 100%
+
+//Forms
+legend
+	font-size: $margin
+	font-weight: 700
+
+fieldset
+	border-color: $grey
+
+label, button
+	float: left
+
+label:not(:last-child), button:not(:last-child)
+	margin: 0 $margin $margin 0
+
+input, select
+	border-radius: $menuPadding
+	padding: $menuPadding
+
+fieldset
+	input, select
+		display: block
+	button
+		margin-top: 1em
+
+input[type=checkbox]
+	$size: 2em
+	width: $size
+	height: $size
+	margin: 0
+
+::-webkit-search-cancel-button
+	cursor: pointer
+	opacity: 1 !important
+	pointer-events: auto !important
+
+select[required] option:empty
+	display: none
+
+label select
+	width: 100%
+
+samp:not([hidden])
+	color: $red
+	display: block
+
+button
+	background: transparent
+	color: $briteBlue
+	border: $fatBorder $briteBlue
+	padding: $bigPadding
+	border-radius: $bigPadding
+	cursor: pointer
+
+\:focus
+	box-shadow: .2em .2em .3em $blue
+
+.inline
+	float: left
+	margin-bottom: 0
+
+	label
+		margin-bottom: 0
+
+//Menus
+nav
+	ul
+		list-style: none
+		padding: 0
+
+	li a, .visited
+		padding: $menuPadding
+		display: block
+
+	li a, li ul, .visited
+		padding-left: $margin
+
+	ul a
+		border-left: $fatBorder transparent
+
+	ul a:hover, button:hover, a:hover
+		border-color: $blue
+		color: $blue
+
+	.visited
+		border-left: $fatBorder
+
+//Text
+h1,h2,h3,h4,h5,h6
+	margin: 0
+	color: $grey
+
+h1,h2,h3
+	font-weight: 100
+
+.small
+	font-size: .7em
+
+a
+	text-decoration: none
+	color: $briteBlue
+
+.clear
+	clear: both
+
+.right
+	float: right
+
+.bold
+	font-weight: bold
+.center, .centerPadding
+	text-align: center
+
+.emptyBucket
+	height: 200px
+	display: block
+	margin: 30px auto
+	stroke: $black
+
+.loading
+	background: url(/g/loading) center right no-repeat
+
+.barcode
+	width: 80px
+	image-rendering: pixelated
+
+.centerPadding
+	padding: 1em
+
+.center a img
+	padding: 0 0.25em
+
+
+//TODO remove question styling
+h6
+	color: #f70
+	border-bottom: $thinBorder
+	font-size: 1.5em
+
+.events
+	div
+		margin-bottom: $bigPadding
+		display: inline-block
+		width: 100%
+	time
+		background: $grey
+		border: $thinBorder
+		text-align: center
+		width: 130px
+		float: left
+		margin-right: $bigPadding
+	b
+		display: block
+		font-size: 26px
+		line-height: 23px
+	p
+		padding: 0 $bigPadding
+		text-decoration: none
+		border-bottom: $thinBorder $grey
+		margin: 0
+
+.textLeft
+	text-align: left
+
+td[onclick]
+	background: url(/v/edit) center center no-repeat
+	cursor: pointer
+
+abbr
+	color: $briteBlue
+	font-weight: 900
+	cursor: help
+
+@media print
+	header, h1
+		display: none
+
+	section
+		padding: 0
+		width: 100%
+
+	.printCards
+		tr
+			border: 0
+
+		tr:nth-child(3n):not(:last-child)
+			border-bottom: $thinBorder $grey
