@@ -44,6 +44,7 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 		Heading: event.Name,
 		Data: map[string]interface{}{
 			"Event":           event,
+			"Ranges":          event.Ranges,
 			"ShooterEntry":    shooterEntry,
 			"AvailableGrades": pageForms[2],
 		},

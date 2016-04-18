@@ -12,7 +12,8 @@ $white: #fff
 //menu
 $menuPadding: $margin/6
 $bigPadding: $margin/3
-$fatBorder: 2px solid
+$fatWidth: 2px
+$fatBorder: $fatWidth solid
 $thinBorder: 1px solid
 html
 	background: $black url(/v/bottom_landscape_14) bottom left no-repeat
@@ -139,21 +140,29 @@ button
 	label
 		margin-bottom: 0
 
-//Menus
+//Vertical Menus
 nav
 	ul
 		list-style: none
 		padding: 0
 
+	& > li
+		position: relative
+
 	li a, .visited
-		padding: $menuPadding
 		display: block
+		padding: $menuPadding
 
 	li a, li ul, .visited
 		padding-left: $margin
 
 	ul a
 		border-left: $fatBorder transparent
+
+	div
+		color: $briteBlue
+		cursor: pointer
+		padding: $menuPadding $menuPadding $menuPadding calc(#{$margin} + #{$fatWidth})
 
 	ul a:hover, button:hover, a:hover
 		border-color: $blue
@@ -162,6 +171,14 @@ nav
 	.visited
 		color: $white
 		border-left: $fatBorder $white
+
+	ul ul ul
+		background: $black
+		display: none
+		position: absolute
+
+	ul ul li:hover > ul
+		display: block
 
 //Text
 h1,h2,h3,h4,h5,h6
