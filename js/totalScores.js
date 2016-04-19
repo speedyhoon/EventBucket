@@ -1,23 +1,18 @@
 'use strict';
 //Search for a shooter on Scorecards & total-scores pages.
 function shooterBarcode(search, shooter) {
-  document.getElementById('barcodeErr').setAttribute('hidden','');
-  document.getElementById('shooterErr').setAttribute('hidden','');
-
-  var pathName = window.location.pathname.split('/')[1],
-  eventID = window.location.pathname.split('/')[2],
-  rangeID = window.location.pathname.split('/')[3];
+  document.getElementById('barcodeErr').setAttribute('hidden', '');
+  document.getElementById('shooterErr').setAttribute('hidden', '');
+  var pathName = window.location.pathname.split('/')[1], eventID = window.location.pathname.split('/')[2], rangeID = window.location.pathname.split('/')[3];
   if (shooter && shooter.value && /^\d+$/g.test(shooter.value)) {
     otherFunc(shooter.value, shooter, pathName, eventID, rangeID);
     return false;
-  } else if (!search || !search.value || !/^\d+\/\d+#\d+$/g.test(search.value)) {
+  }else if (!search || !search.value || !/^\d+\/\d+#\d+$/g.test(search.value)) {
     search.select();
-    document.getElementById('barcodeErr').removeAttribute('hidden','');
+    document.getElementById('barcodeErr').removeAttribute('hidden');
     return false;
   }
-  var barcodeEventID = search.value.split('/')[0],
-	  barcodeRangeID = search.value.split('/')[1].split('#')[0],
-	  shooterID = search.value.split('#')[1];
+  var barcodeEventID = search.value.split('/')[0], barcodeRangeID = search.value.split('/')[1].split('#')[0], shooterID = search.value.split('#')[1];
   if (eventID !== barcodeEventID) {
     //Go to a different event if user presses OK.
     if (confirm('event is not the same. do you want to go to event with id X?')) {
@@ -40,8 +35,8 @@ function shooterBarcode(search, shooter) {
 }
 
 if (!window.location.hash) {
-  document.querySelector('[name=B]').setAttribute('autofocus','');
-}else if (!document.getElementById(window.location.hash.replace('#',''))) {
+  document.querySelector('[name=B]').setAttribute('autofocus', '');
+}else if (!document.getElementById(window.location.hash.replace('#', ''))) {
   document.getElementById('shooterErr').removeAttribute('hidden');
   document.querySelector('[name=B]').select();
 }
