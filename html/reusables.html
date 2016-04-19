@@ -47,9 +47,9 @@
 
 {{define "incompleteShooters"}}
 	{{if.ShowAll}}
-		<a href=/{{.URL}}/{{.EventID}}/{{.Range.ID}}>View Incomplete Shooters</a>
+		<a href=/{{.URL}}/{{.Event.ID}}/{{.Range.ID}}>View Incomplete Shooters</a>
 	{{else}}
-		<a href=/{{.URL}}-all/{{.EventID}}/{{.Range.ID}}>View All Shooters</a>
+		<a href=/{{.URL}}-all/{{.Event.ID}}/{{.Range.ID}}>View All Shooters</a>
 	{{end}}
 {{end}}
 
