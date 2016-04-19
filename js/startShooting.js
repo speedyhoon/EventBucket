@@ -47,12 +47,7 @@
   }
 
   function recalculateTotal(value) {
-    var type = getShootersClass(),
-    index = classes[type].validShots.indexOf(value),
-    newer = ~~classes[type].validScore[index],
-    newerC = ~~classes[type].validCenta[index],
-    total,
-    centres;
+    var type = getShootersClass(), index = classes[type].validShots.indexOf(value), newer = ~~classes[type].validScore[index], newerC = ~~classes[type].validCenta[index], total, centres;
     currentCell.innerHTML = value;
     if (getCurrentNth() >= getNoOfSighters()) {
       total = getValue(currentRow, 'total') - getValue(currentCell, 'value') + newer;
@@ -125,13 +120,11 @@
   }
 
   function buttonsAddEvents() {
-    var n = 0,
-    buttons = document.getElementsByTagName('button'),
-			max = buttons.length, buttonOnClickEvent = function(buttonValue) {
-  return function() {
-    changeValue(buttonValue);
-  };
-			};
+    var n = 0, buttons = document.getElementsByTagName('button'), max = buttons.length, buttonOnClickEvent = function(buttonValue) {
+      return function() {
+        changeValue(buttonValue);
+      };
+    };
     for (n; n < max; n++) {
       buttons[n].onclick = buttonOnClickEvent(buttons[n].innerHTML);
     }
@@ -161,40 +154,38 @@
   }
 
   /*	function changeSighters(){//when changing the value of the select box "sighters"
-  		var selected = document.getElementById('selectSighters').selectedIndex, tds, iteration = 0, sighters, selectedCell, i;
-  		if(currentRow && selected > 0){
-  			tds = currentRow.getElementsByTagName('td');
-  			sighters = getNoOfSighters();
-  			selectedCell = currentCell;
-  			for(i = sighters - selected; i < sighters; i++){
-  				currentCell = tds[sighters + iteration++];//increment iteration AFTER this line
-  				recalculateTotal(tds[i].innerHTML);
-  			}
-  			currentCell = selectedCell;
-  			highlightOnlyTheCell(tds[(sighters + selected)]);
-  			ajax(currentRow.getAttribute('id'));
-  		}
-  	}*/
-
+  				var selected = document.getElementById('selectSighters').selectedIndex, tds, iteration = 0, sighters, selectedCell, i;
+  				if(currentRow && selected > 0){
+  					tds = currentRow.getElementsByTagName('td');
+  					sighters = getNoOfSighters();
+  					selectedCell = currentCell;
+  					for(i = sighters - selected; i < sighters; i++){
+  						currentCell = tds[sighters + iteration++];//increment iteration AFTER this line
+  						recalculateTotal(tds[i].innerHTML);
+  					}
+  					currentCell = selectedCell;
+  					highlightOnlyTheCell(tds[(sighters + selected)]);
+  					ajax(currentRow.getAttribute('id'));
+  				}
+  			}*/
   /*	function modifySelectBox(){//alter the options in the sighters select box for different classes
-  		var additional = '', k, selectBox = document.createElement('select'), selectSighters;
-  		for(k = getNoOfSighters(); k >= 2; k--){
-  			additional += '<option>Keep S' + k + ' &gt;</option>';
-  		}
-  		selectBox.id = 'selectSighters';
-  		selectBox.innerHTML = '<option>Drop All</option>' + additional + '<option>Keep All</option>';
-  		if(currentRow.getAttribute('data-sighters')){
-  			selectBox.selectedIndex = currentRow.getAttribute('data-sighters');
-  		}
-  		selectBox.onchange = function(){
-  			return function(){
-  				changeSighters();
-  			};
-  		};
-  		selectSighters = document.getElementById('selectSighters');
-  		selectSighters.parentNode.replaceChild(selectBox, selectSighters);
-  	}*/
-
+  				var additional = '', k, selectBox = document.createElement('select'), selectSighters;
+  				for(k = getNoOfSighters(); k >= 2; k--){
+  					additional += '<option>Keep S' + k + ' &gt;</option>';
+  				}
+  				selectBox.id = 'selectSighters';
+  				selectBox.innerHTML = '<option>Drop All</option>' + additional + '<option>Keep All</option>';
+  				if(currentRow.getAttribute('data-sighters')){
+  					selectBox.selectedIndex = currentRow.getAttribute('data-sighters');
+  				}
+  				selectBox.onchange = function(){
+  					return function(){
+  						changeSighters();
+  					};
+  				};
+  				selectSighters = document.getElementById('selectSighters');
+  				selectSighters.parentNode.replaceChild(selectBox, selectSighters);
+  			}*/
   function highlightRow(row) {//HIGHLIGHT THE SELECTED ROW
     if (row !== currentRow) {
       row.setAttribute('data-selected', '1');
@@ -233,7 +224,7 @@
     var n = 0, shooters = document.getElementsByClassName('name'), shooterQuantity = shooters.length, shooterNameOnclick = function(trElement) {
       return function() {
         highlightRow(trElement);
-        if (!currentRow.getAttribute('data-visited')) {  //if the attribute is present it has already been processed
+        if (!currentRow.getAttribute('data-visited')) {	//if the attribute is present it has already been processed
           listenToTds();
         }
       };
