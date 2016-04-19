@@ -175,6 +175,12 @@ func templater(w http.ResponseWriter, page page) {
 				}
 				return ""
 			},
+			"gradeAbbr": func(index uint) string {
+				if index < uint(len(globalGrades)) {
+					return globalGrades[index].Abbr
+				}
+				return ""
+			},
 			"ageGroup": func(index uint) string {
 				if index < uint(len(dataListAgeGroup())) {
 					return dataListAgeGroup()[index].Label
