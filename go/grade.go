@@ -164,8 +164,8 @@ func defaultGlobalDisciplines() []Discipline {
 		QtySighters: 3,
 		QtyShots:    15,
 		Marking:     XV5,
-		Grades: []Grade{{Abbr: "Open", Name: "Match Open"},
-			{Abbr: "Reserve", Name: "Match Reserve"}},
+		Grades: []Grade{{Abbr: "MO", Name: "Match Open"},
+			{Abbr: "MR", Name: "Match Reserve"}},
 	}, {
 		ID:          3,
 		Name:        "Service Rifle",

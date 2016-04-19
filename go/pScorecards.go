@@ -35,6 +35,8 @@ func scorecards(w http.ResponseWriter, r *http.Request, showAll bool, parameters
 		Menu:    urlEvents,
 		MenuID:  event.ID,
 		Heading: event.Name,
+		//		JS:      "totalScores",
+		JS: "startShooting",
 		Data: map[string]interface{}{
 			"Range":   currentRange,
 			"Event":   event,
