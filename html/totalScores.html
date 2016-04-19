@@ -5,8 +5,8 @@
 		<table>
 			<tr>
 				<th>ID
-				<th>Grade
 				<th>Club
+				<th>Grade
 				<th>Shooter
 				<th>Total
 				<th>Centers
@@ -17,8 +17,8 @@
 					{{if or $.ShowAll (and (not $score.Total) (not $.ShowAll))}}
 						<tr{{/* id=.ID}} data-class=fclass*/}}>
 							<td>{{.ID}}
-							<td>{{grade .Grade}}
 							<td>{{.Club}}
+							<td>{{grade .Grade}}
 							<td{{/* class=name*/}}>{{.FirstName}} {{.Surname}}
 							<td>
 								<input name=t max=60 min=0 step=1 value={{$score.Total}} type=number autocomplete=off id={{.ID}} form=f{{.ID}}>
