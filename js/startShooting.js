@@ -1,6 +1,6 @@
 (function() {
   'use strict';
-  var currentCell = null, currentRow = null, j, classes = {
+  var currentCell, currentRow, j, classes = {
     currentType: null,
     0: {
       sighters: 2,
@@ -83,7 +83,7 @@
   }
 
   function ajax(id) {
-    var shots = getAjax();
+    var shots = getAjax(), table = document.querySelector('table'), eventID = table.getAttribute('data-eventID'), rangeID = table.getAttribute('data-rangeID');
     shots = encodeURI(shots).replace(/#/gi, '%23');	//hashes are converted after encodeURI to stop % being converted twice
     j.open('POST', '/updateShotScores?eventid=' + eventID + '&rangeid=' + rangeID + '&shooterid=' + id + '&shots=' + shots, true);
     j.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -120,13 +120,13 @@
   }
 
   function buttonsAddEvents() {
-    var n = 0, buttons = document.getElementsByTagName('button'), max = buttons.length, buttonOnClickEvent = function(buttonValue) {
+    var buttons = document.getElementsByTagName('button'), max = buttons.length, buttonOnClickEvent = function(buttonValue) {
       return function() {
         changeValue(buttonValue);
       };
     };
-    for (n; n < max; n++) {
-      buttons[n].onclick = buttonOnClickEvent(buttons[n].innerHTML);
+    while (max--) {
+      buttons[max].onclick = buttonOnClickEvent(buttons[max].innerHTML);
     }
   }
 
@@ -195,7 +195,7 @@
       currentRow = row;
       highlightOnlyTheCell(row.getElementsByTagName('td')[0]);
       moveHeader();
-      //			modifySelectBox();
+      //modifySelectBox();
     }
   }
 
@@ -209,19 +209,19 @@
   }
 
   function listenToTds() {
-    var n = 0, tdElements = currentRow.getElementsByTagName('td'), tdQuantity = tdElements.length, tdOnClickEvent = function(tdElement) {
+    var tdElements = currentRow.getElementsByTagName('td'), tdQuantity = tdElements.length, tdOnClickEvent = function(tdElement) {
       return function() {
         highlightCell(tdElement);
       };
     };
-    for (n; n < tdQuantity; n++) {
-      tdElements[n].onclick = tdOnClickEvent(tdElements[n]);
+    while (tdQuantity--) {
+      tdElements[tdQuantity].onclick = tdOnClickEvent(tdElements[tdQuantity]);
     }
     currentRow.setAttribute('data-visited', 1);
   }
 
   function runOnLoad() {
-    var n = 0, shooters = document.getElementsByClassName('name'), shooterQuantity = shooters.length, shooterNameOnclick = function(trElement) {
+    var shooters = document.querySelectorAll('tbody th:nth-child(4)'), shooterQty = shooters.length, shooterNameOnclick = function(trElement) {
       return function() {
         highlightRow(trElement);
         if (!currentRow.getAttribute('data-visited')) {	//if the attribute is present it has already been processed
@@ -229,10 +229,8 @@
         }
       };
     };
-    if (shooters) {//assign onclick events to all shooters names
-      for (n; n < shooterQuantity; n++) {
-        shooters[n].onclick = shooterNameOnclick(shooters[n].parentNode);
-      }
+    while (shooterQty--) {    //assign onclick events to all shooters names
+      shooters[shooterQty].onclick = shooterNameOnclick(shooters[shooterQty].parentNode);
     }
   }
 

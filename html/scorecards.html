@@ -2,44 +2,41 @@
 	{{template "incompleteShooters" .}}
 	{{template "barcodeSearch"}}
 	{{with .Event.Shooters}}
-		<table>
-			<tr>
+		<table data-eventID={{$.Event.ID}} data-rangeID={{$.Range.ID}}>
+			<tr id=h>
 				<th>ID
 				<th>Club
 				<th>Grade
 				<th>Shooter
+				<td>S1
+				<td>S2
+				<td>1
+				<td>2
+				<td>3
+				<td>4
 				<th>Total
-				<th>Centers
-				<th>
 			{{range .}}
 				{{if eq false .Hidden}}
-					{{/*
-						if $.ShowAll || !$.ShowAll && .Scores[$.Range.ID].Total <= 0
-					*/}}
 					{{$score := index .Scores $.Range.StrID}}
-					{{$noShow := not $.ShowAll}}
-					{{$noScore := not $score.Total}}
-					{{$notAll  := and $noShow $noScore}}
-					{{if or $.ShowAll $notAll}}
-						<tr{{/* id=.ID}} data-class=fclass*/}}>
-							<td>{{.ID}}
-							<td>{{.Club}}
-							<td>{{gradeAbbr .Grade}}
-							<td{{/* class=name*/}}>{{.FirstName}} {{.Surname}}
+					{{if or $.ShowAll (and (not $score.Total) (not $.ShowAll))}}
+						<tr id={{.ID}} data-class={{(grade .Grade).ClassID}}>
+							<th>{{.ID}}
+							<th>{{.Club}}
+							<th>{{(grade .Grade).Abbr}}
+							<th>{{.FirstName}} {{.Surname}}
 							<td>
-								<input name=t max=60 min=0 step=1 value={{$score.Total}} type=number autocomplete=off form={{.ID}}>
 							<td>
-								<input name=c max=10 min=0 step=1 value={{$score.Centers}} type=number autocomplete=off form={{.ID}}>
 							<td>
-								{{/*<form method=post action=/13 id={{.ID}}>
-									<button name=S value={{.ID}}>Save</button>
-									<input name=E type=hidden value={{$.Event.ID}}>
-									<input name=R type=hidden value={{$.Range.ID}}>
-								</form>
-								{{/*template "TotalScores"*/}}
+							<td>
+							<td>
+							<td>
+							<th>
 					{{end}}
 				{{end}}
 			{{end}}
+			<tr id=x>
+				<th id=bu colspan=99>{{/*TODO change colspan to table width*/}}</th>
+			</tr>
 		</table>
 	{{else}}
 		<samp>No shooters entered in this event.</samp>
