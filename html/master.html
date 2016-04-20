@@ -33,7 +33,7 @@
 											<ul>
 												{{$link := .Link}}
 												{{range $.Page.Data.Event.Ranges}}
-													{{if not .IsAgg}}
+													{{if or (not .IsAgg) (eq $link "/scoreboard/")}}
 														<li><a href={{$link}}{{$.Page.MenuID}}/{{.ID}}>{{.Name}}</a>
 													{{end}}
 												{{end}}
