@@ -124,6 +124,7 @@ func defaultGlobalDisciplines() []Discipline {
 			"5": {Value: 5, Center: 0, CountBack: "5", CountBack2: "5", Shot: "5", Sighter: "f"},
 			"V": {Value: 5, Center: 1, CountBack: "6", CountBack2: "6", Shot: "V", Sighter: "v"},
 			"6": {Value: 5, Center: 1, CountBack: "6", CountBack2: "6", Shot: "V", Sighter: "g"},
+			//TODO precedence is taken over the last X shot rather than the most X's shot
 			"X": {Value: 5, Center: 1, CountBack: "6", CountBack2: "7", Shot: "X", Sighter: "x"},
 		}}
 	return []Discipline{{
@@ -132,6 +133,8 @@ func defaultGlobalDisciplines() []Discipline {
 		QtySighters: 2,
 		QtyShots:    10,
 		Marking:     XV5,
+		//Target rifle is traditionally scored up to 5 (bullseye) which is has a larger area than 6 on an F class target.
+		//This causes significantly more shoot-offs for winning a range than F Class.
 		Grades: []Grade{{Abbr: "A", Name: "Target A"},
 			{Abbr: "B", Name: "Target B"},
 			{Abbr: "C", Name: "Target C"}},

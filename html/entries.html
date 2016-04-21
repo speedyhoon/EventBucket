@@ -28,7 +28,7 @@
 					<td>{{.Disabled}}
 					<td>{{if $hasRanges}}<a href=/print-cards/{{$.Event.ID}}/{{.ID}} title="Print scorecards for {{.FirstName}}">{{end}}{{.FirstName}} {{.Surname}}{{if $hasRanges}}</a>{{end}}
 					<td>{{.Club}}
-					<td>{{grade .Grade}}
+					<td>{{(grade .Grade).Name}}
 					<td>{{ageGroup .AgeGroup}}
 					<td>{{if.Ladies}}Ladies{{end}}
 					{{if not $.Event.Closed}}
