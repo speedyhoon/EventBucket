@@ -85,13 +85,13 @@
   function ajax(id) {
     var shots = getAjax(), table = document.querySelector('table'), eventID = table.getAttribute('data-eventID'), rangeID = table.getAttribute('data-rangeID');
     shots = encodeURI(shots).replace(/#/gi, '%23');	//hashes are converted after encodeURI to stop % being converted twice
-    j.open('POST', '/updateShotScores?eventid=' + eventID + '&rangeid=' + rangeID + '&shooterid=' + id + '&shots=' + shots, true);
+    j.open('POST', '/16?E=' + eventID + '&R=' + rangeID + '&S=' + id + '&s=' + shots, true);
     j.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     j.send();
     j.onreadystatechange = function() {
-      if (j.status === 200) {
-        document.getElementById(id).getElementsByClassName('t')[0].innerHTML = j.response;//total+'<sup>'+centres+'</sup>';
-      }
+	    if (j.readyState==4) {
+		    currentRow.querySelector('.t').innerHTML = j.status === 200 ? j.response : 'failed';
+	    }
     };
   }
 

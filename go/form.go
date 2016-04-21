@@ -32,6 +32,7 @@ const (
 	shooterSearch        uint8 = 13
 	eventTotalScores     uint8 = 14
 	eventAvailableGrades uint8 = 15
+	eventUpdateShotScore uint8 = 16
 )
 
 func dataListAgeGroup() []option {
@@ -215,6 +216,16 @@ func getForm(id uint8) []field {
 			name: "g", Required: true, minLen: 1, max: 65535, step: 1, v8: listUint, Options: availableGrades([]uint{}),
 		}, {
 			name: "I", v8: isValidRegex, regex: regexID,
+		}}
+	case 16:
+		return []field{{
+			name: "s", Required: true, maxLen: 12, minLen: 1, v8: isValidStr,
+		}, {
+			name: "E", Required: true, v8: isValidRegex, regex: regexID,
+		}, {
+			name: "R", Required: true, min: 1, max: 65535, step: 1, v8: isValidUint,
+		}, {
+			name: "S", Required: true, max: 65535, step: 1, v8: isValidUint,
 		}}
 	}
 	return []field{}
