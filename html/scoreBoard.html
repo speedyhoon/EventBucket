@@ -15,7 +15,7 @@
 		{{end}}
 	{{range.Event.Shooters}}
 		{{if.GradeSeparator}}
-			<tr><td colspan={{$.Colspan}} class=classHeadingRow>{{grade .Grade}}
+			<tr><td colspan={{$.Colspan}} class=classHeadingRow>{{(grade .Grade).Name}}
 		{{end}}
 		<tr>
 			<td>

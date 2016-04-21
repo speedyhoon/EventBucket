@@ -43,7 +43,8 @@
 	}
 
 	function getValue(thisCell, attribute){
-		return ~~thisCell.getAttribute('data-' + attribute);
+		//Putting plus in front of a string converts it to a number (integer or float)
+		return +thisCell.getAttribute('data-' + attribute);
 	}
 
 	function recalculateTotal(value){
@@ -203,27 +204,27 @@
 		}
 	}
 
-	function runOnLoad(){
-		var shooters = document.querySelectorAll('tbody th:nth-child(4)'), shooterQty = shooters.length, shooterNameOnclick = function(trElement){
-			return function shooterClick(){
-				highlightRow(trElement);
-				if(!currentRow.getAttribute('data-visited')){	//if the attribute is present it has already been processed
-					currentRow.onclick = function tdClicker(tdElement){
-						return function tdClick(event){
-							if(event.target.nodeName === 'TD'){
-								highlightCell(tdElement);
-							}
-						};
+	var shooters = document.querySelectorAll('tbody th:nth-child(4)'), shooterQty = shooters.length, shooterNameOnclick = function(trElement){
+		return function shooterClick(){
+			highlightRow(trElement);
+
+			//if visited attribute is present it has already been processed
+			if(!currentRow.getAttribute('data-visited')){
+				currentRow.onclick = function tdClicker(tdElement){
+					return function tdClick(event){
+						if(event.target.nodeName === 'TD'){
+							highlightCell(tdElement);
+						}
 					};
-					currentRow.setAttribute('data-visited', 1);
-				}
-			};
+				};
+				currentRow.setAttribute('data-visited', 1);
+			}
 		};
-		while(shooterQty--){		//assign onclick events to all shooters names
-			shooters[shooterQty].onclick = shooterNameOnclick(shooters[shooterQty].parentNode);
-		}
+	};
+	while(shooterQty--){		//assign onclick events to all shooters names
+		shooters[shooterQty].onclick = shooterNameOnclick(shooters[shooterQty].parentNode);
 	}
 
-	runOnLoad();//178,161,166,168,238,260,241
+	//178,161,166,168,238,260,241
 	//6328,5685,7920
 }());
