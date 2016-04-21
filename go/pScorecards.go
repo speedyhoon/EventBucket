@@ -31,6 +31,16 @@ func scorecards(w http.ResponseWriter, r *http.Request, showAll bool, parameters
 		return
 	}
 
+	//TODO this is messy as hell
+	var longestShoot uint
+	var longestClassID int
+	for classID, discipline := range globalDisciplines {
+		if discipline.QtySighters+discipline.QtyShots > longestShoot {
+			longestShoot = discipline.QtySighters + discipline.QtyShots
+			longestClassID = classID
+		}
+	}
+
 	templater(w, page{
 		Title:   "Scorecards",
 		Menu:    urlEvents,
@@ -43,6 +53,12 @@ func scorecards(w http.ResponseWriter, r *http.Request, showAll bool, parameters
 			"Event":   event,
 			"URL":     "scorecards",
 			"ShowAll": showAll,
+
+			//TODO this is messy as hell
+			"Disciplines":    globalDisciplines,
+			"LongestClassID": longestClassID,
+			"Sighters":       make([]struct{}, globalDisciplines[longestClassID].QtySighters),
+			"Shots":          make([]struct{}, globalDisciplines[longestClassID].QtyShots),
 		},
 	})
 }
@@ -96,7 +112,8 @@ func calcTotalCenters(shots string, classID uint) Score {
 	if classID >= 0 && classID < uint(len(defaultClassSettings)) {
 
 		//Ignore the first sighter shots from being added to the total score. Unused sighters should be still be present in the data passed
-		for _, shot := range strings.Split(shots[defaultClassSettings[classID].QtySighters:], "") {
+		//for _, shot := range strings.Split(shots[defaultClassSettings[classID].QtySighters:], "") {
+		for _, shot := range strings.Split(shots, "") {
 			total += defaultClassSettings[classID].Marking.Shots[shot].Value
 			centers += defaultClassSettings[classID].Marking.Shots[shot].Center
 

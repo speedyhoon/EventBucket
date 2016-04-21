@@ -3,20 +3,22 @@
 	{{template "barcodeSearch"}}
 	{{with .Event.Shooters}}
 		<table data-eventID={{$.Event.ID}} data-rangeID={{$.Range.ID}}>
-			<tr id=h>
-				<th>ID
-				<th>Club
-				<th>Grade
-				<th>Shooter
-				<td>S1
-				<td>S2
-				<td>1
-				<td>2
-				<td>3
-				<td>4
-				<th>Total
+			<thead>
+				<tr id=h>
+					<th>ID
+					<th>Club
+					<th>Grade
+					<th>Shooter
+					{{range $i, $u := $.Sighters}}
+						<td>S{{$i}}
+					{{end}}
+					{{range $i, $u := $.Shots}}
+						<td>{{$i}}
+					{{end}}
+					<th>Total
+			</thead>
 			{{range .}}
-				{{if eq false .Hidden}}
+				{{if not .Hidden}}
 					{{$score := index .Scores $.Range.StrID}}
 					{{if or $.ShowAll (and (not $score.Total) (not $.ShowAll))}}
 						<tr id={{.ID}} data-class={{(grade .Grade).ClassID}}>
@@ -24,13 +26,29 @@
 							<th>{{.Club}}
 							<th>{{(grade .Grade).Abbr}}
 							<th>{{.FirstName}} {{.Surname}}
+
+
+	{{/*
+			{{$tempClass := CLASS .Grade}}
+			{{$shot_cells := index $classShots $tempClass}}
+			{{range $shot_index, $shot_name := $shot_cells}}
+			<td>{{DisplayShot $shot_index $score}}
+				{{end}}
+			*/}}
+
+
 							<td>
 							<td>
 							<td>
 							<td>
 							<td>
 							<td>
-							<th class=t>
+							<td>
+							{{/*$lenth_this_shot := index $class_shots_length $tempClass*/}}
+							<th{{/*COLSPAN $longest_shots $lenth_this_shot*/}} class=t>
+								{{with $score}}
+									{{.Total}}{{with .Centers}}<sup>{{.}}</sup>{{end}}
+								{{end}}
 					{{end}}
 				{{end}}
 			{{end}}
