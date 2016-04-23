@@ -33,8 +33,19 @@ function tableSort(th) {
   th.className = direction > 0 ? '^asc^' : '^desc^';
 }
 
+var dialog = document.createElement('dialog');
+dialog.onclick = dialog.close;
+document.body.appendChild(dialog);
+
 //Add table sort to TH elements within a THEAD
 document.onclick = function(event) {
+	//Help message popup
+	if (event.target.nodeName === 'ABBR'){
+		console.log(this);
+		dialog.textContent = event.target.title;
+		return dialog.showModal();
+	}
+	//Table sort
   if (event.target.nodeName === 'TH' && event.target.parentElement.parentElement.nodeName === 'THEAD') {
     tableSort(event);
   }
@@ -49,11 +60,4 @@ var selectBoxes = document.querySelectorAll('select'), qty = selectBoxes.length,
 };
 while (qty--) {
   selectBoxes[qty].onkeydown = formShortcut;
-}
-
-//Help message popup
-var abbrs = document.querySelectorAll('label abbr'), onClick = function() {alert(this.title);};
-qty = abbrs.length;
-while (qty--) {
-  abbrs[qty].onclick = onClick;
 }
