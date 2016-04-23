@@ -41,9 +41,9 @@ document.body.appendChild(dialog);
 document.onclick = function(event) {
 	//Help message popup
 	if (event.target.nodeName === 'ABBR'){
-		console.log(this);
 		dialog.textContent = event.target.title;
 		return dialog.showModal();
+		//return false;
 	}
 	//Table sort
   if (event.target.nodeName === 'TH' && event.target.parentElement.parentElement.nodeName === 'THEAD') {
