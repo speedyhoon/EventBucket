@@ -1,0 +1,280 @@
+//Colours
+$black: #000
+$charcoal: #222
+$dark: #445
+$grey: #777
+$liteGrey: #cdd
+$blue: #08b
+$briteBlue: #0bf
+$red: #c24
+$white: #fff
+//menu
+$margin: 1.5em
+$menuPadding: $margin/6
+$bigPadding: $margin/3
+$fatWidth: 2px
+$fatBorder: $fatWidth solid
+$thinBorder: 1px solid
+html
+	background-position: bottom left
+	background-repeat: no-repeat
+	background-size: 14em
+	background-attachment: fixed
+
+html,body
+	height: 100%
+body
+	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+	margin: 0
+
+section, header
+	float: left
+	display: block
+	padding: $margin
+
+header
+	height: calc(100% - 3em)
+
+nav
+	border-right: 1px dashed
+	padding-bottom: $menuPadding
+
+section
+	padding-left: $margin
+	width: calc(100% - 18em)
+
+//Tables
+table
+	border-collapse: collapse
+
+tr
+	border-bottom: $thinBorder
+	padding: $bigPadding
+
+th, thead td
+	text-align: center
+	font-weight: 700
+	border-bottom: $fatBorder
+
+th:not(:empty)
+	cursor: pointer
+
+.asc, .desc, legend u
+	color: $briteBlue
+	border-color: $briteBlue
+
+.asc
+	background: url(/v/asc) no-repeat
+
+.desc
+	background: url(/v/desc) no-repeat bottom left
+
+section > form, table
+	margin-bottom: $margin
+	width: 100%
+
+//Forms
+legend
+	font-size: $margin
+	font-weight: 700
+
+label, button
+	float: left
+
+label:not(:last-child), button:not(:last-child)
+	margin: 0 $margin $margin 0
+
+input, select
+	border: $thinBorder
+	border-radius: $menuPadding
+	padding: $menuPadding
+
+fieldset
+	label
+		position: relative
+	input, select
+		display: block
+	button
+		margin-top: 1em
+
+input[type=checkbox]
+	$size: 2em
+	width: $size
+	height: $size
+	margin: 0
+
+::-webkit-search-cancel-button
+	cursor: pointer
+	opacity: 1 !important
+	pointer-events: auto !important
+
+select[required] option:empty
+	display: none
+
+label select
+	width: 100%
+
+samp:not([hidden])
+	color: $red
+	display: block
+
+button
+	background: transparent
+	color: $briteBlue
+	border: $fatBorder $briteBlue
+	padding: $bigPadding
+	border-radius: $bigPadding
+	cursor: pointer
+
+\:focus
+	box-shadow: .2em .2em .3em $blue
+
+.inline
+	float: left
+	margin-bottom: 0
+
+	label
+		margin-bottom: 0
+
+//Vertical Menus
+nav
+	ul
+		list-style: none
+		padding: 0
+
+	//& > li  //disable to push the menu down rather than popup overlay
+		position: relative
+
+	li a, .visited
+		display: block
+		padding: $menuPadding
+
+	li a, li ul, .visited
+		padding-left: $margin
+
+	ul a
+		border-left: $fatBorder transparent
+
+	div
+		cursor: pointer
+		padding: $menuPadding $menuPadding $menuPadding calc(#{$margin} + #{$fatWidth})
+
+	.open
+		padding-left: $margin
+
+	ul a:hover, button:hover, a:hover
+		border-color: $blue
+		color: $blue
+
+	ul ul ul
+		display: none
+	//position: absolute  //disable to push the menu down rather than popup overlay
+
+	ul ul li:hover > ul
+		display: block
+
+//Text
+h1,h2,h3,h4
+	color: $grey
+	margin: 0
+
+h1,h2,h3
+	font-weight: 100
+
+h6  //TODO remove question styling
+	color: #f70
+	border-bottom: $thinBorder
+	font-size: 1.5em
+	margin: 0
+
+.small
+	font-size: .7em
+
+a, nav li
+	text-decoration: none
+	color: $briteBlue
+
+.clear
+	clear: both
+
+.right
+	float: right
+
+.bold
+	font-weight: bold
+.center, .centerPadding
+	text-align: center
+
+.emptyBucket
+	height: 200px
+	display: block
+	margin: 30px auto
+	stroke: $black
+
+.loading
+	background: url(/g/loading) center right no-repeat
+
+.barcode
+	width: 80px
+	image-rendering: pixelated
+
+.centerPadding
+	padding: 1em
+
+.center a img
+	padding: 0 0.25em
+
+.events
+	div
+		margin-bottom: $bigPadding
+		display: inline-block
+		width: 100%
+	time
+		border: $thinBorder
+		text-align: center
+		width: 130px
+		float: left
+		margin-right: $bigPadding
+	b
+		display: block
+		font-size: 26px
+		line-height: 23px
+	p
+		padding: 0 $bigPadding
+		text-decoration: none
+		border-bottom: $thinBorder
+		margin: 0
+
+.textLeft
+	text-align: left
+
+td[onclick]
+	background: url(/v/edit) center center no-repeat
+	cursor: pointer
+
+abbr
+	color: $briteBlue
+	font-weight: 900
+	cursor: help
+//position: absolute
+//font-size: 1.3em
+//right: 0
+//top: -.3em
+//position: static
+//font-size: initial
+//	line-height: 0.5em
+
+@media print
+	header, h1
+		display: none
+
+	section
+		padding: 0
+		width: 100%
+
+	.printCards
+		tr
+			border: 0
+
+		tr:nth-child(3n):not(:last-child)
+			border-bottom: $thinBorder
