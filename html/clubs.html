@@ -3,7 +3,7 @@
 	{{with .ListClubs}}
 		<ul>
 			{{range .}}
-				<li><a href=/club/{{.ID}}>{{.Name}}</a>
+				<li><a href=/club/{{.ID}}>{{.Name}}</a> {{if.IsDefault}}***{{end}}
 			{{end}}
 		</ul>
 	{{else}}
