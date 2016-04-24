@@ -35,6 +35,7 @@ type Grade struct {
 type Shot struct {
 	Value      uint   `json:"value"`
 	Center     uint   `json:"center,omitempty"`
+	Center2    uint   `json:"center2,omitempty"`
 	Shot       string `json:"shot,omitempty"`
 	Sighter    string `json:"sighter,omitempty"`
 	CountBack  string `json:"countBack,omitempty"`
@@ -115,17 +116,18 @@ func defaultGlobalDisciplines() []Discipline {
 	XV5 := Mark{Buttons: "012345VX",
 		DoCountBack2: true,
 		Shots: map[string]Shot{
-			"-": {Value: 0, Center: 0, CountBack: "0", CountBack2: "0", Shot: "-", Sighter: "-"},
-			"0": {Value: 0, Center: 0, CountBack: "0", CountBack2: "0", Shot: "0", Sighter: "a"},
-			"1": {Value: 1, Center: 0, CountBack: "1", CountBack2: "1", Shot: "1", Sighter: "b"},
-			"2": {Value: 2, Center: 0, CountBack: "2", CountBack2: "2", Shot: "2", Sighter: "c"},
-			"3": {Value: 3, Center: 0, CountBack: "3", CountBack2: "3", Shot: "3", Sighter: "d"},
-			"4": {Value: 4, Center: 0, CountBack: "4", CountBack2: "4", Shot: "4", Sighter: "e"},
-			"5": {Value: 5, Center: 0, CountBack: "5", CountBack2: "5", Shot: "5", Sighter: "f"},
-			"V": {Value: 5, Center: 1, CountBack: "6", CountBack2: "6", Shot: "V", Sighter: "v"},
-			"6": {Value: 5, Center: 1, CountBack: "6", CountBack2: "6", Shot: "V", Sighter: "g"},
+			"-": {Value: 0, Center: 0, CountBack: "0", Center2: 0, CountBack2: "0", Shot: "-", Sighter: "-"},
+			"0": {Value: 0, Center: 0, CountBack: "0", Center2: 0, CountBack2: "0", Shot: "0", Sighter: "a"},
+			"1": {Value: 1, Center: 0, CountBack: "1", Center2: 0, CountBack2: "1", Shot: "1", Sighter: "b"},
+			"2": {Value: 2, Center: 0, CountBack: "2", Center2: 0, CountBack2: "2", Shot: "2", Sighter: "c"},
+			"3": {Value: 3, Center: 0, CountBack: "3", Center2: 0, CountBack2: "3", Shot: "3", Sighter: "d"},
+			"4": {Value: 4, Center: 0, CountBack: "4", Center2: 0, CountBack2: "4", Shot: "4", Sighter: "e"},
+			"5": {Value: 5, Center: 0, CountBack: "5", Center2: 0, CountBack2: "5", Shot: "5", Sighter: "f"},
+			"V": {Value: 5, Center: 1, CountBack: "6", Center2: 0, CountBack2: "6", Shot: "V", Sighter: "v"},
+			"6": {Value: 5, Center: 1, CountBack: "6", Center2: 0, CountBack2: "6", Shot: "V", Sighter: "g"},
+			"X": {Value: 5, Center: 1, CountBack: "6", Center2: 1, CountBack2: "7", Shot: "X", Sighter: "x"},
+			//TODO sort isn't sorting by countback 2 descending.
 			//TODO precedence is taken over the last X shot rather than the most X's shot
-			"X": {Value: 5, Center: 1, CountBack: "6", CountBack2: "7", Shot: "X", Sighter: "x"},
 		}}
 	return []Discipline{{
 		ID:          0,

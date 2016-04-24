@@ -79,6 +79,7 @@ type Score struct {
 	//TODO the schema should change so that it can use unsigned  bit numbers instead
 	Total      uint   `json:"t,omitempty"`
 	Centers    uint   `json:"c,omitempty"`
+	Centers2   uint   `json:"n,omitempty"`
 	Shots      string `json:"s,omitempty"` //Don't include this in the scoreboard struct when using a different []EventShooter
 	CountBack  string `json:"v,omitempty"`
 	CountBack2 string `json:"x,omitempty"`
@@ -148,7 +149,7 @@ type shooterScore struct {
 
 type field struct {
 	name, Error, Value string
-	Required           bool
+	Required, Disable  bool
 	Options            []option
 	maxLen, minLen     int
 	min, max, step     float32
