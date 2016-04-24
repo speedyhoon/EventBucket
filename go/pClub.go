@@ -6,8 +6,6 @@ import (
 )
 
 func club(w http.ResponseWriter, r *http.Request, clubID string) {
-	//TODO disable checkbox when isDefault == true. Only non default clubs can steal the isDefault flag.
-
 	club, err := getClub(clubID)
 	//If club not found in the database return error club not found (404).
 	if err != nil {
@@ -52,9 +50,11 @@ func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redi
 			return
 		}
 	} else {
-		//A club already exists with that name.
-		ID = club.ID
+		//Use a generic pageError form to pass the error message to the Club Settings page.
+		/*TODO investigate if there is a simpler way to pass error messages between different pages. Maybe use a slice []string so several messages could be displayed if needed?
+		It would also be handy to have success, warning and error statuses */
 		setSession(w, form{action: pageError, Error: fmt.Errorf("A club with name '%v' already exists.", name)})
+		ID = club.ID
 	}
 	http.Redirect(w, r, urlClubSettings+ID, http.StatusSeeOther)
 }

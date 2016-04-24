@@ -122,7 +122,7 @@ func isValidStr(f *field, inp ...string) {
 	if f.maxLen == 0 {
 		t.Println("f.maxLen should be set: isValidStr", f.name)
 	}
-	if f.minLen == 0 {
+	if f.minLen == 0 && f.Required {
 		t.Println("f.minLen should be set: isValidStr", f.name)
 	}
 
