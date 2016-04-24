@@ -86,12 +86,21 @@ func purgeOldSessions() {
 }
 
 func sessionForms(w http.ResponseWriter, r *http.Request, formActions ...uint8) (uint8, []form) {
+	//Add generic unpopulated form "pageError" for passing page errors from post requests to the next page served that doesn't isn't specific to a particular form.
+	formActions = append(formActions, pageError)
+
 	//Get users session id from request
 	cookies, err := r.Cookie(sessionToken)
 	if err != nil || cookies.Value == "" {
 		//No session found. Return default forms.
 		return 0, getForms(formActions...)
 	}
+
+	//Remove cookie.
+	//.UTC() Changes the time format to UTC
+	//Using minus sessionExpiryTime so the session expires time is set to the past
+	//HttpOnly means the cookie can't be accessed by JavaScript
+	w.Header().Set("Set-Cookie", fmt.Sprintf(sessionHeader, "", time.Now().UTC().Add(-sessionExpiryTime).Format(formatGMT)))
 
 	//Start a read lock to prevent concurrent reads while other parts are executing a write.
 	globalSessions.RLock()
@@ -103,15 +112,9 @@ func sessionForms(w http.ResponseWriter, r *http.Request, formActions ...uint8) 
 		delete(globalSessions.m, cookies.Value)
 		globalSessions.Unlock()
 
-		//Remove cookie.
-		//.UTC() Sets the location to UTC
-		//Using minus sessionExpiryTime so the session expires time is set to the past
-		//HttpOnly means the cookie can't be accessed by JavaScript
-		w.Header().Set("Set-Cookie", fmt.Sprintf(sessionHeader, "", time.Now().UTC().Add(-sessionExpiryTime).Format(formatGMT)))
 		var forms []form
 		for _, action := range formActions {
 			if contents.action == action {
-				//				forms = append(forms, contents)
 				forms = append(forms, contents)
 			} else {
 				forms = append(forms, form{Fields: getForm(action)})

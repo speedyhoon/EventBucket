@@ -7,7 +7,7 @@ import (
 type form struct {
 	action uint8
 	Fields []field
-	Error  string
+	Error  error
 	expiry time.Time
 }
 
@@ -33,6 +33,7 @@ const (
 	eventTotalScores     uint8 = 14
 	eventAvailableGrades uint8 = 15
 	eventUpdateShotScore uint8 = 16
+	pageError            uint8 = 255
 )
 
 func dataListAgeGroup() []option {

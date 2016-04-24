@@ -37,6 +37,7 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 		Menu:    urlClubs,
 		MenuID:  club.ID,
 		Heading: club.Name,
+		Error:   forms[2].Error,
 		Data: map[string]interface{}{
 			"Club":        club,
 			"ClubDetails": forms[0],
@@ -46,6 +47,5 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 }
 
 func trimFloat(num float32) string {
-	//TODO 100 is returned as 1
-	return strings.TrimRight(strings.Trim(fmt.Sprintf("%f", num), "0"), ".")
+	return strings.TrimRight(strings.TrimRight(fmt.Sprintf("%.6f", num), "0"), ".")
 }

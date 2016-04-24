@@ -1,6 +1,9 @@
 package main
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 func club(w http.ResponseWriter, r *http.Request, clubID string) {
 	//TODO disable checkbox when isDefault == true. Only non default clubs can steal the isDefault flag.
@@ -39,32 +42,19 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 
 func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	name := submittedForm.Fields[0].Value
-	isDefault := submittedForm.Fields[1].Checked
+	var ID string
 
-	/*//TODO these several db calls are not atomic.
-	ID, err := getNextID(tblClub)
+	club, err := getClubByName(name)
 	if err != nil {
-		formError(w, submittedForm, redirect, err)
-		return
-	}
-	if collectionQty(tblClub) == 0 {
-		isDefault = true
-	} else if isDefault {
-		//Update all clubs isDefault to be false
-		updateAll(tblClub, M{schemaIsDefault: true}, M{"$unset": M{schemaIsDefault: ""}})
-	}
-	err = upsertDoc(tblClub, "", Club{
-		ID:        ID,
-		Name:      name,
-		IsDefault: isDefault,
-		AutoInc: AutoInc{
-			Mound: 1,
-		},
-	})*/
-	ID, err := insertClub(Club{Name: name, IsDefault: isDefault})
-	if err != nil {
-		formError(w, submittedForm, redirect, err)
-		return
+		ID, err = insertClub(Club{Name: name, IsDefault: submittedForm.Fields[1].Checked})
+		if err != nil {
+			formError(w, submittedForm, redirect, err)
+			return
+		}
+	} else {
+		//A club already exists with that name.
+		ID = club.ID
+		setSession(w, form{action: pageError, Error: fmt.Errorf("A club with name '%v' already exists.", name)})
 	}
 	http.Redirect(w, r, urlClubSettings+ID, http.StatusSeeOther)
 }
