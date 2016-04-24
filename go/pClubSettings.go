@@ -25,6 +25,7 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 		forms[0].Fields[4].Value = trimFloat(club.Latitude)
 		forms[0].Fields[5].Value = trimFloat(club.Longitude)
 		forms[0].Fields[6].Checked = club.IsDefault
+		forms[0].Fields[6].Disable = club.IsDefault
 		forms[0].Fields[7].Value = club.URL
 	}
 	forms[0].Fields[8].Value = club.ID
