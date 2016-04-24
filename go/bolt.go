@@ -481,7 +481,8 @@ func getClubByName(clubName string) (Club, error) {
 			return fmt.Errorf(eNoBucket, tblClub)
 		}
 		return b.ForEach(func(_, value []byte) error {
-			if json.Unmarshal(value, &club) == nil && club.Name == clubName {
+			//Case insensitive search
+			if json.Unmarshal(value, &club) == nil && strings.ToLower(club.Name) == strings.ToLower(clubName) {
 				return fmt.Errorf(success)
 			}
 			return nil

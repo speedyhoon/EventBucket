@@ -14,7 +14,7 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 	shooterEntry := pageForms[0]
 	listClubs, err := getClubs()
 	if err != nil {
-		shooterEntry.Error = err.Error()
+		shooterEntry.Error = err
 	}
 	if action == eventShooterExisting {
 		shooterEntry.Fields[3].Error = pageForms[1].Fields[0].Error
