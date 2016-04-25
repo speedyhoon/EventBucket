@@ -90,7 +90,7 @@ func getForm(id uint8) []field {
 		}}
 	case 4:
 		return []field{{
-			name: "C", Value: defaultClubName(), Required: hasDefaultClub(), maxLen: 64, v8: isValidStr, Options: getDataListClubs(),
+			name: "C", Value: defaultClubName(), Required: hasDefaultClub(), maxLen: 64, v8: isValidStr, Options: clubsDataList(),
 		}, {
 			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
@@ -134,7 +134,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "s", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
-			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr, Options: clubsDataList(),
 		}, {
 			name: "S", v8: isValidStr,
 		}, {
@@ -164,7 +164,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "s", maxLen: 64, v8: isValidStr,
 		}, {
-			name: "C", maxLen: 64, v8: isValidStr, manyRequired: []int{0, 1, 2}, manyRequiredQty: 1,
+			name: "C", maxLen: 64, v8: isValidStr, manyRequired: []int{0, 1, 2}, manyRequiredQty: 1, Options: clubsDataList(),
 		}}
 	case 11:
 		return []field{{
@@ -172,7 +172,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "s", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
-			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr, Options: clubsDataList(),
 		}, {
 			name: "g", Required: true, max: float32(len(globalGrades) - 1), step: 1, v8: isValidUint, Options: globalGradesDataList,
 		}, {
@@ -198,7 +198,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "s", maxLen: 64, v8: isValidStr,
 		}, {
-			name: "C", maxLen: 64, v8: isValidStr, manyRequired: []int{0, 1, 2}, manyRequiredQty: 1,
+			name: "C", maxLen: 64, v8: isValidStr, manyRequired: []int{0, 1, 2}, manyRequiredQty: 1, Options: clubsDataList(),
 		}}
 	case 14:
 		return []field{{

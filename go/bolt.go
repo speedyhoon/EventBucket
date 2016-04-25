@@ -265,6 +265,29 @@ func getClubs() ([]Club, error) {
 	return clubs, err
 }
 
+func clubsDataList() []option {
+	t.Println("exec > clubsDataList")
+	var clubs []option
+	err := db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(tblClub)
+		if b == nil {
+			//Club Bucket isn't created yet
+			return nil
+		}
+		return b.ForEach(func(_, value []byte) error {
+			var club Club
+			if json.Unmarshal(value, &club) == nil {
+				clubs = append(clubs, option{Value: club.ID, Label: club.Name, Selected: club.IsDefault})
+			}
+			return nil
+		})
+	})
+	if err != nil {
+		warn.Println(err)
+	}
+	return clubs
+}
+
 func getEvents(query func(Event) bool) ([]Event, error) {
 	var events []Event
 	err := db.View(func(tx *bolt.Tx) error {
@@ -305,19 +328,6 @@ func getCalendarEvents() ([]CalendarEvent, error) {
 	})
 	return events, err
 }
-
-/*func collectionSize(collectionName []byte) (uint, error) {
-	var qty uint
-	err := db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(collectionName)
-		if b == nil {
-			return fmt.Errorf(eNoBucket, tblShooter)
-		}
-		qty = uint(b.Stats().KeyN)
-		return nil
-	})
-	return qty, err
-}*/
 
 func getShooters() ([]Shooter, error) {
 	var shooters []Shooter
