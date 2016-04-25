@@ -12,10 +12,8 @@ function stuff(row) {
   t.querySelector('[name=I]').value = tds[0].textContent;
   t.querySelector('td').textContent = tds[0].textContent;
 
-  //  console.log(t);
   row.innerHTML = '';
   row.appendChild(t);
-  //  console.log(t);
 }
 function findValue(element, label) {
   var options = element.options, i = options.length;

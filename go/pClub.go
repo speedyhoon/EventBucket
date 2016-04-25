@@ -89,19 +89,3 @@ func clubMoundInsert(w http.ResponseWriter, r *http.Request, submittedForm form,
 	}
 	http.Redirect(w, r, urlClubSettings+clubID, http.StatusSeeOther)
 }
-
-func dataListClubs(clubs []Club) []option {
-	var options []option
-	for _, club := range clubs {
-		options = append(options, option{Label: club.Name})
-	}
-	return options
-}
-
-func getDataListClubs() []option {
-	clubs, err := getClubs()
-	if err != nil {
-		warn.Println(err)
-	}
-	return dataListClubs(clubs)
-}
