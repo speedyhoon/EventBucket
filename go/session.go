@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 )
 
 const (
 	sessionToken      = "s"
+	sessionPrefix     = sessionToken + "="
 	sessionIDLength   = 24 //Recommended to be at least 16 characters long.
 	letterBytes       = "!\"#$%&'()*+,-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~`"
 	letterIdxBits     = 6                    // 6 bits to represent a letter index
@@ -90,8 +92,8 @@ func sessionForms(w http.ResponseWriter, r *http.Request, formActions ...uint8) 
 	formActions = append(formActions, pageError)
 
 	//Get users session id from request
-	cookies, err := r.Cookie(sessionToken)
-	if err != nil || cookies.Value == "" {
+	cookie := strings.TrimPrefix(sessionPrefix, r.Header.Get("Cookie"))
+	if cookie == "" {
 		//No session found. Return default forms.
 		return 0, getForms(formActions...)
 	}
@@ -104,12 +106,12 @@ func sessionForms(w http.ResponseWriter, r *http.Request, formActions ...uint8) 
 
 	//Start a read lock to prevent concurrent reads while other parts are executing a write.
 	globalSessions.RLock()
-	contents, ok := globalSessions.m[cookies.Value]
+	contents, ok := globalSessions.m[cookie]
 	globalSessions.RUnlock()
 	if ok {
 		//Clear the session contents as it has been returned to the user.
 		globalSessions.Lock()
-		delete(globalSessions.m, cookies.Value)
+		delete(globalSessions.m, cookie)
 		globalSessions.Unlock()
 
 		var forms []form
