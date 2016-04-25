@@ -57,9 +57,11 @@ func pages() {
 	getRedirectPermanent(urlClubs, clubs)
 	getRedirectPermanent(urlEvents, events)
 	getRedirectPermanent(urlLicence, licence)
-	getRedirectPermanent(urlShooters, shooters)
-	getRedirectPermanent("/all", all)
-	getRedirectPermanent("/report", report)
+	gt(urlShooters, shooterSearch, shooters)
+	if debug {
+		getRedirectPermanent("/all", all)
+		getRedirectPermanent("/report", report)
+	}
 	getParameters(urlClub, club, regexID)
 	getParameters(urlClubSettings, clubSettings, regexID)
 	getParameters(urlEntries, entries, regexID)
@@ -84,7 +86,6 @@ func pages() {
 	post(get, eventShooterSearch, eventSearchShooters)
 	post(pst, shooterNew, shooterInsert)
 	post(pst, shooterDetails, shooterUpdate)
-	post(pst, shooterSearch, searchShooters)
 	post(pst, eventTotalScores, eventTotalUpsert)
 	post(pst, eventAvailableGrades, eventAvailableGradesUpsert)
 	post(pst, eventUpdateShotScore, updateShotScores)
@@ -100,10 +101,11 @@ func post(method string, formID uint8, runner func(http.ResponseWriter, *http.Re
 			A request was made of a resource using a request method not supported by that resource; for example,
 			using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
 			//en.wikipedia.org/wiki/List_of_HTTP_status_codes*/
+			//TODO maybe don't redirect user?
 			http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
 			return
 		}
-		submittedFields, isValid := isValid(r, getForm(formID))
+		submittedFields, isValid := validPost(r, getForm(formID))
 		redirect := func() { http.Redirect(w, r, r.Referer(), http.StatusSeeOther) }
 		newForm := form{
 			action: formID,
@@ -117,4 +119,26 @@ func post(method string, formID uint8, runner func(http.ResponseWriter, *http.Re
 		runner(w, r, newForm, redirect)
 	}
 	http.HandleFunc(fmt.Sprintf("/%d", formID), h)
+}
+
+//func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+
+func gt(url string, formID uint8, runner func(http.ResponseWriter, *http.Request, form, bool)) {
+	http.HandleFunc(url, func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "GET" {
+			/*405 Method Not Allowed
+			A request was made of a resource using a request method not supported by that resource; for example,
+			using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
+			//en.wikipedia.org/wiki/List_of_HTTP_status_codes*/
+			//TODO maybe don't redirect user?
+			http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
+			return
+		}
+		submittedFields, isValid := validGet(r, getForm(formID))
+		newForm := form{
+			action: formID,
+			Fields: submittedFields,
+		}
+		runner(w, r, newForm, isValid)
+	})
 }

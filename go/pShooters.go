@@ -2,17 +2,13 @@ package main
 
 import "net/http"
 
-func shooters(w http.ResponseWriter, r *http.Request) {
-	action, pageForms := sessionForms(w, r, shooterNew, shooterSearch, shooterDetails)
-	var shooters []Shooter
-	var err error
-	var shooterQty uint
-	if action == shooterSearch {
-		shooters, err, shooterQty = getSearchShooters(pageForms[1].Fields[0].Value, pageForms[1].Fields[1].Value, pageForms[1].Fields[2].Value)
-	} else {
-		shooterQty, err = collectionSize(tblShooter)
+func shooters(w http.ResponseWriter, r *http.Request, submittedForm form, isValid bool) {
+	_, pageForms := sessionForms(w, r, shooterNew, shooterDetails)
+
+	if submittedForm.Fields[0].Value == "" && submittedForm.Fields[1].Value == "" && submittedForm.Fields[2].Value == "" {
+		submittedForm.Fields[2].Value = defaultClubName()
 	}
-	//TODO add query string so search is bookmarkable?
+	shooters, err, shooterQty := getSearchShooters(submittedForm.Fields[0].Value, submittedForm.Fields[1].Value, submittedForm.Fields[2].Value)
 
 	templater(w, page{
 		Title: "Shooters",
@@ -21,7 +17,7 @@ func shooters(w http.ResponseWriter, r *http.Request) {
 		Data: map[string]interface{}{
 			"NewShooter":     pageForms[0],
 			"ListShooters":   shooters,
-			"ShooterSearch":  pageForms[1],
+			"ShooterSearch":  submittedForm,
 			"ShooterDetails": pageForms[2],
 			"QtyShooters":    shooterQty,
 			"Grades":         globalGradesDataList,
@@ -57,11 +53,6 @@ func eventSearchShooters(w http.ResponseWriter, r *http.Request, submittedForm f
 			"ListShooters": listShooters,
 		},
 	})
-}
-
-func searchShooters(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
-	setSession(w, submittedForm)
-	http.Redirect(w, r, urlShooters, http.StatusSeeOther)
 }
 
 func shooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
