@@ -11,16 +11,17 @@
 		<p>Total Entries: {{len .}}
 		<table>
 			<thead>
-				<th class=asc>ID
-				<th>Disabled
-				<th>Shooter
-				<th>Club
-				<th>Grade
-				<th>Age Group
-				<th>Ladies
-				{{if not $.Event.Closed}}
-					<td>Edit
-				{{end}}
+				<tr>
+					<th class=asc>ID
+					<th>Disabled
+					<th>Shooter
+					<th>Club
+					<th>Grade
+					<th>Age Group
+					<th>Ladies
+					{{if not $.Event.Closed}}
+						<td>Edit
+					{{end}}
 			</thead>
 			{{range .}}
 				<tr>
