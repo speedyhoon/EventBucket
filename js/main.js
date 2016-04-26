@@ -43,7 +43,6 @@ document.onclick = function(event) {
 	if (event.target.nodeName === 'ABBR'){
 		dialog.textContent = event.target.title;
 		return dialog.showModal();
-		//return false;
 	}
 	//Table sort
   if (event.target.nodeName === 'TH' && event.target.parentElement.parentElement.nodeName === 'THEAD') {
