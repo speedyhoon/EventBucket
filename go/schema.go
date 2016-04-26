@@ -138,7 +138,7 @@ type Shooter struct {
 	MergedSID int `json:"m,omitempty"`
 
 	AgeGroup uint `json:"r,omitempty"`
-	Grade    uint `json:"g"` //TODO change to a slice in future
+	Grade    uint `json:"g,omitempty"` //TODO change to a slice in future
 }
 
 type shooterScore struct {

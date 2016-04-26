@@ -3,7 +3,7 @@ package main
 import "net/http"
 
 func shooters(w http.ResponseWriter, r *http.Request, submittedForm form, isValid bool) {
-	_, pageForms := sessionForms(w, r, shooterNew) //, shooterDetails)
+	_, pageForms := sessionForms(w, r, shooterNew)
 
 	if !debug && submittedForm.Fields[0].Value == "" && submittedForm.Fields[1].Value == "" && submittedForm.Fields[2].Value == "" {
 		submittedForm.Fields[2].Value = defaultClubName()
@@ -20,7 +20,6 @@ func shooters(w http.ResponseWriter, r *http.Request, submittedForm form, isVali
 			"ShooterSearch": submittedForm,
 			"QtyShooters":   shooterQty,
 			"Grades":        globalGradesDataList,
-			//"ShooterDetails": pageForms[2],
 		},
 	})
 }
@@ -38,7 +37,7 @@ func shooterUpdate(w http.ResponseWriter, r *http.Request, submittedForm form, r
 		formError(w, submittedForm, redirect, err)
 		return
 	}
-	http.Redirect(w, r, urlShooters, http.StatusSeeOther)
+	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 }
 
 func eventSearchShooters(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
