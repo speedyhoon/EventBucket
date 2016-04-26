@@ -20,6 +20,7 @@ func shooters(w http.ResponseWriter, r *http.Request, submittedForm form, isVali
 			"ShooterSearch": submittedForm,
 			"QtyShooters":   shooterQty,
 			"Grades":        globalGradesDataList,
+			"AgeGroups":     dataListAgeGroup(),
 		},
 	})
 }

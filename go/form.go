@@ -38,7 +38,7 @@ const (
 
 func dataListAgeGroup() []option {
 	return []option{
-		{},
+		{Label: "None"},
 		{Value: "1", Label: "Junior U21"},
 		{Value: "2", Label: "Junior U25"},
 		{Value: "3", Label: "Veteran"},
