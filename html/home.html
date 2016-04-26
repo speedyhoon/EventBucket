@@ -9,11 +9,11 @@
 			{{range .}}
 				{{if not .Closed}}
 					<div>
-						<time>
+						<div>
 							{{.ISO.Weekday}}
 							<b>{{ordinal .ISO.Day}}</b>
 							{{.ISO.Month}} {{.ISO.Year}}
-						</time>
+						</div>
 						<p>{{if.ID}}<a href=/entries/{{.ID}}>{{.Name}}</a>{{end}} {{with.Time}}starts at {{.}}{{end}}</p>
 						{{if.Club}}<a href=/club/{{.ClubID}}>{{.Club}}</a>{{end}}
 						<br>{{range .Ranges}}{{.Name}}, {{end}}
