@@ -457,7 +457,6 @@ func b36toBy(id string) ([]byte, error) {
 
 func getSearchShooters(firstName, surname, club string) ([]Shooter, error, uint) {
 	var shooters []Shooter
-	var shooter Shooter
 	var totalQty uint
 
 	firstName = strings.ToLower(firstName)
@@ -471,6 +470,7 @@ func getSearchShooters(firstName, surname, club string) ([]Shooter, error, uint)
 		}
 		totalQty = uint(tx.Bucket(tblShooter).Stats().KeyN)
 		return b.ForEach(func(_, value []byte) error {
+			var shooter Shooter
 			//strings.Contains returns true when sub-string is "" (empty string)
 			if json.Unmarshal(value, &shooter) == nil && strings.Contains(strings.ToLower(shooter.FirstName), firstName) && strings.Contains(strings.ToLower(shooter.Surname), surname) && strings.Contains(strings.ToLower(shooter.Club), club) {
 				shooters = append(shooters, shooter)
