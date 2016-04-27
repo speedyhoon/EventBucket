@@ -13,9 +13,10 @@ import (
 
 var (
 	//Databse collection names
-	tblClub    = []byte("C")
-	tblEvent   = []byte("E")
-	tblShooter = []byte("S")
+	tblClub        = []byte("C")
+	tblEvent       = []byte("E")
+	tblShooter     = []byte("S")
+	tblNRAAUpdated = []byte("U")
 )
 
 const (

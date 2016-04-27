@@ -35,7 +35,9 @@
 					<td>{{.ID}}
 					<td>{{.FirstName}} <span>{{.Surname}}</span>
 					<td>{{.Club}}
-					<td>{{(grade .Grade).Name}}
+					<td>{{range .Grade}}
+							{{(grade .).Name}}
+						{{end}}
 					<td>{{ageGroup .AgeGroup}}
 					<td onclick=stuff(this)>
 				</tr>
