@@ -174,7 +174,7 @@ func templater(w http.ResponseWriter, page page) {
 				return Grade{}
 			},
 			"ageGroup": func(index uint) string {
-				if index < uint(len(dataListAgeGroup())) {
+				if index >= 1 && index < uint(len(dataListAgeGroup())) {
 					return dataListAgeGroup()[index].Label
 				}
 				return ""
