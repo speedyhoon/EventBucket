@@ -102,7 +102,7 @@ func getForm(id uint8) []field {
 		return []field{{
 			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
-			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr, Options: clubsDataList(),
 		}, {
 			name: "d", maxLen: 10, minLen: 1, v8: isValidStr,
 		}, {

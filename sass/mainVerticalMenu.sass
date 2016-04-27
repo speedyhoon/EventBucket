@@ -54,7 +54,7 @@ th, thead td
 	font-weight: 700
 	border-bottom: $fatBorder
 
-th:not(:empty)
+table:not(.scorecards) th:not(:empty)
 	cursor: pointer
 
 .asc, .desc, legend u
@@ -270,3 +270,5 @@ abbr
 
 		tr:nth-child(3n):not(:last-child)
 			border-bottom: $thinBorder
+
+@import "startShooting"
