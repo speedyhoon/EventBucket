@@ -1,0 +1,69 @@
+.scorecards
+	//border-spacing: 0
+	//width: 100%
+	//font-family: Courier New
+	font-family: monospace
+
+	//background: #fff
+	//color: #000
+
+	tbody tr:not(#h) th:nth-child(4) //a:hover,th.name:hover
+		color: $briteBlue
+		cursor: pointer
+		//text-decoration: underline
+		font-size: 2em
+		white-space: nowrap
+
+		&:hover //a:hover,th.name:hover
+			color: $blue
+
+	tr[data-selected="1"] td
+		border-right:  2px solid #000
+
+	.B,tr[data-selected="1"] .B
+		border-right: 2px solid #09f
+
+	#bu
+		padding-bottom: 1em
+
+	button
+		font-weight: 900
+		//background: #000
+		font-size: 32px
+		height: 75px
+		margin: 0 1% 1% 0
+		width: 11.5%
+		//border: none
+		//color: #fff
+
+		&:last-child
+			margin-right: 0
+
+	.sighters
+		float: left
+		width: 9%
+		margin: 1% 1% 0 0
+		display: block
+
+	td
+		text-align: center
+		font-weight: bold
+
+		&[data-selected="1"]
+			background: #088
+
+	//tr[data-selected="1"] .name
+		cursor: default
+		text-decoration: none
+
+	tr:not(#x) th:last-child
+		//Total fields (and heading) but no the footer with buttons
+		text-align: right
+
+	//tr,th
+		padding: 0
+
+	tr[data-selected="1"]
+		color: #fff
+		border: 0 solid red
+		border-width: 5px 0

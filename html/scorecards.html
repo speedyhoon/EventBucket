@@ -2,7 +2,7 @@
 	{{template "incompleteShooters" .}}
 	{{template "barcodeSearch"}}
 	{{with .Event.Shooters}}
-		<table data-eventID={{$.Event.ID}} data-rangeID={{$.Range.ID}}>
+		<table class=scorecards data-eventID={{$.Event.ID}} data-rangeID={{$.Range.ID}}>
 			<thead>
 				<tr id=h>
 					<th>ID
@@ -27,7 +27,6 @@
 							<th>{{(grade .Grade).Abbr}}
 							<th>{{.FirstName}} {{.Surname}}
 
-
 	{{/*
 			{{$tempClass := CLASS .Grade}}
 			{{$shot_cells := index $classShots $tempClass}}
@@ -35,7 +34,6 @@
 			<td>{{DisplayShot $shot_index $score}}
 				{{end}}
 			*/}}
-
 
 							<td>
 							<td>
