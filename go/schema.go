@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"regexp"
+	"time"
 )
 
 //Club is exported
@@ -120,25 +121,31 @@ type EventShooter struct {
 
 //Shooter is exported
 type Shooter struct {
-	ID        string `json:"I"`
-	SID       int    `json:"M,omitempty"`
-	NraaID    int    `json:"N,omitempty"`
-	Surname   string `json:"s,omitempty"`
-	FirstName string `json:"f,omitempty"`
-	NickName  string `json:"n,omitempty"`
-	Club      string `json:"C,omitempty"`
-	//Skill map[string]Skill	//Grading set by the VRA for each class
-	Address string `json:"a,omitempty"`
-	Email   string `json:"e,omitempty"`
-	//Shooter details 0=not modified, 1=updated, 2=merged, 3=deleted
-	Status int `json:"v,omitempty"`
+	ID        string         `json:"I"`
+	SID       uint           `json:"M,omitempty"`
+	NID       uint           `json:"N,omitempty"` //NRAA sequential integer id.
+	Surname   string         `json:"s,omitempty"`
+	FirstName string         `json:"f,omitempty"`
+	NickName  string         `json:"n,omitempty"`
+	Club      string         `json:"C,omitempty"`
+	Skill     map[uint]Skill `json:"K,omitempty"` //Grading set by the VRA for each class
+	Address   string         `json:"a,omitempty"`
+	Email     string         `json:"e,omitempty"`
+	Status    int            `json:"v,omitempty"` //Shooter details 0=not modified, 1=updated, 2=merged, 3=deleted
 	//If shooter details are merged with another existing shooter then this is the other NRAA_SID it was merged with
 	//When merging set one record to merged, the other to deleted.
 	//Both records must set MergedSID to the other corresponding shooter SID
-	MergedSID int `json:"m,omitempty"`
+	MergedSID int       `json:"m,omitempty"`
+	Modified  time.Time `json:"o,omitempty"`
+	AgeGroup  uint      `json:"r,omitempty"`
+	Ladies    bool      `json:"l,omitempty"`
+	Grade     []uint    `json:"g,omitempty"` //TODO change to a slice in future
+}
 
-	AgeGroup uint `json:"r,omitempty"`
-	Grade    uint `json:"g,omitempty"` //TODO change to a slice in future
+type Skill struct {
+	Threshold string  `json:"t,omitempty"`
+	AvgScore  float64 `json:"a,omitempty"`
+	ShootQty  int     `json:"s,omitempty"`
 }
 
 type shooterScore struct {

@@ -30,7 +30,7 @@ func shooterUpdate(w http.ResponseWriter, r *http.Request, submittedForm form, r
 		FirstName: submittedForm.Fields[0].Value,
 		Surname:   submittedForm.Fields[1].Value,
 		Club:      submittedForm.Fields[2].Value,
-		Grade:     submittedForm.Fields[3].valueUint,
+		Grade:     submittedForm.Fields[3].valueUintSlice,
 		AgeGroup:  submittedForm.Fields[4].valueUint,
 	}, &Shooter{}, updateShooterDetails)
 	//Display any insert errors onscreen.
@@ -60,7 +60,7 @@ func shooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, r
 		FirstName: submittedForm.Fields[0].Value,
 		Surname:   submittedForm.Fields[1].Value,
 		Club:      submittedForm.Fields[2].Value,
-		Grade:     submittedForm.Fields[3].valueUint,
+		Grade:     submittedForm.Fields[3].valueUintSlice,
 		AgeGroup:  submittedForm.Fields[4].valueUint,
 	}
 	_, err := insertShooter(shooter)

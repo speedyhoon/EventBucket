@@ -33,7 +33,8 @@ const (
 	eventTotalScores     uint8 = 14
 	eventAvailableGrades uint8 = 15
 	eventUpdateShotScore uint8 = 16
-	pageError            uint8 = 255
+	//nraaUpdate         uint8 = 17
+	pageError uint8 = 255
 )
 
 func dataListAgeGroup() []option {
@@ -174,7 +175,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
-			name: "g", Required: true, max: float32(len(globalGrades) - 1), step: 1, v8: isValidUint, Options: globalGradesDataList,
+			name: "g", Required: true, max: float32(len(globalGrades) - 1), step: 1, v8: listUint, Options: globalGradesDataList,
 		}, {
 			name: "r", max: 4, step: 1, v8: isValidUint, Options: dataListAgeGroup(),
 		}}
@@ -214,7 +215,7 @@ func getForm(id uint8) []field {
 		}}
 	case 15:
 		return []field{{
-			name: "g", Required: true, minLen: 1, max: 65535, step: 1, v8: listUint, Options: availableGrades([]uint{}),
+			name: "g", Required: true, minLen: 1, max: float32(len(globalGrades) - 1), step: 1, v8: listUint, Options: availableGrades([]uint{}),
 		}, {
 			name: "I", v8: isValidRegex, regex: regexID,
 		}}
