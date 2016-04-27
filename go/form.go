@@ -172,7 +172,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "s", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
-			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr, Options: clubsDataList(),
+			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
 			name: "g", Required: true, max: float32(len(globalGrades) - 1), step: 1, v8: isValidUint, Options: globalGradesDataList,
 		}, {
