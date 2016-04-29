@@ -33,8 +33,8 @@ const (
 	eventTotalScores     uint8 = 14
 	eventAvailableGrades uint8 = 15
 	eventUpdateShotScore uint8 = 16
-	//nraaUpdate         uint8 = 17
-	pageError uint8 = 255
+	importShooter        uint8 = 17
+	pageError            uint8 = 255
 )
 
 func dataListAgeGroup() []option {
@@ -228,6 +228,10 @@ func getForm(id uint8) []field {
 			name: "R", Required: true, min: 1, max: 65535, step: 1, v8: isValidUint,
 		}, {
 			name: "S", Required: true, max: 65535, step: 1, v8: isValidUint,
+		}}
+	case 17:
+		return []field{{
+			name: "f", Required: true, maxLen: 64,
 		}}
 	}
 	return []field{}

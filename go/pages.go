@@ -18,7 +18,7 @@ const (
 	urlAbout    = "/about"
 	urlArchive  = "/archive"
 	urlClubs    = "/clubs"
-	urlEvents   = "/events"
+	urlEvents   = urlHome //"/events"
 	urlLicence  = "/licence"
 	urlShooters = "/shooters"
 	//GET with PARAMETERS
@@ -55,7 +55,7 @@ func pages() {
 	getRedirectPermanent(urlAbout, about)
 	getRedirectPermanent(urlArchive, eventArchive)
 	getRedirectPermanent(urlClubs, clubs)
-	getRedirectPermanent(urlEvents, events)
+	//	getRedirectPermanent(urlEvents, events)
 	getRedirectPermanent(urlLicence, licence)
 	gt(urlShooters, shooterSearch, shooters)
 	if debug {
@@ -89,7 +89,7 @@ func pages() {
 	post(pst, eventTotalScores, eventTotalUpsert)
 	post(pst, eventAvailableGrades, eventAvailableGradesUpsert)
 	post(pst, eventUpdateShotScore, updateShotScores)
-	http.HandleFunc("/17", nraaStartUpdateShooterList)
+	post(pst, importShooter, importShooters)
 
 	//BUG any url breaks when appending "&*((&*%"
 	get404(urlHome, home)

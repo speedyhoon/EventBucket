@@ -43,6 +43,7 @@ document.onclick = function(event){
 		tableSort(event);
 	}
 };
+/*TODO doesn't submit the highlighted values. Actually submits the previous selected fields. Also bypasses form validation
 //Add a shortcut to select boxes that allow their parent form to submit when Ctrl + Enter is pressed.
 var selectBoxes = document.querySelectorAll('select'), qty = selectBoxes.length, formShortcut = function(event){
 		if(event.keyCode === 13 && event.ctrlKey && event.target.form){
@@ -52,4 +53,4 @@ var selectBoxes = document.querySelectorAll('select'), qty = selectBoxes.length,
 	};
 while(qty--){
 	selectBoxes[qty].onkeydown = formShortcut;
-}
+}*/

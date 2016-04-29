@@ -101,6 +101,16 @@ input[type=checkbox]
 	height: $size
 	margin: 0
 
+input:valid
+	background-image: url(/v/tick)
+	background-repeat: no-repeat
+	background-position: center right
+
+input:invalid
+	background-image: url(/v/cross)
+	background-repeat: no-repeat
+	background-position: center right
+
 ::-webkit-search-cancel-button
 	cursor: pointer
 	opacity: 1 !important
@@ -146,6 +156,9 @@ nav
 	li a, .visited
 		display: block
 		padding: $menuPadding
+
+	.visited
+		border-left: $fatBorder
 
 	li a, li ul, .visited
 		padding-left: $margin
