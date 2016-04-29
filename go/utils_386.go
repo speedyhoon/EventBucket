@@ -7,14 +7,18 @@ import (
 
 //Converts base36 string to uint
 func b36tou(id string) (uint, error) {
-	t.Println("32 bit version")
 	u, err := strconv.ParseUint(strings.TrimSpace(id), 36, 32)
+	if err != nil {
+		warn.Printf("Unable to convert %v to uint", id)
+	}
 	return uint(u), err
 }
 
-//Converts base36 string to uint
+//Converts numeric string to uint
 func strToUint(id string) (uint, error) {
-	t.Println("32 bit version")
 	u, err := strconv.ParseUint(strings.TrimSpace(id), 10, 32)
+	if err != nil {
+		warn.Printf("Unable to convert %v to uint", id)
+	}
 	return uint(u), err
 }
