@@ -142,6 +142,7 @@ type Shooter struct {
 	Grade     []uint    `json:"g,omitempty"` //TODO change to a slice in future
 }
 
+//Skill is exported
 type Skill struct {
 	Threshold string  `json:"t,omitempty"`
 	AvgScore  float64 `json:"a,omitempty"`
