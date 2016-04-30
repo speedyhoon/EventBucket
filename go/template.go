@@ -39,8 +39,6 @@ const (
 	templateNone       = 255
 )
 
-//TODO invert cc logo in dark theme or add a white background wolour?
-
 var (
 	masterStuff = [][]string{
 		{formsTemplatePath, reusablesTemplatePath, masterTemplatePath},
@@ -100,59 +98,61 @@ var (
 )
 
 var (
-	xxx = func(inputs []field, index int) *field {
-		if index < len(inputs) && index >= 0 {
-			return &inputs[index]
-		}
-		return nil
-	}
-	ggg = func(attribute string, value interface{}) template.HTMLAttr {
-		var output string
-		switch value.(type) {
-		case bool:
-			if value.(bool) {
-				output = attribute
+	templateFuncMap = template.FuncMap{
+		"hasindex": func(inputs []field, index int) *field {
+			if index < len(inputs) && index >= 0 {
+				return &inputs[index]
 			}
-		case string:
-			if value.(string) != "" {
-				output = attribute + "=" + addQuotes(value.(string))
+			return nil
+		},
+		"attr": func(attribute string, value interface{}) template.HTMLAttr {
+			var output string
+			switch value.(type) {
+			case bool:
+				if value.(bool) {
+					output = attribute
+				}
+			case string:
+				if value.(string) != "" {
+					output = attribute + "=" + addQuotes(value)
+				}
+			case int:
+				if value.(int) > 0 {
+					output = attribute + "=" + addQuotes(value)
+				}
 			}
-		case int:
-			if value.(int) > 0 {
-				output = attribute + "=" + addQuotes(fmt.Sprintf("%d", value))
+			return template.HTMLAttr(output)
+		},
+		"has": func(t interface{}, value string) template.HTMLAttr {
+			var hasValue bool
+			switch t.(type) {
+			default:
+				warn.Printf("unexpected type %T", t) // %T prints whatever type t has
+			case []option:
+				hasValue = len(t.([]option)) >= 1
+			case string:
+				hasValue = t != ""
+			case bool:
+				hasValue = t.(bool)
 			}
-		}
-		return template.HTMLAttr(output)
-	}
-
-	ddd = func(t interface{}, value string) template.HTMLAttr {
-		var hasValue bool
-		switch t.(type) {
-		default:
-			warn.Printf("unexpected type %T", t) // %T prints whatever type t has
-		case []option:
-			hasValue = len(t.([]option)) >= 1
-		case string:
-			hasValue = t != ""
-		case bool:
-			hasValue = t.(bool)
-		}
-		if hasValue {
-			return template.HTMLAttr(value)
-		}
-		return template.HTMLAttr("")
-	}
-	nnn = func(index uint) Grade {
-		if index < uint(len(globalGrades)) {
-			return globalGrades[index]
-		}
-		return Grade{}
-	}
-	zzz = func(index uint) string {
-		if index >= 1 && index < uint(len(dataListAgeGroup())) {
-			return dataListAgeGroup()[index].Label
-		}
-		return ""
+			if hasValue {
+				return template.HTMLAttr(value)
+			}
+			return template.HTMLAttr("")
+		},
+		"grade": func(index uint) Grade {
+			if index < uint(len(globalGrades)) {
+				return globalGrades[index]
+			}
+			return Grade{}
+		},
+		"ageGroup": func(index uint) string {
+			if index >= 1 && index < uint(len(dataListAgeGroup())) {
+				return dataListAgeGroup()[index].Label
+			}
+			return ""
+		},
+		"ordinal": ordinal,
 	}
 )
 
@@ -177,14 +177,7 @@ func templater(w http.ResponseWriter, page page) {
 	//debug is for dynamically re-parsing (reloading) templates on every request
 	if !ok || debug {
 
-		templates[pageName] = template.Must(template.New("main").Funcs(template.FuncMap{
-			"hasindex": xxx,
-			"attr":     ggg,
-			"has":      ddd,
-			"grade":    nnn,
-			"ageGroup": zzz,
-			"ordinal":  ordinal,
-		}).ParseFiles(htmlFileNames...))
+		templates[pageName] = template.Must(template.New("main").Funcs(templateFuncMap).ParseFiles(htmlFileNames...))
 		html = templates[pageName]
 	}
 
@@ -194,53 +187,17 @@ func templater(w http.ResponseWriter, page page) {
 }
 
 //AddQuotes returns value with or without surrounding single or double quote characters suitable for a [[//dev.w3.org/html5/html-author/#attributes][HTML5 attribute]] value.
-/*func addQuotes(value string) string {
-	//Contains a single quote and a double quote character.
-	if strings.Contains(value, "'") && strings.Contains(value, `"`) {
-		warn.Printf("HTML attribute value %v contains both single & double quotes", value)
-	}
-	//Space, single quote, accent, equals, less-than sign, greater-than sign.
-	if strings.ContainsAny(value, " '`=<>") {
-		return `"` + value + `"`
-	}
-	//Double quote
-	if strings.Contains(value, `"`) {
-		return "'" + value + "'"
-	}
-	return value
-}*/
-
-//AddQuotes returns value with or without surrounding single or double quote characters suitable for a [[//dev.w3.org/html5/html-author/#attributes][HTML5 attribute]] value.
-func addQuotes(value string) string {
+func addQuotes(in interface{}) string {
 	//TODO escape any rune character over X code point
-	//	value = html.EscapeString(value)
-	//	escaper:= = strings.NewReplacer(
-	//		`&`, "&amp;",
-	//`'`, "&#39;", // "&#39;" is shorter than "&apos;" and apos was not in HTML until HTML5.
-	//		`<`, "&lt;",
-	//		`>`, "&gt;",
-	//`"`, "&#34;", // "&#34;" is shorter than "&quot;".
-	//	)
-	value = strings.Replace(value, `&`, "&amp;", -1) //will destroy any existing escaped characters like &#62;
+	value := strings.Replace(fmt.Sprintf("%v", in), `&`, "&amp;", -1) //will destroy any existing escaped characters like &#62;
 	double := strings.Count(value, `"`)
 	single := strings.Count(value, `'`)
 	if single > 0 && single >= double {
 		return `"` + strings.Replace(value, `"`, "&#34;", -1) + `"`
 	}
-	if double > 0 || strings.ContainsAny(value, " `=<>") {
+	//Space, double quote, accent, equals, less-than sign, greater-than sign.
+	if double > 0 || strings.ContainsAny(value, " \"`=<>") {
 		return `'` + strings.Replace(value, `'`, "&#39;", -1) + `'`
 	}
-	/*//Contains a single quote and a double quote character.
-	if strings.Contains(value, "'") && strings.Contains(value, `"`) {
-		warn.Printf("HTML attribute value %v contains both single & double quotes", value)
-	}
-	//Space, single quote, accent, equals, less-than sign, greater-than sign.
-	if strings.ContainsAny(value, " '`=<>") {
-		return `"` + value + `"`
-	}
-	//Double quote
-	if strings.Contains(value, `"`) {
-		return "'" + value + "'"
-	}*/
 	return value
 }

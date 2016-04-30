@@ -101,16 +101,6 @@ input[type=checkbox]
 	height: $size
 	margin: 0
 
-input:valid
-	background-image: url(/v/tick)
-	background-repeat: no-repeat
-	background-position: center right
-
-input:invalid
-	background-image: url(/v/cross)
-	background-repeat: no-repeat
-	background-position: center right
-
 ::-webkit-search-cancel-button
 	cursor: pointer
 	opacity: 1 !important
@@ -148,15 +138,11 @@ button
 	label
 		margin-bottom: 0
 
-
 input.dirty:not(:focus):invalid
-	background-color: #FFD9D9
+	background-color: #fdd
 
 input.dirty:not(:focus):valid
-	background-color: #D9FFD9
-
-
-
+	background-color: #dfd
 
 //Vertical Menus
 nav

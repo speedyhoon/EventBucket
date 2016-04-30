@@ -39,7 +39,7 @@ const (
 
 func dataListAgeGroup() []option {
 	return []option{
-		{Label: "None"},
+		{Value: "0", Label: "None"},
 		{Value: "1", Label: "Junior U21"},
 		{Value: "2", Label: "Junior U25"},
 		{Value: "3", Label: "Veteran"},
@@ -165,7 +165,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "s", maxLen: 64, v8: isValidStr,
 		}, {
-			name: "C", maxLen: 64, v8: isValidStr, manyRequired: []int{0, 1, 2}, manyRequiredQty: 1, Options: clubsDataList(),
+			name: "C", maxLen: 64, v8: isValidStr, manyRequired: []int{0, 1, 2}, manyRequiredQty: 1,
 		}}
 	case 11:
 		return []field{{
@@ -173,7 +173,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "s", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
-			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "C", Value: defaultClubName(), Required: true, maxLen: 64, minLen: 1, v8: isValidStr, Options: clubsDataList(),
 		}, {
 			name: "g", Required: true, max: float32(len(globalGrades) - 1), step: 1, v8: listUint, Options: globalGradesDataList,
 		}, {
@@ -199,7 +199,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "s", maxLen: 64, v8: isValidStr,
 		}, {
-			name: "C", maxLen: 64, v8: isValidStr, manyRequired: []int{0, 1, 2}, manyRequiredQty: 1, Options: clubsDataList(),
+			name: "C", maxLen: 64, v8: isValidStr, manyRequired: []int{0, 1, 2}, manyRequiredQty: 1,
 		}}
 	case 14:
 		return []field{{
