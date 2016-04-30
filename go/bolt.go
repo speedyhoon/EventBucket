@@ -342,7 +342,7 @@ func getCalendarEvents() ([]CalendarEvent, error) {
 	return events, err
 }
 
-func getShooters() ([]Shooter, error) {
+/*func getShooters() ([]Shooter, error) {
 	var shooters []Shooter
 	err := db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(tblShooter)
@@ -359,7 +359,7 @@ func getShooters() ([]Shooter, error) {
 		})
 	})
 	return shooters, err
-}
+}*/
 
 func hasDefaultClub() bool {
 	return getDefaultClub().Name != ""
