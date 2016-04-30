@@ -3,7 +3,7 @@
 	{{if.QtyShooters}}
 		{{template "ShooterSearch" .ShooterSearch}}
 	{{end}}
-	<p>Total Shooters: {{.QtyShooters}}{{with.ListShooters}}, Search returned {{len .}} shooters.{{end}}
+	<p>Total Shooters: {{.QtyShooters}}{{with.ListShooters}}, Search returned {{len .}} shooter{{if ne (len .) 1}}s{{end}}.{{end}}
 	{{template "tableShooters" .ListShooters}}
 
 	<template>
