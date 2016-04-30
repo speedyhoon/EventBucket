@@ -50,11 +50,8 @@ var (
 	templates      = make(map[string]*template.Template)
 	masterTemplate = markupEnv{
 		Menu: []menu{{
-			//Name: "Home",
-			Link: urlHome,
-			//}, {
 			Name: "Events",
-			//Link: urlEvents,
+			Link: urlEvents,
 			SubMenu: []menu{{
 				Name: "Entries",
 				Link: urlEntries,

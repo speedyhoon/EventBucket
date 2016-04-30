@@ -14,11 +14,10 @@ const (
 	dirPNG      = "dirPNG"
 	dirGIF      = "dirGIF"
 	dirSVG      = "dirSVG"
-	urlHome     = "/"
+	urlEvents   = "/"
 	urlAbout    = "/about"
 	urlArchive  = "/archive"
 	urlClubs    = "/clubs"
-	urlEvents   = urlHome //"/events"
 	urlLicence  = "/licence"
 	urlShooters = "/shooters"
 	//GET with PARAMETERS
@@ -92,7 +91,7 @@ func pages() {
 	post(pst, importShooter, importShooters)
 
 	//BUG any url breaks when appending "&*((&*%"
-	get404(urlHome, home)
+	get404(urlEvents, home)
 }
 
 func post(method string, formID uint8, runner func(http.ResponseWriter, *http.Request, form, func())) {
