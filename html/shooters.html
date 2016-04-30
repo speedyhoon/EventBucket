@@ -18,7 +18,7 @@
 			<input type=search name=C required maxlength=64 autocomplete=off form=editShooter list=C>
 		</td>
 		<td>
-			<select name=g multiple size={{len .Grades}} form=editShooter>
+			<select name=g multiple required size={{len .Grades}} form=editShooter>
 				{{template "optionList" .Grades}}
 			</select>
 		</td>
