@@ -75,7 +75,10 @@ func getShooter(ID string) (Shooter, error) {
 }
 
 func nextID(bucket *bolt.Bucket) (string, []byte) {
-	num, _ := bucket.NextSequence()
+	num, err := bucket.NextSequence()
+	if err != nil {
+		warn.Println("Failed to get the next sequence number.", err)
+	}
 	b := make([]byte, 8)
 	binary.BigEndian.PutUint64(b, num)
 	return strconv.FormatUint(num, 36), b
@@ -496,24 +499,3 @@ func getClubByName(clubName string) (Club, error) {
 	}
 	return Club{}, fmt.Errorf("Couldn't find club with name %v", clubName)
 }
-
-/*func findDocument(bucketName []byte, decode interface{}, query func(interface{}) bool) error {
-	temp := decode
-	err := db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(bucketName)
-		if b == nil {
-			return fmt.Errorf(eNoBucket, bucketName)
-		}
-		return b.ForEach(func(_, document []byte) error {
-			if json.Unmarshal(document, &temp) == nil && query(decode) {
-				return fmt.Errorf("success")
-			}
-			return nil
-		})
-	})
-	if err.Error() == "success" {
-		decode = temp
-		return nil
-	}
-	return err
-}*/
