@@ -35,7 +35,6 @@ const (
 	formsTemplatePath     = htmlDirectory + "forms"
 	reusablesTemplatePath = htmlDirectory + "reusables"
 
-	templateDark       = 0
 	templateScoreboard = 1
 	templateNone       = 255
 )
@@ -104,6 +103,63 @@ var (
 	}
 )
 
+var (
+	xxx = func(inputs []field, index int) *field {
+		if index < len(inputs) && index >= 0 {
+			return &inputs[index]
+		}
+		return nil
+	}
+	ggg = func(attribute string, value interface{}) template.HTMLAttr {
+		var output string
+		switch value.(type) {
+		case bool:
+			if value.(bool) {
+				output = attribute
+			}
+		case string:
+			if value.(string) != "" {
+				output = attribute + "=" + addQuotes(value.(string))
+			}
+		case int:
+			if value.(int) > 0 {
+				output = attribute + "=" + addQuotes(fmt.Sprintf("%d", value))
+			}
+		}
+		return template.HTMLAttr(output)
+	}
+
+	ddd = func(t interface{}, value string) template.HTMLAttr {
+		var hasValue bool
+		switch t.(type) {
+		default:
+			warn.Printf("unexpected type %T", t) // %T prints whatever type t has
+		case []option:
+			hasValue = len(t.([]option)) >= 1
+		case string:
+			hasValue = t != ""
+		case bool:
+			hasValue = t.(bool)
+		}
+		if hasValue {
+			return template.HTMLAttr(value)
+		}
+		return template.HTMLAttr("")
+	}
+	nnn = func(index uint) Grade {
+		if index < uint(len(globalGrades)) {
+			return globalGrades[index]
+		}
+		return Grade{}
+	}
+	zzz = func(index uint) string {
+		if index >= 1 && index < uint(len(dataListAgeGroup())) {
+			return dataListAgeGroup()[index].Label
+		}
+		return ""
+	}
+)
+
 func templater(w http.ResponseWriter, page page) {
 	//Add HTTP headers so browsers don't cache the HTML resource because it can contain different content every request.
 	headers(w, nocache)
@@ -126,60 +182,12 @@ func templater(w http.ResponseWriter, page page) {
 	if !ok || debug {
 
 		templates[pageName] = template.Must(template.New("main").Funcs(template.FuncMap{
-			"hasindex": func(inputs []field, index int) *field {
-				if index < len(inputs) && index >= 0 {
-					return &inputs[index]
-				}
-				return nil
-			},
-			"attr": func(attribute string, value interface{}) template.HTMLAttr {
-				var output string
-				switch value.(type) {
-				case bool:
-					if value.(bool) {
-						output = attribute
-					}
-				case string:
-					if value.(string) != "" {
-						output = attribute + "=" + addQuotes(value.(string))
-					}
-				case int:
-					if value.(int) > 0 {
-						output = attribute + "=" + addQuotes(fmt.Sprintf("%d", value))
-					}
-				}
-				return template.HTMLAttr(output)
-			},
-			"has": func(t interface{}, value string) template.HTMLAttr {
-				var hasValue bool
-				switch t.(type) {
-				default:
-					warn.Printf("unexpected type %T", t) // %T prints whatever type t has
-				case []option:
-					hasValue = len(t.([]option)) >= 1
-				case string:
-					hasValue = t != ""
-				case bool:
-					hasValue = t.(bool)
-				}
-				if hasValue {
-					return template.HTMLAttr(value)
-				}
-				return template.HTMLAttr("")
-			},
-			"grade": func(index uint) Grade {
-				if index < uint(len(globalGrades)) {
-					return globalGrades[index]
-				}
-				return Grade{}
-			},
-			"ageGroup": func(index uint) string {
-				if index >= 1 && index < uint(len(dataListAgeGroup())) {
-					return dataListAgeGroup()[index].Label
-				}
-				return ""
-			},
-			"ordinal": ordinal,
+			"hasindex": xxx,
+			"attr":     ggg,
+			"has":      ddd,
+			"grade":    nnn,
+			"ageGroup": zzz,
+			"ordinal":  ordinal,
 		}).ParseFiles(htmlFileNames...))
 		html = templates[pageName]
 	}
