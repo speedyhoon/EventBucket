@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	//Databse collection names
+	//Databse bucket (table) names
 	tblClub    = []byte("C")
 	tblEvent   = []byte("E")
 	tblShooter = []byte("S")
@@ -35,15 +35,15 @@ func makeBuckets() {
 	})
 }
 
-func getDocument(collection []byte, ID string, result interface{}) error {
+func getDocument(bucketName []byte, ID string, result interface{}) error {
 	byteID, err := b36toBy(ID)
 	if err != nil {
 		return err
 	}
 	err = db.View(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(collection)
+		bucket := tx.Bucket(bucketName)
 		if bucket == nil {
-			return fmt.Errorf(eNoBucket, collection)
+			return fmt.Errorf(eNoBucket, bucketName)
 		}
 
 		document := bucket.Get(byteID)
@@ -155,14 +155,14 @@ func insertShooter(shooter Shooter) (string, error) {
 	return b36, err
 }
 
-func updateDocument(collectionName []byte, colID string, update interface{}, decode interface{}, function func(interface{}, interface{}) interface{}) error {
-	ID, err := b36toBy(colID)
+func updateDocument(bucketName []byte, b36ID string, update interface{}, decode interface{}, function func(interface{}, interface{}) interface{}) error {
+	ID, err := b36toBy(b36ID)
 	if err != nil {
 		return err
 	}
 	err = db.Update(func(tx *bolt.Tx) error {
 		var bucket *bolt.Bucket
-		bucket, err = tx.CreateBucketIfNotExists(collectionName)
+		bucket, err = tx.CreateBucketIfNotExists(bucketName)
 		if err != nil {
 			return err
 		}
@@ -279,7 +279,6 @@ func getClubs() ([]Club, error) {
 }
 
 func clubsDataList() []option {
-	t.Println("exec > clubsDataList")
 	var clubs []option
 	err := db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(tblClub)
@@ -341,25 +340,6 @@ func getCalendarEvents() ([]CalendarEvent, error) {
 	})
 	return events, err
 }
-
-/*func getShooters() ([]Shooter, error) {
-	var shooters []Shooter
-	err := db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(tblShooter)
-		if b == nil {
-			//Shooter Bucket isn't created yet
-			return nil
-		}
-		return b.ForEach(func(_, value []byte) error {
-			var shooter Shooter
-			if json.Unmarshal(value, &shooter) == nil {
-				shooters = append(shooters, shooter)
-			}
-			return nil
-		})
-	})
-	return shooters, err
-}*/
 
 func hasDefaultClub() bool {
 	return getDefaultClub().Name != ""
@@ -517,12 +497,12 @@ func getClubByName(clubName string) (Club, error) {
 	return Club{}, fmt.Errorf("Couldn't find club with name %v", clubName)
 }
 
-/*func findDocument(collectionName []byte, decode interface{}, query func(interface{}) bool) error {
+/*func findDocument(bucketName []byte, decode interface{}, query func(interface{}) bool) error {
 	temp := decode
 	err := db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(collectionName)
+		b := tx.Bucket(bucketName)
 		if b == nil {
-			return fmt.Errorf(eNoBucket, collectionName)
+			return fmt.Errorf(eNoBucket, bucketName)
 		}
 		return b.ForEach(func(_, document []byte) error {
 			if json.Unmarshal(document, &temp) == nil && query(decode) {
