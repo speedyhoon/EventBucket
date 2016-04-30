@@ -59,18 +59,18 @@ while(qty--){
 
 var form;
 function initForm(){
-//	form = document.getElementById("usrForm");
+//form = document.getElementById("usrForm");
 	form = document.forms[0];
-	form.addEventListener("submit", function(evt){
+	form.addEventListener('submit', function(evt){
 		if(form.checkValidity() === false){
 			evt.preventDefault();
-			alert("Form is invalid - submission prevented!");
+			alert('Form is invalid - submission prevented!');
 			return false;
 		}else{
-			// To prevent data from being sent, we've prevented submission
-			// here, but normally this code block would not exist.
+			//To prevent data from being sent, we've prevented submission
+			//here, but normally this code block would not exist.
 			evt.preventDefault();
-			alert("Form is valid - submission prevented to protect privacy.");
+			alert('Form is valid - submission prevented to protect privacy.');
 			return false;
 		}
 	});
@@ -92,18 +92,19 @@ function initForm(){
 		}
 	}
 }*/
+
 function initInputs(){
-	var inputs = document.getElementsByTagName("input");
+	var inputs = document.getElementsByTagName('input');
 	var inputs_len = inputs.length;
 	var addDirtyClass = function(evt){
-		sampleCompleted("Forms-order-dirty");
-		evt.srcElement.classList.toggle("dirty", true);
+		sampleCompleted('Forms-order-dirty');
+		evt.srcElement.classList.toggle('dirty', true);
 	};
 	for(var i = 0; i < inputs_len; i++){
 		var input = inputs[i];
-		input.addEventListener("blur", addDirtyClass);
-		input.addEventListener("invalid", addDirtyClass);
-		input.addEventListener("valid", addDirtyClass);
+		input.addEventListener('blur', addDirtyClass);
+		input.addEventListener('invalid', addDirtyClass);
+		input.addEventListener('valid', addDirtyClass);
 	}
 }
 /*function initNoSubmit(){
@@ -118,7 +119,7 @@ initInputs();
 
 var isCompleted = {};
 function sampleCompleted(sampleName){
-	if (!isCompleted.hasOwnProperty(sampleName)) {
+	if(!isCompleted.hasOwnProperty(sampleName)){
 		isCompleted[sampleName] = true;
 	}
 }
