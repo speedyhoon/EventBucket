@@ -40,6 +40,9 @@ const (
 	templateNone       = 255
 )
 
+//TODO invert cc logo in dark theme or add a white background wolour?
+//TODO test with empty database that it creates the DB buckets as needed!
+
 var (
 	masterStuff = [][]string{
 		{formsTemplatePath, reusablesTemplatePath, masterTemplatePath},
@@ -48,11 +51,11 @@ var (
 	templates      = make(map[string]*template.Template)
 	masterTemplate = markupEnv{
 		Menu: []menu{{
-			//			Name: "Home",
+			//Name: "Home",
 			Link: urlHome,
-			//		}, {
+			//}, {
 			Name: "Events",
-			//			Link: urlEvents,
+			//Link: urlEvents,
 			SubMenu: []menu{{
 				Name: "Entries",
 				Link: urlEntries,
@@ -85,7 +88,7 @@ var (
 				Name: "Club",
 				Link: urlClub,
 			}, {
-				Name: "Settings",
+				Name: "Club Settings",
 				Link: urlClubSettings,
 			}},
 		}, {

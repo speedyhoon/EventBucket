@@ -1,11 +1,20 @@
 {{define "page"}}
 	{{template "NewClub" .NewClub}}
 	{{with .ListClubs}}
-		<ul>
+		<table>
+			<thead>
+				<tr>
+					<th>Club Name
+					<th>Default Club
+					<td>Edit
+			</thead>
 			{{range .}}
-				<li><a href=/club/{{.ID}}>{{.Name}}</a> {{if.IsDefault}}***{{end}}
-			{{end}}
-		</ul>
+				<tr>
+					<td><a href=/club/{{.ID}}>{{.Name}}</a>
+					{{if.IsDefault}}<td class=center><img src=/v/tick alt="Default Club" height=15>{{else}}<td>{{end}}
+					<td onclick="document.location.pathname='/club-settings/{{.ID}}'">
+				{{end}}
+		</table>
 	{{else}}
 		<p>No Clubs found
 	{{end}}
