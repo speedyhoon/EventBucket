@@ -1,1 +1,0 @@
-go test -race -bench -benchmem -benchtime 1m -blockprofile blockprofile.txt -covermode count -coverprofile coverage.txt -cpuprofile cpu.out -memprofile mem.out -parallel 4 -v __GO__files_here.go

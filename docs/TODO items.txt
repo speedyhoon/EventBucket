@@ -1,7 +1,0 @@
-add confirmation message "Shooter added to successfully" to forms that redirect back to their original page
-
-add invalid message to failed form submits
-	add form errors to session:page:formId
-	post 302 redirect back to original page
-	browser gets page
-	server returns page with form errors - clear session form errors when it is rendered
