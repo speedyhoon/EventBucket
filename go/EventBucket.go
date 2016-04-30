@@ -56,12 +56,14 @@ func init() {
 		t.SetOutput(os.Stdout)
 	}
 
-	//If grades file specified & it doesn't exist exit
+	//Try to load the grades file if any is specified
 	if loadGrades(*gradesFilePath) != nil {
-		os.Exit(2)
-	}
-	if *gradesFilePath == "" {
 		redoGlobals([]Discipline{})
+		//If a file path was specified try to create one
+		if *gradesFilePath != "" {
+			buildGradesFile(*gradesFilePath)
+			os.Exit(2)
+		}
 	}
 
 	//Check port number
@@ -86,10 +88,12 @@ func main() {
 		os.Exit(4)
 	}
 	defer db.Close()
+	//Prepare database by creating all buckets (tables) needed. Otherwise view (read only) transactions will fail.
+	makeBuckets()
 
 	pages()
 	info.Print("Starting EventBucket HTTP server...")
-	//Open default browser
+	//Open the default browser
 	if !debug {
 		fullAddress := "http://localhost"
 		if portAddr != ":80" {
@@ -104,7 +108,7 @@ func main() {
 	info.Println("EvenBucket server stopped.")
 }
 
-// Attempt to create the path supplied if it doesn't exist.
+//Attempt to create the path supplied if it doesn't exist.
 func mkDir(path string) error {
 	info, err := os.Stat(path)
 	if err != nil || !info.IsDir() {

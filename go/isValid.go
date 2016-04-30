@@ -135,13 +135,15 @@ func isValidStr(f *field, inp ...string) {
 		return
 	}
 
-	if length > f.maxLen {
-		f.Error = fmt.Sprintf("Please shorten this text to %d characters or less (you are currently using %d character%v).", f.maxLen, length, plural(length))
-		return
-	}
 	if length < f.minLen {
 		f.Error = fmt.Sprintf("Please lengthen this text to %d characters or more (you are currently using %d character%v).", f.minLen, length, plural(length))
 		return
+	}
+	if length > f.maxLen {
+		//Truncate string instead of raising an error
+		f.Value = f.Value[:f.maxLen]
+		//f.Error = fmt.Sprintf("Please shorten this text to %d characters or less (you are currently using %d character%v).", f.maxLen, length, plural(length))
+		//return
 	}
 
 	//Check value matches one of the options (optional).

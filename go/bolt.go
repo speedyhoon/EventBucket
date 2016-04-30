@@ -13,15 +13,27 @@ import (
 
 var (
 	//Databse collection names
-	tblClub        = []byte("C")
-	tblEvent       = []byte("E")
-	tblShooter     = []byte("S")
+	tblClub    = []byte("C")
+	tblEvent   = []byte("E")
+	tblShooter = []byte("S")
 )
 
 const (
 	eNoBucket   = "Bucket %q not found!"
 	eNoDocument = "'%v' document is empty / doesn't exist %q"
 )
+
+func makeBuckets() {
+	db.Update(func(tx *bolt.Tx) error {
+		for index, bucketName := range [][]byte{tblClub, tblEvent, tblShooter} {
+			_, err := tx.CreateBucketIfNotExists(bucketName)
+			if err != nil {
+				warn.Printf("Unable to create table %v in database", []string{"club", "event", "shooter"}[index])
+			}
+		}
+		return nil
+	})
+}
 
 func getDocument(collection []byte, ID string, result interface{}) error {
 	byteID, err := b36toBy(ID)
@@ -149,9 +161,9 @@ func updateDocument(collectionName []byte, colID string, update interface{}, dec
 		return err
 	}
 	err = db.Update(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(collectionName)
-		if bucket == nil {
-			return fmt.Errorf(eNoBucket, collectionName)
+		bucket, err := tx.CreateBucketIfNotExists(collectionName)
+		if err != nil {
+			return err
 		}
 
 		document := bucket.Get(ID)

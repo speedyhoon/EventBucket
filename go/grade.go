@@ -2,8 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
+	"strings"
 )
 
 // Discipline separates different types of shooting so the number of shots & sighters can be easily changed while still using the same targets and Mark as another Discipline, e.g. Target rifles and Match rifles are vastly different disciplines but use the same scoring standard.
@@ -129,6 +131,9 @@ func defaultGlobalDisciplines() []Discipline {
 			//TODO sort isn't sorting by countback 2 descending.
 			//TODO precedence is taken over the last X shot rather than the most X's shot
 		}}
+	//TODO move comment somewhere where the user can read it?
+	/*Disciplines F Standard, F Open and F/TR have been merged together because they all use the same scoring method (0123456X). Although they are technically separate disciplines, most events assign the same number of shots and sighters for all three.  If the disciplines need to be independent, these settings can be overwritten using the command line flag -grades and specifying a JSON settings file. e.g. EventBucket.exe -grades my_new_grades.json
+	EventBucket will not import or remember the settings file next time you start the application. Adding command line flags to an EventBucket shortcut is the easiest way to specify settings every time EventBucket is started.*/
 	return []Discipline{{
 		ID:          0,
 		Name:        "Target Rifle",
@@ -196,25 +201,16 @@ func defaultGlobalDisciplines() []Discipline {
 
 func loadGrades(filePath string) error {
 	if filePath == "" {
-		return nil
+		return errors.New("File specified is empty")
 	}
-	contents := readFile(filePath)
-	//If file is empty, try to write a new JSON file to storage.
-	if len(contents) < 1 {
-		warn.Println("empty file contents")
-		//Generate JSON from globalDisciplines
-		src, err := json.MarshalIndent(globalDisciplines, "", "\t")
-		//Output marshal errors
-		if err != nil {
-			warn.Println("error:", err)
-		}
-		writeFile(filePath, src)
-		info.Println("Created grades settings JSON file:", filePath)
-		//Return an error because EventBucket was unable to load the original settings file specified.
-		return fmt.Errorf("Unable to load settings file: %v", filePath)
+	contents, err := ioutil.ReadFile(filePath)
+	//If file is empty, try to write a new JSON file.
+	if err != nil {
+		warn.Println(err)
+		return err
 	}
 	var disciplines []Discipline
-	err := json.Unmarshal(contents, &disciplines)
+	err = json.Unmarshal(contents, &disciplines)
 	if err != nil {
 		//Unable to unmarshal settings from JSON file.
 		warn.Println("error:", err)
@@ -225,17 +221,22 @@ func loadGrades(filePath string) error {
 	return nil
 }
 
-func readFile(filename string) []byte {
-	src, err := ioutil.ReadFile(filename)
+func buildGradesFile(filePath string) error {
+	//Generate JSON from globalDisciplines
+	src, err := json.MarshalIndent(globalDisciplines, "", "\t")
 	if err != nil {
-		warn.Println(err)
+		//Output marshal errors
+		warn.Println("error:", err)
 	}
-	return src
-}
+	if !strings.HasSuffix(filePath, ".json") {
+		filePath += ".json"
+	}
 
-func writeFile(destination string, src []byte) {
-	err := ioutil.WriteFile(destination, src, 0777)
+	err = ioutil.WriteFile(filePath, src, 0777)
 	if err != nil {
-		warn.Printf("\nUnable to write to file %v -- %v", destination, err)
+		warn.Println(err, "Unable to write to file", filePath)
+		return err
 	}
+	info.Println("Created grades settings file:", filePath)
+	return nil
 }
