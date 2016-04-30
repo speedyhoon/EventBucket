@@ -40,7 +40,6 @@ const (
 )
 
 //TODO invert cc logo in dark theme or add a white background wolour?
-//TODO test with empty database that it creates the DB buckets as needed!
 
 var (
 	masterStuff = [][]string{
