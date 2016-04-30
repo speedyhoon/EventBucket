@@ -8,7 +8,7 @@ func shooters(w http.ResponseWriter, r *http.Request, submittedForm form, isVali
 	if !debug && submittedForm.Fields[0].Value == "" && submittedForm.Fields[1].Value == "" && submittedForm.Fields[2].Value == "" {
 		submittedForm.Fields[2].Value = defaultClubName()
 	}
-	shooters, err, shooterQty := getSearchShooters(submittedForm.Fields[0].Value, submittedForm.Fields[1].Value, submittedForm.Fields[2].Value)
+	shooters, shooterQty, err := getSearchShooters(submittedForm.Fields[0].Value, submittedForm.Fields[1].Value, submittedForm.Fields[2].Value)
 
 	templater(w, page{
 		Title: "Shooters",

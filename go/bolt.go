@@ -161,7 +161,8 @@ func updateDocument(collectionName []byte, colID string, update interface{}, dec
 		return err
 	}
 	err = db.Update(func(tx *bolt.Tx) error {
-		bucket, err := tx.CreateBucketIfNotExists(collectionName)
+		var bucket *bolt.Bucket
+		bucket, err = tx.CreateBucketIfNotExists(collectionName)
 		if err != nil {
 			return err
 		}
@@ -467,7 +468,7 @@ func b36toBy(id string) ([]byte, error) {
 	return b, nil
 }
 
-func getSearchShooters(firstName, surname, club string) ([]Shooter, error, uint) {
+func getSearchShooters(firstName, surname, club string) ([]Shooter, uint, error) {
 	var shooters []Shooter
 	var totalQty uint
 
@@ -490,7 +491,7 @@ func getSearchShooters(firstName, surname, club string) ([]Shooter, error, uint)
 			return nil
 		})
 	})
-	return shooters, err, totalQty
+	return shooters, totalQty, err
 }
 
 func getClubByName(clubName string) (Club, error) {
