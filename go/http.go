@@ -12,7 +12,7 @@ const (
 	cacheControl   = "Cache-Control"
 	expires        = "Expires"
 	cache          = "cache"
-	maps           = "maps"
+	maps           = "default-src 'none'; style-src 'self'; script-src 'self' maps.googleapis.com; connect-src 'self'; img-src 'self' data: maps.googleapis.com maps.gstatic.com"
 	nocache        = "nocache"
 	cGzip          = "gzip"
 	acceptEncoding = "Accept-Encoding"
@@ -56,7 +56,6 @@ var headerOptions = map[string][2]string{
 	dirJS:  {contentType, "text/javascript"},
 	dirPNG: {contentType, "image/png"},
 	dirSVG: {contentType, "image/svg+xml"},
-	maps:   {csp, "default-src 'none'; script-src 'self' 'unsafe-inline' maps.googleapis.com; style-src 'self'; connect-src 'self'; img-src 'self' maps.googleapis.com maps.gstatic.com; frame-src maps.google.com www.google.com"}, //"img-src 'self' data:; connect-src 'self'; font-src 'self'"
 	//dirWOF2:   {contentType, "application/font-woff2"},
 }
 
@@ -64,7 +63,6 @@ var headerOptions = map[string][2]string{
 func headers(w http.ResponseWriter, setHeaders ...string) {
 	//The page cannot be displayed in a frame, regardless of the site attempting to do so. //developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options
 	w.Header().Set("X-Frame-Options", "DENY")
-	var cspIsset bool
 	for _, lookup := range setHeaders {
 		switch lookup {
 		case cache:
@@ -77,15 +75,12 @@ func headers(w http.ResponseWriter, setHeaders ...string) {
 			w.Header().Set(expires, "0")
 			w.Header().Set("Pragma", "no-cache")
 			break
-		case maps:
-			cspIsset = true
-			fallthrough
 		default:
-			w.Header().Set(headerOptions[lookup][0], headerOptions[lookup][1])
+			//TODO add comment
+			if lookup == cGzip || headerOptions[lookup][0] == "Content-Type" {
+				w.Header().Set(headerOptions[lookup][0], headerOptions[lookup][1])
+			}
 		}
-	}
-	if !cspIsset {
-		w.Header().Set(csp, "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'") //connect-src 'self'; font-src 'self'
 	}
 }
 
@@ -153,7 +148,7 @@ func errorHandler(w http.ResponseWriter, r *http.Request, status int, errorType 
 
 		//check if the request matches any of the pages that don't require parameters
 		if strings.Count(lowerURL, "/") >= 2 {
-			for _, page := range []string{urlAbout, urlArchive, urlClubs /*urlEvent,*/, urlEvents, urlLicence, urlShooters} {
+			for _, page := range []string{urlAbout, urlArchive, urlClubs /*urlEvent,*/, urlLicence, urlShooters} {
 				if strings.HasPrefix(lowerURL, page) {
 					//redirect to page without parameters
 					http.Redirect(w, r, page, http.StatusSeeOther)
@@ -202,7 +197,7 @@ func whoops(w http.ResponseWriter, r *http.Request, url string) {
 }
 
 func formError(w http.ResponseWriter, submittedForm form, redirect func(), err error) {
-	submittedForm.Error = err.Error()
+	submittedForm.Error = err
 	setSession(w, submittedForm)
 	redirect()
 }

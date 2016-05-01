@@ -11,10 +11,12 @@
 			{{range .}}
 				<tr>
 					<td><a href=/club/{{.ID}}>{{.Name}}</a>
-					{{if.IsDefault}}<td class=center><img src=/v/tick alt="Default Club" height=15>{{else}}<td>{{end}}
-					<td onclick="document.location.pathname='/club-settings/{{.ID}}'">
+					{{if.IsDefault}}<td class=center><img src=/v/tick alt="Default Club" height=100%>{{else}}<td>{{end}}
+					<td class=center><a href=/club-settings/{{.ID}}><img src=/v/edit alt="edit club" height=100%></a>
 				{{end}}
 		</table>
+		<div id=map></div>
+		<script defer src=/j/map></script>
 	{{else}}
 		<p>No Clubs found
 	{{end}}
