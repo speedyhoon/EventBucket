@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 )
@@ -13,10 +14,11 @@ func club(w http.ResponseWriter, r *http.Request, clubID string) {
 		return
 	}
 	templater(w, page{
-		Title:   "Club",
-		MenuID:  clubID,
-		Menu:    urlClubs,
-		Heading: club.Name,
+		Title:    "Club",
+		MenuID:   clubID,
+		Menu:     urlClubs,
+		Heading:  club.Name,
+		template: 25,
 		Data: map[string]interface{}{
 			"Club": club,
 		},
@@ -30,12 +32,51 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 	}
 	_, forms := sessionForms(w, r, clubNew)
 	templater(w, page{
-		Title: "Clubs",
+		Title:    "Clubs",
+		template: 25,
 		Data: map[string]interface{}{
 			"NewClub":   forms[0],
 			"ListClubs": listClubs,
 		},
 	})
+}
+
+func mapClubs(w http.ResponseWriter, r *http.Request) {
+	clubs, err := getClubs()
+	if err != nil {
+		warn.Println(err)
+	}
+	var mapClubs []MapClub
+	for _, club := range clubs {
+		if club.Latitude != 0 && club.Longitude != 0 {
+			mapClubs = append(mapClubs, MapClub{
+				Name:      club.Name,
+				Latitude:  club.Latitude,
+				Longitude: club.Longitude,
+				URL:       club.URL,
+				Address:   club.Address,
+				Town:      club.Town,
+				Postcode:  club.Postcode,
+			})
+		}
+	}
+
+	var jsonList []byte
+	jsonList, err = json.Marshal(mapClubs)
+	if err != nil {
+		warn.Println(err)
+	}
+	fmt.Fprintf(w, "%s", jsonList)
+}
+
+type MapClub struct {
+	Name      string  `json:"n"`
+	Latitude  float32 `json:"x,omitempty"`
+	Longitude float32 `json:"y,omitempty"`
+	URL       string  `json:"u,omitempty"`
+	Address   string  `json:"a,omitempty"`
+	Town      string  `json:"t,omitempty"`
+	Postcode  string  `json:"p,omitempty"`
 }
 
 func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {

@@ -159,6 +159,12 @@ var (
 func templater(w http.ResponseWriter, page page) {
 	//Add HTTP headers so browsers don't cache the HTML resource because it can contain different content every request.
 	headers(w, nocache)
+	if page.template == 25 {
+		page.template = 0
+		w.Header().Set(csp, maps)
+	} else {
+		w.Header().Set(csp, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self' data:") //font-src 'self'
+	}
 
 	//Convert page.Title to the HTML template file name (located within htmlDirectory), e.g. Events > events, Club Settings > clubSettings
 	pageName := strings.Split(page.Title, titleSeparator)[0]
