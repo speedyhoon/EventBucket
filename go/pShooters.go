@@ -3,7 +3,7 @@ package main
 import "net/http"
 
 func shooters(w http.ResponseWriter, r *http.Request, submittedForm form, isValid bool) {
-	_, pageForms := sessionForms(w, r, shooterNew)
+	_, pageForms := sessionForms(w, r, shooterNew, importShooter)
 
 	if !debug && submittedForm.Fields[0].Value == "" && submittedForm.Fields[1].Value == "" && submittedForm.Fields[2].Value == "" {
 		submittedForm.Fields[2].Value = defaultClubName()
@@ -15,12 +15,13 @@ func shooters(w http.ResponseWriter, r *http.Request, submittedForm form, isVali
 		Error: err,
 		JS:    "shooterDetails",
 		Data: map[string]interface{}{
-			"NewShooter":    pageForms[0],
-			"ListShooters":  shooters,
-			"ShooterSearch": submittedForm,
-			"QtyShooters":   shooterQty,
-			"Grades":        globalGradesDataList,
-			"AgeGroups":     dataListAgeGroup(),
+			"NewShooter":     pageForms[0],
+			"ImportShooters": pageForms[1],
+			"ListShooters":   shooters,
+			"ShooterSearch":  submittedForm,
+			"QtyShooters":    shooterQty,
+			"Grades":         globalGradesDataList,
+			"AgeGroups":      dataListAgeGroup(),
 		},
 	})
 }
