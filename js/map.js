@@ -1,7 +1,7 @@
 'use strict';
 
-var map, places, j = new XMLHttpRequest();
-j.open('GET', '/18', true);
+var map, places, j = new XMLHttpRequest(), arr = document.location.pathname.split('/'), lll = +arr[arr.length-1];
+j.open('GET', '/18'+(lll ? '?C='+lll :''), true);
 j.send();
 j.onreadystatechange = function stateChanger(){
 	if(j.readyState == 4 && j.status === 200 && j.response){
@@ -23,13 +23,11 @@ function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), u);
 
 	for(t in places){
-
+		var url = places[t].u ? '<a href='+places[t].u+'>'+places[t].n+'</a>' : places[t].n;
 		var town = places[t].t ? '<br>'+places[t].t : '';
 		town += town && places[t].p ? ', '+places[t].p : '';
-		town += town && places[t].u ? '<br>'+ places[t].u : (places[t].u ||'');
-
 		places[t].infowindow = new google.maps.InfoWindow({
-			content: '<h1>'+places[t].n+'</h1>'+(places[t].a||'')+town
+			content: '<h1>'+url+'</h1>'+(places[t].a||'')+town
 		});
 		places[t].marker = new google.maps.Marker({
 			position: {lat: places[t].x, lng: places[t].y},

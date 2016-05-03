@@ -13,11 +13,15 @@ func club(w http.ResponseWriter, r *http.Request, clubID string) {
 		errorHandler(w, r, http.StatusNotFound, "club")
 		return
 	}
+	clubName := club.Name
+	if club.IsDefault {
+		clubName += " (default club)"
+	}
 	templater(w, page{
 		Title:    "Club",
 		MenuID:   clubID,
 		Menu:     urlClubs,
-		Heading:  club.Name,
+		Heading:  clubName,
 		template: 25,
 		Data: map[string]interface{}{
 			"Club": club,
@@ -41,14 +45,16 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func mapClubs(w http.ResponseWriter, r *http.Request) {
+func mapClubs(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+	clubID := submittedForm.Fields[0].Value
 	clubs, err := getClubs()
 	if err != nil {
 		warn.Println(err)
 	}
+	searchClub := clubID != ""
 	var mapClubs []MapClub
 	for _, club := range clubs {
-		if club.Latitude != 0 && club.Longitude != 0 {
+		if searchClub && club.ID == clubID || (!searchClub && club.Latitude != 0 && club.Longitude != 0) {
 			mapClubs = append(mapClubs, MapClub{
 				Name:      club.Name,
 				Latitude:  club.Latitude,
@@ -102,6 +108,15 @@ func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redi
 
 func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	clubID := submittedForm.Fields[8].Value
+	isDefault := submittedForm.Fields[6].Checked
+	defaultClub := getDefaultClub()
+	if isDefault && defaultClub.ID != clubID {
+		//need to remove isDefault for the default club so there is only one default at a time.
+		err := updateDocument(tblClub, defaultClub.ID, &Club{IsDefault: false}, &Club{}, updateClubDefault)
+		if err != nil {
+			warn.Println(err)
+		}
+	}
 	err := updateDocument(tblClub, clubID, &Club{
 		Name:      submittedForm.Fields[0].Value,
 		Address:   submittedForm.Fields[1].Value,
@@ -109,7 +124,7 @@ func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm for
 		Postcode:  submittedForm.Fields[3].Value,
 		Latitude:  submittedForm.Fields[4].valueFloat32,
 		Longitude: submittedForm.Fields[5].valueFloat32,
-		IsDefault: submittedForm.Fields[6].Checked,
+		IsDefault: isDefault,
 		URL:       submittedForm.Fields[7].Value,
 	}, &Club{}, updateClubDetails)
 	if err != nil {

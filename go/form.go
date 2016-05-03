@@ -34,6 +34,7 @@ const (
 	eventAvailableGrades uint8 = 15
 	eventUpdateShotScore uint8 = 16
 	importShooter        uint8 = 17
+	mapResults           uint8 = 18
 	pageError            uint8 = 255
 )
 
@@ -232,6 +233,10 @@ func getForm(id uint8) []field {
 	case 17: //Import Shooters
 		return []field{{
 			name: "f", Required: true, maxLen: 64,
+		}}
+	case 18: //Map Clubs
+		return []field{{
+			name: "C", v8: isValidRegex, regex: regexID,
 		}}
 	}
 	return []field{}

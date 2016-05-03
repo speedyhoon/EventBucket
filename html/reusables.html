@@ -63,3 +63,22 @@
 	<samp id=barcodeErr hidden>Barcode must match: <em>eventID/rangeID#shooterID</em> For example: <em>{{.EventID}}/{{.Range.ID}}#1</em></samp>
 	<samp id=shooterErr hidden>A shooter with that ID doesn't exist in this event.</samp>
 {{end}}
+
+{{define "clubMounds"}}
+	{{with .}}
+		<table>
+			<thead>
+				<tr>
+					<th>Name
+					<td>Edit
+			</thead>
+			{{range .}}
+				<tr>
+					<td>{{.Name}}
+					<td onclick=stuff(this)>
+			{{end}}
+		</table>
+	{{else}}
+		<samp>No mounds listed</samp>
+	{{end}}
+{{end}}
