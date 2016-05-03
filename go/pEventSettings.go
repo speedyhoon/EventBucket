@@ -8,6 +8,11 @@ import (
 func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 	event, err := getEvent(eventID)
 
+	var club Club
+	if !event.Closed && event.Club != "" {
+		club, err = getClubByName(event.Club)
+	}
+
 	//If event not found in the database return error event not found (404).
 	if err != nil {
 		errorHandler(w, r, http.StatusNotFound, "event")
@@ -35,12 +40,13 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 		MenuID:  eventID,
 		Heading: event.Name,
 		Data: map[string]interface{}{
-			"Closed":       event.Closed,
-			"Ranges":       event.Ranges,
-			"Event":        event,
-			"EventDetails": forms[0],
-			"AddRange":     forms[1],
-			"AddAgg":       forms[2],
+			"Closed":        event.Closed,
+			"Ranges":        event.Ranges,
+			"Event":         event,
+			"EventDetails":  forms[0],
+			"AddRange":      forms[1],
+			"AddAgg":        forms[2],
+			"RangeDataList": club.Mounds,
 		},
 	})
 }
