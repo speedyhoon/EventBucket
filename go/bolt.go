@@ -216,6 +216,12 @@ func updateClubDetails(decode interface{}, contents interface{}) interface{} {
 	return club
 }
 
+func updateClubDefault(decode interface{}, contents interface{}) interface{} {
+	club := decode.(*Club)
+	club.IsDefault = contents.(*Club).IsDefault
+	return club
+}
+
 func insertClubMound(decode interface{}, contents interface{}) interface{} {
 	club := decode.(*Club)
 	club.Mounds = append(club.Mounds, *contents.(*Mound))

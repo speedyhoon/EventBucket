@@ -89,7 +89,7 @@ func pages() {
 	post(pst, eventAvailableGrades, eventAvailableGradesUpsert)
 	post(pst, eventUpdateShotScore, updateShotScores)
 	post(pst, importShooter, importShooters)
-	http.HandleFunc("/18", mapClubs)
+	post(get, mapResults, mapClubs)
 
 	//BUG any url breaks when appending "&*((&*%"
 	get404(urlEvents, home)

@@ -2,20 +2,5 @@
 	{{template "ClubDetails" .ClubDetails}}
 	{{template "NewShootingMound" .ClubMound}}
 	<h2>Mounds</h2>
-	{{with .Club.Mounds}}
-		<table>
-			<thead>
-				<tr>
-					<th>Name
-					<td>Edit
-			</thead>
-			{{range .}}
-				<tr>
-					<td>{{.Name}}
-					<td onclick=stuff(this)>
-			{{end}}
-		</table>
-	{{else}}
-		<samp>No mounds listed</samp>
-	{{end}}
+	{{template "clubMounds" .Club.Mounds}}
 {{end}}
