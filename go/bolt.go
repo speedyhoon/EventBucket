@@ -262,6 +262,15 @@ func eventAddAgg(decode interface{}, contents interface{}) interface{} {
 	return event
 }
 
+func editMound(decode interface{}, contents interface{}) interface{} {
+	club := decode.(*Club)
+	details := contents.(*Mound)
+	if int(details.ID) < len(club.Mounds) {
+		club.Mounds[details.ID].Name = details.Name
+	}
+	return club
+}
+
 func updateEventGrades(decode interface{}, contents interface{}) interface{} {
 	event := decode.(*Event)
 	event.Grades = *contents.(*[]uint)

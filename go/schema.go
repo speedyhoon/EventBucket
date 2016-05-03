@@ -33,6 +33,7 @@ type AutoInc struct {
 //Mound could in future contain additional details like distance
 type Mound struct {
 	Name string `json:"n,omitempty"`
+	ID   uint   `json:"-"`
 }
 
 //Event is exported

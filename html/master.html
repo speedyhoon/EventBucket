@@ -58,5 +58,9 @@
 		{{template "page" .Data}}
 	{{end}}
 </section>
-<script defer src=dirJS/{{with.Page.JS}}{{.}}{{else}}main{{end}}></script>
+{{range.Page.JS}}
+	<script defer src=dirJS/{{.}}></script>
+{{else}}
+	<script defer src=dirJS/main></script>
+{{end}}
 {{end}}

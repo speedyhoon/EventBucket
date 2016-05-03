@@ -19,7 +19,7 @@
 
 {{define "tableShooters"}}
 	{{with .}}
-		<table>
+		<table id=editShooters>
 			<thead>
 				<tr>
 					<th class=asc>ID
@@ -66,16 +66,16 @@
 
 {{define "clubMounds"}}
 	{{with .}}
-		<table>
+		<table id=editMounds>
 			<thead>
 				<tr>
 					<th>Name
 					<td>Edit
 			</thead>
-			{{range .}}
-				<tr>
+			{{range $index, $mound := .}}
+				<tr id={{$index}}>
 					<td>{{.Name}}
-					<td onclick=stuff(this)>
+					<td>
 			{{end}}
 		</table>
 	{{else}}

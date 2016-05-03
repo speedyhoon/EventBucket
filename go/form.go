@@ -35,6 +35,7 @@ const (
 	eventUpdateShotScore uint8 = 16
 	importShooter        uint8 = 17
 	mapResults           uint8 = 18
+	clubMoundEdit        uint8 = 19
 	pageError            uint8 = 255
 )
 
@@ -236,6 +237,14 @@ func getForm(id uint8) []field {
 		}}
 	case 18: //Map Clubs
 		return []field{{
+			name: "C", v8: isValidRegex, regex: regexID,
+		}}
+	case 19: //Edit Shooting Mound
+		return []field{{
+			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+		}, {
+			name: "I", max: 65535, step: 1, v8: isValidUint,
+		}, {
 			name: "C", v8: isValidRegex, regex: regexID,
 		}}
 	}
