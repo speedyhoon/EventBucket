@@ -10,12 +10,12 @@
 		<td></td>
 		<td>
 			<form method=post action=/12 id=editShooter>
-				<input name=f required placeholder="First name" accesskey=d maxlength=64 autocomplete=off>
-				<input name=s required placeholder=Surname maxlength=64 autocomplete=off>
+				<input name=f required placeholder="First name" accesskey=d maxlength=64>
+				<input name=s required placeholder=Surname maxlength=64>
 			</form>
 		</td>
 		<td>
-			<input type=search name=C required maxlength=64 autocomplete=off form=editShooter list=C>
+			<input type=search name=C required maxlength=64 form=editShooter list=C>
 		</td>
 		<td>
 			<select name=g multiple required size={{len .Grades}} form=editShooter>

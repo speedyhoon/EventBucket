@@ -1,6 +1,10 @@
 'use strict';
-function stuff(row){
-	row = row.parentElement;
+var editShooters = document.querySelectorAll('#editShooters tbody tr td:last-of-type'), qty = editShooters.length;
+while(qty--){
+	editShooters[qty].onclick = stuff;
+}
+function stuff(editCell){
+	var row = editCell.target.parentElement;
 	var tds = row.children, t = document.importNode(document.querySelector('template').content, true), shooterID = '_' + tds[0].textContent;
 	t.querySelector('form').id = shooterID;
 	t.querySelector('[name=s]').value = row.children[1].querySelector('span').textContent;

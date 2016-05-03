@@ -39,7 +39,7 @@ func totalScores(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 		Menu:    urlEvents,
 		MenuID:  event.ID,
 		Heading: event.Name,
-		JS:      "totalScores",
+		JS:      []string{"totalScores"},
 		Error:   err,
 		Data: map[string]interface{}{
 			"Range":   currentRange,

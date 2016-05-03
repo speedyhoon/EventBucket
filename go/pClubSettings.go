@@ -39,6 +39,7 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 		MenuID:  club.ID,
 		Heading: club.Name,
 		Error:   forms[2].Error,
+		JS:      []string{"clubSettings"},
 		Data: map[string]interface{}{
 			"Club":        club,
 			"ClubDetails": forms[0],
@@ -49,4 +50,17 @@ func clubSettings(w http.ResponseWriter, r *http.Request, clubID string) {
 
 func trimFloat(num float32) string {
 	return strings.TrimRight(strings.TrimRight(fmt.Sprintf("%.6f", num), "0"), ".")
+}
+
+func editClubMound(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+	clubID := submittedForm.Fields[2].Value
+	err := updateDocument(tblClub, clubID, &Mound{
+		Name: submittedForm.Fields[0].Value,
+		ID:   submittedForm.Fields[1].valueUint,
+	}, &Club{}, editMound)
+	if err != nil {
+		formError(w, submittedForm, redirect, err)
+		return
+	}
+	http.Redirect(w, r, urlClubSettings+clubID, http.StatusSeeOther)
 }
