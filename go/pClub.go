@@ -87,14 +87,25 @@ type MapClub struct {
 
 func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	name := submittedForm.Fields[0].Value
+	isDefault := submittedForm.Fields[1].Checked
 	var ID string
 
+	//Check if a club with that name already exists.
 	club, err := getClubByName(name)
 	if err != nil {
-		ID, err = insertClub(Club{Name: name, IsDefault: submittedForm.Fields[1].Checked})
+		ID, err = insertClub(Club{Name: name, IsDefault: isDefault})
 		if err != nil {
 			formError(w, submittedForm, redirect, err)
 			return
+		} else {
+			defaultClub := getDefaultClub()
+			if isDefault && defaultClub.ID != "" {
+				//TODO change this so it is some how atomic & winithin the same transaction.
+				err := updateDocument(tblClub, defaultClub.ID, &Club{IsDefault: false}, &Club{}, updateClubDefault)
+				if err != nil {
+					warn.Println(err)
+				}
+			}
 		}
 	} else {
 		//Use a generic pageError form to pass the error message to the Club Settings page.
