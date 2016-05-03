@@ -166,7 +166,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "s", maxLen: 64, v8: isValidStr,
 		}, {
-			name: "C", maxLen: 64, v8: isValidStr, manyRequired: []int{0, 1, 2}, manyRequiredQty: 1,
+			name: "C", maxLen: 64, v8: isValidStr,
 		}}
 	case 11: //New Shooter
 		return []field{{
@@ -200,7 +200,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "s", maxLen: 64, v8: isValidStr,
 		}, {
-			name: "C", maxLen: 64, v8: isValidStr, manyRequired: []int{0, 1, 2}, manyRequiredQty: 1,
+			name: "C", maxLen: 64, v8: isValidStr,
 		}}
 	case 14: //Total Scores
 		return []field{{
