@@ -31,7 +31,8 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 	}
 	forms[1].Fields[1].Value = eventID
 
-	forms[2].Fields[1].Options = dataListRanges(event.Ranges)
+	listRanges := dataListRanges(event.Ranges)
+	forms[2].Fields[1].Options = listRanges
 	forms[2].Fields[2].Value = eventID
 
 	templater(w, page{
@@ -39,9 +40,9 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 		Menu:    urlEvents,
 		MenuID:  eventID,
 		Heading: event.Name,
+		JS:      []string{"eventRanges", "main"},
 		Data: map[string]interface{}{
-			"Closed":        event.Closed,
-			"Ranges":        event.Ranges,
+			"Ranges":        listRanges,
 			"Event":         event,
 			"EventDetails":  forms[0],
 			"AddRange":      forms[1],

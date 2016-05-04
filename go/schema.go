@@ -67,8 +67,6 @@ type Range struct {
 	Order  int    `json:"o,omitempty"`
 	Status uint8  `json:"u,omitempty"` //ENUM change to 1 when the first shooter has recorded their first shot change to 2 when the range is finished. http://stackoverflow.com/questions/14426366/what-is-an-idiomatic-way-of-representing-enums-in-golang
 	//Class      map[string]RangeProperty `json:"omitempty,inline"` //TODO possibly change it to optional grades per range in future
-	//ScoreBoard bool                     `json:"s,omitempty"`
-	//Hidden     bool                     `json:"h,omitempty"`
 }
 
 //StrID returns Range.ID as a string instead of an unsigned integer

@@ -40,7 +40,7 @@ func init() {
 
 	//Command line flags
 	flag.StringVar(&dbPath, "dbpath", filepath.Join(os.Getenv("ProgramData"), `EventBucket`), "Directory for datafiles.")
-	flag.BoolVar(&debug, "debug", false, "Turn on debugging and turn off HTML file caching.")
+	flag.BoolVar(&debug, "debug", false, "Turn on debugging and turn off HTML file caching & club maps.")
 	gradesFilePath := flag.String("grades", "", "Load grade settings from a JSON file. If the file doesn't exist, EventBucket will try to create it & exit")
 	port := flag.Uint("port", 80, "Assign a differnet port number for the HTTP server. Range: 1 through 65535. Some port numbers may already be in use on this system.")
 	flag.Parse()

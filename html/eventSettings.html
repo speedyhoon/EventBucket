@@ -1,6 +1,6 @@
 {{define "page"}}
 	{{template "EventDetails" .EventDetails}}
-	{{if .Closed}}
+	{{if .Event.Closed}}
 		<samp>Event is closed, no changes can be made.</samp>
 	{{else}}
 		{{template "AddRange" .AddRange}}
@@ -13,15 +13,17 @@
 			{{template "AddAggregateRange" .AddAgg}}
 		{{end}}
 	{{end}}
-	{{with .Ranges}}
+	{{with .Event.Ranges}}
 		<p>Total Ranges: {{len .}}
-		<table>
+		{{if not $.Event.Closed}}
+		<table id=editRanges>
+		{{else}}<table>{{end}}
 			<thead>
 				<th class=asc>ID
 				<th>Range
 				<th>Aggs
 				<th>Locked
-				{{if not $.Closed}}
+				{{if not $.Event.Closed}}
 					<td>Edit
 				{{end}}
 			</thead>
@@ -29,14 +31,41 @@
 				<tr>
 					<td>{{.ID}}
 					<td>{{.Name}}
-					<td>{{if .IsAgg}}{{.Aggs}}{{end}}
-					<td>{{if not .IsAgg}}{{.Locked}}{{end}}
-					{{if not $.Closed}}
-						<td onclick='console.log("Not implemented yet")'>
+					<td>
+						{{if .IsAgg}}
+							{{range .Aggs}}{{(findRange . $.Event.Ranges).Name}}, {{end}}
+						{{end}}
+					{{if and (not .IsAgg) .Locked}}
+						<td class=tick>
+					{{else}}
+						<td>
+					{{end}}
+					{{if not $.Event.Closed}}
+						<td>
 					{{end}}
 			{{end}}
 		</table>
 	{{else}}
 		<samp>This event has no ranges.</samp>
 	{{end}}
+
+	<template>
+		<td></td>
+		<td>
+			<input required name=n maxlength=64 list=r type=search placeholder="Range name">
+		</td>
+		<td>
+			<select size={{len .Ranges}} required name=R multiple form=editRange>
+				{{template "optionList" .Ranges}}
+			</select>
+		</td>
+		<td>
+			<input name=l type=checkbox form=editRange>
+		</td>
+		<td>
+			<form method=post action=/12 id=editRange>
+				<button name=I>Save</button>
+			</form>
+		</td>
+	</template>
 {{end}}
