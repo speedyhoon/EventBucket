@@ -5,8 +5,10 @@
 	<h2>Map</h2>
 	{{with .Club}}
 		{{if and .Latitude .Longitude}}
-			<div id=map></div>
-			<script defer src=/j/map></script>
+			{{if not $.debug}}
+				<div id=map></div>
+				<script defer src=/j/map></script>
+			{{end}}
 		{{else}}
 			<samp>Club location not listed</samp>
 		{{end}}
