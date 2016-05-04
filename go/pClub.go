@@ -24,7 +24,8 @@ func club(w http.ResponseWriter, r *http.Request, clubID string) {
 		Heading:  clubName,
 		template: 25,
 		Data: map[string]interface{}{
-			"Club": club,
+			"Club":  club,
+			"debug": debug,
 		},
 	})
 }
@@ -41,6 +42,7 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 		Data: map[string]interface{}{
 			"NewClub":   forms[0],
 			"ListClubs": listClubs,
+			"debug":     debug,
 		},
 	})
 }

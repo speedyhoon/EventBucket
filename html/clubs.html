@@ -15,8 +15,10 @@
 					<td class=center><a href=/club-settings/{{.ID}}><img src=/v/edit alt="edit club" height=100%></a>
 				{{end}}
 		</table>
-		<div id=map></div>
-		<script defer src=/j/map></script>
+		{{if not $.debug}}
+			<div id=map></div>
+			<script defer src=/j/map></script>
+		{{end}}
 	{{else}}
 		<p>No Clubs found
 	{{end}}
