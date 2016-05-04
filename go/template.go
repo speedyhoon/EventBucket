@@ -153,6 +153,14 @@ var (
 			return ""
 		},
 		"ordinal": ordinal,
+		"findRange": func(rangeID uint, ranges []Range) Range {
+			for _, r := range ranges {
+				if rangeID == r.ID {
+					return r
+				}
+			}
+			return Range{}
+		},
 	}
 )
 
