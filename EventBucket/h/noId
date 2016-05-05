@@ -1,7 +1,1 @@
-{{define "page"}}
-	<h1>{{.PageName}}</h1>
-	Whoops, couldn't find a{{if eq "event" .PageType}}n{{end}} {{.PageType}} with that {{.ParameterType}}.
-	<ul>
-		<li>{{.List}}</li>
-	</ul>
-{{end}}
+{{define "page"}}<h1>{{.PageName}}</h1>Whoops, couldn't find a{{if eq "event" .PageType}}n{{end}} {{.PageType}} with that {{.ParameterType}}.<ul><li>{{.List}}</li></ul>{{end}}

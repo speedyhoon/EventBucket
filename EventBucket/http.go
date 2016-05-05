@@ -7,15 +7,16 @@ import (
 )
 
 const (
+	dirRoot        = "./"
 	contentType    = "Content-Type"
 	cacheControl   = "Cache-Control"
 	expires        = "Expires"
 	cache          = "cache"
+	maps           = "default-src 'none'; style-src 'self'; script-src 'self' maps.googleapis.com; connect-src 'self'; img-src 'self' data: maps.googleapis.com maps.gstatic.com"
 	nocache        = "nocache"
-	gzip           = "gzip"
+	cGzip          = "gzip"
 	acceptEncoding = "Accept-Encoding"
-
-	get = "GET"
+	csp            = "Content-Security-Policy"
 )
 
 func serveFile(fileName string) {
@@ -24,21 +25,12 @@ func serveFile(fileName string) {
 		// Unfortunately uncompressed responses may still be required even though all modern browsers support gzip
 		//webmasters.stackexchange.com/questions/22217/which-browsers-handle-content-encoding-gzip-and-which-of-them-has-any-special
 		//www.stevesouders.com/blog/2009/11/11/whos-not-getting-gzip/
-		//BUG gzip serving isn't working
-		/*if strings.Contains(r.Header.Get(acceptEncoding), gzip) {
-			headers(w, []string{cache, gzip})
-			warn.Println("Gzipper", dirGzip+fileName)
-			http.ServeFile(w, r, dirGzip+fileName)
-		} else {*/
-		headers(w, []string{cache})
-		//		warn.Println("no Gzip", dirRoot+fileName)
+		headers(w, cache)
 		http.ServeFile(w, r, dirRoot+fileName)
-		//		warn.Print("The request didn't contain gzip")
-		//		}
 	})
 }
 
-func serveDir(contentType string, allowGzip bool) {
+func serveDir(contentType, gzipDir string) {
 	http.Handle(contentType,
 		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			//If url is a directory return a 404 to prevent displaying a directory listing.
@@ -46,42 +38,36 @@ func serveDir(contentType string, allowGzip bool) {
 				http.NotFound(w, r)
 				return
 			}
-			if allowGzip && strings.Contains(r.Header.Get(acceptEncoding), gzip) {
-				headers(w, []string{contentType, gzip, cache})
-				http.StripPrefix(contentType, http.FileServer(http.Dir(dirGzip))).ServeHTTP(w, r)
-			} else {
-				headers(w, []string{contentType, cache})
-				http.FileServer(http.Dir(dirRoot)).ServeHTTP(w, r)
-				//				warn.Print("The request didn't contain gzip")
+			headers(w, contentType, cache)
+			if gzipDir != "" && strings.Contains(r.Header.Get(acceptEncoding), cGzip) {
+				headers(w, cGzip)
+				http.StripPrefix(contentType, http.FileServer(http.Dir(gzipDir))).ServeHTTP(w, r)
+				return
 			}
+			http.FileServer(http.Dir(dirRoot)).ServeHTTP(w, r)
 		}))
 }
 
 var headerOptions = map[string][2]string{
-	gzip:   {"Content-Encoding", "gzip"},
+	cGzip:  {"Content-Encoding", "gzip"},
 	"html": {contentType, "text/html; charset=utf-8"},
 	dirCSS: {contentType, "text/css; charset=utf-8"},
+	dirGIF: {contentType, "image/gif"},
 	dirJS:  {contentType, "text/javascript"},
 	dirPNG: {contentType, "image/png"},
-	dirGIF: {contentType, "image/gif"},
-	//dirSVG:    {contentType, "image/svg+xml"},
+	dirSVG: {contentType, "image/svg+xml"},
 	//dirWOF2:   {contentType, "application/font-woff2"},
-	//dirJPEG:   {contentType, "image/jpeg"},
 }
 
 //security add Access-Control-Allow-Origin //net.tutsplus.com/tutorials/client-side-security-best-practices/
-func headers(w http.ResponseWriter, setHeaders []string) {
-	//TODO remove google references by iframing content
-	//	w.Header().Set("Content-Security-Policy", "default-src 'none'; script-src 'self' 'unsafe-inline' maps.googleapis.com; style-src 'self'; img-src 'self' maps.googleapis.com maps.gstatic.com; frame-src maps.google.com www.google.com") //"img-src 'self' data:; connect-src 'self'; font-src 'self'"
-	w.Header().Set("Content-Security-Policy", "default-src 'none'; script-src 'self' 'unsafe-inline' maps.googleapis.com; style-src 'self'; connect-src 'self'; img-src 'self' maps.googleapis.com maps.gstatic.com; frame-src maps.google.com www.google.com") //"img-src 'self' data:; connect-src 'self'; font-src 'self'"
-
+func headers(w http.ResponseWriter, setHeaders ...string) {
 	//The page cannot be displayed in a frame, regardless of the site attempting to do so. //developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options
 	w.Header().Set("X-Frame-Options", "DENY")
 	for _, lookup := range setHeaders {
 		switch lookup {
 		case cache:
 			w.Header().Set(cacheControl, "public")
-			w.Header().Set(expires, expiresTime)
+			w.Header().Set(expires, cacheExpires)
 			w.Header().Set("Vary", acceptEncoding)
 			break
 		case nocache:
@@ -90,7 +76,10 @@ func headers(w http.ResponseWriter, setHeaders []string) {
 			w.Header().Set("Pragma", "no-cache")
 			break
 		default:
-			w.Header().Set(headerOptions[lookup][0], headerOptions[lookup][1])
+			//TODO add comment
+			if lookup == cGzip || headerOptions[lookup][0] == "Content-Type" {
+				w.Header().Set(headerOptions[lookup][0], headerOptions[lookup][1])
+			}
 		}
 	}
 }
@@ -120,7 +109,7 @@ func getRedirectPermanent(url string, pageFunc func(http.ResponseWriter, *http.R
 	http.Handle(url+"/", http.RedirectHandler(url, http.StatusMovedPermanently))
 }
 
-/*TODO if no parameters provided, keep user on the same page but didplay when they need to provide in order for the page to work.
+/*TODO if no parameters provided, keep user on the same page but display when they need to provide in order for the page to work.
 not doing this may frustrate some users who want to get to the club settings page but can't remember the club id.
 then display a list of clubs and status code 404
 */
@@ -159,7 +148,7 @@ func errorHandler(w http.ResponseWriter, r *http.Request, status int, errorType 
 
 		//check if the request matches any of the pages that don't require parameters
 		if strings.Count(lowerURL, "/") >= 2 {
-			for _, page := range []string{urlAbout, urlArchive, urlClubs /*urlEvent,*/, urlEvents, urlLicence, urlShooters} {
+			for _, page := range []string{urlAbout, urlArchive, urlClubs /*urlEvent,*/, urlLicence, urlShooters} {
 				if strings.HasPrefix(lowerURL, page) {
 					//redirect to page without parameters
 					http.Redirect(w, r, page, http.StatusSeeOther)
@@ -208,7 +197,7 @@ func whoops(w http.ResponseWriter, r *http.Request, url string) {
 }
 
 func formError(w http.ResponseWriter, submittedForm form, redirect func(), err error) {
-	submittedForm.Error = err.Error()
+	submittedForm.Error = err
 	setSession(w, submittedForm)
 	redirect()
 }

@@ -1,84 +1,109 @@
 package main
 
-import "regexp"
+import (
+	"fmt"
+	"regexp"
+	"time"
+)
 
-// Club is exported
+//Club is exported
 type Club struct {
 	ID        string  `json:"I"`
 	Name      string  `json:"n"`
-	IsDefault bool    `json:"b,omitempty"`
+	IsDefault bool    `json:"d,omitempty"`
 	Mounds    []Mound `json:"M,omitempty"`
 	Latitude  float32 `json:"x,omitempty"`
 	Longitude float32 `json:"y,omitempty"`
 	URL       string  `json:"u,omitempty"`
 	Address   string  `json:"a,omitempty"`
-	Town      string  `json:"w,omitempty"`
+	Town      string  `json:"t,omitempty"`
 	Postcode  string  `json:"p,omitempty"`
 	AutoInc   AutoInc `json:"A,omitempty"`
 }
 
-// AutoInc is a auto increment counter
+//AutoInc is a auto increment counter
 type AutoInc struct {
-	Mound   uint64 `json:"M,omitempty"`
-	Event   uint64 `json:"E,omitempty"`
-	Club    uint64 `json:"C,omitempty"`
-	Range   uint64 `json:"R,omitempty"`
-	Shooter uint64 `json:"S,omitempty"`
+	Mound   uint `json:"M,omitempty"`
+	Event   uint `json:"E,omitempty"`
+	Club    uint `json:"C,omitempty"`
+	Range   uint `json:"R,omitempty"`
+	Shooter uint `json:"S,omitempty"`
 }
 
-// Mound is exported
+//Mound could in future contain additional details like distance
 type Mound struct {
-	//	ID       string `json:"I"`
-	Distance uint64 `json:"e,omitempty"`
-	Unit     string `json:"z,omitempty"`
+	Name string `json:"n,omitempty"`
+	ID   uint   `json:"-"`
 }
 
-// Event is exported
+//Event is exported
 type Event struct {
 	ID       string         `json:"I"`
 	Name     string         `json:"n"`
-	Club     string         `json:"C"`
-	Date     string         `json:"d"`
-	Time     string         `json:"t"`
+	ClubID   string         `json:"C,omitempty"`
+	Club     string         `json:"c,omitempty"`
+	Date     string         `json:"d,omitempty"`
+	Time     string         `json:"t,omitempty"`
 	Ranges   []Range        `json:"R,omitempty"`
-	AutoInc  AutoInc        `json:"A"`
+	AutoInc  AutoInc        `json:"A,omitempty"`
 	Shooters []EventShooter `json:"S,omitempty"`
-	Closed   bool           `json:"schemaClosed,omitempty"`
-	/*Grades       []uint         `json:"schemaGrades,omitempty"`
-	SortScoreboard string         `json:"o,omitempty"`
+	Closed   bool           `json:"z,omitempty"`
+	AverTwin bool           `json:"a,omitempty"`
+	Grades   []uint         `json:"g,omitempty"`
+	/*SortScoreboard string         `json:"o,omitempty"`
 	IsPrizeMeet    bool           `json:"p,omitempty"`
 	TeamCats       map[string]TeamCats     `json:"A,omitempty"`
 	Teams          map[string]Team         `json:"T,omitempty"`
 	*/
 }
 
-// Range is exported
+//Range is exported
 type Range struct {
-	ID     uint64 `json:"I"`
+	ID     uint   `json:"I"`
 	Name   string `json:"n"`
-	Aggs   string `json:"schemaAggregate,omitempty"`
-	Locked bool   `json:"k,omitempty"`
-	IsAgg  bool   `json:"schemaIsAgg,omitempty"` //Prevents aggs switching to normal ranges
-	//	ScoreBoard bool                     `json:"s,omitempty"`
-	//	Hidden     bool                     `json:"h,omitempty"`
-	//	Order      int                      `json:"s,omitempty"`
-	//	Status     int                      `json:"t,omitempty"`      //ENUM change to 1 when the first shooter has recorded their first shot change to 2 when the range is finished. http://stackoverflow.com/questions/14426366/what-is-an-idiomatic-way-of-representing-enums-in-golang
-	//	Class      map[string]RangeProperty `json:"omitempty,inline"` //TODO possibly change it to optional grades per range in future
+	Aggs   []uint `json:"a,omitempty"`
+	Locked bool   `json:"l,omitempty"`
+	IsAgg  bool   `json:"i,omitempty"` //Prevents aggs switching to normal ranges
+	Order  int    `json:"o,omitempty"`
+	Status uint8  `json:"u,omitempty"` //ENUM change to 1 when the first shooter has recorded their first shot change to 2 when the range is finished. http://stackoverflow.com/questions/14426366/what-is-an-idiomatic-way-of-representing-enums-in-golang
+	//Class      map[string]RangeProperty `json:"omitempty,inline"` //TODO possibly change it to optional grades per range in future
 }
 
-// EventShooter is exported
+//StrID returns Range.ID as a string instead of an unsigned integer
+func (r Range) StrID() string {
+	return fmt.Sprintf("%v", r.ID)
+}
+
+//Score is exported
+type Score struct {
+	//TODO the schema should change so that it can use unsigned  bit numbers instead
+	Total      uint   `json:"t,omitempty"`
+	Centers    uint   `json:"c,omitempty"`
+	Centers2   uint   `json:"n,omitempty"`
+	Shots      string `json:"s,omitempty"` //Don't include this in the scoreboard struct when using a different []EventShooter
+	CountBack  string `json:"v,omitempty"`
+	CountBack2 string `json:"x,omitempty"`
+	ShootOff   uint   `json:"h,omitempty"`
+	//position  int    `json:"p,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
+	//warning   uint8    `json:"w,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
+	//Ordinal   string `json:"o,omitempty"`
+	//Info      string `json:"i,omitempty"`
+}
+
+//EventShooter is exported
 type EventShooter struct {
-	ID        uint64 `json:"I"`
-	FirstName string `json:"f"` //TODO change these to point to shooters in the other shooter tables
-	Surname   string `json:"s"`
-	Club      string `json:"C"`
-	Grade     uint64 `json:"g"`
-	Hidden    bool   `json:"h,omitempty"`
-	AgeGroup  uint64 `json:"r,omitempty"`
-	//	Scores    map[string]Score `json:"omitempty,inline"` //S is not used!
-	LinkedID *int `json:"schemaLinkedID,omitempty"` //For duplicating shooters that are in different classes with the same score
-	SID      int  `json:"schemaSID,omitempty"`
-	Disabled bool `json:"schemaDisabled,omitempty"`
+	ID        uint             `json:"I"`
+	FirstName string           `json:"f"` //TODO change these to point to shooters in the other shooter tables
+	Surname   string           `json:"s"`
+	Club      string           `json:"C"`
+	Grade     uint             `json:"g"`
+	Hidden    bool             `json:"h,omitempty"`
+	AgeGroup  uint             `json:"r,omitempty"`
+	Scores    map[string]Score `json:"S,omitempty"` //Scores   []Score `json:"schemaScores,omitempty"`   //S is not used!
+	LinkedID  uint             `json:"l,omitempty"` //For duplicating shooters that are in different classes with the same score
+	SID       int              `json:"M,omitempty"`
+	Disabled  bool             `json:"d,omitempty"`
+	Ladies    bool             `json:"x,omitempty"`
 	//SCOREBOARD
 	position string //DON'T SAVE THIS TO DB! used for scoreboard only.
 	warning  uint8  //DON'T SAVE THIS TO DB! used for scoreboard only.
@@ -89,43 +114,61 @@ type EventShooter struct {
 	//		4 = highest posible score
 
 	//START-SHOOTING & TOTAL-SCORES
-	gradeSeparator bool //DON'T SAVE THIS TO DB! used for start-shooting and total-scores only.
+	GradeSeparator bool //DON'T SAVE THIS TO DB! used for start-shooting and total-scores only.
+	ClassSeparator bool //DON'T SAVE THIS TO DB! used for start-shooting and total-scores only.
 }
 
-// Shooter is exported
+//Shooter is exported
 type Shooter struct {
-	ID        string `json:"I"`
-	SID       int    `json:"schemaSID,omitempty"`
-	NraaID    int    `json:"schemaNraaID,omitempty"`
-	Surname   string `json:"s,omitempty"`
-	FirstName string `json:"f,omitempty"`
-	NickName  string `json:"schemaNickName,omitempty"`
-	Club      string `json:"C,omitempty"`
-	//Skill map[string]Skill	//Grading set by the VRA for each class
-	Address string `json:"a,omitempty"`
-	Email   string `json:"schemaEmail,omitempty"`
-	//Shooter details 0=not modified, 1=updated, 2=merged, 3=deleted
-	Status int `json:"schemaStatus,omitempty"`
+	ID        string         `json:"I"`
+	SID       uint           `json:"M,omitempty"`
+	NID       uint           `json:"N,omitempty"` //NRAA sequential integer id.
+	Surname   string         `json:"s,omitempty"`
+	FirstName string         `json:"f,omitempty"`
+	NickName  string         `json:"n,omitempty"`
+	Club      string         `json:"C,omitempty"`
+	Skill     map[uint]Skill `json:"K,omitempty"` //Grading set by the VRA for each class
+	Address   string         `json:"a,omitempty"`
+	Email     string         `json:"e,omitempty"`
+	Status    int            `json:"v,omitempty"` //Shooter details 0=not modified, 1=updated, 2=merged, 3=deleted
 	//If shooter details are merged with another existing shooter then this is the other NRAA_SID it was merged with
 	//When merging set one record to merged, the other to deleted.
 	//Both records must set MergedSID to the other corresponding shooter SID
-	MergedSID int `json:"m,omitempty"`
+	MergedSID int       `json:"m,omitempty"`
+	Modified  time.Time `json:"o,omitempty"`
+	AgeGroup  uint      `json:"r,omitempty"`
+	Ladies    bool      `json:"l,omitempty"`
+	Grade     []uint    `json:"g,omitempty"` //TODO change to a slice in future
+}
 
-	AgeGroup uint64 `json:"r,omitempty"`
-	Grade    uint64 `json:"g"`
+//Skill is exported
+type Skill struct {
+	Threshold string  `json:"t,omitempty"`
+	AvgScore  float64 `json:"a,omitempty"`
+	ShootQty  int     `json:"s,omitempty"`
+}
+
+type shooterScore struct {
+	rangeID string
+	id      uint
+	score   Score
 }
 
 type field struct {
 	name, Error, Value string
-	Required           bool
+	Required, Disable  bool
 	Options            []option
-	maxLen, minLen     uint
+	maxLen, minLen     int
 	min, max, step     float32
 	AutoFocus          bool
 	size               uint8
 	Checked            bool //only used by checkboxes
 	regex              *regexp.Regexp
-	internalValue      interface{}
-	v8                 func([]string, field) (interface{}, string)
+	v8                 func(*field, ...string)
 	defValue           func() []string
+	valueUint          uint
+	valueUintSlice     []uint
+	valueFloat32       float32
+	manyRequired       []int
+	manyRequiredQty    uint
 }
