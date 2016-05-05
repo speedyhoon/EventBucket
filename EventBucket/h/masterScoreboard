@@ -1,0 +1,1 @@
+{{define "master"}}<!DOCTYPE html><link rel=stylesheet href=/c/scoreboard><title>EventBucket{{with .Page.Title}} - {{.}}{{end}}</title>{{template "page" .Page.Data}}{{end}}
