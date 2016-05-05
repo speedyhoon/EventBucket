@@ -1,3 +1,1 @@
-{{define "page"}}
-id={{.Event.ID}}
-{{end}}
+{{define "page"}}<h1>{{.Event.Name}}</h1><table><tr><th>Pos<th>Shooter<th>Club<th>Age Group{{range .Ranges}}{{if eq .ID $.SortByRange}}<th class=a>{{.Name}}{{else}}<th>{{.Name}}{{end}}{{end}}{{range.Event.Shooters}}{{if.GradeSeparator}}<tr><td colspan={{$.Colspan}} class=c>{{(grade .Grade).Name}}{{end}}<tr><td><td class=tc>{{.FirstName}} {{.Surname}}<td>{{.Club}}<td>{{ageGroup .AgeGroup}}{{$shooter := .}}{{range $.Ranges}}<td>{{with index $shooter.Scores .StrID}}{{if.Total}}{{.Total}}{{if.Centers}}<sup>{{.Centers}}{{end}}{{end}}{{end}}{{end}}{{end}}<tr><td colspan={{.Colspan}} class=p><a href=//eventbucket.com.au>EventBucket.com.au</a> {{with .Legend}}Legend: {{range .}}<label class={{.Class}}>{{.Name}}</label>{{end}}{{end}}</table>{{end}}

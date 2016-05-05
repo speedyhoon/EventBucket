@@ -1,12 +1,1 @@
-{{define "page"}}
-	{{template "NewClub" .NewClub}}
-	{{with .ListClubs}}
-		<ul>
-			{{range .}}
-				<li><a href=/club/{{.ID}}>{{.Name}}</a>
-			{{end}}
-		</ul>
-	{{else}}
-		<p>No Clubs found</p>
-	{{end}}
-{{end}}
+{{define "page"}}{{template "NewClub" .NewClub}}{{with .ListClubs}}<table><thead><tr><th>Club Name<td>Default Club<td>Edit</thead>{{range .}}<tr><td><a href=/club/{{.ID}}>{{.Name}}</a>{{if.IsDefault}}<td class=m><img src=/v/tick alt="Default Club" height=100%>{{else}}<td>{{end}}<td class=m><a href=/club-settings/{{.ID}}><img src=/v/edit alt="edit club" height=100%></a>{{end}}</table>{{if not $.debug}}<div id=map></div><script defer src=/j/map></script>{{end}}{{else}}<p>No Clubs found{{end}}{{end}}

@@ -1,13 +1,1 @@
-{{define "page"}}
-	{{with .ListEvents}}
-		<ul>
-			{{range .}}
-				{{if .Closed}}
-					<li><a href=/entries/{{.ID}}>{{.Name}}</a>
-				{{end}}
-			{{end}}
-		</ul>
-	{{else}}
-		<samp>No Events archived</samp>
-	{{end}}
-{{end}}
+{{define "page"}}{{with .ListEvents}}<ul>{{range .}}{{if .Closed}}<li><a href=/entries/{{.ID}}>{{.Name}}</a>{{end}}{{end}}</ul>{{else}}<samp>No events archived</samp>{{end}}{{end}}

@@ -6,31 +6,49 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/boltdb/bolt"
 )
 
 var (
-	//Databse collection names
+	//Databse bucket (table) names
 	tblClub    = []byte("C")
 	tblEvent   = []byte("E")
 	tblShooter = []byte("S")
 )
 
-func getDocument(collection []byte, ID string, result interface{}) error {
+const (
+	eNoBucket   = "Bucket %q not found!"
+	eNoDocument = "'%v' document is empty / doesn't exist %q"
+)
+
+func makeBuckets() {
+	db.Update(func(tx *bolt.Tx) error {
+		for index, bucketName := range [][]byte{tblClub, tblEvent, tblShooter} {
+			_, err := tx.CreateBucketIfNotExists(bucketName)
+			if err != nil {
+				warn.Printf("Unable to create table %v in database", []string{"club", "event", "shooter"}[index])
+			}
+		}
+		return nil
+	})
+}
+
+func getDocument(bucketName []byte, ID string, result interface{}) error {
 	byteID, err := b36toBy(ID)
 	if err != nil {
 		return err
 	}
 	err = db.View(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(collection)
+		bucket := tx.Bucket(bucketName)
 		if bucket == nil {
-			return fmt.Errorf("Bucket %q not found!", collection)
+			return fmt.Errorf(eNoBucket, bucketName)
 		}
 
 		document := bucket.Get(byteID)
 		if len(document) == 0 {
-			return fmt.Errorf("'%v' document is empty / doesn't exist %q", ID, document)
+			return fmt.Errorf(eNoDocument, ID, document)
 		}
 		err = json.Unmarshal(document, &result)
 		if err != nil {
@@ -57,7 +75,10 @@ func getShooter(ID string) (Shooter, error) {
 }
 
 func nextID(bucket *bolt.Bucket) (string, []byte) {
-	num, _ := bucket.NextSequence()
+	num, err := bucket.NextSequence()
+	if err != nil {
+		warn.Println("Failed to get the next sequence number.", err)
+	}
 	b := make([]byte, 8)
 	binary.BigEndian.PutUint64(b, num)
 	return strconv.FormatUint(num, 36), b
@@ -88,6 +109,10 @@ func insertEvent(event Event) (string, error) {
 }
 
 func insertClub(club Club) (string, error) {
+	if !club.IsDefault && !hasDefaultClub() {
+		club.IsDefault = true
+	}
+
 	var b36 string
 	err := db.Update(func(tx *bolt.Tx) error {
 		bucket, err := tx.CreateBucketIfNotExists(tblClub)
@@ -133,122 +158,127 @@ func insertShooter(shooter Shooter) (string, error) {
 	return b36, err
 }
 
-func updateShooter(shooter Shooter, eventID string) error {
-	var sID /*, eID*/ []byte
-	var err error
-	var buf []byte
-	sID, err = b36toBy(shooter.ID)
+func updateDocument(bucketName []byte, b36ID string, update interface{}, decode interface{}, function func(interface{}, interface{}) interface{}) error {
+	ID, err := b36toBy(b36ID)
 	if err != nil {
 		return err
 	}
-	// Marshal user data into bytes.
-	buf, err = json.Marshal(shooter)
-	if err != nil {
-		return err
-	}
-	/*if eventID != "" {
-		eID, err = b36toBy(eventID)
+	err = db.Update(func(tx *bolt.Tx) error {
+		var bucket *bolt.Bucket
+		bucket, err = tx.CreateBucketIfNotExists(bucketName)
 		if err != nil {
 			return err
 		}
-	}*/
 
-	err = db.Update(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(tblShooter)
-		if bucket == nil {
-			//Shooter Bucket isn't created yet
-			return nil
-		}
-		//TODO This will destroy all the shooters scores. needs a fix!
-		return bucket.Put(sID, buf)
-	})
-	return err
-}
-
-func updateDoc(collectionName []byte, ID string, document interface{}) error {
-	/*err := conn.C(collectionName).UpdateId(ID, document)
-	if err != nil {
-		warn.Println(err)
-	}
-	return err*/
-	return nil
-}
-
-func updateEventDetails(update Event) error {
-	eID, err := b36toBy(update.ID)
-	if err != nil {
-		return err
-	}
-	err = db.Update(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(tblEvent)
-		if bucket == nil {
-			return fmt.Errorf("Bucket %q not found!", tblEvent)
-		}
-
-		document := bucket.Get(eID)
+		document := bucket.Get(ID)
 		if len(document) == 0 {
-			return fmt.Errorf("'%v' document is empty / doesn't exist %q", update.ID, document)
+			return fmt.Errorf(eNoDocument, ID, document)
 		}
-		var event Event
-		err = json.Unmarshal(document, &event)
-		if err != nil {
-			return fmt.Errorf("'%v' Query event unmarshaling failed: \n%q\n%#v\n", update.ID, document, err)
-		}
-		//Manually set each one otherwise it would override the existing event and its details (Ranges, Shooters & their scores) since the form doesn't already have that info.
-		event.Name = update.Name
-		event.Club = update.Club
-		event.Date = update.Date
-		event.Time = update.Time
-		event.Closed = update.Closed
 
-		buf, err := json.Marshal(event)
+		err = json.Unmarshal(document, &decode)
+		if err != nil {
+			return fmt.Errorf("'%v' Query club unmarshaling failed: \n%q\n%#v\n", ID, document, err)
+		}
+
+		document, err = json.Marshal(function(decode, update))
 		if err != nil {
 			return err
 		}
 
-		return bucket.Put(eID, buf)
+		return bucket.Put(ID, document)
 	})
 	return err
 }
 
-func eventAddRange(eventID string, newRange Range) error {
-	eID, err := b36toBy(eventID)
-	if err != nil {
-		return err
+func updateShooterDetails(decode interface{}, contents interface{}) interface{} {
+	shooter := decode.(*Shooter)
+	update := *contents.(*Shooter)
+	shooter.FirstName = update.FirstName
+	shooter.Surname = update.Surname
+	shooter.Club = update.Club
+	shooter.Grade = update.Grade
+	shooter.AgeGroup = update.AgeGroup
+	return shooter
+}
+
+func updateClubDetails(decode interface{}, contents interface{}) interface{} {
+	club := decode.(*Club)
+	update := contents.(*Club)
+	//Manually set each one otherwise it would override the existing club and its details (Ranges, Shooters & their scores) since the form doesn't already have that info.
+	club.Name = update.Name
+	club.Address = update.Address
+	club.Town = update.Town
+	club.Postcode = update.Postcode
+	club.Latitude = update.Latitude
+	club.Longitude = update.Longitude
+	club.IsDefault = update.IsDefault
+	club.URL = update.URL
+	return club
+}
+
+func updateClubDefault(decode interface{}, contents interface{}) interface{} {
+	club := decode.(*Club)
+	club.IsDefault = contents.(*Club).IsDefault
+	return club
+}
+
+func insertClubMound(decode interface{}, contents interface{}) interface{} {
+	club := decode.(*Club)
+	club.Mounds = append(club.Mounds, *contents.(*Mound))
+	return club
+}
+
+func updateEventDetails(decode interface{}, contents interface{}) interface{} {
+	event := decode.(*Event)
+	update := contents.(*Event)
+	//Manually set each one otherwise it would override the existing event and its details (Ranges, Shooters & their scores) since the form doesn't already have that info.
+	event.Name = update.Name
+	event.Club = update.Club
+	event.Date = update.Date
+	event.Time = update.Time
+	event.Closed = update.Closed
+	event.AverTwin = update.AverTwin
+	return event
+}
+
+func eventAddRange(decode interface{}, contents interface{}) interface{} {
+	event := decode.(*Event)
+	newRange := contents.(*Range)
+	newRange.ID = event.AutoInc.Range
+	event.AutoInc.Range++
+	event.Ranges = append(event.Ranges, *newRange)
+	return event
+}
+
+func eventAddAgg(decode interface{}, contents interface{}) interface{} {
+	event := eventAddRange(decode, contents).(*Event)
+	aggRange := contents.(*Range)
+	rangeID := aggRange.StrID()
+	for sID, shooter := range event.Shooters {
+		if shooter.Scores != nil {
+			event.Shooters[sID].Scores[rangeID] = calcShooterAgg(aggRange.Aggs, shooter.Scores)
+		}
 	}
-	err = db.Update(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(tblEvent)
-		if bucket == nil {
-			return fmt.Errorf("Bucket %q not found!", tblEvent)
-		}
+	return event
+}
 
-		document := bucket.Get(eID)
-		if len(document) == 0 {
-			return fmt.Errorf("'%v' document is empty / doesn't exist %q", eventID, document)
-		}
-		var event Event
-		err = json.Unmarshal(document, &event)
-		if err != nil {
-			return fmt.Errorf("'%v' Query event unmarshaling failed: \n%q\n%#v\n", eventID, document, err)
-		}
-		//Manually set each one otherwise it would override the existing event and its details (Ranges, Shooters & their scores) since the form doesn't already have that info.
-		newRange.ID = event.AutoInc.Range
-		event.Ranges = append(event.Ranges, newRange)
-		event.AutoInc.Range++
+func editMound(decode interface{}, contents interface{}) interface{} {
+	club := decode.(*Club)
+	details := contents.(*Mound)
+	if int(details.ID) < len(club.Mounds) {
+		club.Mounds[details.ID].Name = details.Name
+	}
+	return club
+}
 
-		buf, err := json.Marshal(event)
-		if err != nil {
-			return err
-		}
-
-		return bucket.Put(eID, buf)
-	})
-	return err
+func updateEventGrades(decode interface{}, contents interface{}) interface{} {
+	event := decode.(*Event)
+	event.Grades = *contents.(*[]uint)
+	return event
 }
 
 func getClubs() ([]Club, error) {
 	var clubs []Club
-	var club Club
 	err := db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(tblClub)
 		if b == nil {
@@ -256,6 +286,7 @@ func getClubs() ([]Club, error) {
 			return nil
 		}
 		return b.ForEach(func(_, value []byte) error {
+			var club Club
 			if json.Unmarshal(value, &club) == nil {
 				clubs = append(clubs, club)
 			}
@@ -265,9 +296,30 @@ func getClubs() ([]Club, error) {
 	return clubs, err
 }
 
+func clubsDataList() []option {
+	var clubs []option
+	err := db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(tblClub)
+		if b == nil {
+			//Club Bucket isn't created yet
+			return nil
+		}
+		return b.ForEach(func(_, value []byte) error {
+			var club Club
+			if json.Unmarshal(value, &club) == nil {
+				clubs = append(clubs, option{Value: club.ID, Label: club.Name, Selected: club.IsDefault})
+			}
+			return nil
+		})
+	})
+	if err != nil {
+		warn.Println(err)
+	}
+	return clubs
+}
+
 func getEvents(query func(Event) bool) ([]Event, error) {
 	var events []Event
-	var event Event
 	err := db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(tblEvent)
 		if b == nil {
@@ -275,6 +327,7 @@ func getEvents(query func(Event) bool) ([]Event, error) {
 			return nil
 		}
 		return b.ForEach(func(_, value []byte) error {
+			var event Event
 			if json.Unmarshal(value, &event) == nil && query(event) {
 				events = append(events, event)
 			}
@@ -284,23 +337,26 @@ func getEvents(query func(Event) bool) ([]Event, error) {
 	return events, err
 }
 
-func getShooters() ([]Shooter, error) {
-	var shooters []Shooter
-	var shooter Shooter
+func getCalendarEvents() ([]CalendarEvent, error) {
+	var events []CalendarEvent
 	err := db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(tblShooter)
+		b := tx.Bucket(tblEvent)
 		if b == nil {
-			//Shooter Bucket isn't created yet
+			//Event Bucket isn't created yet
 			return nil
 		}
 		return b.ForEach(func(_, value []byte) error {
-			if json.Unmarshal(value, &shooter) == nil {
-				shooters = append(shooters, shooter)
+			var event CalendarEvent
+			if json.Unmarshal(value, &event) == nil && !event.Closed {
+				if event.Date != "" {
+					event.ISO, _ = time.Parse("2006-01-02", event.Date)
+				}
+				events = append(events, event)
 			}
 			return nil
 		})
 	})
-	return shooters, err
+	return events, err
 }
 
 func hasDefaultClub() bool {
@@ -334,62 +390,74 @@ func getDefaultClub() Club {
 	return Club{}
 }
 
-func eventShooterInsertDB(ID string, shooter EventShooter) error {
-	byteID, err := b36toBy(ID)
-	if err != nil {
-		return err
-	}
-	err = db.Update(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(tblEvent)
-		if bucket == nil {
-			return fmt.Errorf("Bucket %q not found!", tblEvent)
-		}
+func eventShooterInsertDB(decode interface{}, contents interface{}) interface{} {
+	event := decode.(*Event)
+	shooter := *contents.(*EventShooter)
 
-		document := bucket.Get(byteID)
-		if len(document) == 0 {
-			return fmt.Errorf("'%v' document is empty / doesn't exist %q", ID, document)
-		}
-		var event Event
-		err = json.Unmarshal(document, &event)
-		if err != nil {
-			return err
-		}
+	//Assign shooter ID
+	shooter.ID = event.AutoInc.Shooter
+	event.Shooters = append(event.Shooters, shooter)
 
-		//Assign shooter ID
+	//Increment Event Shooter ID
+	event.AutoInc.Shooter++
+
+	//If shooter is Match Reserve, duplicate them in the Match Open category. Used for Victorian Match Rifle Championships.
+	if shooter.Grade == 8 {
 		shooter.ID = event.AutoInc.Shooter
+		shooter.Grade = 7
+		shooter.Hidden = true
 		event.Shooters = append(event.Shooters, shooter)
-
-		//Increment Event Shooter ID
 		event.AutoInc.Shooter++
-
-		//If shooter is Match Reserve, duplicate them in the Match Open category
-		if shooter.Grade == 8 {
-			shooter.ID = event.AutoInc.Shooter
-			shooter.Grade = 7
-			shooter.Hidden = true
-			event.Shooters = append(event.Shooters, shooter)
-			event.AutoInc.Shooter++
-		}
-
-		document, err = json.Marshal(event)
-		if err != nil {
-			return err
-		}
-
-		err = bucket.Put(byteID, document)
-		return err
-	})
-	return err
+	}
+	return event
 }
 
-//Converts base36 string to uint64
-func b36tou(id string) (uint64, error) {
-	return strconv.ParseUint(id, 36, 64)
+func upsertScore(decode interface{}, contents interface{}) interface{} {
+	event := decode.(*Event)
+	shooter := *contents.(*shooterScore)
+
+	if event.Shooters[shooter.id].Scores == nil {
+		event.Shooters[shooter.id].Scores = make(map[string]Score)
+	}
+	event.Shooters[shooter.id].Scores[shooter.rangeID] = shooter.score
+
+	event.Shooters[shooter.id].Scores = calcShooterAggs(event.Ranges, event.Shooters[shooter.id].Scores)
+	return event
+}
+
+func calcShooterAggs(ranges []Range, shooterScores map[string]Score) map[string]Score {
+	for _, r := range ranges {
+		if r.IsAgg {
+			shooterScores[r.StrID()] = calcShooterAgg(r.Aggs, shooterScores)
+		}
+	}
+	return shooterScores
+}
+
+func calcShooterAgg(aggRangeIDs []uint, shooterScores map[string]Score) Score {
+	var total, centers uint
+	var countBack, countBack2 string
+	for _, id := range aggRangeIDs {
+		aggID := fmt.Sprintf("%d", id)
+		score, ok := shooterScores[aggID]
+		if ok {
+			total += score.Total
+			centers += score.Centers
+			countBack = score.CountBack
+			countBack2 = score.CountBack2
+		}
+	}
+	return Score{
+		Total:      total,
+		Centers:    centers,
+		CountBack:  countBack,
+		CountBack2: countBack2,
+	}
 }
 
 //Converts base36 string to binary used for bolt maps
 func b36toBy(id string) ([]byte, error) {
-	num, err := b36tou(id)
+	num, err := strconv.ParseUint(id, 36, 64)
 	if err != nil {
 		return []byte{}, err
 	}
@@ -398,21 +466,51 @@ func b36toBy(id string) ([]byte, error) {
 	return b, nil
 }
 
-func getSearchShooters(firstName, surname, club string) ([]Shooter, error) {
+func getSearchShooters(firstName, surname, club string) ([]Shooter, uint, error) {
 	var shooters []Shooter
-	var shooter Shooter
+	var totalQty uint
+
+	firstName = strings.ToLower(firstName)
+	surname = strings.ToLower(surname)
+	club = strings.ToLower(club)
+
 	err := db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(tblShooter)
 		if b == nil {
-			return fmt.Errorf("Bucket %q not found!", tblShooter)
+			return fmt.Errorf(eNoBucket, tblShooter)
 		}
+		totalQty = uint(tx.Bucket(tblShooter).Stats().KeyN)
 		return b.ForEach(func(_, value []byte) error {
-			//strings.Contains returns true when substr is "" (empty string)
-			if json.Unmarshal(value, &shooter) == nil && strings.Contains(strings.ToLower(shooter.FirstName), strings.ToLower(firstName)) && strings.Contains(strings.ToLower(shooter.Surname), strings.ToLower(surname)) && strings.Contains(strings.ToLower(shooter.Club), strings.ToLower(club)) {
+			var shooter Shooter
+			//strings.Contains returns true when sub-string is "" (empty string)
+			if json.Unmarshal(value, &shooter) == nil && strings.Contains(strings.ToLower(shooter.FirstName), firstName) && strings.Contains(strings.ToLower(shooter.Surname), surname) && strings.Contains(strings.ToLower(shooter.Club), club) {
 				shooters = append(shooters, shooter)
 			}
 			return nil
 		})
 	})
-	return shooters, err
+	return shooters, totalQty, err
+}
+
+func getClubByName(clubName string) (Club, error) {
+	var club Club
+	const success = "Found the club you were looking for"
+
+	err := db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(tblClub)
+		if b == nil {
+			return fmt.Errorf(eNoBucket, tblClub)
+		}
+		return b.ForEach(func(_, value []byte) error {
+			//Case insensitive search
+			if json.Unmarshal(value, &club) == nil && strings.ToLower(club.Name) == strings.ToLower(clubName) {
+				return fmt.Errorf(success)
+			}
+			return nil
+		})
+	})
+	if err != nil && err.Error() == success {
+		return club, nil
+	}
+	return Club{}, fmt.Errorf("Couldn't find club with name %v", clubName)
 }

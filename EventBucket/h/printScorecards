@@ -1,16 +1,1 @@
-{{define "page"}}
-	<table class=printCards>
-		{{range .Ranges}}
-			<tr>
-				<td rowspan=3 class=cp><img class=barcode src=/b/q{{$.EventID}}/{{$.Shooter.ID}}/{{.}} alt={{$.EventID}}/{{$.Shooter.ID}}/{{.ID}}><br>
-					<strong>{{$.EventID}}/{{$.Shooter.ID}}/{{.ID}}</strong>
-				<td>Event ID: {{$.EventID}}<td>{{$.EventName}}
-			<tr>
-				<td>Shooter ID: {{$.Shooter.ID}}<td>{{$.Shooter.FirstName}} {{$.Shooter.Surname}}
-			<tr>
-				<td>Range ID: {{.ID}}<td>{{.Name}}
-		{{else}}
-			<tr><td><samp>No ranges in {{$.Event.Name}} event. Unable generate scorecards</samp>
-		{{end}}
-	</table>
-{{end}}
+{{define "page"}}<table class=t>{{$shooter := index .Event.Shooters .ShooterID}}{{range .Event.Ranges}}<tr>{{$barcode := print $.Event.ID "/" .ID "#" $shooter.ID}}<td rowspan=3 class=n><img class=q src=/b/q{{urlquery $barcode}} alt={{$barcode}}><br><strong><a href=/total-scores-all/{{$barcode}}>{{$barcode}}</a></strong><td>Event ID: {{$.Event.ID}}<td>{{$.Event.Name}}<tr><td>Shooter ID: {{$shooter.ID}}<td>{{$shooter.FirstName}} {{$shooter.Surname}}<tr><td>Range ID: {{.ID}}<td>{{.Name}}{{end}}</table>{{end}}

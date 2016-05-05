@@ -1,4 +1,1 @@
-{{define "page"}}
-	{{template "NewEvent" .NewEvent}}
-	{{template "listEvents" .ListEvents}}
-{{end}}
+{{define "page"}}{{template "NewEvent" .NewEvent}}{{template "listEvents" .ListEvents}}{{end}}
