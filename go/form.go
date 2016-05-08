@@ -119,13 +119,13 @@ func getForm(id uint8) []field {
 		}}
 	case 6: //Add Range
 		return []field{{
-			name: "n", Required: true, maxLen: 64, v8: isValidStr,
+			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
 			name: "E", v8: isValidRegex, regex: regexID,
 		}}
 	case 7: //Add Aggregate Range
 		return []field{{
-			name: "n", Required: true, maxLen: 64, v8: isValidStr,
+			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
 			name: "R", Required: true, minLen: 2, min: 1, max: 65535, step: 1, v8: listUint,
 		}, {
