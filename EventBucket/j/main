@@ -57,7 +57,7 @@ while(qty--){
 
 function initInputs(){
 	var inputs = document.getElementsByTagName('input'), i = inputs.length, flagClass = function(evt){
-		evt.srcElement.classList.toggle('e', true);
+		evt.srcElement.classList.toggle('f', true);
 	};
 	while(i--){
 		inputs[i].addEventListener('blur', flagClass);
