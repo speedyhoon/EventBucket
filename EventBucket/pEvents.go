@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func home(w http.ResponseWriter, r *http.Request) {
+func events(w http.ResponseWriter, r *http.Request) {
 	events, err := getCalendarEvents()
 
 	//Sort list of events by date then by name

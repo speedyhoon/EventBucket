@@ -54,7 +54,6 @@ func pages() {
 	getRedirectPermanent(urlAbout, about)
 	getRedirectPermanent(urlArchive, eventArchive)
 	getRedirectPermanent(urlClubs, clubs)
-	//	getRedirectPermanent(urlEvents, events)
 	getRedirectPermanent(urlLicence, licence)
 	gt(urlShooters, shooterSearch, shooters)
 	if debug {
@@ -93,7 +92,7 @@ func pages() {
 	post(pst, clubMoundEdit, editClubMound)
 
 	//BUG any url breaks when appending "&*((&*%"
-	get404(urlEvents, home)
+	get404(urlEvents, events)
 }
 
 func post(method string, formID uint8, runner func(http.ResponseWriter, *http.Request, form, func())) {
