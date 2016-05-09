@@ -168,7 +168,7 @@ func errorHandler(w http.ResponseWriter, r *http.Request, status int, errorType 
 	})
 }
 
-//whoops an error occured
+//whoops an error occurred
 // that club id you supplied doesn't match anything
 //here is a list of valid clubs - that link to the clubsettings page.
 func whoops(w http.ResponseWriter, r *http.Request, url string) {
