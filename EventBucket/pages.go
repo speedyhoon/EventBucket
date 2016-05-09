@@ -20,23 +20,22 @@ const (
 	urlClubs    = "/clubs"
 	urlLicence  = "/licence"
 	urlShooters = "/shooters"
-	//GET with PARAMETERS
-	urlClub            = "/club/"             //clubID
-	urlClubSettings    = "/club-settings/"    //clubID
-	urlEntries         = "/entries/"          //eventID
-	urlEntryList       = "/entry-list/"       //eventID
-	urlEventSettings   = "/event-settings/"   //eventID
-	urlEventReport     = "/event-report/"     //eventID
-	urlScoreboard      = "/scoreboard/"       //eventID
-	urlScorecards      = "/scorecards/"       //eventID
-	urlScorecardsAll   = "/scorecards-all/"   //eventID
-	urlPrintScorecards = "/print-cards/"      //eventID/shooterID
-	urlTotalScores     = "/total-scores/"     //eventID
-	urlTotalScoresAll  = "/total-scores-all/" //eventID
+	// GET with PARAMETERS
+	urlClub            = "/club/"             // clubID
+	urlEntries         = "/entries/"          // eventID
+	urlEntryList       = "/entry-list/"       // eventID
+	urlEventSettings   = "/event-settings/"   // eventID
+	urlEventReport     = "/event-report/"     // eventID
+	urlScoreboard      = "/scoreboard/"       // eventID
+	urlScorecards      = "/scorecards/"       // eventID
+	urlScorecardsAll   = "/scorecards-all/"   // eventID
+	urlPrintScorecards = "/print-cards/"      // eventID/shooterID
+	urlTotalScores     = "/total-scores/"     // eventID
+	urlTotalScoresAll  = "/total-scores-all/" // eventID
 )
 
 var (
-	//URL validation matching
+	// URL validation matching
 	regexID      = regexp.MustCompile(`^[a-z0-9]+$`)
 	regexPath    = regexp.MustCompile(`^[a-z0-9]+/[a-z0-9]+$`)
 	regexBarcode = regexp.MustCompile(`^[a-z0-9]+/[a-z0-9]+#[a-z0-9]+$`)
@@ -61,7 +60,6 @@ func pages() {
 		getRedirectPermanent("/report", report)
 	}
 	getParameters(urlClub, club, regexID)
-	getParameters(urlClubSettings, clubSettings, regexID)
 	getParameters(urlEntries, entries, regexID)
 	getParameters(urlEntryList, entryList, regexID)
 	getParameters(urlEventSettings, eventSettings, regexID)
@@ -91,7 +89,7 @@ func pages() {
 	post(get, mapResults, mapClubs)
 	post(pst, clubMoundEdit, editClubMound)
 
-	//BUG any url breaks when appending "&*((&*%"
+	// BUG any url breaks when appending "&*((&*%"
 	get404(urlEvents, events)
 }
 
@@ -101,8 +99,8 @@ func post(method string, formID uint8, runner func(http.ResponseWriter, *http.Re
 			/*405 Method Not Allowed
 			A request was made of a resource using a request method not supported by that resource; for example,
 			using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
-			//en.wikipedia.org/wiki/List_of_HTTP_status_codes*/
-			//TODO maybe don't redirect user?
+			// en.wikipedia.org/wiki/List_of_HTTP_status_codes*/
+			// TODO maybe don't redirect user?
 			http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
 			return
 		}
@@ -122,7 +120,7 @@ func post(method string, formID uint8, runner func(http.ResponseWriter, *http.Re
 	http.HandleFunc(fmt.Sprintf("/%d", formID), h)
 }
 
-//func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+// func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 
 func gt(url string, formID uint8, runner func(http.ResponseWriter, *http.Request, form, bool)) {
 	http.HandleFunc(url, func(w http.ResponseWriter, r *http.Request) {
@@ -130,8 +128,8 @@ func gt(url string, formID uint8, runner func(http.ResponseWriter, *http.Request
 			/*405 Method Not Allowed
 			A request was made of a resource using a request method not supported by that resource; for example,
 			using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
-			//en.wikipedia.org/wiki/List_of_HTTP_status_codes*/
-			//TODO maybe don't redirect user?
+			// en.wikipedia.org/wiki/List_of_HTTP_status_codes*/
+			// TODO maybe don't redirect user?
 			http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
 			return
 		}

@@ -80,9 +80,6 @@ var (
 			SubMenu: []menu{{
 				Name: "Club",
 				Link: urlClub,
-			}, {
-				Name: "Club Settings",
-				Link: urlClubSettings,
 			}},
 		}, {
 			Name: "Shooters",
@@ -165,16 +162,16 @@ var (
 )
 
 func templater(w http.ResponseWriter, page page) {
-	//Add HTTP headers so browsers don't cache the HTML resource because it can contain different content every request.
+	// Add HTTP headers so browsers don't cache the HTML resource because it can contain different content every request.
 	headers(w, nocache)
 	if page.template == 25 {
 		page.template = 0
 		w.Header().Set(csp, maps)
 	} else {
-		w.Header().Set(csp, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self' data:") //font-src 'self'
+		w.Header().Set(csp, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self' data:") // font-src 'self'
 	}
 
-	//Convert page.Title to the HTML template file name (located within htmlDirectory), e.g. Events > events, Club Settings > clubSettings
+	// Convert page.Title to the HTML template file name (located within htmlDirectory), e.g. Events > events, Club Settings > clubSettings
 	pageName := strings.Split(page.Title, titleSeparator)[0]
 	pageName = strings.Replace(strings.Title(pageName), " ", "", -1)
 	pageName = strings.ToLower(string([]rune(pageName)[0])) + string([]rune(pageName)[1:])
@@ -184,11 +181,11 @@ func templater(w http.ResponseWriter, page page) {
 		htmlFileNames = append(htmlFileNames, masterStuff[page.template]...)
 	}
 
-	//Add page content just generated to the default page environment (which has CSS and JS, etc).
+	// Add page content just generated to the default page environment (which has CSS and JS, etc).
 	masterTemplate.Page = page
 
 	html, ok := templates[pageName]
-	//debug is for dynamically re-parsing (reloading) templates on every request
+	// debug is for dynamically re-parsing (reloading) templates on every request
 	if !ok || debug {
 
 		templates[pageName] = template.Must(template.New("main").Funcs(templateFuncMap).ParseFiles(htmlFileNames...))
@@ -200,16 +197,16 @@ func templater(w http.ResponseWriter, page page) {
 	}
 }
 
-//AddQuotes returns value with or without surrounding single or double quote characters suitable for a [[//dev.w3.org/html5/html-author/#attributes][HTML5 attribute]] value.
+// AddQuotes returns value with or without surrounding single or double quote characters suitable for a [[// dev.w3.org/html5/html-author/#attributes][HTML5 attribute]] value.
 func addQuotes(in interface{}) string {
-	//TODO escape any rune character over X code point
-	value := strings.Replace(fmt.Sprintf("%v", in), `&`, "&amp;", -1) //will destroy any existing escaped characters like &#62;
+	// TODO escape any rune character over X code point
+	value := strings.Replace(fmt.Sprintf("%v", in), `&`, "&amp;", -1) // will destroy any existing escaped characters like &#62;
 	double := strings.Count(value, `"`)
 	single := strings.Count(value, `'`)
 	if single > 0 && single >= double {
 		return `"` + strings.Replace(value, `"`, "&#34;", -1) + `"`
 	}
-	//Space, double quote, accent, equals, less-than sign, greater-than sign.
+	// Space, double quote, accent, equals, less-than sign, greater-than sign.
 	if double > 0 || strings.ContainsAny(value, " \"`=<>") {
 		return `'` + strings.Replace(value, `'`, "&#39;", -1) + `'`
 	}
