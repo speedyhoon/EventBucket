@@ -77,6 +77,7 @@ func mapClubs(w http.ResponseWriter, r *http.Request, submittedForm form, redire
 	fmt.Fprintf(w, "%s", jsonList)
 }
 
+//MapClub is exported
 type MapClub struct {
 	Name      string  `json:"n"`
 	Latitude  float32 `json:"x,omitempty"`
@@ -99,14 +100,13 @@ func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redi
 		if err != nil {
 			formError(w, submittedForm, redirect, err)
 			return
-		} else {
-			defaultClub := getDefaultClub()
-			if isDefault && defaultClub.ID != "" {
-				//TODO change this so it is some how atomic & winithin the same transaction.
-				err := updateDocument(tblClub, defaultClub.ID, &Club{IsDefault: false}, &Club{}, updateClubDefault)
-				if err != nil {
-					warn.Println(err)
-				}
+		}
+		defaultClub := getDefaultClub()
+		if isDefault && defaultClub.ID != "" {
+			// TODO change this so it is some how atomic & winithin the same transaction.
+			err := updateDocument(tblClub, defaultClub.ID, &Club{IsDefault: false}, &Club{}, updateClubDefault)
+			if err != nil {
+				warn.Println(err)
 			}
 		}
 	} else {
