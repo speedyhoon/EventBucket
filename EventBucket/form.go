@@ -59,13 +59,13 @@ func defaultTime() string {
 
 func getForm(id uint8) []field {
 	switch id {
-	case 1: //New Club
+	case 1: // New Club
 		return []field{{
 			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
 			name: "b", v8: isValidBool,
 		}}
-	case 2: //Club Details
+	case 2: // Club Details
 		return []field{{
 			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
@@ -85,13 +85,13 @@ func getForm(id uint8) []field {
 		}, {
 			name: "C", v8: isValidRegex, regex: regexID,
 		}}
-	case 3: //New Shooting Mound
+	case 3: // New Shooting Mound
 		return []field{{
 			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
 			name: "C", v8: isValidRegex, regex: regexID,
 		}}
-	case 4: //New Event
+	case 4: // New Event
 		return []field{{
 			name: "C", Value: defaultClubName(), Required: hasDefaultClub(), maxLen: 64, v8: isValidStr, Options: clubsDataList(),
 		}, {
@@ -101,7 +101,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "t", Value: defaultTime(), maxLen: 5, step: 300, v8: isValidStr,
 		}}
-	case 5: //Event Details
+	case 5: // Event Details
 		return []field{{
 			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
@@ -117,13 +117,13 @@ func getForm(id uint8) []field {
 		}, {
 			name: "E", v8: isValidRegex, regex: regexID,
 		}}
-	case 6: //Add Range
+	case 6: // Add Range
 		return []field{{
 			name: "n", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
 			name: "E", v8: isValidRegex, regex: regexID,
 		}}
-	case 7: //Add Aggregate Range
+	case 7: // Add Aggregate Range
 		return []field{{
 			name: "n", Required: true, maxLen: 64, v8: isValidStr,
 		}, {
@@ -131,7 +131,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "E", v8: isValidRegex, regex: regexID,
 		}}
-	case 8: //Shooter Entry
+	case 8: // Shooter Entry
 		return []field{{
 			name: "f", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
@@ -151,7 +151,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "E", v8: isValidRegex, regex: regexID,
 		}}
-	case 9: //Existing Shooter Entry
+	case 9: // Existing Shooter Entry
 		return []field{{
 			name: "S", Required: true, v8: isValidRegex, regex: regexID,
 		}, {
@@ -161,7 +161,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "E", Required: true, v8: isValidRegex, regex: regexID,
 		}}
-	case 10: //Shooter Search
+	case 10: // Shooter Search
 		return []field{{
 			name: "f", maxLen: 64, v8: isValidStr,
 		}, {
@@ -169,7 +169,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "C", maxLen: 64, v8: isValidStr,
 		}}
-	case 11: //New Shooter
+	case 11: // New Shooter
 		return []field{{
 			name: "f", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
@@ -181,7 +181,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "r", max: 4, step: 1, v8: isValidUint, Options: dataListAgeGroup(),
 		}}
-	case 12: //Shooter Details
+	case 12: // Shooter Details
 		return []field{{
 			name: "f", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
@@ -195,7 +195,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "I", Required: true, maxLen: 64, v8: isValidRegex, regex: regexID,
 		}}
-	case 13: //Shooter Search
+	case 13: // Shooter Search
 		return []field{{
 			name: "f", maxLen: 64, v8: isValidStr,
 		}, {
@@ -203,7 +203,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "C", maxLen: 64, v8: isValidStr,
 		}}
-	case 14: //Total Scores
+	case 14: // Total Scores
 		return []field{{
 			name: "t", Required: true, max: 60, step: 1, v8: isValidUint,
 		}, {
@@ -215,13 +215,13 @@ func getForm(id uint8) []field {
 		}, {
 			name: "S", Required: true, max: 65535, step: 1, v8: isValidUint,
 		}}
-	case 15: //Grades Available
+	case 15: // Grades Available
 		return []field{{
 			name: "g", Required: true, minLen: 1, max: float32(len(globalGrades) - 1), step: 1, v8: listUint, Options: availableGrades([]uint{}),
 		}, {
 			name: "I", v8: isValidRegex, regex: regexID,
 		}}
-	case 16: //Update Shooter Shots (Scorecards)
+	case 16: // Update Shooter Shots (Scorecards)
 		return []field{{
 			name: "s", Required: true, maxLen: 12, minLen: 1, v8: isValidStr,
 		}, {
@@ -231,15 +231,15 @@ func getForm(id uint8) []field {
 		}, {
 			name: "S", Required: true, max: 65535, step: 1, v8: isValidUint,
 		}}
-	case 17: //Import Shooters
+	case 17: // Import Shooters
 		return []field{{
 			name: "f", Required: true, maxLen: 64,
 		}}
-	case 18: //Map Clubs
+	case 18: // Map Clubs
 		return []field{{
 			name: "C", v8: isValidRegex, regex: regexID,
 		}}
-	case 19: //Edit Shooting Mound
+	case 19: // Edit Shooting Mound
 		return []field{{
 			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {

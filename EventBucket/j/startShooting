@@ -55,12 +55,12 @@
 			total = getValue(currentRow, 'total') - getValue(currentCell, 'value') + newer;
 			centers = getValue(currentRow, 'centers') - getValue(currentCell, 'center') + newerC;
 			currentRow.lastChild.innerHTML = total + (centers ? '<sup>' + centers + '</sup>' : '');
-			//currentRow.setAttribute('data-total', total);
+//currentRow.setAttribute('data-total', total);
 			currentRow.total = total;
-			//currentRow.setAttribute('data-centers', centers);
+//currentRow.setAttribute('data-centers', centers);
 			currentRow.centers = centers;
 		}
-		//currentCell.setAttribute('data-value', newer);
+//currentCell.setAttribute('data-value', newer);
 		currentCell.value = newer;
 		currentCell.center = newerC;
 	}
