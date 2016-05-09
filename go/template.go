@@ -80,9 +80,6 @@ var (
 			SubMenu: []menu{{
 				Name: "Club",
 				Link: urlClub,
-			}, {
-				Name: "Club Settings",
-				Link: urlClubSettings,
 			}},
 		}, {
 			Name: "Shooters",
