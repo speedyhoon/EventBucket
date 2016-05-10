@@ -34,7 +34,7 @@ func setSession(w http.ResponseWriter, returns form) {
 	}
 	returns.expiry = cookie.Expires
 	globalSessions.Lock()
-	globalSessions.m[sessionID] = returns
+	globalSessions.m[cookie.Value] = returns
 	globalSessions.Unlock()
 	http.SetCookie(w, &cookie)
 }
