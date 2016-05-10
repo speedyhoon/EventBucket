@@ -9,7 +9,7 @@ import (
 
 func listUint(f *field, inp ...string) {
 	if len(inp) < f.minLen {
-		f.Error = "Not enough items selected."
+		f.Error = fmt.Sprintf("Not enough items selected. At least %v items are needed.", f.minLen) //TODO plural
 		return
 	}
 
@@ -31,7 +31,7 @@ func listUint(f *field, inp ...string) {
 
 		_, ok := check[g.valueUint]
 		if ok {
-			f.Error = "Duplicate value found in list"
+			f.Error = "Duplicate values found in list."
 			return
 		}
 		check[g.valueUint] = true
