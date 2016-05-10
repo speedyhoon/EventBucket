@@ -34,6 +34,9 @@ var (
 	warn = log.New(os.Stderr, "WARN:  ", log.Lshortfile)
 )
 
+//Date format
+const formatGMT = "Mon, 02 Jan 2006 15:04:05 GMT"
+
 func init() {
 	go maintainExpiresTime()
 	go maintainSessions()

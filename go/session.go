@@ -1,26 +1,20 @@
 package main
 
 import (
-	"fmt"
 	"math/rand"
 	"net/http"
-	"strings"
 	"sync"
 	"time"
 )
 
 const (
 	sessionToken      = "s"
-	sessionPrefix     = sessionToken + "="
-	sessionIDLength   = 24 //Recommended to be at least 16 characters long.
-	letterBytes       = "!\"#$%&'()*+,-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~`"
-	letterIdxBits     = 6                    // 6 bits to represent a letter index
-	letterIdxMask     = 1<<letterIdxBits - 1 // All 1-bits, as many as letterIdxBits
-	letterIdxMax      = 63 / letterIdxBits   // # of letter indices fitting in 63 bits
+	sessionIDLength   = 24                                                                                            //Recommended to be at least 16 characters long.
+	letterBytes       = "!#$%&'()*+,-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~" //string generated from validCookieValueByte golang source code net/http/cookie.go
+	letterIdxBits     = 6                                                                                             // 6 bits to represent a letter index
+	letterIdxMask     = 1<<letterIdxBits - 1                                                                          // All 1-bits, as many as letterIdxBits
+	letterIdxMax      = 63 / letterIdxBits                                                                            // # of letter indices fitting in 63 bits
 	sessionExpiryTime = 2 * time.Minute
-	sessionHeader     = sessionToken + "=%v; expires=%v HttpOnly"
-	//Date format
-	formatGMT = "Mon, 02 Jan 2006 15:04:05 GMT"
 )
 
 var (
@@ -32,12 +26,17 @@ var (
 )
 
 func setSession(w http.ResponseWriter, returns form) {
-	sessionID := sessionID(sessionIDLength)
-	returns.expiry = time.Now().Add(sessionExpiryTime)
+	cookie := http.Cookie{
+		Name:     sessionToken,
+		Value:    sessionID(sessionIDLength),
+		HttpOnly: true,
+		Expires:  time.Now().Add(sessionExpiryTime),
+	}
+	returns.expiry = cookie.Expires
 	globalSessions.Lock()
 	globalSessions.m[sessionID] = returns
 	globalSessions.Unlock()
-	w.Header().Add("Set-Cookie", fmt.Sprintf(sessionHeader, sessionID, returns.expiry.Format(formatGMT)))
+	http.SetCookie(w, &cookie)
 }
 
 func sessionID(n int) string {
@@ -91,27 +90,28 @@ func sessionForms(w http.ResponseWriter, r *http.Request, formActions ...uint8) 
 	//Add generic unpopulated form "pageError" for passing page errors from post requests to the next page served that doesn't isn't specific to a particular form.
 	formActions = append(formActions, pageError)
 
-	//Get users session id from request
-	cookie := strings.TrimPrefix(sessionPrefix, r.Header.Get("Cookie"))
-	if cookie == "" {
+	//Get users session id from request cookie header
+	cookie, err := r.Cookie(sessionToken)
+	if err != nil || cookie == nil || cookie.Value == "" {
 		//No session found. Return default forms.
 		return 0, getForms(formActions...)
 	}
 
-	//Remove cookie.
-	//.UTC() Changes the time format to UTC
-	//Using minus sessionExpiryTime so the session expires time is set to the past
-	//HttpOnly means the cookie can't be accessed by JavaScript
-	w.Header().Set("Set-Cookie", fmt.Sprintf(sessionHeader, "", time.Now().UTC().Add(-sessionExpiryTime).Format(formatGMT)))
+	http.SetCookie(w, &http.Cookie{
+		Name:     sessionToken,
+		Value:    "",                                       //Remove cookie by setting it to nothing (empty string).
+		HttpOnly: true,                                     //HttpOnly means the cookie can't be accessed by JavaScript
+		Expires:  time.Now().UTC().Add(-sessionExpiryTime), //Using minus sessionExpiryTime so the session expires time is set to the past
+	})
 
 	//Start a read lock to prevent concurrent reads while other parts are executing a write.
 	globalSessions.RLock()
-	contents, ok := globalSessions.m[cookie]
+	contents, ok := globalSessions.m[cookie.Value]
 	globalSessions.RUnlock()
 	if ok {
 		//Clear the session contents as it has been returned to the user.
 		globalSessions.Lock()
-		delete(globalSessions.m, cookie)
+		delete(globalSessions.m, cookie.Value)
 		globalSessions.Unlock()
 
 		var forms []form

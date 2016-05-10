@@ -95,7 +95,7 @@ func isValid(urlValues url.Values, fields []field) ([]field, bool) {
 		}*/
 
 		if fields[i].Error != "" {
-			warn.Println(fields[i].name, fields[i].Error)
+			warn.Println(i, fields[i].name, fields[i].Error)
 			//Set the first field with failed validation to have focus onscreen
 			if valid {
 				fields[i].AutoFocus = true
