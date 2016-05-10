@@ -5,6 +5,7 @@ import "net/http"
 func shooters(w http.ResponseWriter, r *http.Request, submittedForm form, isValid bool) {
 	_, pageForms := sessionForms(w, r, shooterNew, importShooter)
 
+	//Search for shooters in the default club if EventBucket was not started in debug mode & all values are empty.
 	if !debug && submittedForm.Fields[0].Value == "" && submittedForm.Fields[1].Value == "" && submittedForm.Fields[2].Value == "" {
 		submittedForm.Fields[2].Value = defaultClubName()
 	}

@@ -9,7 +9,7 @@ import (
 
 func listUint(f *field, inp ...string) {
 	if len(inp) < f.minLen {
-		f.Error = "not enough items selected"
+		f.Error = "Not enough items selected."
 		return
 	}
 
@@ -66,12 +66,12 @@ func isValidUint(f *field, inp ...string) {
 		return
 	}
 	if f.valueUint < uint(f.min) || f.valueUint > uint(f.max) {
-		f.Error = fmt.Sprintf("Must be between %v and %v", f.min, f.max)
+		f.Error = fmt.Sprintf("Must be between %v and %v.", f.min, f.max)
 		return
 	}
 	if f.valueUint%uint(f.step) != 0 {
 		below := f.valueUint - (f.valueUint % uint(f.step))
-		f.Error = fmt.Sprintf("Please enter a valid value. The two nearest values are %d and %d", below, below+uint(f.step))
+		f.Error = fmt.Sprintf("Please enter a valid value. The two nearest values are %d and %d.", below, below+uint(f.step))
 		return
 	}
 	return
@@ -98,12 +98,12 @@ func isValidFloat32(f *field, inp ...string) {
 		return
 	}
 	if num < f.min || num > f.max {
-		f.Error = fmt.Sprintf("Must be between %v and %v", f.min, f.max)
+		f.Error = fmt.Sprintf("Must be between %v and %v.", f.min, f.max)
 		return
 	}
 
 	if rem := toFixed(math.Mod(f64, float64(f.step))); rem != 0 {
-		f.Error = fmt.Sprintf("Please enter a valid value. The two nearest values are %v and %v", num-rem, num-rem+f.step)
+		f.Error = fmt.Sprintf("Please enter a valid value. The two nearest values are %v and %v.", num-rem, num-rem+f.step)
 		return
 	}
 	f.Value = fmt.Sprintf("%v", num)
@@ -181,7 +181,7 @@ func isValidRegex(f *field, inp ...string) {
 func isValidBool(f *field, inp ...string) {
 	f.Checked = len(strings.TrimSpace(inp[0])) >= 1
 	if f.Required && !f.Checked {
-		f.Error = "Please check this field"
+		f.Error = "Please check this field."
 	}
 	return
 }
