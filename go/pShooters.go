@@ -44,15 +44,11 @@ func shooterUpdate(w http.ResponseWriter, r *http.Request, submittedForm form, r
 }
 
 func eventSearchShooters(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
-	listShooters := []option{
-		{Value: "sid", Label: "Firstname, Surname, Club"},
-		{Value: "123", Label: "Tom, Dick, Harry"},
-	}
 	templater(w, page{
 		Title:    "Shooter Search",
 		template: templateNone,
 		Data: map[string]interface{}{
-			"ListShooters": listShooters,
+			"ListShooters": searchShootersOptions(submittedForm.Fields[0].Value, submittedForm.Fields[1].Value, submittedForm.Fields[2].Value),
 		},
 	})
 }

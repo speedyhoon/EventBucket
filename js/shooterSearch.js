@@ -1,6 +1,7 @@
 'use strict';
 var xhr = new XMLHttpRequest, f = '', s = '', c = '';
-function getter(form){
+document.querySelector('form[action="/8"]').oninput = function search(event){
+	var form = event.currentTarget;
 	//Ignore form inputs into other fields
 	if(f === form.f.value && s === form.s.value && c === form.C.value)return;
 	f = form.f.value;
@@ -18,6 +19,6 @@ function getter(form){
 		}
 	};
 	form.S.setAttribute('class', 'loading');
-	xhr.open('GET', '/9' + (f ? '?f=' + f : '') + (s ? '?s=' + s : '') + (c ? '?c=' + c : ''), true);
+	xhr.open('GET', '/10' + (f ? '?f=' + f : '') + (s ? '?s=' + s : '') + (c ? '?c=' + c : ''), true);
 	xhr.send();
-}
+};

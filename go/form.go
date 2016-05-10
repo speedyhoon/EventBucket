@@ -139,7 +139,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr, Options: clubsDataList(),
 		}, {
-			name: "S", v8: isValidStr,
+			name: "S", v8: isValidStr, Options: searchShootersOptions("", "", defaultClubName()),
 		}, {
 			name: "g", Required: true, max: float32(len(globalGrades) - 1), step: 1, v8: isValidUint, Options: globalGradesDataList,
 		}, {
