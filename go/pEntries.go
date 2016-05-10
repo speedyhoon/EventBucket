@@ -38,6 +38,7 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 		Menu:    urlEvents,
 		MenuID:  eventID,
 		Heading: event.Name,
+		JS:      []string{"main", "shooterSearch"},
 		Data: map[string]interface{}{
 			"Event":           event,
 			"ShooterEntry":    shooterEntry,

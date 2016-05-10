@@ -492,6 +492,36 @@ func getSearchShooters(firstName, surname, club string) ([]Shooter, uint, error)
 	return shooters, totalQty, err
 }
 
+func searchShootersOptions(firstName, surname, club string) []option {
+	if firstName == "" && surname == "" && club == "" {
+		club = defaultClubName()
+	}
+
+	firstName = strings.ToLower(firstName)
+	surname = strings.ToLower(surname)
+	club = strings.ToLower(club)
+
+	shooters := []option{{}}
+	err := db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(tblShooter)
+		if b == nil {
+			return fmt.Errorf(eNoBucket, tblShooter)
+		}
+		return b.ForEach(func(_, value []byte) error {
+			var shooter Shooter
+			//strings.Contains returns true when sub-string is "" (empty string)
+			if json.Unmarshal(value, &shooter) == nil && strings.Contains(strings.ToLower(shooter.FirstName), firstName) && strings.Contains(strings.ToLower(shooter.Surname), surname) && strings.Contains(strings.ToLower(shooter.Club), club) {
+				shooters = append(shooters, option{Value: shooter.ID, Label: shooter.FirstName + " " + shooter.Surname + " " + shooter.Club})
+			}
+			return nil
+		})
+	})
+	if err != nil {
+		warn.Println(err)
+	}
+	return shooters
+}
+
 func getClubByName(clubName string) (Club, error) {
 	var club Club
 	const success = "Found the club you were looking for"

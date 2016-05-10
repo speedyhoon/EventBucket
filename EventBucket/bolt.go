@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	//Databse bucket (table) names
+	// Databse bucket (table) names
 	tblClub    = []byte("C")
 	tblEvent   = []byte("E")
 	tblShooter = []byte("S")
@@ -93,12 +93,12 @@ func insertEvent(event Event) (string, error) {
 		}
 		var id []byte
 		b36, id = nextID(bucket)
-		// Generate ID for the user.
-		// This returns an error only if the Tx is closed or not writeable.
-		// That can't happen in an Update() call so I ignore the error check.
+		//  Generate ID for the user.
+		//  This returns an error only if the Tx is closed or not writeable.
+		//  That can't happen in an Update() call so I ignore the error check.
 		event.ID = b36
 
-		// Marshal user data into bytes.
+		//  Marshal user data into bytes.
 		buf, err := json.Marshal(event)
 		if err != nil {
 			return err
@@ -121,11 +121,11 @@ func insertClub(club Club) (string, error) {
 		}
 		var id []byte
 		b36, id = nextID(bucket)
-		// Generate ID for the user.
-		// This returns an error only if the Tx is closed or not writeable.
-		// That can't happen in an Update() call so I ignore the error check.
+		//  Generate ID for the user.
+		//  This returns an error only if the Tx is closed or not writeable.
+		//  That can't happen in an Update() call so I ignore the error check.
 		club.ID = b36
-		// Marshal user data into bytes.
+		//  Marshal user data into bytes.
 		buf, err := json.Marshal(club)
 		if err != nil {
 			return err
@@ -144,11 +144,11 @@ func insertShooter(shooter Shooter) (string, error) {
 		}
 		var id []byte
 		b36, id = nextID(bucket)
-		// Generate ID for the user.
-		// This returns an error only if the Tx is closed or not writeable.
-		// That can't happen in an Update() call so I ignore the error check.
+		//  Generate ID for the user.
+		//  This returns an error only if the Tx is closed or not writeable.
+		//  That can't happen in an Update() call so I ignore the error check.
 		shooter.ID = b36
-		// Marshal user data into bytes.
+		//  Marshal user data into bytes.
 		buf, err := json.Marshal(shooter)
 		if err != nil {
 			return err
@@ -204,7 +204,7 @@ func updateShooterDetails(decode interface{}, contents interface{}) interface{} 
 func updateClubDetails(decode interface{}, contents interface{}) interface{} {
 	club := decode.(*Club)
 	update := contents.(*Club)
-	//Manually set each one otherwise it would override the existing club and its details (Ranges, Shooters & their scores) since the form doesn't already have that info.
+	// Manually set each one otherwise it would override the existing club and its details (Ranges, Shooters & their scores) since the form doesn't already have that info.
 	club.Name = update.Name
 	club.Address = update.Address
 	club.Town = update.Town
@@ -231,7 +231,7 @@ func insertClubMound(decode interface{}, contents interface{}) interface{} {
 func updateEventDetails(decode interface{}, contents interface{}) interface{} {
 	event := decode.(*Event)
 	update := contents.(*Event)
-	//Manually set each one otherwise it would override the existing event and its details (Ranges, Shooters & their scores) since the form doesn't already have that info.
+	// Manually set each one otherwise it would override the existing event and its details (Ranges, Shooters & their scores) since the form doesn't already have that info.
 	event.Name = update.Name
 	event.Club = update.Club
 	event.Date = update.Date
@@ -282,7 +282,7 @@ func getClubs() ([]Club, error) {
 	err := db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(tblClub)
 		if b == nil {
-			//Club Bucket isn't created yet
+			// Club Bucket isn't created yet
 			return nil
 		}
 		return b.ForEach(func(_, value []byte) error {
@@ -301,7 +301,7 @@ func clubsDataList() []option {
 	err := db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(tblClub)
 		if b == nil {
-			//Club Bucket isn't created yet
+			// Club Bucket isn't created yet
 			return nil
 		}
 		return b.ForEach(func(_, value []byte) error {
@@ -323,7 +323,7 @@ func getEvents(query func(Event) bool) ([]Event, error) {
 	err := db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(tblEvent)
 		if b == nil {
-			//Event Bucket isn't created yet
+			// Event Bucket isn't created yet
 			return nil
 		}
 		return b.ForEach(func(_, value []byte) error {
@@ -342,7 +342,7 @@ func getCalendarEvents() ([]CalendarEvent, error) {
 	err := db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(tblEvent)
 		if b == nil {
-			//Event Bucket isn't created yet
+			// Event Bucket isn't created yet
 			return nil
 		}
 		return b.ForEach(func(_, value []byte) error {
@@ -373,7 +373,7 @@ func getDefaultClub() Club {
 	db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(tblClub)
 		if b == nil {
-			//Club Bucket isn't created yet
+			// Club Bucket isn't created yet
 			return nil
 		}
 		return b.ForEach(func(_, value []byte) error {
@@ -394,14 +394,14 @@ func eventShooterInsertDB(decode interface{}, contents interface{}) interface{} 
 	event := decode.(*Event)
 	shooter := *contents.(*EventShooter)
 
-	//Assign shooter ID
+	// Assign shooter ID
 	shooter.ID = event.AutoInc.Shooter
 	event.Shooters = append(event.Shooters, shooter)
 
-	//Increment Event Shooter ID
+	// Increment Event Shooter ID
 	event.AutoInc.Shooter++
 
-	//If shooter is Match Reserve, duplicate them in the Match Open category. Used for Victorian Match Rifle Championships.
+	// If shooter is Match Reserve, duplicate them in the Match Open category. Used for Victorian Match Rifle Championships.
 	if shooter.Grade == 8 {
 		shooter.ID = event.AutoInc.Shooter
 		shooter.Grade = 7
@@ -455,7 +455,7 @@ func calcShooterAgg(aggRangeIDs []uint, shooterScores map[string]Score) Score {
 	}
 }
 
-//Converts base36 string to binary used for bolt maps
+// Converts base36 string to binary used for bolt maps
 func b36toBy(id string) ([]byte, error) {
 	num, err := strconv.ParseUint(id, 36, 64)
 	if err != nil {
@@ -482,7 +482,7 @@ func getSearchShooters(firstName, surname, club string) ([]Shooter, uint, error)
 		totalQty = uint(tx.Bucket(tblShooter).Stats().KeyN)
 		return b.ForEach(func(_, value []byte) error {
 			var shooter Shooter
-			//strings.Contains returns true when sub-string is "" (empty string)
+			// strings.Contains returns true when sub-string is "" (empty string)
 			if json.Unmarshal(value, &shooter) == nil && strings.Contains(strings.ToLower(shooter.FirstName), firstName) && strings.Contains(strings.ToLower(shooter.Surname), surname) && strings.Contains(strings.ToLower(shooter.Club), club) {
 				shooters = append(shooters, shooter)
 			}
@@ -490,6 +490,36 @@ func getSearchShooters(firstName, surname, club string) ([]Shooter, uint, error)
 		})
 	})
 	return shooters, totalQty, err
+}
+
+func searchShootersOptions(firstName, surname, club string) []option {
+	if firstName == "" && surname == "" && club == "" {
+		club = defaultClubName()
+	}
+
+	firstName = strings.ToLower(firstName)
+	surname = strings.ToLower(surname)
+	club = strings.ToLower(club)
+
+	shooters := []option{{}}
+	err := db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(tblShooter)
+		if b == nil {
+			return fmt.Errorf(eNoBucket, tblShooter)
+		}
+		return b.ForEach(func(_, value []byte) error {
+			var shooter Shooter
+			// strings.Contains returns true when sub-string is "" (empty string)
+			if json.Unmarshal(value, &shooter) == nil && strings.Contains(strings.ToLower(shooter.FirstName), firstName) && strings.Contains(strings.ToLower(shooter.Surname), surname) && strings.Contains(strings.ToLower(shooter.Club), club) {
+				shooters = append(shooters, option{Value: shooter.ID, Label: shooter.FirstName + " " + shooter.Surname + " " + shooter.Club})
+			}
+			return nil
+		})
+	})
+	if err != nil {
+		warn.Println(err)
+	}
+	return shooters
 }
 
 func getClubByName(clubName string) (Club, error) {
@@ -502,7 +532,7 @@ func getClubByName(clubName string) (Club, error) {
 			return fmt.Errorf(eNoBucket, tblClub)
 		}
 		return b.ForEach(func(_, value []byte) error {
-			//Case insensitive search
+			// Case insensitive search
 			if json.Unmarshal(value, &club) == nil && strings.ToLower(club.Name) == strings.ToLower(clubName) {
 				return fmt.Errorf(success)
 			}
