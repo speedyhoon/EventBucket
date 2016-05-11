@@ -93,12 +93,12 @@ func insertEvent(event Event) (string, error) {
 		}
 		var id []byte
 		b36, id = nextID(bucket)
-		// Generate ID for the user.
-		// This returns an error only if the Tx is closed or not writeable.
-		// That can't happen in an Update() call so I ignore the error check.
+		//  Generate ID for the user.
+		//  This returns an error only if the Tx is closed or not writeable.
+		//  That can't happen in an Update() call so I ignore the error check.
 		event.ID = b36
 
-		// Marshal user data into bytes.
+		//  Marshal user data into bytes.
 		buf, err := json.Marshal(event)
 		if err != nil {
 			return err
@@ -121,11 +121,11 @@ func insertClub(club Club) (string, error) {
 		}
 		var id []byte
 		b36, id = nextID(bucket)
-		// Generate ID for the user.
-		// This returns an error only if the Tx is closed or not writeable.
-		// That can't happen in an Update() call so I ignore the error check.
+		//  Generate ID for the user.
+		//  This returns an error only if the Tx is closed or not writeable.
+		//  That can't happen in an Update() call so I ignore the error check.
 		club.ID = b36
-		// Marshal user data into bytes.
+		//  Marshal user data into bytes.
 		buf, err := json.Marshal(club)
 		if err != nil {
 			return err
@@ -144,11 +144,11 @@ func insertShooter(shooter Shooter) (string, error) {
 		}
 		var id []byte
 		b36, id = nextID(bucket)
-		// Generate ID for the user.
-		// This returns an error only if the Tx is closed or not writeable.
-		// That can't happen in an Update() call so I ignore the error check.
+		//  Generate ID for the user.
+		//  This returns an error only if the Tx is closed or not writeable.
+		//  That can't happen in an Update() call so I ignore the error check.
 		shooter.ID = b36
-		// Marshal user data into bytes.
+		//  Marshal user data into bytes.
 		buf, err := json.Marshal(shooter)
 		if err != nil {
 			return err
@@ -542,6 +542,7 @@ func searchShootersOptions(firstName, surname, club string) []option {
 func getClubByName(clubName string) (Club, error) {
 	var club Club
 	const success = "Found the club you were looking for"
+	clubName = strings.ToLower(clubName)
 
 	err := db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(tblClub)
@@ -550,7 +551,7 @@ func getClubByName(clubName string) (Club, error) {
 		}
 		return b.ForEach(func(_, value []byte) error {
 			// Case insensitive search
-			if json.Unmarshal(value, &club) == nil && strings.ToLower(club.Name) == strings.ToLower(clubName) {
+			if json.Unmarshal(value, &club) == nil && strings.ToLower(club.Name) == clubName {
 				return fmt.Errorf(success)
 			}
 			return nil

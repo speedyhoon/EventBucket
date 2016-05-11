@@ -542,6 +542,7 @@ func searchShootersOptions(firstName, surname, club string) []option {
 func getClubByName(clubName string) (Club, error) {
 	var club Club
 	const success = "Found the club you were looking for"
+	clubName = strings.ToLower(clubName)
 
 	err := db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(tblClub)
@@ -550,7 +551,7 @@ func getClubByName(clubName string) (Club, error) {
 		}
 		return b.ForEach(func(_, value []byte) error {
 			//Case insensitive search
-			if json.Unmarshal(value, &club) == nil && strings.ToLower(club.Name) == strings.ToLower(clubName) {
+			if json.Unmarshal(value, &club) == nil && strings.ToLower(club.Name) == clubName {
 				return fmt.Errorf(success)
 			}
 			return nil
