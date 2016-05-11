@@ -45,7 +45,7 @@ nav
 table
 	border-collapse: collapse
 
-tr
+table:not(.printCards) tr
 	border-bottom: $thinBorder
 	padding: $bigPadding
 
@@ -266,6 +266,9 @@ table[id] tbody tr td:last-of-type:empty //td[onclick]
 	background: url(/v/edit) center center no-repeat
 	cursor: pointer
 
+.printCards tr:nth-child(3n):not(:last-child)
+	border-bottom: $thinBorder
+
 abbr
 	color: $briteBlue
 	font-weight: 900
@@ -283,8 +286,5 @@ abbr
 	.printCards
 		tr
 			border: 0
-
-		tr:nth-child(3n):not(:last-child)
-			border-bottom: $thinBorder
 
 @import "startShooting"

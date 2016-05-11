@@ -101,13 +101,18 @@ func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm fo
 		formError(w, submittedForm, redirect, err)
 		return
 	}
-	shooterInsert(w, r, form{Fields: []field{
-		submittedForm.Fields[0],
-		submittedForm.Fields[1],
-		submittedForm.Fields[2],
-		submittedForm.Fields[4],
-		submittedForm.Fields[5],
-	}}, redirect)
+
+	if len(searchShootersOptions(submittedForm.Fields[0].Value, submittedForm.Fields[1].Value, submittedForm.Fields[2].Value)) <= 1 { //search always returns a blank option for html rendering so the select box isn't mandatory.
+		shooterInsert(w, r, form{Fields: []field{
+			submittedForm.Fields[0],
+			submittedForm.Fields[1],
+			submittedForm.Fields[2],
+			submittedForm.Fields[4],
+			submittedForm.Fields[5],
+		}}, redirect)
+	} else {
+		http.Redirect(w, r, urlEntries+eventID, http.StatusSeeOther)
+	}
 }
 
 func eventShooterExistingInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {

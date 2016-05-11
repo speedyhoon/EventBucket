@@ -37,10 +37,9 @@ h1,h2,h3
 	p
 		border-bottom-color: $grey
 
-table:not(.scorecards) tbody tr:nth-child(2n)
+table:not(.scorecards):not(.printCards) tbody tr:nth-child(2n)
 	background: #ddd
 
 @media print
-
-.printCards tr:nth-child(3n):not(:last-child)
-	border-bottom-color: $grey
+	.printCards tr:nth-child(3n):not(:last-child)
+		border-bottom-color: $grey
