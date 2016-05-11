@@ -88,6 +88,10 @@ func eventAvailableGradesUpsert(w http.ResponseWriter, r *http.Request, submitte
 }
 
 func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+	if _, err := getClubByName(submittedForm.Fields[2].Value); err != nil {
+		insertClub(Club{Name: submittedForm.Fields[2].Value})
+	}
+
 	eventID := submittedForm.Fields[7].Value
 	err := updateDocument(tblEvent, eventID, &EventShooter{
 		FirstName: submittedForm.Fields[0].Value,
@@ -101,7 +105,7 @@ func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm fo
 		formError(w, submittedForm, redirect, err)
 		return
 	}
-
+	//TODO possibly return shooter id from insert and use that in eventShooter?
 	if len(searchShootersOptions(submittedForm.Fields[0].Value, submittedForm.Fields[1].Value, submittedForm.Fields[2].Value)) <= 1 { //search always returns a blank option for html rendering so the select box isn't mandatory.
 		shooterInsert(w, r, form{Fields: []field{
 			submittedForm.Fields[0],
