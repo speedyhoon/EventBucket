@@ -262,6 +262,23 @@ func eventAddAgg(decode interface{}, contents interface{}) interface{} {
 	return event
 }
 
+func editRange(decode interface{}, contents interface{}) interface{} {
+	event := decode.(*Event)
+	rangeDetails := contents.(*Range)
+	for i, r := range event.Ranges {
+		if r.ID == rangeDetails.ID {
+			event.Ranges[i].Name = rangeDetails.Name
+			if event.Ranges[i].IsAgg {
+				event.Ranges[i].Aggs = rangeDetails.Aggs
+			} else {
+				event.Ranges[i].Locked = rangeDetails.Locked
+			}
+			break
+		}
+	}
+	return event
+}
+
 func editMound(decode interface{}, contents interface{}) interface{} {
 	club := decode.(*Club)
 	details := contents.(*Mound)

@@ -89,6 +89,34 @@ func eventRangeInsert(w http.ResponseWriter, r *http.Request, submittedForm form
 	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
 }
 
+func updateRange(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+	eventID := submittedForm.Fields[0].Value
+	err := updateDocument(tblEvent, eventID, &Range{
+		ID:     submittedForm.Fields[1].valueUint,
+		Name:   submittedForm.Fields[2].Value,
+		Locked: submittedForm.Fields[3].Checked,
+	}, &Event{}, editRange)
+	if err != nil {
+		formError(w, submittedForm, redirect, err)
+		return
+	}
+	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
+}
+
+func updateAgg(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+	eventID := submittedForm.Fields[0].Value
+	err := updateDocument(tblEvent, eventID, &Range{
+		ID:   submittedForm.Fields[1].valueUint,
+		Name: submittedForm.Fields[2].Value,
+		Aggs: submittedForm.Fields[3].valueUintSlice,
+	}, &Event{}, editRange)
+	if err != nil {
+		formError(w, submittedForm, redirect, err)
+		return
+	}
+	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
+}
+
 func eventAggInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	eventID := submittedForm.Fields[2].Value
 	err := updateDocument(tblEvent, eventID, &Range{

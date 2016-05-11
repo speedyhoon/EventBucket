@@ -93,12 +93,12 @@ func insertEvent(event Event) (string, error) {
 		}
 		var id []byte
 		b36, id = nextID(bucket)
-		//  Generate ID for the user.
-		//  This returns an error only if the Tx is closed or not writeable.
-		//  That can't happen in an Update() call so I ignore the error check.
+		// Generate ID for the user.
+		// This returns an error only if the Tx is closed or not writeable.
+		// That can't happen in an Update() call so I ignore the error check.
 		event.ID = b36
 
-		//  Marshal user data into bytes.
+		// Marshal user data into bytes.
 		buf, err := json.Marshal(event)
 		if err != nil {
 			return err
@@ -121,11 +121,11 @@ func insertClub(club Club) (string, error) {
 		}
 		var id []byte
 		b36, id = nextID(bucket)
-		//  Generate ID for the user.
-		//  This returns an error only if the Tx is closed or not writeable.
-		//  That can't happen in an Update() call so I ignore the error check.
+		// Generate ID for the user.
+		// This returns an error only if the Tx is closed or not writeable.
+		// That can't happen in an Update() call so I ignore the error check.
 		club.ID = b36
-		//  Marshal user data into bytes.
+		// Marshal user data into bytes.
 		buf, err := json.Marshal(club)
 		if err != nil {
 			return err
@@ -144,11 +144,11 @@ func insertShooter(shooter Shooter) (string, error) {
 		}
 		var id []byte
 		b36, id = nextID(bucket)
-		//  Generate ID for the user.
-		//  This returns an error only if the Tx is closed or not writeable.
-		//  That can't happen in an Update() call so I ignore the error check.
+		// Generate ID for the user.
+		// This returns an error only if the Tx is closed or not writeable.
+		// That can't happen in an Update() call so I ignore the error check.
 		shooter.ID = b36
-		//  Marshal user data into bytes.
+		// Marshal user data into bytes.
 		buf, err := json.Marshal(shooter)
 		if err != nil {
 			return err
@@ -257,6 +257,23 @@ func eventAddAgg(decode interface{}, contents interface{}) interface{} {
 	for sID, shooter := range event.Shooters {
 		if shooter.Scores != nil {
 			event.Shooters[sID].Scores[rangeID] = calcShooterAgg(aggRange.Aggs, shooter.Scores)
+		}
+	}
+	return event
+}
+
+func editRange(decode interface{}, contents interface{}) interface{} {
+	event := decode.(*Event)
+	rangeDetails := contents.(*Range)
+	for i, r := range event.Ranges {
+		if r.ID == rangeDetails.ID {
+			event.Ranges[i].Name = rangeDetails.Name
+			if event.Ranges[i].IsAgg {
+				event.Ranges[i].Aggs = rangeDetails.Aggs
+			} else {
+				event.Ranges[i].Locked = rangeDetails.Locked
+			}
+			break
 		}
 	}
 	return event
