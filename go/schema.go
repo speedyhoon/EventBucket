@@ -48,7 +48,7 @@ type Event struct {
 	AutoInc  AutoInc        `json:"A,omitempty"`
 	Shooters []EventShooter `json:"S,omitempty"`
 	Closed   bool           `json:"z,omitempty"`
-	AverTwin bool           `json:"a,omitempty"`
+	AverTwin bool           `json:"a,omitempty"` //TODO remove support for allowing shooter with the same details to enter an event twice or more.
 	Grades   []uint         `json:"g,omitempty"`
 	/*SortScoreboard string         `json:"o,omitempty"`
 	IsPrizeMeet    bool           `json:"p,omitempty"`
