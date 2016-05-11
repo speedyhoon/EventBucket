@@ -66,5 +66,5 @@ func shooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, r
 		formError(w, submittedForm, redirect, err)
 		return
 	}
-	http.Redirect(w, r, urlShooters, http.StatusSeeOther)
+	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 }
