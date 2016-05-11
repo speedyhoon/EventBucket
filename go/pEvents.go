@@ -58,7 +58,7 @@ func localIPs() []string {
 		for _, address := range addrs {
 			// check the address type and if it is not a loopback the display it
 			ipnet, ok = address.(*net.IPNet)
-			if ok && !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil {
+			if ok && !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil && !strings.HasPrefix(ipnet.IP.String(), "169.254.") {
 				localIPs = append(localIPs, ipnet.IP.String())
 			}
 		}

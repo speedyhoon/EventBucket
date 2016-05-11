@@ -12,7 +12,7 @@ import (
 func events(w http.ResponseWriter, r *http.Request) {
 	events, err := getCalendarEvents()
 
-	//Sort list of events by date then by name
+	// Sort list of events by date then by name
 	orderedByEvent(sortByDate, sortByName).Sort(events)
 	_, forms := sessionForms(w, r, eventNew)
 
@@ -58,7 +58,7 @@ func localIPs() []string {
 		for _, address := range addrs {
 			// check the address type and if it is not a loopback the display it
 			ipnet, ok = address.(*net.IPNet)
-			if ok && !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil {
+			if ok && !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil && !strings.HasPrefix(ipnet.IP.String(), "169.254.") {
 				localIPs = append(localIPs, ipnet.IP.String())
 			}
 		}
@@ -66,7 +66,7 @@ func localIPs() []string {
 	return localIPs
 }
 
-//CalendarEvent is the same as Event struct without Shooters and their scores.
+// CalendarEvent is the same as Event struct without Shooters and their scores.
 type CalendarEvent struct {
 	ID     string `json:"I"`
 	Name   string `json:"n"`
@@ -79,7 +79,7 @@ type CalendarEvent struct {
 	Closed bool    `json:"z,omitempty"`
 }
 
-//TODO change sort form true/false to 1/0/-1
+// TODO change sort form true/false to 1/0/-1
 type lessFunc2 func(p1, p2 *CalendarEvent) bool
 
 type multiSorter2 struct {
