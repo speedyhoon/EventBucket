@@ -11,7 +11,7 @@ for(var forms = document.forms, n = forms.length; n--;){
 function tableSort(th){
 	th = th.target;
 	/*If th.textContent == id compare using base36 else use textContent */
-	var tbody = th.parentElement.parentElement.parentElement.querySelector('tbody'), column = Array.prototype.indexOf.call(th.parentElement.children, th), direction = th.className === 'b' ? -1 : 1, rows = Array.from(tbody.children);
+	var tbody = th.parentElement.parentElement.parentElement.querySelector('tbody'), column = Array.prototype.indexOf.call(th.parentElement.children, th), direction = th.className === 'c' ? -1 : 1, rows = Array.from(tbody.children);
 	//Array.prototype.sort.call(tbody.children, function (a, b) {
 	rows.sort(function(a, b){
 		a = a.children[column].textContent;
@@ -22,11 +22,11 @@ function tableSort(th){
 	for(var i = 0, max = rows.length; i < max; i++){
 		tbody.appendChild(rows[i]);
 	}
-	var ths = th.parentElement.querySelectorAll('.b,.c'), qty = ths.length;
+	var ths = th.parentElement.querySelectorAll('.c,.d'), qty = ths.length;
 	while(qty--){
 		ths[qty].removeAttribute('class');
 	}
-	th.className = direction > 0 ? 'b' : 'c';
+	th.className = direction > 0 ? 'c' : 'd';
 }
 var dialog = document.createElement('dialog');
 dialog.onclick = dialog.close;
@@ -46,7 +46,7 @@ document.onclick = function(event){
 
 function initInputs(){
 	var inputs = document.getElementsByTagName('input'), i = inputs.length, flagClass = function(evt){
-		evt.srcElement.classList.toggle('f', true);
+		evt.srcElement.classList.toggle('g', true);
 	};
 	while(i--){
 		inputs[i].addEventListener('blur', flagClass);
