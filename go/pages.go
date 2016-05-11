@@ -88,6 +88,8 @@ func pages() {
 	post(pst, importShooter, importShooters)
 	post(get, mapResults, mapClubs)
 	post(pst, clubMoundEdit, editClubMound)
+	post(pst, eventUpdateRange, updateRange)
+	post(pst, eventUpdateAgg, updateAgg)
 
 	//BUG any url breaks when appending "&*((&*%"
 	get404(urlEvents, events)

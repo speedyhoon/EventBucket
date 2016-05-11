@@ -36,6 +36,8 @@ const (
 	importShooter        uint8 = 17
 	mapResults           uint8 = 18
 	clubMoundEdit        uint8 = 19
+	eventUpdateRange     uint8 = 20
+	eventUpdateAgg       uint8 = 21
 	pageError            uint8 = 255
 )
 
@@ -246,6 +248,26 @@ func getForm(id uint8) []field {
 			name: "I", max: 65535, step: 1, v8: isValidUint,
 		}, {
 			name: "C", v8: isValidRegex, regex: regexID,
+		}}
+	case 20: // Update Range
+		return []field{{
+			name: "E", v8: isValidRegex, regex: regexID,
+		}, {
+			name: "I", Required: true, min: 1, max: 65535, step: 1, v8: isValidUint,
+		}, {
+			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+		}, {
+			name: "k", v8: isValidBool,
+		}}
+	case 21: // Update Agg
+		return []field{{
+			name: "E", v8: isValidRegex, regex: regexID,
+		}, {
+			name: "I", Required: true, min: 1, max: 65535, step: 1, v8: isValidUint,
+		}, {
+			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+		}, {
+			name: "R", Required: true, minLen: 2, min: 1, max: 65535, step: 1, v8: listUint,
 		}}
 	}
 	return []field{}

@@ -35,7 +35,7 @@
 						{{if .IsAgg}}
 							{{range .Aggs}}{{(findRange . $.Event.Ranges).Name}}, {{end}}
 						{{end}}
-					{{if and (not .IsAgg) .Locked}}
+					{{if and .Locked (not .IsAgg)}}
 						<td class=tick>
 					{{else}}
 						<td>
@@ -52,19 +52,20 @@
 	<template>
 		<td></td>
 		<td>
-			<input required name=n maxlength=64 list=r type=search placeholder="Range name">
+			<input required name=n maxlength=64 list=r type=search placeholder="Range name" form=editRow>
 		</td>
 		<td>
-			<select size={{len .Ranges}} required name=R multiple form=editRange>
+			<select size={{len .Ranges}} required name=R multiple form=editRow>
 				{{template "optionList" .Ranges}}
 			</select>
 		</td>
 		<td>
-			<input name=l type=checkbox form=editRange>
+			<input name=k type=checkbox form=editRow>
 		</td>
 		<td>
-			<form method=post action=/12 id=editRange>
+			<form method=post action=/20 id=editRow>
 				<button name=I>Save</button>
+				<input type=hidden name=E value={{.Event.ID}}>
 			</form>
 		</td>
 	</template>
