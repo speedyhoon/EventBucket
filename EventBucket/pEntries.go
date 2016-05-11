@@ -86,3 +86,41 @@ func eventAvailableGradesUpsert(w http.ResponseWriter, r *http.Request, submitte
 	}
 	http.Redirect(w, r, urlEntries+eventID, http.StatusSeeOther)
 }
+
+func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+	eventID := submittedForm.Fields[7].Value
+	err := updateDocument(tblEvent, eventID, &EventShooter{
+		FirstName: submittedForm.Fields[0].Value,
+		Surname:   submittedForm.Fields[1].Value,
+		Club:      submittedForm.Fields[2].Value,
+		Grade:     submittedForm.Fields[4].valueUint,
+		AgeGroup:  submittedForm.Fields[5].valueUint,
+		Ladies:    submittedForm.Fields[6].Checked,
+	}, &Event{}, eventShooterInsertDB)
+	if err != nil {
+		formError(w, submittedForm, redirect, err)
+		return
+	}
+	http.Redirect(w, r, urlEntries+eventID, http.StatusSeeOther)
+}
+
+func eventShooterExistingInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+	eventID := submittedForm.Fields[3].Value
+	shooter, err := getShooter(submittedForm.Fields[0].Value)
+	if err != nil {
+		formError(w, submittedForm, redirect, err)
+		return
+	}
+	err = updateDocument(tblEvent, eventID, &EventShooter{
+		Grade:     submittedForm.Fields[1].valueUint,
+		AgeGroup:  submittedForm.Fields[2].valueUint,
+		FirstName: shooter.NickName,
+		Surname:   shooter.Surname,
+		Club:      shooter.Club,
+	}, &Event{}, eventShooterInsertDB)
+	if err != nil {
+		formError(w, submittedForm, redirect, err)
+		return
+	}
+	http.Redirect(w, r, urlEntries+eventID, http.StatusSeeOther)
+}
