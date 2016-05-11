@@ -13,11 +13,11 @@
 			<thead>
 				<tr>
 					<th class=asc>ID
-					<th>Disabled
 					<th>Shooter
 					<th>Club
 					<th>Grade
 					<th>Age Group
+					<th>Locked
 					<th>Ladies
 					{{if not $.Event.Closed}}
 						<td>Edit
@@ -26,12 +26,12 @@
 			{{range .}}
 				<tr>
 					<td>{{.ID}}
-					<td>{{.Disabled}}
 					<td>{{if $hasRanges}}<a href=/print-cards/{{$.Event.ID}}/{{.ID}} title="Print scorecards for {{.FirstName}}">{{end}}{{.FirstName}} {{.Surname}}{{if $hasRanges}}</a>{{end}}
 					<td>{{.Club}}
 					<td>{{(grade .Grade).Name}}
 					<td>{{ageGroup .AgeGroup}}
-					<td>{{if.Ladies}}Ladies{{end}}
+					{{if .Disabled}}<td class=tick>{{else}}<td>{{end}}
+					{{if .Ladies}}<td class=tick>{{else}}<td>{{end}}
 					{{if not $.Event.Closed}}
 						<td onclick='console.log("Not implemented yet")'>
 					{{end}}

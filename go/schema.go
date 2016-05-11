@@ -76,7 +76,6 @@ func (r Range) StrID() string {
 
 //Score is exported
 type Score struct {
-	//TODO the schema should change so that it can use unsigned  bit numbers instead
 	Total      uint   `json:"t,omitempty"`
 	Centers    uint   `json:"c,omitempty"`
 	Centers2   uint   `json:"n,omitempty"`
@@ -93,9 +92,9 @@ type Score struct {
 //EventShooter is exported
 type EventShooter struct {
 	ID        uint             `json:"I"`
-	FirstName string           `json:"f"` //TODO change these to point to shooters in the other shooter tables
+	FirstName string           `json:"f"` //TODO change these to point to shooters in the other shooter tables? Would require extra look ups though :(
 	Surname   string           `json:"s"`
-	Club      string           `json:"C"`
+	Club      string           `json:"C"` //TODO change Club to struct Club{ID uint, Name string} ??
 	Grade     uint             `json:"g"`
 	Hidden    bool             `json:"h,omitempty"`
 	AgeGroup  uint             `json:"r,omitempty"`
