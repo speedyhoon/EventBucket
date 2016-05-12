@@ -64,8 +64,6 @@ func getForm(id uint8) []field {
 	case 1: // New Club
 		return []field{{
 			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
-		}, {
-			name: "b", v8: isValidBool,
 		}}
 	case 2: // Club Details
 		return []field{{

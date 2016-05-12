@@ -110,25 +110,26 @@ type MapClub struct {
 
 func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	name := submittedForm.Fields[0].Value
-	isDefault := submittedForm.Fields[1].Checked
+	// isDefault := submittedForm.Fields[1].Checked
 	var ID string
+	defaultClub := getDefaultClub()
 
 	// Check if a club with that name already exists.
 	club, err := getClubByName(name)
 	if err != nil {
-		ID, err = insertClub(Club{Name: name, IsDefault: isDefault})
+		ID, err = insertClub(Club{Name: name, IsDefault: defaultClub.ID == ""}) // Set this club to default if no other clubs are the defualt
 		if err != nil {
 			formError(w, submittedForm, redirect, err)
 			return
 		}
-		defaultClub := getDefaultClub()
-		if isDefault && defaultClub.ID != "" {
-			// TODO change this so it is some how atomic & winithin the same transaction.
+
+		/*if isDefault && defaultClub.ID != "" {
+			//  TODO change this so it is some how atomic & winithin the same transaction.
 			err := updateDocument(tblClub, defaultClub.ID, &Club{IsDefault: false}, &Club{}, updateClubDefault)
 			if err != nil {
 				warn.Println(err)
 			}
-		}
+		}*/
 	} else {
 		// Use a generic pageError form to pass the error message to the Club Settings page.
 		/*TODO investigate if there is a simpler way to pass error messages between different pages. Maybe use a slice []string so several messages could be displayed if needed?
@@ -136,7 +137,7 @@ func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redi
 		setSession(w, form{action: pageError, Error: fmt.Errorf("A club with name '%v' already exists.", name)})
 		ID = club.ID
 	}
-	http.Redirect(w, r, urlClub+ID, http.StatusSeeOther)
+	http.Redirect(w, r, urlClub+ID+"#edit", http.StatusSeeOther)
 }
 
 func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
