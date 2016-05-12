@@ -93,17 +93,19 @@ func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm fo
 	}
 
 	eventID := submittedForm.Fields[7].Value
-	err := updateDocument(tblEvent, eventID, &EventShooter{
-		FirstName: submittedForm.Fields[0].Value,
-		Surname:   submittedForm.Fields[1].Value,
-		Club:      submittedForm.Fields[2].Value,
-		Grade:     submittedForm.Fields[4].valueUint,
-		AgeGroup:  submittedForm.Fields[5].valueUint,
-		Ladies:    submittedForm.Fields[6].Checked,
-	}, &Event{}, eventShooterInsertDB)
-	if err != nil {
-		formError(w, submittedForm, redirect, err)
-		return
+	for _, grade := range submittedForm.Fields[4].valueUintSlice {
+		err := updateDocument(tblEvent, eventID, &EventShooter{
+			FirstName: submittedForm.Fields[0].Value,
+			Surname:   submittedForm.Fields[1].Value,
+			Club:      submittedForm.Fields[2].Value,
+			Grade:     grade,
+			AgeGroup:  submittedForm.Fields[5].valueUint,
+			Ladies:    submittedForm.Fields[6].Checked,
+		}, &Event{}, eventShooterInsertDB)
+		if err != nil {
+			formError(w, submittedForm, redirect, err)
+			return
+		}
 	}
 	// TODO possibly return shooter id from insert and use that in eventShooter?
 	if len(searchShootersOptions(submittedForm.Fields[0].Value, submittedForm.Fields[1].Value, submittedForm.Fields[2].Value)) <= 1 { // search always returns a blank option for html rendering so the select box isn't mandatory.
