@@ -1,12 +1,34 @@
 {{define "page"}}
 	{{with .ListEvents}}
-		<ul>
+		<table>
+			<thead>
+				<tr>
+					<th>Event Name
+					<th>Club
+					<th>Edit
+			</thead>
 			{{range .}}
 				{{if .Closed}}
-					<li><a href=/entries/{{.ID}}>{{.Name}}</a>
+					<tr>
+						<td>
+							{{if.ID}}
+								<a href=/entries/{{.ID}}>{{.Name}}</a>
+							{{else}}
+								{{.Name}}
+							{{end}}
+						<td>
+							{{if.ClubID}}
+								<a href=/club/{{.ClubID}}>{{.Club}}</a>
+							{{else}}
+									{{.Club}}
+							{{end}}
+						<td>
+							<a href=/event-settings/{{.ID}}>
+								<img src=/v/edit alt="Edit event" height=15>
+							</a>
 				{{end}}
 			{{end}}
-		</ul>
+		</table>
 	{{else}}
 		<samp>No events archived</samp>
 	{{end}}
