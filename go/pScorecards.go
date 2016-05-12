@@ -31,13 +31,34 @@ func scorecards(w http.ResponseWriter, r *http.Request, showAll bool, parameters
 		return
 	}
 
-	//TODO this is messy as hell
+	//TODO this is messy as hell - calculate it during class grade changes?
+	var classesAdded []uint
+	var myDosc []Discipline
+	var temp bool
+	for _, id := range event.Grades {
+		temp = false
+		for _, added := range classesAdded {
+			if id == added {
+				temp = true
+				break
+			}
+		}
+		if !temp {
+			classesAdded = append(classesAdded, id) //TODO messy
+			myDosc = append(myDosc, globalDisciplines[findGrade(id).ClassID])
+		}
+	}
 	var longestShoot uint
 	var longestClassID int
-	for classID, discipline := range globalDisciplines {
+	for i, discipline := range myDosc {
 		if discipline.QtySighters+discipline.QtyShots > longestShoot {
 			longestShoot = discipline.QtySighters + discipline.QtyShots
-			longestClassID = classID
+			longestClassID = i
+		}
+	}
+	for i, discipline := range myDosc {
+		if longestShoot-discipline.QtySighters-discipline.QtyShots > 1 {
+			myDosc[i].Colspan = longestShoot - discipline.QtySighters - discipline.QtyShots + 1
 		}
 	}
 
@@ -54,10 +75,11 @@ func scorecards(w http.ResponseWriter, r *http.Request, showAll bool, parameters
 			"ShowAll": showAll,
 
 			//TODO this is messy as hell
-			"Disciplines":    globalDisciplines,
+			"Disciplines":    myDosc,
 			"LongestClassID": longestClassID,
-			"Sighters":       make([]struct{}, globalDisciplines[longestClassID].QtySighters),
-			"Shots":          make([]struct{}, globalDisciplines[longestClassID].QtyShots),
+			"LongestShoot":   longestShoot,
+			"Sighters":       make([]struct{}, globalDisciplines[longestClassID].QtySighters+1),
+			"Shots":          make([]struct{}, globalDisciplines[longestClassID].QtyShots+1),
 		},
 	})
 }

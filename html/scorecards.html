@@ -9,11 +9,12 @@
 					<th>Club
 					<th>Grade
 					<th>Shooter
-					{{range $i, $u := $.Sighters}}
-						<td>S{{$i}}
+					{{$D := index $.Disciplines $.LongestClassID}}
+					{{range $i := N $D.QtySighters}}
+						<td>S{{.}}
 					{{end}}
-					{{range $i, $u := $.Shots}}
-						<td>{{$i}}
+					{{range $i := N $D.QtyShots}}
+						<td>{{.}}
 					{{end}}
 					<th>Total
 			</thead>
@@ -27,23 +28,14 @@
 							<th>{{(grade .Grade).Abbr}}
 							<th>{{.FirstName}} {{.Surname}}
 
-	{{/*
-			{{$tempClass := CLASS .Grade}}
-			{{$shot_cells := index $classShots $tempClass}}
-			{{range $shot_index, $shot_name := $shot_cells}}
-			<td>{{DisplayShot $shot_index $score}}
-				{{end}}
-			*/}}
-
-							<td>
-							<td>
-							<td>
-							<td>
-							<td>
-							<td>
-							<td>
-							{{/*$lenth_this_shot := index $class_shots_length $tempClass*/}}
-							<th{{/*COLSPAN $longest_shots $lenth_this_shot*/}} class=t>
+							{{$NewD := getClass $.Disciplines (grade .Grade).ClassID}}
+							{{range $i := N $NewD.QtyTotal}}
+								<td>
+									{{if gt (len $score.Shots) .}}
+										{{printf "%c" (index $score.Shots .)}}
+									{{end}}
+							{{end}}
+							<th{{attr " colspan" $NewD.Colspan}} class=t>
 								{{with $score}}
 									{{.Total}}{{with .Centers}}<sup>{{.}}</sup>{{end}}
 								{{end}}

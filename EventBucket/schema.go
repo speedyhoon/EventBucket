@@ -76,7 +76,6 @@ func (r Range) StrID() string {
 
 // Score is exported
 type Score struct {
-	// TODO the schema should change so that it can use unsigned  bit numbers instead
 	Total      uint   `json:"t,omitempty"`
 	Centers    uint   `json:"c,omitempty"`
 	Centers2   uint   `json:"n,omitempty"`
@@ -93,13 +92,13 @@ type Score struct {
 // EventShooter is exported
 type EventShooter struct {
 	ID        uint             `json:"I"`
-	FirstName string           `json:"f"` // TODO change these to point to shooters in the other shooter tables
+	FirstName string           `json:"f"` // TODO change these to point to shooters in the other shooter tables? Would require extra look ups though :(
 	Surname   string           `json:"s"`
-	Club      string           `json:"C"`
+	Club      string           `json:"C"` // TODO change Club to struct Club{ID uint, Name string} ??
 	Grade     uint             `json:"g"`
 	Hidden    bool             `json:"h,omitempty"`
 	AgeGroup  uint             `json:"r,omitempty"`
-	Scores    map[string]Score `json:"S,omitempty"` // Scores   []Score `json:"schemaScores,omitempty"`   // S is not used!
+	Scores    map[string]Score `json:"S,omitempty"` // TODO look into using uint as index instead of string. // TODO look into inline the json field and if it would work with uint indexes // Scores   []Score `json:"schemaScores,omitempty"`   // S is not used!
 	LinkedID  uint             `json:"l,omitempty"` // For duplicating shooters that are in different classes with the same score
 	SID       int              `json:"M,omitempty"`
 	Disabled  bool             `json:"d,omitempty"`
