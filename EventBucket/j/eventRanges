@@ -19,7 +19,7 @@ function stuff(editCell){
 
 	var l = t.querySelector('[name=k]');
 	if(!tds[2].textContent){
-		if(tds[3].className == 'tick'){
+		if(tds[3].className == 'e'){
 			l.setAttribute('checked', '');
 		}
 	}else{
