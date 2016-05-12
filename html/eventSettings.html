@@ -16,13 +16,13 @@
 	{{with .Event.Ranges}}
 		<p>Total Ranges: {{len .}}
 		{{if not $.Event.Closed}}
-		<table id=editRanges>
+		<table id=editRow>
 		{{else}}<table>{{end}}
 			<thead>
 				<th class=asc>ID
 				<th>Range
 				<th>Aggs
-				<th>Locked
+				<td>Locked
 				{{if not $.Event.Closed}}
 					<td>Edit
 				{{end}}

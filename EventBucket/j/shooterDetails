@@ -1,5 +1,5 @@
 'use strict';
-var editShooters = document.querySelectorAll('#editShooters tbody tr td:last-of-type'), qty = editShooters.length;
+var editShooters = document.querySelectorAll('#editRow tbody tr td:last-of-type'), qty = editShooters.length;
 while(qty--){
 	editShooters[qty].onclick = stuff;
 }
