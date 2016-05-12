@@ -13,7 +13,12 @@
 							<b>{{ordinal .ISO.Day}}</b>
 							{{.ISO.Month}} {{.ISO.Year}}
 						</div>
-						<p>{{if.ID}}<a href=/entries/{{.ID}}>{{.Name}}</a>{{end}} {{with.Time}}starts at {{.}}{{end}}</p>
+						<p>
+							{{if.ID}}<a href=/entries/{{.ID}}>{{.Name}}</a>{{end}} {{with.Time}}starts at {{.}}{{end}}
+							<a href=/event-settings/{{.ID}} title="Edit event" class=right>
+								<img src=/v/edit alt="Edit event" height=15>
+							</a>
+						</p>
 						{{range .Ranges}}{{.Name}}, {{else}}No ranges added.{{end}}
 						<br>{{if.Club}}<a href=/club/{{.ClubID}}>{{.Club}}</a>{{end}}
 					</div>
