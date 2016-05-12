@@ -14,6 +14,8 @@ type Discipline struct {
 	ID          uint    `json:"id,omitempty"`
 	QtySighters uint    `json:"sightersQty,omitempty"`
 	QtyShots    uint    `json:"shotsQty,omitempty"`
+	QtyTotal    uint    `json:"-"`
+	Colspan     uint    `json:"-"`
 	Grades      []Grade `json:"grades,omitempty"`
 	Marking     Mark    `json:"marking,omitempty"`
 	ShootOff    bool    `json:"shootOff,omitempty"`
@@ -139,6 +141,7 @@ func defaultGlobalDisciplines() []Discipline {
 		Name:        "Target Rifle",
 		QtySighters: 2,
 		QtyShots:    10,
+		QtyTotal:    12,
 		Marking:     XV5,
 		//Target rifle is traditionally scored up to 5 (bullseye) which is has a larger area than 6 on an F class target.
 		//This causes significantly more shoot-offs for winning a range than F Class.
@@ -150,6 +153,7 @@ func defaultGlobalDisciplines() []Discipline {
 		Name:        "F Class",
 		QtyShots:    12,
 		QtySighters: 3,
+		QtyTotal:    15,
 		Marking: Mark{
 			Buttons: "0123456X",
 			Shots: map[string]Shot{
@@ -173,6 +177,7 @@ func defaultGlobalDisciplines() []Discipline {
 		Name:        "Match Rifle",
 		QtySighters: 3,
 		QtyShots:    15,
+		QtyTotal:    18,
 		Marking:     XV5,
 		Grades: []Grade{{Abbr: "MO", Name: "Match Open"},
 			{Abbr: "MR", Name: "Match Reserve"}},
@@ -181,6 +186,7 @@ func defaultGlobalDisciplines() []Discipline {
 		Name:        "Service Rifle",
 		QtySighters: 1,
 		QtyShots:    8,
+		QtyTotal:    9,
 		Marking: Mark{
 			Buttons: "012345V",
 			Shots: map[string]Shot{
@@ -239,4 +245,11 @@ func buildGradesFile(filePath string) error {
 	}
 	info.Println("Created grades settings file:", filePath)
 	return nil
+}
+
+func findGrade(index uint) Grade {
+	if index < uint(len(globalGrades)) {
+		return globalGrades[index]
+	}
+	return Grade{}
 }

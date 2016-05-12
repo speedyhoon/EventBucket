@@ -8,32 +8,34 @@ import (
 	"strings"
 )
 
-// Discipline separates different types of shooting so the number of shots & sighters can be easily changed while still using the same targets and Mark as another Discipline, e.g. Target rifles and Match rifles are vastly different disciplines but use the same scoring standard.
+//  Discipline separates different types of shooting so the number of shots & sighters can be easily changed while still using the same targets and Mark as another Discipline, e.g. Target rifles and Match rifles are vastly different disciplines but use the same scoring standard.
 type Discipline struct {
 	Name        string  `json:"name,omitempty"`
 	ID          uint    `json:"id,omitempty"`
 	QtySighters uint    `json:"sightersQty,omitempty"`
 	QtyShots    uint    `json:"shotsQty,omitempty"`
+	QtyTotal    uint    `json:"-"`
+	Colspan     uint    `json:"-"`
 	Grades      []Grade `json:"grades,omitempty"`
 	Marking     Mark    `json:"marking,omitempty"`
 	ShootOff    bool    `json:"shootOff,omitempty"`
 }
 
-// Mark is a group of settings associated with possible shooter scores on a target also known as "marking". Each type of target scoring standard can be specified by a Mark and be reused within several Disciplines.
+//  Mark is a group of settings associated with possible shooter scores on a target also known as "marking". Each type of target scoring standard can be specified by a Mark and be reused within several Disciplines.
 type Mark struct {
 	Buttons      string          `json:",buttons      omitempty"`
 	Shots        map[string]Shot `json:",shots        omitempty"`
 	DoCountBack2 bool            `json:",doCountBack2 omitempty"`
 }
 
-// Grade are subcategories of each discipline that shooters can be grouped together by similar skill levels.
+//  Grade are subcategories of each discipline that shooters can be grouped together by similar skill levels.
 type Grade struct {
-	Name    string `json:"name,omitempty"` //Target A, F Class B, Match Reserve
-	Abbr    string `json:"abbr,omitempty"` //Abbreviation of Name: A,B,C,FA,FB,FO,MO,MR
+	Name    string `json:"name,omitempty"` // Target A, F Class B, Match Reserve
+	Abbr    string `json:"abbr,omitempty"` // Abbreviation of Name: A,B,C,FA,FB,FO,MO,MR
 	ClassID uint   `json:"classID,omitempty"`
 }
 
-// Shot is exported
+//  Shot is exported
 type Shot struct {
 	Value      uint   `json:"value"`
 	Center     uint   `json:"center,omitempty"`
@@ -128,10 +130,10 @@ func defaultGlobalDisciplines() []Discipline {
 			"V": {Value: 5, Center: 1, CountBack: "6", Center2: 0, CountBack2: "6", Shot: "V", Sighter: "v"},
 			"6": {Value: 5, Center: 1, CountBack: "6", Center2: 0, CountBack2: "6", Shot: "V", Sighter: "g"},
 			"X": {Value: 5, Center: 1, CountBack: "6", Center2: 1, CountBack2: "7", Shot: "X", Sighter: "x"},
-			//TODO sort isn't sorting by countback 2 descending.
-			//TODO precedence is taken over the last X shot rather than the most X's shot
+			// TODO sort isn't sorting by countback 2 descending.
+			// TODO precedence is taken over the last X shot rather than the most X's shot
 		}}
-	//TODO move comment somewhere where the user can read it?
+	// TODO move comment somewhere where the user can read it?
 	/*Disciplines F Standard, F Open and F/TR have been merged together because they all use the same scoring method (0123456X). Although they are technically separate disciplines, most events assign the same number of shots and sighters for all three.  If the disciplines need to be independent, these settings can be overwritten using the command line flag -grades and specifying a JSON settings file. e.g. EventBucket.exe -grades my_new_grades.json
 	EventBucket will not import or remember the settings file next time you start the application. Adding command line flags to an EventBucket shortcut is the easiest way to specify settings every time EventBucket is started.*/
 	return []Discipline{{
@@ -139,9 +141,10 @@ func defaultGlobalDisciplines() []Discipline {
 		Name:        "Target Rifle",
 		QtySighters: 2,
 		QtyShots:    10,
+		QtyTotal:    12,
 		Marking:     XV5,
-		//Target rifle is traditionally scored up to 5 (bullseye) which is has a larger area than 6 on an F class target.
-		//This causes significantly more shoot-offs for winning a range than F Class.
+		// Target rifle is traditionally scored up to 5 (bullseye) which is has a larger area than 6 on an F class target.
+		// This causes significantly more shoot-offs for winning a range than F Class.
 		Grades: []Grade{{Abbr: "A", Name: "Target A"},
 			{Abbr: "B", Name: "Target B"},
 			{Abbr: "C", Name: "Target C"}},
@@ -150,6 +153,7 @@ func defaultGlobalDisciplines() []Discipline {
 		Name:        "F Class",
 		QtyShots:    12,
 		QtySighters: 3,
+		QtyTotal:    15,
 		Marking: Mark{
 			Buttons: "0123456X",
 			Shots: map[string]Shot{
@@ -173,6 +177,7 @@ func defaultGlobalDisciplines() []Discipline {
 		Name:        "Match Rifle",
 		QtySighters: 3,
 		QtyShots:    15,
+		QtyTotal:    18,
 		Marking:     XV5,
 		Grades: []Grade{{Abbr: "MO", Name: "Match Open"},
 			{Abbr: "MR", Name: "Match Reserve"}},
@@ -181,6 +186,7 @@ func defaultGlobalDisciplines() []Discipline {
 		Name:        "Service Rifle",
 		QtySighters: 1,
 		QtyShots:    8,
+		QtyTotal:    9,
 		Marking: Mark{
 			Buttons: "012345V",
 			Shots: map[string]Shot{
@@ -204,7 +210,7 @@ func loadGrades(filePath string) error {
 		return errors.New("File specified is empty")
 	}
 	contents, err := ioutil.ReadFile(filePath)
-	//If file is empty, try to write a new JSON file.
+	// If file is empty, try to write a new JSON file.
 	if err != nil {
 		warn.Println(err)
 		return err
@@ -212,7 +218,7 @@ func loadGrades(filePath string) error {
 	var disciplines []Discipline
 	err = json.Unmarshal(contents, &disciplines)
 	if err != nil {
-		//Unable to unmarshal settings from JSON file.
+		// Unable to unmarshal settings from JSON file.
 		warn.Println("error:", err)
 		return fmt.Errorf("Error: %v, File: %v", err, filePath)
 	}
@@ -222,10 +228,10 @@ func loadGrades(filePath string) error {
 }
 
 func buildGradesFile(filePath string) error {
-	//Generate JSON from globalDisciplines
+	// Generate JSON from globalDisciplines
 	src, err := json.MarshalIndent(globalDisciplines, "", "\t")
 	if err != nil {
-		//Output marshal errors
+		// Output marshal errors
 		warn.Println("error:", err)
 	}
 	if !strings.HasSuffix(filePath, ".json") {
@@ -239,4 +245,11 @@ func buildGradesFile(filePath string) error {
 	}
 	info.Println("Created grades settings file:", filePath)
 	return nil
+}
+
+func findGrade(index uint) Grade {
+	if index < uint(len(globalGrades)) {
+		return globalGrades[index]
+	}
+	return Grade{}
 }

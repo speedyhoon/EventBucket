@@ -117,6 +117,10 @@ var (
 				if value.(int) > 0 {
 					output = attribute + "=" + addQuotes(value)
 				}
+			case uint:
+				if value.(uint) > 0 {
+					output = attribute + "=" + addQuotes(value)
+				}
 			}
 			return template.HTMLAttr(output)
 		},
@@ -137,12 +141,7 @@ var (
 			}
 			return template.HTMLAttr("")
 		},
-		"grade": func(index uint) Grade {
-			if index < uint(len(globalGrades)) {
-				return globalGrades[index]
-			}
-			return Grade{}
-		},
+		"grade": findGrade,
 		"ageGroup": func(index uint) string {
 			if index >= 1 && index < uint(len(dataListAgeGroup())) {
 				return dataListAgeGroup()[index].Label
@@ -157,6 +156,26 @@ var (
 				}
 			}
 			return Range{}
+		},
+		// TODO cleanup N & getClass
+		"N": func(end uint) (stream chan uint) {
+			stream = make(chan uint)
+			go func() {
+				var i uint = 1
+				for ; i <= end; i++ {
+					stream <- i
+				}
+				close(stream)
+			}()
+			return
+		},
+		"getClass": func(disc []Discipline, classID uint) Discipline {
+			for _, ds := range disc {
+				if classID == ds.ID {
+					return ds
+				}
+			}
+			return Discipline{}
 		},
 	}
 )

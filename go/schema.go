@@ -98,7 +98,7 @@ type EventShooter struct {
 	Grade     uint             `json:"g"`
 	Hidden    bool             `json:"h,omitempty"`
 	AgeGroup  uint             `json:"r,omitempty"`
-	Scores    map[string]Score `json:"S,omitempty"` //Scores   []Score `json:"schemaScores,omitempty"`   //S is not used!
+	Scores    map[string]Score `json:"S,omitempty"` //TODO look into using uint as index instead of string. //TODO look into inline the json field and if it would work with uint indexes //Scores   []Score `json:"schemaScores,omitempty"`   //S is not used!
 	LinkedID  uint             `json:"l,omitempty"` //For duplicating shooters that are in different classes with the same score
 	SID       int              `json:"M,omitempty"`
 	Disabled  bool             `json:"d,omitempty"`
