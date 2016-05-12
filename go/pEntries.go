@@ -92,6 +92,7 @@ func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm fo
 		insertClub(Club{Name: submittedForm.Fields[2].Value})
 	}
 
+	//Loop through the grades selected and add an new shooter for each with a different grade
 	eventID := submittedForm.Fields[7].Value
 	for _, grade := range submittedForm.Fields[4].valueUintSlice {
 		err := updateDocument(tblEvent, eventID, &EventShooter{
@@ -109,6 +110,7 @@ func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm fo
 	}
 	//TODO possibly return shooter id from insert and use that in eventShooter?
 	if len(searchShootersOptions(submittedForm.Fields[0].Value, submittedForm.Fields[1].Value, submittedForm.Fields[2].Value)) <= 1 { //search always returns a blank option for html rendering so the select box isn't mandatory.
+		//shooterInsert will redirect the user back to the referer page.
 		shooterInsert(w, r, form{Fields: []field{
 			submittedForm.Fields[0],
 			submittedForm.Fields[1],
