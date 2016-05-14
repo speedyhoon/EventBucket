@@ -1,6 +1,5 @@
 {
-	"FixedFileInfo":
-	{
+	"FixedFileInfo": {
 		"FileVersion": {
 			"Major": 3,
 			"Minor": 0,
@@ -8,8 +7,7 @@
 			"Build": 5972
 		}
 	},
-	"StringFileInfo":
-	{
+	"StringFileInfo": {
 		"CompanyName": "EventBucket",
 		"FileDescription": "Rifle club scoring website for prize meetings",
 		"LegalCopyright": "EventBucket",
