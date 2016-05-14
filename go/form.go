@@ -113,8 +113,6 @@ func getForm(id uint8) []field {
 		}, {
 			name: "c", v8: isValidBool,
 		}, {
-			name: "a", v8: isValidBool,
-		}, {
 			name: "E", v8: isValidRegex, regex: regexID,
 		}}
 	case 6: //Add Range

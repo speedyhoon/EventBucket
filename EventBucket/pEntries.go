@@ -28,6 +28,7 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 	shooterEntry.Fields[4].Options = eventGrades(event.Grades)
 	shooterEntry.Fields[6].Value = eventID
 	shooterEntry.Fields[7].Value = eventID
+	shooterEntry.Fields[8].Value = eventID
 
 	// AvailableGrades
 	pageForms[2].Fields[0].Options = availableGrades(event.Grades)

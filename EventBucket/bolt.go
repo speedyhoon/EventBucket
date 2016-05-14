@@ -528,7 +528,7 @@ func searchShootersOptions(firstName, surname, club string) []option {
 			var shooter Shooter
 			// strings.Contains returns true when sub-string is "" (empty string)
 			if json.Unmarshal(value, &shooter) == nil && strings.Contains(strings.ToLower(shooter.FirstName), firstName) && strings.Contains(strings.ToLower(shooter.Surname), surname) && strings.Contains(strings.ToLower(shooter.Club), club) {
-				shooters = append(shooters, option{Value: shooter.ID, Label: shooter.FirstName + " " + shooter.Surname + " " + shooter.Club})
+				shooters = append(shooters, option{Value: shooter.ID, Label: shooter.FirstName + " " + shooter.Surname + ", " + shooter.Club})
 			}
 			return nil
 		})

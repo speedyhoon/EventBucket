@@ -28,7 +28,6 @@ type markupEnv struct {
 }
 
 const (
-	titleSeparator        = " - "
 	htmlDirectory         = "./h/"
 	masterTemplatePath    = htmlDirectory + "master"
 	masterScoreboard      = htmlDirectory + "masterScoreboard"
@@ -190,10 +189,11 @@ func templater(w http.ResponseWriter, page page) {
 		w.Header().Set(csp, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self' data:") //font-src 'self'
 	}
 
-	//Convert page.Title to the HTML template file name (located within htmlDirectory), e.g. Events > events, Club Settings > clubSettings
-	pageName := strings.Split(page.Title, titleSeparator)[0]
-	pageName = strings.Replace(strings.Title(pageName), " ", "", -1)
-	pageName = strings.ToLower(string([]rune(pageName)[0])) + string([]rune(pageName)[1:])
+	pageName := "events"
+	if page.Title != "" {
+		//Convert page.Title to the HTML template file name (located within htmlDirectory), e.g. Events > Events, Club Settings > ClubSettings
+		pageName = strings.Replace(strings.Title(page.Title), " ", "", -1)
+	}
 
 	htmlFileNames := []string{htmlDirectory + pageName}
 	if page.template != templateNone {
