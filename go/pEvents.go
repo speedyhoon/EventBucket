@@ -18,7 +18,6 @@ func events(w http.ResponseWriter, r *http.Request) {
 
 	hostname, _ := os.Hostname()
 	templater(w, page{
-		Title: "Events",
 		Error: err,
 		Data: map[string]interface{}{
 			"NewEvent": forms[0],

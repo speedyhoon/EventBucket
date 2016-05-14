@@ -43,13 +43,11 @@ func listUint(f *field, inp ...string) {
 }
 
 func isValidUint(f *field, inp ...string) {
-	if debug {
-		if f.step == 0 {
-			warn.Println("Are you sure about step == 0? isValidUint", f.name)
-		}
-		if f.max == 0 {
-			warn.Println("Are you sure about max == 0? isValidUint", f.name)
-		}
+	if f.step == 0 {
+		warn.Println("Are you sure about step == 0? isValidUint", f.name)
+	}
+	if f.max == 0 {
+		warn.Println("Are you sure about max == 0? isValidUint", f.name)
 	}
 
 	var err error

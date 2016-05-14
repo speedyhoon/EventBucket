@@ -5,7 +5,7 @@
 {{end}}
 
 {{define "listEvents"}}
-	{{with .}}
+	{{with.}}
 		<ul>
 			{{range .}}
 				{{if not .Closed}}<li><a href=/entries/{{.ID}}>{{.Name}}</a>{{end}}
@@ -18,7 +18,7 @@
 {{end}}
 
 {{define "tableShooters"}}
-	{{with .}}
+	{{with.}}
 		<table id=editRow>
 			<thead>
 				<tr>
@@ -65,7 +65,7 @@
 {{end}}
 
 {{define "clubMounds"}}
-	{{with .}}
+	{{with.}}
 		<table id=editRow>
 			<thead>
 				<tr>

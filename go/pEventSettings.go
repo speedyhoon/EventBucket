@@ -26,8 +26,8 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 		forms[0].Fields[2].Value = event.Date
 		forms[0].Fields[3].Value = event.Time
 		forms[0].Fields[4].Checked = event.Closed
-		forms[0].Fields[5].Checked = event.AverTwin
-		forms[0].Fields[6].Value = event.ID
+		//forms[0].Fields[5].Checked = event.AverTwin
+		forms[0].Fields[5].Value = event.ID
 	}
 	forms[1].Fields[1].Value = eventID
 

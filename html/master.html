@@ -1,54 +1,53 @@
 {{define "master"}}<!DOCTYPE html>
 <link rel=stylesheet href=dirCSS/lite>
-<title>EventBucket{{with .Page.Title}} - {{.}}{{end}}</title>
+<title>EventBucket{{with .Page.Title}} {{.}}{{end}}</title>
 <header>
 	<h1><a href=/>EventBucket</a></h1>
 	<span class=small>Making scoring easier for rifle clubs</span>
-	<nav>
-		<ul>
-			{{range .Menu}}
-				{{if eq $.Page.Title .Name}}
-					<li class=visited>{{.Name}}
-				{{else}}
-					<li><a href={{.Link}}>{{.Name}}</a>
-						{{if eq $.Page.Menu .Link}}
-							{{with .SubMenu}}
-								<ul>
-									{{range .}}
-										{{if not .RangeMenu}}
-											{{if eq $.Page.Title .Name}}
-												<li class=visited>{{.Name}}
-											{{else}}
-												<li><a href={{.Link}}{{$.Page.MenuID}}>{{.Name}}</a>
-											{{end}}
-										{{end}}
-										{{if and .RangeMenu $.Page.Data.Event.Ranges}}
-											<li>
-												{{if eq $.Page.Title .Name}}
-													<div class=open>
-												{{else}}
-													<div>
-												{{end}}
-												{{.Name}}</div>
-											<ul>
-												{{$link := .Link}}
-												{{range $.Page.Data.Event.Ranges}}
-													{{if or (not .IsAgg) (eq $link "/scoreboard/")}}
-														<li><a href={{$link}}{{$.Page.MenuID}}/{{.ID}}>{{.Name}}</a>
-													{{end}}
-												{{end}}
-											</ul>
+	<ul>
+		{{range .Menu}}
+			{{if eq $.Page.Title .Name}}
+				<li class=visited>{{.Name}}
+			{{else}}
+				<li><a href={{.Link}}>{{.Name}}</a>
+					{{if eq $.Page.Menu .Link}}
+						{{with .SubMenu}}
+							<ul>
+								{{range .}}
+									{{if not .RangeMenu}}
+										{{if eq $.Page.Title .Name}}
+											<li class=visited>{{.Name}}
+										{{else}}
+											<li><a href={{.Link}}{{$.Page.MenuID}}>{{.Name}}</a>
 										{{end}}
 									{{end}}
-								</ul>
-							{{end}}
-					{{end}}
+									{{if and .RangeMenu $.Page.Data.Event.Ranges}}
+										<li>
+											{{if eq $.Page.Title .Name}}
+												<div class=open>
+											{{else}}
+												<div>
+											{{end}}
+											{{.Name}}</div>
+										<ul>
+											{{$link := .Link}}
+											{{range $.Page.Data.Event.Ranges}}
+												{{if or (not .IsAgg) (eq $link "/scoreboard/")}}
+													<li><a href={{$link}}{{$.Page.MenuID}}/{{.ID}}>{{.Name}}</a>
+												{{end}}
+											{{end}}
+										</ul>
+									{{end}}
+								{{end}}
+							</ul>
+						{{end}}
 				{{end}}
 			{{end}}
-		</ul>
-		<p class=small>Copyright &copy; 2011-{{.CurrentYear}}
-		<p class=small><a href=/about>vversionNumber</a> <a href=/licence class=right><img src=dirPNG/80x15 alt="Creative Commons Licence" height=15 width=80></a>
-	</nav>
+		{{end}}
+	</ul>
+	<p class=small>Copyright &copy; 2011-{{.CurrentYear}}
+	<br><br>
+	<a href=/about>vversionNumber</a> <a href=/licence class=right><img src=dirPNG/80x15 alt="Creative Commons Licence" height=15 width=80></a>
 </header>
 <section>
 	{{with .Page}}

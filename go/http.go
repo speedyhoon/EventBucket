@@ -12,11 +12,12 @@ const (
 	cacheControl   = "Cache-Control"
 	expires        = "Expires"
 	cache          = "cache"
-	maps           = "default-src 'none'; style-src 'self'; script-src 'self' maps.googleapis.com; connect-src 'self'; img-src 'self' data: maps.googleapis.com maps.gstatic.com"
+	maps           = "default-src 'self'; script-src 'self' maps.googleapis.com; img-src 'self' data: maps.googleapis.com maps.gstatic.com"
 	nocache        = "nocache"
 	cGzip          = "gzip"
 	acceptEncoding = "Accept-Encoding"
 	csp            = "Content-Security-Policy"
+	//maps           = "default-src 'none'; style-src 'self'; script-src 'self' maps.googleapis.com; connect-src 'self'; img-src 'self' data: maps.googleapis.com maps.gstatic.com"
 )
 
 func serveFile(fileName string) {
