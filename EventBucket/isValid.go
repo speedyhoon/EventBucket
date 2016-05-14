@@ -9,18 +9,18 @@ import (
 
 func listUint(f *field, inp ...string) {
 	if len(inp) < f.minLen {
-		f.Error = fmt.Sprintf("Not enough items selected. At least %v items are needed.", f.minLen) // TODO plural
+		f.Error = fmt.Sprintf("Not enough items selected. At least %v items are needed.", f.minLen) //TODO plural
 		return
 	}
 
 	check := make(map[uint]bool, len(inp))
 	var list []uint
 
-	// Use a temporary field as a pointer so isValidUint can assign values & errors.
+	//Use a temporary field as a pointer so isValidUint can assign values & errors.
 	g := *f
 
 	for _, in := range inp {
-		// t.Println("unvalidated rangeID", in, "Isn't empty", in != "")
+		//t.Println("unvalidated rangeID", in, "Isn't empty", in != "")
 
 		g.Error = ""
 		isValidUint(&g, in)
@@ -43,24 +43,26 @@ func listUint(f *field, inp ...string) {
 }
 
 func isValidUint(f *field, inp ...string) {
-	if f.step == 0 {
-		warn.Println("Are you sure about step == 0? isValidUint", f.name)
-	}
-	if f.max == 0 {
-		warn.Println("Are you sure about max == 0? isValidUint", f.name)
+	if debug {
+		if f.step == 0 {
+			warn.Println("Are you sure about step == 0? isValidUint", f.name)
+		}
+		if f.max == 0 {
+			warn.Println("Are you sure about max == 0? isValidUint", f.name)
+		}
 	}
 
 	var err error
 	f.Value = inp[0]
 	f.valueUint, err = strToUint(f.Value)
 	if err != nil {
-		// Return error if input string failed to convert.
+		//Return error if input string failed to convert.
 		f.Error = err.Error()
 		return
 	}
 
 	if !f.Required && f.valueUint == 0 {
-		// f.valueUint is zero by default so assigning zero isn't required
+		//f.valueUint is zero by default so assigning zero isn't required
 		return
 	}
 	if f.valueUint < uint(f.min) || f.valueUint > uint(f.max) {
@@ -85,14 +87,14 @@ func isValidFloat32(f *field, inp ...string) {
 
 	f64, err := strconv.ParseFloat(strings.TrimSpace(inp[0]), 32)
 	if err != nil {
-		// Return error if input string failed to convert.
+		//Return error if input string failed to convert.
 		f.Error = err.Error()
 		return
 	}
 	num := float32(f64)
 
 	if !f.Required && num == 0 {
-		// f.ValueFloat32 is zero by default so assigning zero isn't required
+		//f.ValueFloat32 is zero by default so assigning zero isn't required
 		return
 	}
 	if num < f.min || num > f.max {
@@ -110,13 +112,13 @@ func isValidFloat32(f *field, inp ...string) {
 }
 
 func toFixed(num /*, precision*/ float64) float32 {
-	// output := math.Pow(10, precision)
-	// return float64(int(num * output)) / output
+	//output := math.Pow(10, precision)
+	//return float64(int(num * output)) / output
 	return float32(int(num*1000000)) / 1000000
 }
 
 func isValidStr(f *field, inp ...string) {
-	// Developer checks
+	//Developer checks
 	if f.maxLen == 0 {
 		t.Println("f.maxLen should be set: isValidStr", f.name)
 	}
@@ -127,7 +129,7 @@ func isValidStr(f *field, inp ...string) {
 	f.Value = strings.TrimSpace(inp[0])
 	length := len(f.Value)
 
-	// Check value matches regex
+	//Check value matches regex
 	if f.regex != nil && !f.regex.MatchString(f.Value) {
 		f.Error = "Failed pattern"
 		return
@@ -138,13 +140,13 @@ func isValidStr(f *field, inp ...string) {
 		return
 	}
 	if length > f.maxLen {
-		// Truncate string instead of raising an error
+		//Truncate string instead of raising an error
 		f.Value = f.Value[:f.maxLen]
-		// f.Error = fmt.Sprintf("Please shorten this text to %d characters or less (you are currently using %d character%v).", f.maxLen, length, plural(length))
-		// return
+		//f.Error = fmt.Sprintf("Please shorten this text to %d characters or less (you are currently using %d character%v).", f.maxLen, length, plural(length))
+		//return
 	}
 
-	// Check value matches one of the options (optional).
+	//Check value matches one of the options (optional).
 	/*if len(f.Options) > 0 {
 		matched := false
 		for _, option := range f.Options {
@@ -162,7 +164,7 @@ func isValidStr(f *field, inp ...string) {
 }
 
 func isValidRegex(f *field, inp ...string) {
-	// TODO remove developer check
+	//TODO remove developer check
 	if f.regex == nil {
 		t.Println("missing regex for field:", f.name)
 		f.Error = "Missing regex to check against"
