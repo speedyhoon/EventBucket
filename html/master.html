@@ -18,7 +18,9 @@
 										{{if eq $.Page.Title .Name}}
 											<li class=visited>{{.Name}}
 										{{else}}
-											<li><a href={{.Link}}{{$.Page.MenuID}}>{{.Name}}</a>
+											{{if not .Hidden}}
+												<li><a href={{.Link}}{{$.Page.MenuID}}>{{.Name}}</a>
+											{{end}}
 										{{end}}
 									{{end}}
 									{{if and .RangeMenu $.Page.Data.Event.Ranges}}

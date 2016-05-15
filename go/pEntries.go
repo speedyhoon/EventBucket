@@ -25,7 +25,8 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 	}
 	shooterEntry.Fields[2].Options = clubsDataList()
 
-	shooterEntry.Fields[4].Options = eventGrades(event.Grades)
+	grades := eventGrades(event.Grades)
+	shooterEntry.Fields[4].Options = grades
 	shooterEntry.Fields[6].Value = eventID
 	shooterEntry.Fields[7].Value = eventID
 	shooterEntry.Fields[8].Value = eventID
@@ -39,11 +40,12 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 		Menu:    urlEvents,
 		MenuID:  eventID,
 		Heading: event.Name,
-		JS:      []string{"main", "shooterSearch"},
 		Data: map[string]interface{}{
 			"Event":           event,
 			"ShooterEntry":    shooterEntry,
 			"GradesAvailable": pageForms[2],
+			"AvailableGrades": grades,
+			"AgeGroups":       dataListAgeGroup(),
 		},
 	})
 }

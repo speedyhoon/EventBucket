@@ -8,9 +8,9 @@ import (
 )
 
 type menu struct {
-	Name, Link string
-	SubMenu    []menu
-	RangeMenu  bool
+	Name, Link        string
+	SubMenu           []menu
+	RangeMenu, Hidden bool
 }
 
 type page struct {
@@ -59,19 +59,20 @@ var (
 				Link:      urlScoreboard,
 				RangeMenu: true,
 			}, {
-				Name:      "Scorecards",
+				Name:      "Enter Shots",
 				Link:      urlScorecards,
 				RangeMenu: true,
 			}, {
-				Name:      "Total Scores",
+				Name:      "Enter Range Total",
 				Link:      urlTotalScores,
 				RangeMenu: true,
+				//}, {
+				//	Name: "Event Report",
+				//	Link: urlEventReport,
 			}, {
-				Name: "Event Report",
-				Link: urlEventReport,
-			}, {
-				Name: "Entry List",
-				Link: urlEntryList,
+				Name:   "Print Entry List",
+				Link:   urlEntryList,
+				Hidden: true,
 			}},
 		}, {
 			Name: "Clubs",
@@ -127,7 +128,7 @@ var (
 			var hasValue bool
 			switch t.(type) {
 			default:
-				warn.Printf("unexpected type %T", t) // %T prints whatever type t has
+				warn.Printf("unexpected type %T", t) //%T prints whatever type t has
 			case []option:
 				hasValue = len(t.([]option)) >= 1
 			case string:
@@ -156,7 +157,7 @@ var (
 			}
 			return Range{}
 		},
-		// TODO cleanup N & getClass
+		//TODO cleanup N & getClass
 		"N": func(end uint) (stream chan uint) {
 			stream = make(chan uint)
 			go func() {
@@ -180,18 +181,18 @@ var (
 )
 
 func templater(w http.ResponseWriter, page page) {
-	// Add HTTP headers so browsers don't cache the HTML resource because it can contain different content every request.
+	//Add HTTP headers so browsers don't cache the HTML resource because it can contain different content every request.
 	headers(w, nocache)
 	if page.template == 25 {
 		page.template = 0
 		w.Header().Set(csp, maps)
 	} else {
-		w.Header().Set(csp, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self' data:") // font-src 'self'
+		w.Header().Set(csp, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self' data:") //font-src 'self'
 	}
 
 	pageName := "events"
 	if page.Title != "" {
-		// Convert page.Title to the HTML template file name (located within htmlDirectory), e.g. Events > Events, Club Settings > ClubSettings
+		//Convert page.Title to the HTML template file name (located within htmlDirectory), e.g. Events > Events, Club Settings > ClubSettings
 		pageName = strings.Replace(strings.Title(page.Title), " ", "", -1)
 	}
 
@@ -200,11 +201,11 @@ func templater(w http.ResponseWriter, page page) {
 		htmlFileNames = append(htmlFileNames, masterStuff[page.template]...)
 	}
 
-	// Add page content just generated to the default page environment (which has CSS and JS, etc).
+	//Add page content just generated to the default page environment (which has CSS and JS, etc).
 	masterTemplate.Page = page
 
 	html, ok := templates[pageName]
-	// debug is for dynamically re-parsing (reloading) templates on every request
+	//debug is for dynamically re-parsing (reloading) templates on every request
 	if !ok || debug {
 
 		templates[pageName] = template.Must(template.New("main").Funcs(templateFuncMap).ParseFiles(htmlFileNames...))
@@ -216,16 +217,16 @@ func templater(w http.ResponseWriter, page page) {
 	}
 }
 
-// AddQuotes returns value with or without surrounding single or double quote characters suitable for a [[// dev.w3.org/html5/html-author/#attributes][HTML5 attribute]] value.
+//AddQuotes returns value with or without surrounding single or double quote characters suitable for a [[//dev.w3.org/html5/html-author/#attributes][HTML5 attribute]] value.
 func addQuotes(in interface{}) string {
-	// TODO escape any rune character over X code point
-	value := strings.Replace(fmt.Sprintf("%v", in), `&`, "&amp;", -1) // will destroy any existing escaped characters like &#62;
+	//TODO escape any rune character over X code point
+	value := strings.Replace(fmt.Sprintf("%v", in), `&`, "&amp;", -1) //will destroy any existing escaped characters like &#62;
 	double := strings.Count(value, `"`)
 	single := strings.Count(value, `'`)
 	if single > 0 && single >= double {
 		return `"` + strings.Replace(value, `"`, "&#34;", -1) + `"`
 	}
-	// Space, double quote, accent, equals, less-than sign, greater-than sign.
+	//Space, double quote, accent, equals, less-than sign, greater-than sign.
 	if double > 0 || strings.ContainsAny(value, " \"`=<>") {
 		return `'` + strings.Replace(value, `'`, "&#39;", -1) + `'`
 	}
