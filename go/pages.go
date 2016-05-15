@@ -23,7 +23,7 @@ const (
 	//GET with PARAMETERS
 	urlClub            = "/club/"             //clubID
 	urlEntries         = "/entries/"          //eventID
-	urlEntryList       = "/entry-list/"       //eventID
+	urlEntryList       = "/print-entry-list/" //eventID
 	urlEventSettings   = "/event-settings/"   //eventID
 	urlEventReport     = "/event-report/"     //eventID
 	urlScoreboard      = "/scoreboard/"       //eventID

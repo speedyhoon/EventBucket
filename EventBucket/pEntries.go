@@ -4,7 +4,7 @@ import "net/http"
 
 func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 	event, err := getEvent(eventID)
-	// If event not found in the database return error event not found (404).
+	//If event not found in the database return error event not found (404).
 	if err != nil {
 		errorHandler(w, r, http.StatusNotFound, "event")
 		return
@@ -14,23 +14,24 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 	shooterEntry := pageForms[0]
 	if action == eventShooterExisting {
 		shooterEntry.Fields[3].Error = pageForms[1].Fields[0].Error
-		// Grade
+		//Grade
 		shooterEntry.Fields[4].Error = pageForms[1].Fields[1].Error
 		shooterEntry.Fields[4].Value = pageForms[1].Fields[1].Value
-		// Age Group
+		//Age Group
 		shooterEntry.Fields[5].Error = pageForms[1].Fields[2].Error
 		shooterEntry.Fields[5].Value = pageForms[1].Fields[2].Value
-		// Add Existing Shooter button
+		//Add Existing Shooter button
 		shooterEntry.Fields[6].Error = pageForms[1].Fields[3].Error
 	}
 	shooterEntry.Fields[2].Options = clubsDataList()
 
-	shooterEntry.Fields[4].Options = eventGrades(event.Grades)
+	grades := eventGrades(event.Grades)
+	shooterEntry.Fields[4].Options = grades
 	shooterEntry.Fields[6].Value = eventID
 	shooterEntry.Fields[7].Value = eventID
 	shooterEntry.Fields[8].Value = eventID
 
-	// AvailableGrades
+	//AvailableGrades
 	pageForms[2].Fields[0].Options = availableGrades(event.Grades)
 	pageForms[2].Fields[1].Value = eventID
 
@@ -39,25 +40,26 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 		Menu:    urlEvents,
 		MenuID:  eventID,
 		Heading: event.Name,
-		JS:      []string{"main", "shooterSearch"},
 		Data: map[string]interface{}{
 			"Event":           event,
 			"ShooterEntry":    shooterEntry,
 			"GradesAvailable": pageForms[2],
+			"AvailableGrades": grades,
+			"AgeGroups":       dataListAgeGroup(),
 		},
 	})
 }
 
 func eventInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
-	// Try to find an existing club
+	//Try to find an existing club
 	club, err := getClubByName(submittedForm.Fields[0].Value)
 	clubID := club.ID
 	if err != nil {
-		// Insert a new club
+		//Insert a new club
 		clubID, err = insertClub(Club{Name: submittedForm.Fields[0].Value})
 	}
 
-	// Insert new event into database.
+	//Insert new event into database.
 	ID, err := insertEvent(Event{
 		Club:    submittedForm.Fields[0].Value,
 		ClubID:  clubID,
@@ -65,10 +67,10 @@ func eventInsert(w http.ResponseWriter, r *http.Request, submittedForm form, red
 		Date:    submittedForm.Fields[2].Value,
 		Time:    submittedForm.Fields[3].Value,
 		Closed:  false,
-		AutoInc: AutoInc{Range: 1}, // The next incremental range id to use.
+		AutoInc: AutoInc{Range: 1}, //The next incremental range id to use.
 	})
 
-	// Display any insert errors onscreen.
+	//Display any insert errors onscreen.
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
 		return
@@ -80,7 +82,7 @@ func eventAvailableGradesUpsert(w http.ResponseWriter, r *http.Request, submitte
 	eventID := submittedForm.Fields[1].Value
 	err := updateDocument(tblEvent, eventID, &submittedForm.Fields[0].valueUintSlice, &Event{}, updateEventGrades)
 
-	// Display any insert errors onscreen.
+	//Display any insert errors onscreen.
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
 		return
@@ -93,7 +95,7 @@ func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm fo
 		insertClub(Club{Name: submittedForm.Fields[2].Value})
 	}
 
-	// Loop through the grades selected and add an new shooter for each with a different grade
+	//Loop through the grades selected and add an new shooter for each with a different grade
 	eventID := submittedForm.Fields[7].Value
 	for _, grade := range submittedForm.Fields[4].valueUintSlice {
 		err := updateDocument(tblEvent, eventID, &EventShooter{
@@ -109,9 +111,9 @@ func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm fo
 			return
 		}
 	}
-	// TODO possibly return shooter id from insert and use that in eventShooter?
-	if len(searchShootersOptions(submittedForm.Fields[0].Value, submittedForm.Fields[1].Value, submittedForm.Fields[2].Value)) <= 1 { // search always returns a blank option for html rendering so the select box isn't mandatory.
-		// shooterInsert will redirect the user back to the referer page.
+	//TODO possibly return shooter id from insert and use that in eventShooter?
+	if len(searchShootersOptions(submittedForm.Fields[0].Value, submittedForm.Fields[1].Value, submittedForm.Fields[2].Value)) <= 1 { //search always returns a blank option for html rendering so the select box isn't mandatory.
+		//shooterInsert will redirect the user back to the referer page.
 		shooterInsert(w, r, form{Fields: []field{
 			submittedForm.Fields[0],
 			submittedForm.Fields[1],

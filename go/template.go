@@ -8,9 +8,9 @@ import (
 )
 
 type menu struct {
-	Name, Link string
-	SubMenu    []menu
-	RangeMenu  bool
+	Name, Link        string
+	SubMenu           []menu
+	RangeMenu, Hidden bool
 }
 
 type page struct {
@@ -59,19 +59,20 @@ var (
 				Link:      urlScoreboard,
 				RangeMenu: true,
 			}, {
-				Name:      "Scorecards",
+				Name:      "Enter Shots",
 				Link:      urlScorecards,
 				RangeMenu: true,
 			}, {
-				Name:      "Total Scores",
+				Name:      "Enter Range Total",
 				Link:      urlTotalScores,
 				RangeMenu: true,
+				//}, {
+				//	Name: "Event Report",
+				//	Link: urlEventReport,
 			}, {
-				Name: "Event Report",
-				Link: urlEventReport,
-			}, {
-				Name: "Entry List",
-				Link: urlEntryList,
+				Name:   "Print Entry List",
+				Link:   urlEntryList,
+				Hidden: true,
 			}},
 		}, {
 			Name: "Clubs",
