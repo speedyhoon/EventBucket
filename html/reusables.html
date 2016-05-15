@@ -27,6 +27,7 @@
 					<th>Club
 					<th>Grade
 					<th>Age Group
+					<td>Ladies
 					<td>Edit
 			</thead>
 			<!--TODO in debug mode allow empty search otherwise disallow empty search-->
@@ -37,7 +38,8 @@
 					<td>{{.Club}}
 					<td>{{range .Grade}}{{(grade .).Name}}, {{end}}
 					<td>{{ageGroup .AgeGroup}}
-					<td onclick=stuff(this)>
+					{{if.Ladies}}<td class=tick>{{else}}<td>{{end}}
+					<td>
 				</tr>
 			{{end}}
 		</table>
