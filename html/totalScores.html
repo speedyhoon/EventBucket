@@ -4,14 +4,24 @@
 		{{template "barcodeSearch"}}
 		{{with .Event.Shooters}}
 			<table>
-				<tr>
-					<th>ID
+				<thead>
+					<tr>
+						<th class=asc>ID
+						<th>Club
+						<th>Grade
+						<th>Shooter
+						<td>Total
+						<td>Centers
+						<td>
+				<tbody>
+				<!--<tr>
+					<th class=asc>ID
 					<th>Club
 					<th>Grade
 					<th>Shooter
 					<th>Total
 					<th>Centers
-					<th>
+					<th>-->
 				{{range .}}
 					{{if eq false .Hidden}}
 						{{$score := index .Scores $.Range.StrID}}
