@@ -13,7 +13,13 @@ function tableSort(th){
 	/*If th.textContent == id compare using base36 else use textContent */
 	var tbody = th.parentElement.parentElement.parentElement.querySelector('tbody'), column = Array.prototype.indexOf.call(th.parentElement.children, th), direction = th.className === '^asc^' ? -1 : 1, rows = Array.from(tbody.children);
 	var sortBy = function(input){
-		return th.textContent == "ID" ? +input : input;
+		switch(th.textContent){
+			case 'ID':
+				return +input;
+			case 'Id':
+				return parseInt(input, 36);
+		}
+		return input;
 	};
 	rows.sort(function(a, b){
 		a = sortBy(a.children[column].textContent);

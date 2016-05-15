@@ -38,7 +38,7 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 		Menu:    urlEvents,
 		MenuID:  eventID,
 		Heading: event.Name,
-		JS:      []string{"eventRanges", "main"},
+		JS:      []string{"eventRanges"},
 		Data: map[string]interface{}{
 			"Ranges":        dataListRanges(event.Ranges, false),
 			"Event":         event,
