@@ -4,6 +4,7 @@
 	<tr>
 		<th>Pos
 		<th>Shooter
+		<th>ID
 		<th>Club
 		<th>Age Group
 		{{range .Ranges}}
@@ -20,6 +21,7 @@
 		<tr>
 			<td>
 			<td class=tc>{{.FirstName}} {{.Surname}}
+			<td>{{.ID}}
 			<td>{{.Club}}
 			<td>{{ageGroup .AgeGroup}}
 			{{$shooter := .}}

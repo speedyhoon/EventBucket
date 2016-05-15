@@ -16,13 +16,13 @@
 								<a href=/entries/{{.ID}}>{{.Name}}</a>
 							{{else}}
 								{{.Name}}
-							{{end}} {{with.Time}}starts at {{.}}{{end}}
+							{{end}} {{with.Time}}<span class=small>starts at</span> {{.}}{{end}}
 							<a href=/event-settings/{{.ID}} title="Edit event" class=right>
 								<img src=/v/edit alt="Edit event" height=15>
 							</a>
 						</p>
 						{{range .Ranges}}{{.Name}}, {{else}}No ranges added.{{end}}
-						<br>{{if.Club}}<a href=/club/{{.ClubID}}>{{.Club}}</a>{{end}}
+						<br>{{.Club}}
 					</div>
 				{{end}}
 			{{end}}

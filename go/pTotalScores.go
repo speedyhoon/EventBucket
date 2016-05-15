@@ -31,8 +31,8 @@ func totalScores(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 		return
 	}
 
-	_, forms := sessionForms(w, r, eventTotalScores)
-	t.Printf("%+v\n", forms[0])
+	//_, forms := sessionForms(w, r, eventTotalScores)
+	//t.Printf("%+v\n", forms[0])
 
 	templater(w, page{
 		Title:   "Total Scores",

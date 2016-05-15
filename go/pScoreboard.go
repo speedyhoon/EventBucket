@@ -44,7 +44,7 @@ func scoreboard(w http.ResponseWriter, r *http.Request, parameters string) {
 			"Ranges":      ranges,
 			"Legend":      scoreBoardLegend(),
 			"SortByRange": rangeID,
-			"Colspan":     4 + len(ranges),
+			"Colspan":     5 + len(ranges),
 		},
 	})
 }
