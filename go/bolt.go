@@ -198,6 +198,7 @@ func updateShooterDetails(decode interface{}, contents interface{}) interface{} 
 	shooter.Club = update.Club
 	shooter.Grade = update.Grade
 	shooter.AgeGroup = update.AgeGroup
+	shooter.Ladies = update.Ladies
 	return shooter
 }
 

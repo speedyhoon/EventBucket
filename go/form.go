@@ -178,6 +178,8 @@ func getForm(id uint8) []field {
 			name: "g", Required: true, max: float32(len(globalGrades) - 1), step: 1, v8: listUint, Options: globalGradesDataList,
 		}, {
 			name: "r", max: 4, step: 1, v8: isValidUint, Options: dataListAgeGroup(),
+		}, {
+			name: "x", v8: isValidBool,
 		}}
 	case 12: //Shooter Details
 		return []field{{
@@ -191,7 +193,9 @@ func getForm(id uint8) []field {
 		}, {
 			name: "r", max: 4, step: 1, v8: isValidUint, Options: dataListAgeGroup(),
 		}, {
-			name: "I", Required: true, maxLen: 64, v8: isValidRegex, regex: regexID,
+			name: "x", v8: isValidBool,
+		}, {
+			name: "I", Required: true, v8: isValidRegex, regex: regexID,
 		}}
 	case 13: //Shooter Search
 		return []field{{

@@ -28,12 +28,13 @@ func shooters(w http.ResponseWriter, r *http.Request, submittedForm form, isVali
 }
 
 func shooterUpdate(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
-	err := updateDocument(tblShooter, submittedForm.Fields[5].Value, &Shooter{
+	err := updateDocument(tblShooter, submittedForm.Fields[6].Value, &Shooter{
 		FirstName: submittedForm.Fields[0].Value,
 		Surname:   submittedForm.Fields[1].Value,
 		Club:      submittedForm.Fields[2].Value,
 		Grade:     submittedForm.Fields[3].valueUintSlice,
 		AgeGroup:  submittedForm.Fields[4].valueUint,
+		Ladies:    submittedForm.Fields[5].Checked,
 	}, &Shooter{}, updateShooterDetails)
 	//Display any insert errors onscreen.
 	if err != nil {
@@ -60,6 +61,7 @@ func shooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, r
 		Club:      submittedForm.Fields[2].Value,
 		Grade:     submittedForm.Fields[3].valueUintSlice,
 		AgeGroup:  submittedForm.Fields[4].valueUint,
+		Ladies:    submittedForm.Fields[5].Checked,
 	}
 	_, err := insertShooter(shooter)
 	if err != nil {
