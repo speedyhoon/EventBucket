@@ -16,7 +16,7 @@
 					{{if eq false .Hidden}}
 						{{$score := index .Scores $.Range.StrID}}
 						{{if or $.ShowAll (and (not $score.Total) (not $.ShowAll))}}
-							<tr{{/* id=.ID}} data-class=fclass*/}}>
+							<tr>
 								<td>{{.ID}}
 								<td>{{.Club}}
 								<td>{{(grade .Grade).Abbr}}

@@ -237,7 +237,6 @@ func updateEventDetails(decode interface{}, contents interface{}) interface{} {
 	event.Date = update.Date
 	event.Time = update.Time
 	event.Closed = update.Closed
-	event.AverTwin = update.AverTwin
 	return event
 }
 
@@ -486,6 +485,10 @@ func b36toBy(id string) ([]byte, error) {
 func getSearchShooters(firstName, surname, club string) ([]Shooter, uint, error) {
 	var shooters []Shooter
 	var totalQty uint
+
+	if firstName == "" && surname == "" && club == "" {
+		club = defaultClubName()
+	}
 
 	firstName = strings.ToLower(firstName)
 	surname = strings.ToLower(surname)

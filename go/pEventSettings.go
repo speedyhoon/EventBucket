@@ -26,13 +26,11 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 		forms[0].Fields[2].Value = event.Date
 		forms[0].Fields[3].Value = event.Time
 		forms[0].Fields[4].Checked = event.Closed
-		//forms[0].Fields[5].Checked = event.AverTwin
 		forms[0].Fields[5].Value = event.ID
 	}
 	forms[1].Fields[1].Value = eventID
 
-	listRanges := dataListRanges(event.Ranges)
-	forms[2].Fields[1].Options = listRanges
+	forms[2].Fields[1].Options = dataListRanges(event.Ranges, true)
 	forms[2].Fields[2].Value = eventID
 
 	templater(w, page{
@@ -42,7 +40,7 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 		Heading: event.Name,
 		JS:      []string{"eventRanges", "main"},
 		Data: map[string]interface{}{
-			"Ranges":        listRanges,
+			"Ranges":        dataListRanges(event.Ranges, false),
 			"Event":         event,
 			"EventDetails":  forms[0],
 			"AddRange":      forms[1],
@@ -52,25 +50,24 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 	})
 }
 
-func dataListRanges(ranges []Range) []option {
+func dataListRanges(ranges []Range, selected bool) []option {
 	var options []option
 	for _, r := range ranges {
 		if !r.IsAgg {
-			options = append(options, option{Label: r.Name, Value: fmt.Sprintf("%d", r.ID)})
+			options = append(options, option{Label: r.Name, Value: fmt.Sprintf("%d", r.ID), Selected: selected})
 		}
 	}
 	return options
 }
 
 func eventDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
-	eventID := submittedForm.Fields[6].Value
+	eventID := submittedForm.Fields[5].Value
 	err := updateDocument(tblEvent, eventID, &Event{
-		Name:     submittedForm.Fields[0].Value,
-		Club:     submittedForm.Fields[1].Value,
-		Date:     submittedForm.Fields[2].Value,
-		Time:     submittedForm.Fields[3].Value,
-		Closed:   submittedForm.Fields[4].Checked,
-		AverTwin: submittedForm.Fields[5].Checked,
+		Name:   submittedForm.Fields[0].Value,
+		Club:   submittedForm.Fields[1].Value,
+		Date:   submittedForm.Fields[2].Value,
+		Time:   submittedForm.Fields[3].Value,
+		Closed: submittedForm.Fields[4].Checked,
 	}, &Event{}, updateEventDetails)
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
