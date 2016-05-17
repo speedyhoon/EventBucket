@@ -27,11 +27,11 @@ const (
 	urlEventSettings   = "/event-settings/"   //eventID
 	urlEventReport     = "/event-report/"     //eventID
 	urlScoreboard      = "/scoreboard/"       //eventID
-	urlScorecards      = "/scorecards/"       //eventID
-	urlScorecardsAll   = "/scorecards-all/"   //eventID
+	urlEnterShots      = "/enter-shots/"      //eventID
+	urlEnterShotsAll   = "/enter-shots-all/"  //eventID
 	urlPrintScorecards = "/print-cards/"      //eventID/shooterID
-	urlTotalScores     = "/total-scores/"     //eventID
-	urlTotalScoresAll  = "/total-scores-all/" //eventID
+	urlEnterTotals     = "/enter-totals/"     //eventID
+	urlEnterTotalsAll  = "/enter-totals-all/" //eventID
 )
 
 var (
@@ -55,21 +55,17 @@ func pages() {
 	getRedirectPermanent(urlClubs, clubs)
 	getRedirectPermanent(urlLicence, licence)
 	gt(urlShooters, shooterSearch, shooters)
-	if debug {
-		getRedirectPermanent("/all", all)
-		getRedirectPermanent("/report", report)
-	}
 	getParameters(urlClub, club, regexID)
 	getParameters(urlEntries, entries, regexID)
 	getParameters(urlEntryList, entryList, regexID)
 	getParameters(urlEventSettings, eventSettings, regexID)
 	getParameters(urlEventReport, eventReport, regexID)
 	getParameters(urlScoreboard, scoreboard, regexPath)
-	getParameters(urlScorecards, scorecardsIncomplete, regexPath)
-	getParameters(urlScorecardsAll, scorecardsAll, regexPath)
+	getParameters(urlEnterShots, scorecardsIncomplete, regexPath)
+	getParameters(urlEnterShotsAll, scorecardsAll, regexPath)
 	getParameters(urlPrintScorecards, printScorecards, regexPath)
-	getParameters(urlTotalScores, totalScoresIncomplete, regexPath)
-	getParameters(urlTotalScoresAll, totalScoresAll, regexPath)
+	getParameters(urlEnterTotals, totalScoresIncomplete, regexPath)
+	getParameters(urlEnterTotalsAll, totalScoresAll, regexPath)
 	post(pst, clubNew, clubInsert)
 	post(pst, clubDetails, clubDetailsUpsert)
 	post(pst, clubMoundNew, clubMoundInsert)
