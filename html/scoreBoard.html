@@ -1,22 +1,21 @@
 {{define "page"}}
 <h1>{{.Event.Name}}</h1>
 <table>
-	<tr>
-		<th>Pos
-		<th>Shooter
-		<th>ID
-		<th>Club
-		<th>Age Group
-		{{range .Ranges}}
-			{{if eq .ID $.SortByRange}}
-				<th class=sortBy>{{.Name}}
-			{{else}}
-				<th>{{.Name}}
-			{{end}}
-		{{end}}
 	{{range.Event.Shooters}}
-		{{if.GradeSeparator}}
-			<tr><td colspan={{$.Colspan}} class=classHeadingRow>{{(grade .Grade).Name}}
+		{{if.ClassSeparator}}
+			{{template "scoreboardHeader" $}}
+			<tr class=specialRow><td colspan=5 class=classHeadingRow>{{(grade .Grade).Name}}
+		{{end}}
+		{{if and .GradeSeparator (not .ClassSeparator)}}
+			<tr class=classHeadingRow>
+				<td colspan=5>{{(grade .Grade).Name}}
+				{{range $.Ranges}}
+					{{if eq .ID $.SortByRange}}
+						<td class=sortBy>{{.Name}}
+					{{else}}
+						<td>{{.Name}}
+					{{end}}
+				{{end}}
 		{{end}}
 		<tr>
 			<td>
@@ -43,4 +42,20 @@
 				{{end}}
 			{{end}}
 </table>
+{{end}}
+
+{{define "scoreboardHeader"}}
+	<tr>
+		<td>Pos
+		<td>Shooter
+		<td>ID
+		<td>Club
+		<td>Age Group
+		{{range .Ranges}}
+			{{if eq .ID $.SortByRange}}
+				<td rowspan=2 class=sortBy>{{.Name}}
+			{{else}}
+				<td rowspan=2>{{.Name}}
+			{{end}}
+		{{end}}
 {{end}}

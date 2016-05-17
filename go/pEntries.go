@@ -29,7 +29,7 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 	shooterEntry.Fields[4].Options = grades
 	shooterEntry.Fields[6].Value = eventID
 	shooterEntry.Fields[7].Value = eventID
-	shooterEntry.Fields[8].Value = eventID
+	shooterEntry.Fields = append(shooterEntry.Fields, field{Value: eventID})
 
 	//AvailableGrades
 	pageForms[2].Fields[0].Options = availableGrades(event.Grades)
@@ -120,6 +120,7 @@ func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm fo
 			submittedForm.Fields[2],
 			submittedForm.Fields[4],
 			submittedForm.Fields[5],
+			submittedForm.Fields[6],
 		}}, redirect)
 	} else {
 		http.Redirect(w, r, urlEntries+eventID, http.StatusSeeOther)
