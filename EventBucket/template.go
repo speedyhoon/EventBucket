@@ -60,11 +60,11 @@ var (
 				RangeMenu: true,
 			}, {
 				Name:      "Enter Shots",
-				Link:      urlScorecards,
+				Link:      urlEnterShots,
 				RangeMenu: true,
 			}, {
 				Name:      "Enter Range Total",
-				Link:      urlTotalScores,
+				Link:      urlEnterTotals,
 				RangeMenu: true,
 				//}, {
 				//	Name: "Event Report",
