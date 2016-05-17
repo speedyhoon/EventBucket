@@ -121,8 +121,8 @@ type Shooter struct {
 	ID        string         `json:"I"`
 	SID       uint           `json:"M,omitempty"`
 	NID       uint           `json:"N,omitempty"` //NRAA sequential integer id.
-	Surname   string         `json:"s,omitempty"`
 	FirstName string         `json:"f,omitempty"`
+	Surname   string         `json:"s,omitempty"`
 	NickName  string         `json:"n,omitempty"`
 	Club      string         `json:"C,omitempty"`
 	Skill     map[uint]Skill `json:"K,omitempty"` //Grading set by the VRA for each class

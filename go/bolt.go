@@ -429,6 +429,19 @@ func eventShooterInsertDB(decode interface{}, contents interface{}) interface{} 
 	return event
 }
 
+func eventShooterUpdater(decode interface{}, contents interface{}) interface{} {
+	event := decode.(*Event)
+	shooter := *contents.(*EventShooter)
+	event.Shooters[shooter.ID].FirstName = shooter.FirstName
+	event.Shooters[shooter.ID].Surname = shooter.Surname
+	event.Shooters[shooter.ID].Club = shooter.Club
+	event.Shooters[shooter.ID].Grade = shooter.Grade
+	event.Shooters[shooter.ID].AgeGroup = shooter.AgeGroup
+	event.Shooters[shooter.ID].Ladies = shooter.Ladies
+	event.Shooters[shooter.ID].Disabled = shooter.Disabled
+	return event
+}
+
 func upsertScore(decode interface{}, contents interface{}) interface{} {
 	event := decode.(*Event)
 	shooter := *contents.(*shooterScore)
