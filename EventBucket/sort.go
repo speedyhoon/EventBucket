@@ -78,7 +78,7 @@ func (ms *multiEventShooterSorter) Swap(i, j int) {
 //TODO change the functions to return -1, 0, 1 and reduce the number of calls for greater efficiency
 func (ms *multiEventShooterSorter) Less(i, j int) bool {
 	p, q := &ms.shooter[i], &ms.shooter[j]
-	// Try all but the last comparison.
+	//Try all but the last comparison.
 	var k int
 	for k = 0; k < len(ms.sort)-1; k++ {
 		sort := ms.sort[k]
@@ -345,8 +345,8 @@ func recalculateShootersAggs(updates map[string]calculateShooter) {
 	return event
 }*/
 
-// Ordinal gives you the input number in a rank/ordinal format.
-// Ordinal(3) -> 3rd
+//Ordinal gives you the input number in a rank/ordinal format.
+//Ordinal(3) -> 3rd
 //author: github.com/dustin/go-humanize/blob/master/ordinals.go
 func ordinal(x int) string {
 	suffix := "th"

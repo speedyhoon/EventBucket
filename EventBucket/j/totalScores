@@ -3,7 +3,9 @@
 function shooterBarcode(search, shooter){
 	document.getElementById('barcodeErr').setAttribute('hidden', '');
 	document.getElementById('shooterErr').setAttribute('hidden', '');
-	var pathName = window.location.pathname.split('/')[1], eventID = window.location.pathname.split('/')[2], rangeID = window.location.pathname.split('/')[3];
+	var pathName = window.location.pathname.split('/')[1],
+		eventID = window.location.pathname.split('/')[2],
+		rangeID = window.location.pathname.split('/')[3];
 	if(shooter && shooter.value && /^\d+$/g.test(shooter.value)){
 		otherFunc(shooter.value, shooter, pathName, eventID, rangeID);
 		return false;

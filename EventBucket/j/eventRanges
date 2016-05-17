@@ -34,7 +34,7 @@ function stuff(editCell){
 	row.appendChild(t);
 }
 function findValues(element, labels){
-	var i = labels.length, j = element.options.length;
+	var i = labels.length;
 	while(i--){
 		findValue(element, labels[i]);
 	}

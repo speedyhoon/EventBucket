@@ -9,7 +9,7 @@ import (
 
 func club(w http.ResponseWriter, r *http.Request, clubID string) {
 	club, err := getClub(clubID)
-	// If club not found in the database return error club not found (404).
+	//If club not found in the database return error club not found (404).
 	if err != nil {
 		errorHandler(w, r, http.StatusNotFound, "club")
 		return
@@ -17,7 +17,7 @@ func club(w http.ResponseWriter, r *http.Request, clubID string) {
 
 	action, forms := sessionForms(w, r, clubDetails, clubMoundNew)
 
-	// Club Details Form
+	//Club Details Form
 	if action != clubDetails {
 		forms[0].Fields[0].Value = club.Name
 		forms[0].Fields[1].Value = club.Address
@@ -31,7 +31,7 @@ func club(w http.ResponseWriter, r *http.Request, clubID string) {
 	}
 	forms[0].Fields[8].Value = club.ID
 
-	// Club Mound form
+	//Club Mound form
 	forms[1].Fields[1].Value = club.ID
 
 	templater(w, page{
@@ -97,7 +97,7 @@ func mapClubs(w http.ResponseWriter, r *http.Request, submittedForm form, redire
 	fmt.Fprintf(w, "%s", jsonList)
 }
 
-// MapClub is exported
+//MapClub is exported
 type MapClub struct {
 	Name      string  `json:"n"`
 	Latitude  float32 `json:"x,omitempty"`
@@ -110,28 +110,28 @@ type MapClub struct {
 
 func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	name := submittedForm.Fields[0].Value
-	// isDefault := submittedForm.Fields[1].Checked
+	//isDefault := submittedForm.Fields[1].Checked
 	var ID string
 	defaultClub := getDefaultClub()
 
-	// Check if a club with that name already exists.
+	//Check if a club with that name already exists.
 	club, err := getClubByName(name)
 	if err != nil {
-		ID, err = insertClub(Club{Name: name, IsDefault: defaultClub.ID == ""}) // Set this club to default if no other clubs are the defualt
+		ID, err = insertClub(Club{Name: name, IsDefault: defaultClub.ID == ""}) //Set this club to default if no other clubs are the defualt
 		if err != nil {
 			formError(w, submittedForm, redirect, err)
 			return
 		}
 
 		/*if isDefault && defaultClub.ID != "" {
-			//  TODO change this so it is some how atomic & winithin the same transaction.
+			//TODO change this so it is some how atomic & winithin the same transaction.
 			err := updateDocument(tblClub, defaultClub.ID, &Club{IsDefault: false}, &Club{}, updateClubDefault)
 			if err != nil {
 				warn.Println(err)
 			}
 		}*/
 	} else {
-		// Use a generic pageError form to pass the error message to the Club Settings page.
+		//Use a generic pageError form to pass the error message to the Club Settings page.
 		/*TODO investigate if there is a simpler way to pass error messages between different pages. Maybe use a slice []string so several messages could be displayed if needed?
 		It would also be handy to have success, warning and error statuses */
 		setSession(w, form{action: pageError, Error: fmt.Errorf("A club with name '%v' already exists.", name)})
@@ -145,7 +145,7 @@ func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm for
 	isDefault := submittedForm.Fields[6].Checked
 	defaultClub := getDefaultClub()
 	if isDefault && defaultClub.ID != clubID {
-		// need to remove isDefault for the default club so there is only one default at a time.
+		//need to remove isDefault for the default club so there is only one default at a time.
 		err := updateDocument(tblClub, defaultClub.ID, &Club{IsDefault: false}, &Club{}, updateClubDefault)
 		if err != nil {
 			warn.Println(err)

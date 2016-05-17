@@ -12,12 +12,13 @@ import (
 func events(w http.ResponseWriter, r *http.Request) {
 	events, err := getCalendarEvents()
 
-	// Sort list of events by date then by name
+	//Sort list of events by date then by name
 	orderedByEvent(sortByDate, sortByName).Sort(events)
 	_, forms := sessionForms(w, r, eventNew)
 
 	hostname, _ := os.Hostname()
 	templater(w, page{
+		Title: "Events",
 		Error: err,
 		Data: map[string]interface{}{
 			"NewEvent": forms[0],
@@ -47,7 +48,7 @@ func licence(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-//  localIP returns the non loopback local IPv4 of the host
+//localIP returns the non loopback local IPv4 of the host
 func localIPs() []string {
 	var localIPs []string
 	addrs, err := net.InterfaceAddrs()
@@ -55,7 +56,7 @@ func localIPs() []string {
 		var ipnet *net.IPNet
 		var ok bool
 		for _, address := range addrs {
-			//  check the address type and if it is not a loopback the display it
+			//check the address type and if it is not a loopback the display it
 			ipnet, ok = address.(*net.IPNet)
 			if ok && !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil && !strings.HasPrefix(ipnet.IP.String(), "169.254.") {
 				localIPs = append(localIPs, ipnet.IP.String())
@@ -65,7 +66,7 @@ func localIPs() []string {
 	return localIPs
 }
 
-// CalendarEvent is the same as Event struct without Shooters and their scores.
+//CalendarEvent is the same as Event struct without Shooters and their scores.
 type CalendarEvent struct {
 	ID     string `json:"I"`
 	Name   string `json:"n"`
@@ -78,7 +79,7 @@ type CalendarEvent struct {
 	Closed bool    `json:"z,omitempty"`
 }
 
-// TODO change sort form true/false to 1/0/-1
+//TODO change sort form true/false to 1/0/-1
 type lessFunc2 func(p1, p2 *CalendarEvent) bool
 
 type multiSorter2 struct {
@@ -101,7 +102,7 @@ func (ms *multiSorter2) Swap(i, j int) {
 
 func (ms *multiSorter2) Less(i, j int) bool {
 	p, q := &ms.changes[i], &ms.changes[j]
-	//  Try all but the last comparison.
+	//Try all but the last comparison.
 	var k int
 	for k = 0; k < len(ms.less)-1; k++ {
 		less := ms.less[k]
