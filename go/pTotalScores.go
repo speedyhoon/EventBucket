@@ -34,6 +34,16 @@ func totalScores(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 	//_, forms := sessionForms(w, r, eventTotalScores)
 	//t.Printf("%+v\n", forms[0])
 
+	var hidden int
+	if !showAll && !event.Closed {
+		rangeID := currentRange.StrID()
+		for _, shooter := range event.Shooters {
+			if shooter.Disabled || shooter.Scores[rangeID].Total >= 1 {
+				hidden++
+			}
+		}
+	}
+
 	templater(w, page{
 		Title:   "Total Scores",
 		Menu:    urlEvents,
@@ -46,6 +56,8 @@ func totalScores(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 			"Event":   event,
 			"URL":     "total-scores",
 			"ShowAll": showAll,
+			"Hidden":  hidden,
+			"Plural":  plural(hidden),
 		},
 	})
 }

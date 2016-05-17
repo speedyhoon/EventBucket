@@ -2,6 +2,7 @@
 	{{if and (not .Event.Closed) (not .Range.Locked)}}
 		{{template "incompleteShooters" .}}
 		{{template "barcodeSearch"}}
+		{{if and .Hidden (not .ShowAll)}}<samp>{{.Hidden}} Shooter{{.Plural}} are hidden</samp>{{end}}
 		{{with .Event.Shooters}}
 			<table>
 				<thead>
@@ -14,18 +15,10 @@
 						<td>Centers
 						<td>
 				<tbody>
-				<!--<tr>
-					<th class=asc>ID
-					<th>Club
-					<th>Grade
-					<th>Shooter
-					<th>Total
-					<th>Centers
-					<th>-->
 				{{range .}}
-					{{if eq false .Hidden}}
+					{{if not .Hidden}}
 						{{$score := index .Scores $.Range.StrID}}
-						{{if or $.ShowAll (and (not $score.Total) (not $.ShowAll))}}
+						{{if and (not .Disabled) (or $.ShowAll (and (not $score.Total) (not $.ShowAll)))}}
 							<tr>
 								<td>{{.ID}}
 								<td>{{.Club}}
@@ -34,14 +27,12 @@
 								<td>
 									<input name=t max=60 min=0 step=1 {{attr "value" $score.Total}} placeholder={{$score.Total}} type=number autocomplete=off id={{.ID}} form=f{{.ID}}>
 								<td>
-									<input name=c max=10 min=0 step=1 {{attr "value" $score.Centers}} placeholder={{$score.Centers}} type=number autocomplete=off form=f{{.ID}}>
-								<td>
 									<form method=post action=/14 id=f{{.ID}}>
-										<button name=S value={{.ID}}>Save</button>
+										<input name=c max=10 min=0 step=1 {{attr "value" $score.Centers}} placeholder={{$score.Centers}} type=number autocomplete=off>
+										<input name=S type=hidden value={{.ID}}>
 										<input name=E type=hidden value={{$.Event.ID}}>
 										<input name=R type=hidden value={{$.Range.ID}}>
 									</form>
-									{{/*template "TotalScores"*/}}
 						{{end}}
 					{{end}}
 				{{end}}
