@@ -17,9 +17,9 @@ func barcode2D(w http.ResponseWriter, r *http.Request, parameters string) {
 	var err error
 
 	switch parameters[0] {
-	case 68, 100: // D for datamatrix
+	case 68, 100: //D for datamatrix
 		qrcode, err = datamatrix.Encode(strings.ToUpper(parameters[1:]))
-	default: // qrcode
+	default: //qrcode
 		qrcode, err = qr.Encode(strings.ToUpper(parameters[1:]), qr.H, qr.Auto)
 	}
 
@@ -37,7 +37,7 @@ func barcode2D(w http.ResponseWriter, r *http.Request, parameters string) {
 }
 
 func printScorecards(w http.ResponseWriter, r *http.Request, parameters string) {
-	// eventID/shooterID
+	//eventID/shooterID
 	ids := strings.Split(parameters, "/")
 	event, err := getEvent(ids[0])
 	if err != nil {

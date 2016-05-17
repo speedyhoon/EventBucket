@@ -9,11 +9,11 @@ import (
 
 const (
 	sessionToken      = "s"
-	sessionIDLength   = 24                                                                                            // Recommended to be at least 16 characters long.
-	letterBytes       = "!#$%&'()*+,-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~" // string generated from validCookieValueByte golang source code net/http/cookie.go
-	letterIdxBits     = 6                                                                                             // 6 bits to represent a letter index
-	letterIdxMask     = 1<<letterIdxBits - 1                                                                          // All 1-bits, as many as letterIdxBits
-	letterIdxMax      = 63 / letterIdxBits                                                                            // # of letter indices fitting in 63 bits
+	sessionIDLength   = 24                                                                                            //Recommended to be at least 16 characters long.
+	letterBytes       = "!#$%&'()*+,-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~" //string generated from validCookieValueByte golang source code net/http/cookie.go
+	letterIdxBits     = 6                                                                                             //6 bits to represent a letter index
+	letterIdxMask     = 1<<letterIdxBits - 1                                                                          //All 1-bits, as many as letterIdxBits
+	letterIdxMax      = 63 / letterIdxBits                                                                            //# of letter indices fitting in 63 bits
 	sessionExpiryTime = 2 * time.Minute
 )
 
@@ -40,9 +40,9 @@ func setSession(w http.ResponseWriter, returns form) {
 }
 
 func sessionID(n int) string {
-	// author: icza, stackoverflow.com/questions/22892120/how-to-generate-a-random-string-of-a-fixed-length-in-golang
+	//author: icza, stackoverflow.com/questions/22892120/how-to-generate-a-random-string-of-a-fixed-length-in-golang
 	b := make([]byte, n)
-	// A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
+	//A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
 	for i, cache, remain := n-1, src.Int63(), letterIdxMax; i >= 0; {
 		if remain == 0 {
 			cache, remain = src.Int63(), letterIdxMax
@@ -57,16 +57,16 @@ func sessionID(n int) string {
 	return string(b)
 }
 
-// Update the expires http header time, every 15 minutes rather than recalculating it on every http request.
+//Update the expires http header time, every 15 minutes rather than recalculating it on every http request.
 func maintainSessions() {
 	ticker := time.NewTicker(sessionExpiryTime)
 	for range ticker.C {
-		// Can't directly change global variables in a go routine, so call an external function.
+		//Can't directly change global variables in a go routine, so call an external function.
 		purgeOldSessions()
 	}
 }
 
-// Delete sessions where the expiry datetime has already lapsed.
+//Delete sessions where the expiry datetime has already lapsed.
 func purgeOldSessions() {
 	globalSessions.RLock()
 	qty := len(globalSessions.m)
@@ -87,29 +87,29 @@ func purgeOldSessions() {
 }
 
 func sessionForms(w http.ResponseWriter, r *http.Request, formActions ...uint8) (uint8, []form) {
-	// Add generic unpopulated form "pageError" for passing page errors from post requests to the next page served that doesn't isn't specific to a particular form.
+	//Add generic unpopulated form "pageError" for passing page errors from post requests to the next page served that doesn't isn't specific to a particular form.
 	formActions = append(formActions, pageError)
 
-	// Get users session id from request cookie header
+	//Get users session id from request cookie header
 	cookie, err := r.Cookie(sessionToken)
 	if err != nil || cookie == nil || cookie.Value == "" {
-		// No session found. Return default forms.
+		//No session found. Return default forms.
 		return 0, getForms(formActions...)
 	}
 
 	http.SetCookie(w, &http.Cookie{
 		Name:     sessionToken,
-		Value:    "",                                       // Remove cookie by setting it to nothing (empty string).
-		HttpOnly: true,                                     // HttpOnly means the cookie can't be accessed by JavaScript
-		Expires:  time.Now().UTC().Add(-sessionExpiryTime), // Using minus sessionExpiryTime so the session expires time is set to the past
+		Value:    "",                                       //Remove cookie by setting it to nothing (empty string).
+		HttpOnly: true,                                     //HttpOnly means the cookie can't be accessed by JavaScript
+		Expires:  time.Now().UTC().Add(-sessionExpiryTime), //Using minus sessionExpiryTime so the session expires time is set to the past
 	})
 
-	// Start a read lock to prevent concurrent reads while other parts are executing a write.
+	//Start a read lock to prevent concurrent reads while other parts are executing a write.
 	globalSessions.RLock()
 	contents, ok := globalSessions.m[cookie.Value]
 	globalSessions.RUnlock()
 	if ok {
-		// Clear the session contents as it has been returned to the user.
+		//Clear the session contents as it has been returned to the user.
 		globalSessions.Lock()
 		delete(globalSessions.m, cookie.Value)
 		globalSessions.Unlock()

@@ -90,6 +90,7 @@ func pages() {
 	post(pst, clubMoundEdit, editClubMound)
 	post(pst, eventUpdateRange, updateRange)
 	post(pst, eventUpdateAgg, updateAgg)
+	post(pst, eventEditShooter, eventShooterUpdate)
 
 	//BUG any url breaks when appending "&*((&*%"
 	get404(urlEvents, events)

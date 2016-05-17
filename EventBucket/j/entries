@@ -1,24 +1,27 @@
 'use strict';
-var editRows = document.querySelectorAll('#editRow tbody tr td:last-of-type'), qty = editRows.length;
-while(qty--){
-	editRows[qty].onclick = stuff;
+var editRows = document.querySelectorAll('#editRow tbody tr td:last-of-type'), i = editRows.length;
+while(i--){
+	editRows[i].onclick = editRow;
 }
-function stuff(editCell){
-	var row = editCell.target.parentElement;
-	var tds = row.children, t = document.importNode(document.querySelector('template').content, true), form = t.querySelector('form');
+function editRow(editCell){
+	var row = editCell.target.parentElement,
+		tds = row.children,
+		t = document.importNode(document.querySelector('template').content, true),
+		form = t.querySelector('form'),
+		outerFormFields = t.querySelectorAll('[form=editRow]'),
+		i = outerFormFields.length;
 	form.id = '_' + tds[0].textContent;
-	var outerFormFields = t.querySelectorAll('[form=editRow]'), index = outerFormFields.length;
-	while(index--){
-		outerFormFields[index].setAttribute('form', form.id);
+	while(i--){
+		outerFormFields[i].setAttribute('form', form.id);
 	}
 	t.querySelector('td').textContent = tds[0].textContent;
 
-	t = custom(t, tds);
+	t = entries(t, tds);
 	row.innerHTML = '';
 	row.appendChild(t);
 }
 function findValues(element, labels){
-	var i = labels.length, j = element.options.length;
+	var i = labels.length;
 	while(i--){
 		findValue(element, labels[i]);
 	}
@@ -34,20 +37,20 @@ function findValue(element, label){
 	}
 }
 function checked(cell, element){
-	if(cell.className == 'e'){
+	if(cell.className === 'e'){
 		element.setAttribute('checked', '');
 	}
 }
 
-function custom(t, tds){
-	t.querySelector('[name=s]').value = tds[1].querySelector('span').textContent;
-	tds[1].querySelector('span').textContent = '';
+function entries(t, tds){
+	var surname = tds[1].querySelector('span');
+	t.querySelector('[name=s]').value = surname.textContent;
+	surname.textContent = '';
 	t.querySelector('[name=f]').value = tds[1].textContent.trim();
 	t.querySelector('[name=C]').value = tds[2].textContent;
-	findValues(t.querySelector('[name=g]'), tds[3].textContent);
+	findValue(t.querySelector('[name=g]'), tds[3].textContent);
 	findValue(t.querySelector('[name=r]'), tds[4].textContent);
 	t.querySelector('[name=I]').value = tds[0].textContent;
-	t.querySelector('td').textContent = tds[0].textContent;
 	checked(tds[5], t.querySelector('[name=k]'));
 	checked(tds[6], t.querySelector('[name=x]'));
 	return t;
