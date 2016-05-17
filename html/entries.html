@@ -39,22 +39,22 @@
 	<template>
 		<td></td>
 		<td>
-			<form method=post action=/12 id=editShooter>
+			<form method=post action=/22 id=editRow>
 				<input name=f required placeholder="First name" accesskey=d maxlength=64>
 				<input name=s required placeholder=Surname maxlength=64>
 				<input type=hidden name=E value={{.Event.ID}}>
 			</form>
 		</td>
 		<td>
-			<input type=search name=C required maxlength=64 form=editShooter list=C>
+			<input type=search name=C required maxlength=64 form=editRow list=C>
 		</td>
 		<td>
-			<select name=g multiple required size={{len .AvailableGrades}} form=editShooter>
-			{{template "optionList" .AvailableGrades}}
+			<select name=g required form=editRow>
+				{{template "optionList" .AvailableGrades}}
 			</select>
 		</td>
 		<td>
-			<select name=r form=editShooter>
+			<select name=r form=editRow>
 				<!--TODO load dynamic age groups from import file-->
 				{{template "optionList" .AgeGroups}}
 			</select>
@@ -66,7 +66,7 @@
 			<input name=x type=checkbox form=editRow>
 		</td>
 		<td>
-			<button name=I form=editShooter>Save</button>
+			<button name=I form=editRow>Save</button>
 		</td>
 	</template>
 	{{if not .Event.Closed}}

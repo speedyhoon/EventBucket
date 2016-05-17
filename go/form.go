@@ -38,6 +38,7 @@ const (
 	clubMoundEdit        uint8 = 19
 	eventUpdateRange     uint8 = 20
 	eventUpdateAgg       uint8 = 21
+	eventEditShooter     uint8 = 22
 	pageError            uint8 = 255
 )
 
@@ -266,6 +267,26 @@ func getForm(id uint8) []field {
 			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
 			name: "R", Required: true, minLen: 2, min: 1, max: 65535, step: 1, v8: listUint,
+		}}
+	case 22: //Entries Edit Shooter Details
+		return []field{{
+			name: "I", Required: true, v8: isValidRegex, regex: regexID,
+		}, {
+			name: "E", Required: true, v8: isValidRegex, regex: regexID,
+		}, {
+			name: "f", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+		}, {
+			name: "s", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+		}, {
+			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+		}, {
+			name: "g", Required: true, max: float32(len(globalGrades) - 1), step: 1, v8: isValidUint, Options: globalGradesDataList,
+		}, {
+			name: "r", max: 4, step: 1, v8: isValidUint, Options: dataListAgeGroup(),
+		}, {
+			name: "x", v8: isValidBool,
+		}, {
+			name: "k", v8: isValidBool,
 		}}
 	}
 	return []field{}

@@ -147,3 +147,23 @@ func eventShooterExistingInsert(w http.ResponseWriter, r *http.Request, submitte
 	}
 	http.Redirect(w, r, urlEntries+eventID, http.StatusSeeOther)
 }
+
+func eventShooterUpdate(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+	eventID := submittedForm.Fields[1].Value
+	err := updateDocument(tblEvent, eventID, &EventShooter{
+		ID:        submittedForm.Fields[0].valueUint,
+		FirstName: submittedForm.Fields[2].Value,
+		Surname:   submittedForm.Fields[3].Value,
+		Club:      submittedForm.Fields[4].Value,
+		Grade:     submittedForm.Fields[5].valueUint,
+		AgeGroup:  submittedForm.Fields[6].valueUint,
+		Ladies:    submittedForm.Fields[7].Checked,
+		Disabled:  submittedForm.Fields[8].Checked,
+	}, &Event{}, eventShooterUpdater)
+
+	if err != nil {
+		formError(w, submittedForm, redirect, err)
+		return
+	}
+	http.Redirect(w, r, urlEntries+eventID, http.StatusSeeOther)
+}
