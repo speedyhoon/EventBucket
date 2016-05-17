@@ -145,8 +145,6 @@ func getForm(id uint8) []field {
 		}, {
 			name: "x", v8: isValidBool,
 		}, {
-			name: "E", Required: true, v8: isValidRegex, regex: regexID,
-		}, {
 			name: "E", v8: isValidRegex, regex: regexID,
 		}}
 	case 9: //Existing Shooter Entry
