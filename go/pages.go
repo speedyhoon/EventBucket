@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
+
+	"golang.org/x/net/websocket"
 )
 
 const (
@@ -49,6 +51,7 @@ func pages() {
 	serveDir(dirJS, "./jz/")
 	serveDir(dirPNG, "")
 	serveDir(dirSVG, "./vz/")
+	http.Handle("/w/", websocket.Handler(ProcessSocket))
 	getParameters("/b/", barcode2D, regexBarcode)
 	getRedirectPermanent(urlAbout, about)
 	getRedirectPermanent(urlArchive, eventArchive)
@@ -61,11 +64,11 @@ func pages() {
 	getParameters(urlEventSettings, eventSettings, regexID)
 	getParameters(urlEventReport, eventReport, regexID)
 	getParameters(urlScoreboard, scoreboard, regexPath)
-	getParameters(urlEnterShots, scorecardsIncomplete, regexPath)
-	getParameters(urlEnterShotsAll, scorecardsAll, regexPath)
+	getParameters(urlEnterShots, enterShotsIncomplete, regexPath)
+	getParameters(urlEnterShotsAll, enterShotsAll, regexPath)
 	getParameters(urlPrintScorecards, printScorecards, regexPath)
-	getParameters(urlEnterTotals, totalScoresIncomplete, regexPath)
-	getParameters(urlEnterTotalsAll, totalScoresAll, regexPath)
+	getParameters(urlEnterTotals, enterTotalsIncomplete, regexPath)
+	getParameters(urlEnterTotalsAll, enterTotalsAll, regexPath)
 	post(pst, clubNew, clubInsert)
 	post(pst, clubDetails, clubDetailsUpsert)
 	post(pst, clubMoundNew, clubMoundInsert)
@@ -139,4 +142,37 @@ func gt(url string, formID uint8, runner func(http.ResponseWriter, *http.Request
 		}
 		runner(w, r, newForm, isValid)
 	})
+}
+
+func ProcessSocket(ws *websocket.Conn) {
+	var msg string
+	var command uint8
+	var err error
+	for {
+		err = websocket.Message.Receive(ws, &msg)
+		if err != nil || len(msg) < 1 {
+			info.Println("ProcessSocket: errored", err.Error(), "\nMessage length:", len(msg))
+			break
+		}
+		command = msg[0]
+		info.Printf("%U  %d      [%c]\n", command, command, command)
+		switch {
+		case command <= 3:
+			//start time.ticker for indicators
+			//			toggleIt(ws, command)
+		//changeFlash(ws, command)
+		/*case command <= 10:
+		//execute boolean comparison & toggle stored boolean
+		//Send back toggled data & any other data that was toggled too
+		toggleIt(ws, command)*/
+		case command <= 70:
+			//execute integer comparison, store value and execute function to change command (windscreen wiper speed)
+			//no data should be needed to send back
+		//toggleIt(ws, command)
+		//		case command == 127:
+		//			log.Println("reset")
+		case command == 195: //Refresh browser & set buttons to current state
+			//sendAll(ws)
+		}
+	}
 }
