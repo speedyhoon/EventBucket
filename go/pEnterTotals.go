@@ -6,15 +6,15 @@ import (
 	"strings"
 )
 
-func totalScoresAll(w http.ResponseWriter, r *http.Request, parameters string) {
-	totalScores(w, r, true, parameters)
+func enterTotalsAll(w http.ResponseWriter, r *http.Request, parameters string) {
+	enterTotals(w, r, true, parameters)
 }
 
-func totalScoresIncomplete(w http.ResponseWriter, r *http.Request, parameters string) {
-	totalScores(w, r, false, parameters)
+func enterTotalsIncomplete(w http.ResponseWriter, r *http.Request, parameters string) {
+	enterTotals(w, r, false, parameters)
 }
 
-func totalScores(w http.ResponseWriter, r *http.Request, showAll bool, parameters string) {
+func enterTotals(w http.ResponseWriter, r *http.Request, showAll bool, parameters string) {
 	//eventID/rangeID
 	ids := strings.Split(parameters, "/")
 	event, err := getEvent(ids[0])
@@ -45,11 +45,11 @@ func totalScores(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 	}
 
 	templater(w, page{
-		Title:   "Total Scores",
+		Title:   "Enter Range Totals",
 		Menu:    urlEvents,
 		MenuID:  event.ID,
 		Heading: event.Name,
-		JS:      []string{"totalScores"},
+		JS:      []string{"enterTotals"},
 		Error:   err,
 		Data: map[string]interface{}{
 			"Range":   currentRange,

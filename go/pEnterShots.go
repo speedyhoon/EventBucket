@@ -6,15 +6,15 @@ import (
 	"strings"
 )
 
-func scorecardsAll(w http.ResponseWriter, r *http.Request, parameters string) {
-	scorecards(w, r, true, parameters)
+func enterShotsAll(w http.ResponseWriter, r *http.Request, parameters string) {
+	enterShots(w, r, true, parameters)
 }
 
-func scorecardsIncomplete(w http.ResponseWriter, r *http.Request, parameters string) {
-	scorecards(w, r, false, parameters)
+func enterShotsIncomplete(w http.ResponseWriter, r *http.Request, parameters string) {
+	enterShots(w, r, false, parameters)
 }
 
-func scorecards(w http.ResponseWriter, r *http.Request, showAll bool, parameters string) {
+func enterShots(w http.ResponseWriter, r *http.Request, showAll bool, parameters string) {
 	//eventID/rangeID
 	ids := strings.Split(parameters, "/")
 	event, err := getEvent(ids[0])
@@ -63,11 +63,11 @@ func scorecards(w http.ResponseWriter, r *http.Request, showAll bool, parameters
 	}
 
 	templater(w, page{
-		Title:   "Scorecards",
+		Title:   "Enter Shots",
 		Menu:    urlEvents,
 		MenuID:  event.ID,
 		Heading: event.Name,
-		JS:      []string{"startShooting"},
+		JS:      []string{"enterShots"},
 		Data: map[string]interface{}{
 			"Range":   currentRange,
 			"Event":   event,
