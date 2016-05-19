@@ -1,8 +1,8 @@
 {{define "page"}}
 	{{if and (not .Event.Closed) (not .Range.Locked)}}
 		{{template "incompleteShooters" .}}
-		{{template "barcodeSearch"}}
-		{{if and .Hidden (not .ShowAll)}}<samp>{{.Hidden}} Shooter{{.Plural}} are hidden</samp>{{end}}
+		<br>{{template "barcodeSearch"}}
+		{{if and .Hidden (not .ShowAll)}}<samp>{{.Hidden}} Shooter{{.Plural}} have finished</samp>{{end}}
 		{{with .Event.Shooters}}
 			<table>
 				<thead>
@@ -25,14 +25,9 @@
 								<td>{{(grade .Grade).Abbr}}
 								<td>{{.FirstName}} {{.Surname}}
 								<td>
-									<input name=t max=60 min=0 step=1 {{attr "value" $score.Total}} placeholder={{$score.Total}} type=number autocomplete=off id={{.ID}} form=f{{.ID}}>
+									<input{{attr " value" $score.Total}} name=t max=60 min=0 step=1 placeholder={{$score.Total}} type=number required autocomplete=off id={{.ID}} form=f{{.ID}}>
 								<td>
-									<form method=post action=/14 id=f{{.ID}}>
-										<input name=c max=10 min=0 step=1 {{attr "value" $score.Centers}} placeholder={{$score.Centers}} type=number autocomplete=off>
-										<input name=S type=hidden value={{.ID}}>
-										<input name=E type=hidden value={{$.Event.ID}}>
-										<input name=R type=hidden value={{$.Range.ID}}>
-									</form>
+									<input{{attr " value" $score.Centers}} name=c max=10 min=0 step=1 placeholder={{$score.Centers}} type=number autocomplete=off>
 						{{end}}
 					{{end}}
 				{{end}}
