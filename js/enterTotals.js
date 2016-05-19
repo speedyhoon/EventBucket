@@ -1,23 +1,64 @@
 'use strict';
+var pathName = window.location.pathname.split('/')[1],
+	eventID = window.location.pathname.split('/')[2],
+	rangeID = window.location.pathname.split('/')[3],
+	inputs = document.querySelectorAll('table input'),
+	i = inputs.length,
+	ws, intervalId; //intervalId global variable stops reconnect() snowballing into an infinite loop.
+while(i--){
+	inputs[i].onchange = save;
+}
+function reconnect (){
+	ws = new WebSocket('ws://'+window.location.host+'/w/');
+	ws.onopen = function(){
+		if(intervalId){
+			clearInterval(intervalId);
+			intervalId = undefined;
+		}
+	};
+	//TODO
+	//Update UI with save / error message.
+	//ws.onmessage = function(message){};
+	ws.onclose = function(){
+		if(!intervalId){
+			intervalId = setInterval(reconnect, 3000); //try to reconnect every 3 seconds after the connection is dropped.
+		}
+	};
+}
+reconnect();
+
+//If shooter ID is provided, try to find the shooter. Otherwise autofocus on barcode search textbox
+if(!window.location.hash){
+	document.querySelector('[name=B]').setAttribute('autofocus', '');
+}else{
+	goToShooter(window.location.hash.replace('#', ''), document.querySelector('[name=B]'));
+}
+
 //Search for a shooter on Scorecards & total-scores pages.
-function shooterBarcode(search, shooter){
+function shooterBarcode(search){
+	document.getElementById('searchErr').setAttribute('hidden', '');
 	document.getElementById('barcodeErr').setAttribute('hidden', '');
 	document.getElementById('shooterErr').setAttribute('hidden', '');
-	var pathName = window.location.pathname.split('/')[1],
-		eventID = window.location.pathname.split('/')[2],
-		rangeID = window.location.pathname.split('/')[3];
-	if(shooter && shooter.value && /^\d+$/g.test(shooter.value)){
-		otherFunc(shooter.value, shooter, pathName, eventID, rangeID);
-		return false;
-	}else if(!search || !search.value || !/^\d+\/\d+#\d+$/g.test(search.value)){
-		search.select();
-		document.getElementById('barcodeErr').removeAttribute('hidden');
+	if(!search||!search.value){
+		document.getElementById('searchErr').removeAttribute('hidden');
 		return false;
 	}
-	var barcodeEventID = search.value.split('/')[0], barcodeRangeID = search.value.split('/')[1].split('#')[0], shooterID = search.value.split('#')[1];
+	if(/^\d+$/g.test(search.value)){
+		goToShooter(search.value, search);
+		return false;
+	}
+	//If barcode doesn't match display error message
+	if(!/^\d+\/\d+#\d+$/g.test(search.value)){
+		document.getElementById('barcodeErr').removeAttribute('hidden');
+		search.select();
+		return false;
+	}
+	var barcodeEventID = search.value.split('/')[0],
+		barcodeRangeID = search.value.split('/')[1].split('#')[0],
+		shooterID = search.value.split('#')[1];
 	if(eventID !== barcodeEventID){
 		//Go to a different event if user presses OK.
-		if(confirm('event is not the same. do you want to go to event with id X?')){
+		if(confirm('This barcode is for a different event. Do you want to go to event with id '+barcodeEventID+'?')){
 			window.location.href = '/' + pathName + '/' + barcodeEventID + '/' + barcodeRangeID + '#' + shooterID;
 		}
 		//Else do nothing.
@@ -26,22 +67,17 @@ function shooterBarcode(search, shooter){
 	}
 	if(rangeID !== barcodeRangeID){
 		//Go to a different range if user presses OK.
-		if(confirm('Jump to range with ID ' + barcodeRangeID + '?')){
+		if(confirm('This barcode is for a different range. Do you want to go to range with id ' + barcodeRangeID + '?')){
 			window.location.href = '/' + pathName + '/' + barcodeEventID + '/' + barcodeRangeID + '#' + shooterID;
 		}
 		//Else do nothing.
 		search.select();
 		return false;
 	}
-	return otherFunc(shooterID, search, pathName, eventID, rangeID);
+	return goToShooter(shooterID, search);
 }
-if(!window.location.hash){
-	document.querySelector('[name=B]').setAttribute('autofocus', '');
-}else if(!document.getElementById(window.location.hash.replace('#', ''))){
-	document.getElementById('shooterErr').removeAttribute('hidden');
-	document.querySelector('[name=B]').select();
-}
-function otherFunc(shooterID, search, pathName, eventID, rangeID){
+
+function goToShooter(shooterID, search){
 	//If the shooter textbox exists in the DOM, set focus to their text box.
 	var d = document.getElementById(shooterID);
 	if(d){
@@ -58,4 +94,20 @@ function otherFunc(shooterID, search, pathName, eventID, rangeID){
 	//If the shooter doesn't exist go to the scorecards-all OR total-scores-all page
 	window.location.href = '/' + pathName + '-all/' + eventID + '/' + rangeID + '#' + shooterID;
 	return false;
+}
+
+function save(event){
+	var row = event.target.parentElement.parentElement,
+		name = event.target.name,
+		otherInput = name==='t'?'c':'t';
+	//Assigning values as arrays so json.Marshal can convert it to url.Values straight away & doesn't require custom validation code
+	var x = {
+		E: [eventID],
+		R: [rangeID],
+		S: [row.children[0].textContent]
+	};
+	//Use double bitwise operator to convert strings to an integer
+	x[name] = [~~event.target.value+''];
+	x[otherInput]= [~~row.querySelector('input[name='+otherInput+']').value+''];
+	ws.send('\u000E'+JSON.stringify(x));
 }
