@@ -26,7 +26,7 @@ func sorterCountBack(rangeID string, c1, c2 *EventShooter) bool {
 	return c1.Scores[rangeID].CountBack > c2.Scores[rangeID].CountBack
 }
 func sorterCountBack2(rangeID string, c1, c2 *EventShooter) bool {
-	t.Println("sorterCountBack2", rangeID, c1.ID, c1.FirstName, c1.Surname, c2.ID, c2.FirstName, c2.Surname)
+	//t.Println("sorterCountBack2", rangeID, c1.ID, c1.FirstName, c1.Surname, c2.ID, c2.FirstName, c2.Surname)
 	return c1.Scores[rangeID].CountBack2 > c2.Scores[rangeID].CountBack2
 }
 

@@ -54,7 +54,7 @@ func isValidUint(f *field, inp ...string) {
 
 	var err error
 	f.Value = inp[0]
-	f.valueUint, err = strToUint(f.Value)
+	f.valueUint, err = stoU(f.Value)
 	if err != nil {
 		//Return error if input string failed to convert.
 		f.Error = err.Error()
