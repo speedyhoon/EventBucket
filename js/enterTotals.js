@@ -101,13 +101,26 @@ function save(event){
 		name = event.target.name,
 		otherInput = name==='t'?'c':'t';
 	//Assigning values as arrays so json.Marshal can convert it to url.Values straight away & doesn't require custom validation code
-	var x = {
+	var score = {
 		E: [eventID],
 		R: [rangeID],
 		S: [row.children[0].textContent]
 	};
 	//Use double bitwise operator to convert strings to an integer
-	x[name] = [~~event.target.value+''];
-	x[otherInput]= [~~row.querySelector('input[name='+otherInput+']').value+''];
-	ws.send('\u000E'+JSON.stringify(x));
+	score[name] = [~~event.target.value+''];
+	score[otherInput]= [~~row.querySelector('input[name='+otherInput+']').value+''];
+	if(validateScore(score)){
+		ws.send('\u000E' + JSON.stringify(score));
+	}else{
+		//Display validation error
+		console.warn('Score is invalid: total=',score.t[0], 'centers=', score.c[0]);
+	}
+}
+
+function validateScore(score){
+	//TODO dynamicly change 5 to 6
+	if(score.c[0] > ~~(score.t[0]/5)){
+		return false;
+	}
+	return true;
 }
