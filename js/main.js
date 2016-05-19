@@ -20,7 +20,7 @@ function tableSort(th){
 			case 'ID':
 				return +input;
 			case 'Id':
-				return parseInt(input, 36);
+				return parseInt(input, 36);   //Id = base 36 string (0-9a-z) e.g. a2e = 13046
 		}
 		return input;
 	};
