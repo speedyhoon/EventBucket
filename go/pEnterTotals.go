@@ -44,17 +44,19 @@ func enterTotals(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 		}
 	}
 
+	//TODO fix
+
 	templater(w, page{
 		Title:   "Enter Range Totals",
 		Menu:    urlEvents,
 		MenuID:  event.ID,
-		Heading: event.Name,
+		Heading: currentRange.Name,
 		JS:      []string{"enterTotals"},
 		Error:   err,
 		Data: map[string]interface{}{
 			"Range":   currentRange,
 			"Event":   event,
-			"URL":     "total-scores",
+			"URL":     "enter-totals",
 			"ShowAll": showAll,
 			"Hidden":  hidden,
 			"Plural":  plural(hidden),
@@ -62,27 +64,29 @@ func enterTotals(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 	})
 }
 
-func eventTotalUpsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+func eventTotalUpsert( /*w http.ResponseWriter, r *http.Request,*/ fields []field /*, redirect func()*/) {
 	//Insert new event into database.
-	err := updateDocument(tblEvent, submittedForm.Fields[2].Value, &shooterScore{
-		rangeID: submittedForm.Fields[3].Value,
-		id:      submittedForm.Fields[4].valueUint,
+	err := updateDocument(tblEvent, fields[2].Value, &shooterScore{
+		rangeID: fields[3].Value,
+		id:      fields[4].valueUint,
 		score: Score{
-			Total:   submittedForm.Fields[0].valueUint,
-			Centers: submittedForm.Fields[1].valueUint,
+			Total:   fields[0].valueUint,
+			Centers: fields[1].valueUint,
 		}}, &Event{}, upsertScore)
 
 	//Display any upsert errors onscreen.
 	if err != nil {
-		formError(w, submittedForm, redirect, err)
-		return
+		warn.Println(err)
 	}
-	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
+	//		formError(w, submittedForm, redirect, err)
+	//		return
+	//	}
+	//http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 }
 
 func eventRange(ranges []Range, rID string, w http.ResponseWriter, r *http.Request) (Range, error) {
 	//If range id is not a number, return 404.
-	rangeID, err := strToUint(rID)
+	rangeID, err := stoU(rID)
 	if err != nil {
 		errorHandler(w, r, http.StatusNotFound, "range")
 		return Range{}, err
