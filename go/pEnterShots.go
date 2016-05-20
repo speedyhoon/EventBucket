@@ -14,6 +14,12 @@ func enterShotsIncomplete(w http.ResponseWriter, r *http.Request, parameters str
 	enterShots(w, r, false, parameters)
 }
 
+//TODO fix
+
+//type Nasty struct{
+//	Shots []struct
+//}
+
 func enterShots(w http.ResponseWriter, r *http.Request, showAll bool, parameters string) {
 	//eventID/rangeID
 	ids := strings.Split(parameters, "/")
@@ -30,6 +36,36 @@ func enterShots(w http.ResponseWriter, r *http.Request, showAll bool, parameters
 	if err != nil {
 		return
 	}
+
+	var firstShooterClass uint
+	for _, shooter := range event.Shooters {
+		if !shooter.Hidden && (showAll || !showAll && shooter.Scores[currentRange.StrID()].Total > 0) {
+			firstShooterClass = globalGrades[shooter.Grade].ClassID
+			break
+		}
+	}
+
+	disciplines := make(map[uint]Discipline)
+	//var custom map[uint]
+
+	if len(event.Grades) == 0 {
+		for i, discipline := range globalDisciplines {
+			disciplines[uint(i)] = discipline
+		}
+	} else {
+		for _, gradeID := range event.Grades {
+			disciplines[globalGrades[gradeID].ClassID] = globalDisciplines[globalGrades[gradeID].ClassID]
+		}
+	}
+
+	//	for classID, discipline := range disciplines {
+	/*
+		shots
+		sighters
+		both
+
+	*/
+	//	}
 
 	//TODO this is messy as hell - calculate it during class grade changes?
 	var classesAdded []uint
@@ -50,7 +86,7 @@ func enterShots(w http.ResponseWriter, r *http.Request, showAll bool, parameters
 	}
 	var longestShoot uint
 	var longestClassID int
-	for i, discipline := range myDosc {
+	for i, discipline := range globalDisciplines {
 		if discipline.QtySighters+discipline.QtyShots > longestShoot {
 			longestShoot = discipline.QtySighters + discipline.QtyShots
 			longestClassID = i
@@ -71,15 +107,20 @@ func enterShots(w http.ResponseWriter, r *http.Request, showAll bool, parameters
 		Data: map[string]interface{}{
 			"Range":   currentRange,
 			"Event":   event,
-			"URL":     "scorecards",
+			"URL":     "enter-shots",
 			"ShowAll": showAll,
 
 			//TODO this is messy as hell
-			"Disciplines":    myDosc,
+			//			"Disciplines":    myDosc,
+			"Disciplines":    globalDisciplines,
+			"AllGrades":      globalGrades,
 			"LongestClassID": longestClassID,
 			"LongestShoot":   longestShoot,
+			"defaultGrades2": defaultGrades2(),
 			"Sighters":       make([]struct{}, globalDisciplines[longestClassID].QtySighters+1),
 			"Shots":          make([]struct{}, globalDisciplines[longestClassID].QtyShots+1),
+
+			"firstShooterClass": firstShooterClass,
 		},
 	})
 }
