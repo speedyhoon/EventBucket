@@ -1,13 +1,14 @@
 'use strict';
 
-var map, places, j = new XMLHttpRequest(), arr = document.location.pathname.split('/'), lll = +arr[arr.length-1];
-j.open('GET', '/18'+(lll ? '?C='+lll :''), true);
+var map, places, j = new XMLHttpRequest(), path = document.location.pathname.split('/');
+//Add clubID to GET parameters if it exists. Otherwise the response will return all clubs, i.e. path = ['', 'page-name', 'clubID']
+j.open('GET', '/18'+(path[2] ? '?C='+path[2] :''), true);
 j.send();
 j.onreadystatechange = function stateChanger(){
 	if(j.readyState == 4 && j.status === 200 && j.response){
 		places = JSON.parse(j.response);
 		var script = document.createElement('script');
-		script.src = "/j/js?key=AIzaSyCvMoHGEB9iW2i7VakZevwh3GhdXsL2eik&callback=initMap";
+		script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCvMoHGEB9iW2i7VakZevwh3GhdXsL2eik&callback=initMap';
 		document.body.appendChild(script);
 	}
 };
