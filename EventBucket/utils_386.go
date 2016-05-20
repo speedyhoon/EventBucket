@@ -15,7 +15,7 @@ func b36tou(id string) (uint, error) {
 }
 
 //Converts numeric string to uint
-func strToUint(id string) (uint, error) {
+func stoU(id string) (uint, error) {
 	u, err := strconv.ParseUint(strings.TrimSpace(id), 10, 32)
 	if err != nil {
 		warn.Printf("Unable to convert %v to uint", id)

@@ -204,11 +204,11 @@ func getForm(id uint8) []field {
 		}, {
 			name: "C", maxLen: 64, v8: isValidStr,
 		}}
-	case 14: //Total Scores
+	case 14: //Enter Range Totals
 		return []field{{
 			name: "t", Required: true, max: 60, step: 1, v8: isValidUint,
 		}, {
-			name: "c", Required: true, max: 10, step: 1, v8: isValidUint,
+			name: "c", max: 10, step: 1, v8: isValidUint,
 		}, {
 			name: "E", Required: true, v8: isValidRegex, regex: regexID,
 		}, {

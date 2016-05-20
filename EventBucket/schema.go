@@ -171,3 +171,14 @@ type field struct {
 	manyRequiredQty    uint
 	Placeholder        string
 }
+
+//TODO fix
+
+//used by enterRangeTotals page
+type enterScore struct {
+	EventID   uint `json:"E,omitempty"`
+	RangeID   uint `json:"R,omitempty"`
+	ShooterID uint `json:"S,omitempty"`
+	Total     uint `json:"t,omitempty"`
+	Centers   uint `json:"c,omitempty"`
+}

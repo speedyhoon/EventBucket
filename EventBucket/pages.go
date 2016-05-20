@@ -1,9 +1,13 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"regexp"
+
+	"golang.org/x/net/websocket"
 )
 
 const (
@@ -49,6 +53,7 @@ func pages() {
 	serveDir(dirJS, "./jz/")
 	serveDir(dirPNG, "")
 	serveDir(dirSVG, "./vz/")
+	http.Handle("/w/", websocket.Handler(ProcessSocket))
 	getParameters("/b/", barcode2D, regexBarcode)
 	getRedirectPermanent(urlAbout, about)
 	getRedirectPermanent(urlArchive, eventArchive)
@@ -61,11 +66,11 @@ func pages() {
 	getParameters(urlEventSettings, eventSettings, regexID)
 	getParameters(urlEventReport, eventReport, regexID)
 	getParameters(urlScoreboard, scoreboard, regexPath)
-	getParameters(urlEnterShots, scorecardsIncomplete, regexPath)
-	getParameters(urlEnterShotsAll, scorecardsAll, regexPath)
+	getParameters(urlEnterShots, enterShotsIncomplete, regexPath)
+	getParameters(urlEnterShotsAll, enterShotsAll, regexPath)
 	getParameters(urlPrintScorecards, printScorecards, regexPath)
-	getParameters(urlEnterTotals, totalScoresIncomplete, regexPath)
-	getParameters(urlEnterTotalsAll, totalScoresAll, regexPath)
+	getParameters(urlEnterTotals, enterTotalsIncomplete, regexPath)
+	getParameters(urlEnterTotalsAll, enterTotalsAll, regexPath)
 	post(pst, clubNew, clubInsert)
 	post(pst, clubDetails, clubDetailsUpsert)
 	post(pst, clubMoundNew, clubMoundInsert)
@@ -78,7 +83,7 @@ func pages() {
 	post(get, eventShooterSearch, eventSearchShooters)
 	post(pst, shooterNew, shooterInsert)
 	post(pst, shooterDetails, shooterUpdate)
-	post(pst, eventTotalScores, eventTotalUpsert)
+	//post(pst, eventTotalScores, eventTotalUpsert)
 	post(pst, eventAvailableGrades, eventAvailableGradesUpsert)
 	post(pst, eventUpdateShotScore, updateShotScores)
 	post(pst, importShooter, importShooters)
@@ -119,6 +124,33 @@ func post(method string, formID uint8, runner func(http.ResponseWriter, *http.Re
 	http.HandleFunc(fmt.Sprintf("/%d", formID), h)
 }
 
+/*
+//TODO fix
+
+func post(method string, formID uint8, runner func(http.ResponseWriter, *http.Request, form, func())) {
+	h := func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != method {
+			/*405 Method Not Allowed
+			A request was made of a resource using a request method not supported by that resource; for example,
+			using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
+			//en.wikipedia.org/wiki/List_of_HTTP_status_codes * /
+//TODO maybe don't redirect user?
+http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
+return
+}
+submittedFields, isValid := validPost(r, getForm(formID))
+redirect := func() { http.Redirect(w, r, r.Referer(), http.StatusSeeOther) }
+if !isValid && method != get {
+setSession(w, form{action: formID, Fields: submittedFields})
+redirect()
+return
+}
+runner(w, r, submittedFields, redirect)
+}
+http.HandleFunc(fmt.Sprintf("/%d", formID), h)
+}
+*/
+
 //func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 
 func gt(url string, formID uint8, runner func(http.ResponseWriter, *http.Request, form, bool)) {
@@ -139,4 +171,36 @@ func gt(url string, formID uint8, runner func(http.ResponseWriter, *http.Request
 		}
 		runner(w, r, newForm, isValid)
 	})
+}
+
+func ProcessSocket(ws *websocket.Conn) {
+	var msg string
+	var command uint8
+	var err error
+	for {
+		if websocket.Message.Receive(ws, &msg) != nil || len(msg) < 1 {
+			break
+		}
+		command = uint8(msg[0])
+		switch command {
+		case eventTotalScores:
+			var form url.Values
+			err = json.Unmarshal([]byte(msg[1:]), &form)
+			if err != nil {
+				warn.Println(err)
+				continue
+			}
+
+			if form, passed := isValid(form, getForm(command)); passed {
+				eventTotalUpsert(form)
+			}
+			var response []byte
+			response, err = json.Marshal(form)
+			if err != nil {
+				warn.Println(err)
+				continue
+			}
+			websocket.Message.Send(ws, fmt.Sprintf("%U%s", msg[0], response))
+		}
+	}
 }

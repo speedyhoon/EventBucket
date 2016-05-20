@@ -17,7 +17,7 @@ func scoreboard(w http.ResponseWriter, r *http.Request, parameters string) {
 		return
 	}
 
-	rangeID, err := strToUint(ids[1])
+	rangeID, err := stoU(ids[1])
 	if err != nil {
 		errorHandler(w, r, http.StatusNotFound, "range")
 		return
