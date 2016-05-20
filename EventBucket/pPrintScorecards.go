@@ -46,7 +46,7 @@ func printScorecards(w http.ResponseWriter, r *http.Request, parameters string) 
 	}
 
 	var shooterID uint
-	shooterID, err = strToUint(ids[1])
+	shooterID, err = stoU(ids[1])
 	if err != nil || shooterID >= uint(len(event.Shooters)) {
 		errorHandler(w, r, http.StatusNotFound, "shooter")
 		return

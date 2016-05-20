@@ -63,7 +63,7 @@ var (
 				Link:      urlEnterShots,
 				RangeMenu: true,
 			}, {
-				Name:      "Enter Range Total",
+				Name:      "Enter Range Totals",
 				Link:      urlEnterTotals,
 				RangeMenu: true,
 				//}, {
