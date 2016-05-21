@@ -57,7 +57,7 @@
 	function recalculateTotal(value){
 		var type = getShootersClass(), index = classes[type].validShots.indexOf(value), newer = ~~classes[type].validScore[index], newerC = ~~classes[type].validCenta[index], total, centers;
 		currentCell.textContent = value;
-		console.log(currentRow.total, currentRow.centers, currentCell.value, currentCell.center);
+		//console.log(currentRow.total, currentRow.centers, currentCell.value, currentCell.center);
 		if(getCurrentNth() >= getNoOfSighters()){
 			total = getValue(currentRow, 'total') - getValue(currentCell, 'value') + newer;
 			centers = getValue(currentRow, 'centers') - getValue(currentCell, 'center') + newerC;
@@ -205,7 +205,7 @@
 	}
 
 	function highlightCell(cell){//change the selected table cell (td) to the currentCell selected
-		console.log('highlightCell');
+		//console.log('highlightCell');
 		if(cell !== currentCell){
 			highlightOnlyTheCell(cell);
 			if(currentRow !== currentCell.parentNode){
@@ -219,11 +219,11 @@
 				highlightRow(trElement);
 
 			//if visited attribute is present it has already been processed
-				console.log('visited?', currentRow.visited);
+				//console.log('visited?', currentRow.visited);
 				if(!currentRow.visited){
 					currentRow.onclick = function tdClicker(tdElement){
 						return function tdClick(event){
-							console.log('tdClicker');
+							//console.log('tdClicker');
 							if(event.target.nodeName === 'TD'){
 							highlightCell(tdElement);
 						}
