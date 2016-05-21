@@ -44,14 +44,11 @@ func enterTotals(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 		}
 	}
 
-	//TODO fix
-
 	templater(w, page{
 		Title:   "Enter Range Totals",
 		Menu:    urlEvents,
 		MenuID:  event.ID,
 		Heading: currentRange.Name,
-		JS:      []string{"enterTotals"},
 		Error:   err,
 		Data: map[string]interface{}{
 			"Range":   currentRange,
