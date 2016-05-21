@@ -1,6 +1,9 @@
 (function(){
 	'use strict';
-	var currentCell, currentRow, classes = {
+	var currentCell, currentRow,
+		eventID = window.location.pathname.split('/')[2],
+		rangeID = window.location.pathname.split('/')[3],
+		classes = {
 			currentType:null,
 			0:{
 				sighters:2,
@@ -30,6 +33,10 @@
 	if(window.XMLHttpRequest){
 		var j = new XMLHttpRequest();
 	}
+
+	//Set shooter barcode form onsubmit because it's not allowed with the current Content Security Policy.
+	document.querySelector('#sb').onsubmit='return shooterBarcode(B)';
+
 	function getShootersClass(){
 		return currentRow.getAttribute('data-class');
 	}
@@ -88,17 +95,15 @@
 	}
 
 	function ajax(id){
-		var table = document.querySelector('table'), eventID = table.getAttribute('data-eventID'), rangeID = table.getAttribute('data-rangeID');
-		//shots = encodeURI(getShots()).replace(/#/gi, '%23');	//hashes are converted after encodeURI to stop % being converted twice
-		j.open('POST', '/16?E=' + eventID + '&R=' + rangeID + '&S=' + id + '&s=' + getShots(), true);
-		//j.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-		j.send();
+		//TODO reimplement for websockets
 		j.onreadystatechange = function stateChanger(){
 			if(j.readyState == 4){
 				//TODO status ok && html == same - GREEN    else    RED
 				currentRow.querySelector('.t').innerHTML = j.status === 200 ? j.response : 'failed';
 			}
-		};
+		};*/
+		//Form 16 - eventUpdateShotScore
+		ws.send('\u0010' + JSON.stringify({E: [eventID], R: [rangeID], S: [id], s: [getShots()]}));
 	}
 
 	function highlightOnlyTheCell(cell){
@@ -117,7 +122,7 @@
 		if(currentCell){
 			if(currentCell.textContent !== value){//prevents recalculating the score if it is the same value
 				recalculateTotal(value);
-				ajax(currentRow.id);
+				ajax(currentRow.children[0].textContent);
 			}
 			if(currentCell.nextSibling && currentCell.nextSibling.nodeName === 'TD'){
 				highlightOnlyTheCell(currentCell.nextSibling);
@@ -232,6 +237,23 @@
 		shooters[shooterQty].onclick = shooterNameOnclick(shooters[shooterQty].parentNode);
 	}
 
-	//178,161,166,168,238,260,241
-	//6328,5685,7920
+	var ws, intervalId;
+	function reconnect (){
+		ws = new WebSocket('ws://'+window.location.host+'/w/');
+		ws.onopen = function(){
+			if(intervalId){
+				clearInterval(intervalId);
+				intervalId = undefined;
+			}
+		};
+		//TODO
+		//Update UI with save / error message.
+		//ws.onmessage = function(message){};
+		ws.onclose = function(){
+			if(!intervalId){
+				intervalId = setInterval(reconnect, 3000); //try to reconnect every 3 seconds after the connection is dropped.
+			}
+		};
+	}
+	reconnect();
 }());

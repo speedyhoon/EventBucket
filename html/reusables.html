@@ -57,7 +57,7 @@
 {{end}}
 
 {{define "barcodeSearch"}}
-	<form onsubmit='return shooterBarcode(B)'>
+	<form id=sb>
 		<label><abbr title="Find a shooter in the list by entering a shooter ID or scan a scorecard barcode.">?</abbr> Search for Shooter <input name=B pattern=(\d+\/\d+#)?\d+ type=search></label> <button>Search</button>
 		<samp id=barcodeErr hidden>Barcode must match: <em>eventID/rangeID#shooterID</em> For example: <em>{{.EventID}}/{{.Range.ID}}#1</em></samp>
 		<samp id=shooterErr hidden>A shooter with that ID doesn't exist in this event.</samp>
