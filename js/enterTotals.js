@@ -8,6 +8,10 @@ var pathName = window.location.pathname.split('/')[1],
 while(i--){
 	inputs[i].onchange = save;
 }
+
+//Set shooter barcode form onsubmit because it's not allowed with the current Content Security Policy.
+document.querySelector('#sb').onsubmit='return shooterBarcode(B)';
+
 function reconnect (){
 	ws = new WebSocket('ws://'+window.location.host+'/w/');
 	ws.onopen = function(){

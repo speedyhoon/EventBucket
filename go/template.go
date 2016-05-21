@@ -185,9 +185,9 @@ func templater(w http.ResponseWriter, page page) {
 	headers(w, nocache)
 	if page.template == 25 {
 		page.template = 0
-		w.Header().Set(csp, maps)
+		w.Header().Set(csp, "style-src 'self'")
 	} else {
-		w.Header().Set(csp, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self' data:") //font-src 'self'
+		w.Header().Set(csp, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src ws: 'self'; img-src 'self' data:") //font-src 'self'
 	}
 
 	//Convert page.Title to the HTML template file name (located within htmlDirectory), e.g. Events > Events, Club Settings > ClubSettings
