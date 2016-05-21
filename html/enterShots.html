@@ -28,7 +28,7 @@
 								<th>{{.Club}}
 								<th>{{(grade .Grade).Abbr}}
 								<th>{{.FirstName}} {{.Surname}}
-								{{range $i := N index $.Disciplines (grade .Grade).ClassID.QtyTotal}}
+								{{range $i := N (index $.Disciplines (grade .Grade).ClassID).QtyTotal}}
 									<td>
 										{{if gt (len $score.Shots) .}}
 											{{printf "%c" (index $score.Shots .)}}
