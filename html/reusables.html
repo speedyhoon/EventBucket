@@ -83,3 +83,11 @@
 		<samp>No mounds listed</samp>
 	{{end}}
 {{end}}
+
+{{define "rangeNotDisplayed"}}
+	{{if .Event.Closed}}
+		<samp>Event is closed, no changes can be made. Go to <a href=/event-settings/{{.Event.ID}}>Event Settings</a> to reopen this event.</samp>
+	{{else}}
+		<samp>Range is locked, no changes can be made. Go to <a href=/event-settings/{{.Event.ID}}>Event Settings</a> to unlock this range.</samp>
+	{{end}}
+{{end}}
