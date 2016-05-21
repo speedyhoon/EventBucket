@@ -95,7 +95,7 @@
 	}
 
 	function ajax(id){
-		//TODO reimplement for websockets
+		/*TODO reimplement for websockets
 		j.onreadystatechange = function stateChanger(){
 			if(j.readyState == 4){
 				//TODO status ok && html == same - GREEN    else    RED
