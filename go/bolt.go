@@ -409,24 +409,60 @@ func getDefaultClub() Club {
 
 func eventShooterInsertDB(decode interface{}, contents interface{}) interface{} {
 	event := decode.(*Event)
-	shooter := *contents.(*EventShooter)
+	newShooter := *contents.(*Shooter)
 
-	//Assign shooter ID
-	shooter.ID = event.AutoInc.Shooter
-	event.Shooters = append(event.Shooters, shooter)
+	shooter := EventShooter{
+		EID:       newShooter.ID,
+		FirstName: newShooter.FirstName,
+		Surname:   newShooter.Surname,
+		Club:      newShooter.Club,
+		ClubID:    newShooter.ClubID,
+		AgeGroup:  newShooter.AgeGroup,
+		Ladies:    newShooter.Ladies,
+	}
 
-	//Increment Event Shooter ID
-	event.AutoInc.Shooter++
+SearchNextGrade:
+	//Loop through the shooters selected grades & add a new shooter for each with a different grades.
+	for _, gradeID := range newShooter.Grade {
+		for _, s := range event.Shooters {
+			if s.EID == shooter.EID && s.Grade == gradeID {
+				warn.Printf("Shooter %v %v is not allowed to enter into %v event twice with the same grade %v.\n", shooter.FirstName, shooter.Surname, event.Name, globalGrades[gradeID].Name)
+				continue SearchNextGrade
+			}
+		}
 
-	//If shooter is Match Reserve, duplicate them in the Match Open category. Used for Victorian Match Rifle Championships.
-	if shooter.Grade == 8 {
-		shooter.ID = event.AutoInc.Shooter
-		shooter.Grade = 7
-		shooter.Hidden = true
+		//Assign shooter ID
+		linkedID := event.AutoInc.Shooter
+		shooter.ID = linkedID
+		shooter.Grade = gradeID
 		event.Shooters = append(event.Shooters, shooter)
+
+		//Increment Event Shooter ID
 		event.AutoInc.Shooter++
+
+		//Some events shooters from grade X are automatically added to grade Y, e.g. Shooters in Match Reserve are able to win prizes in the higher grade Match Open.
+		for _, grade := range globalGrades[gradeID].DuplicateTo {
+			//Don't add the shooter because they have already selected to enter into the duplicate grade.
+			if !containsUint(newShooter.Grade, grade) {
+				shooter.ID = event.AutoInc.Shooter
+				shooter.Grade = grade
+				shooter.Hidden = true
+				shooter.LinkedID = linkedID
+				event.Shooters = append(event.Shooters, shooter)
+				event.AutoInc.Shooter++
+			}
+		}
 	}
 	return event
+}
+
+func containsUint(list []uint, searchFor uint) bool {
+	for _, x := range list {
+		if x == searchFor {
+			return true
+		}
+	}
+	return false
 }
 
 func eventShooterUpdater(decode interface{}, contents interface{}) interface{} {

@@ -47,7 +47,7 @@ func isValid(urlValues url.Values, fields []field) ([]field, bool) {
 		}
 
 		fieldValue, ok = urlValues[field.name]
-		t.Println(fieldValue, ok)
+		t.Println(field.name, fieldValue, ok)
 
 		//if fieldValue is empty and...
 		if !ok || len(fieldValue) == 0 || (len(fieldValue) == 1 && strings.TrimSpace(fieldValue[0]) == "") {

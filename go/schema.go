@@ -94,12 +94,13 @@ type EventShooter struct {
 	FirstName string           `json:"f"` //TODO change these to point to shooters in the other shooter tables? Would require extra look ups though :(
 	Surname   string           `json:"s"`
 	Club      string           `json:"C"` //TODO change Club to struct Club{ID uint, Name string} ??
+	ClubID    string           `json:"c"`
 	Grade     uint             `json:"g"`
 	Hidden    bool             `json:"h,omitempty"`
 	AgeGroup  uint             `json:"r,omitempty"`
 	Scores    map[string]Score `json:"S,omitempty"` //TODO look into using uint as index instead of string. //TODO look into inline the json field and if it would work with uint indexes //Scores   []Score `json:"schemaScores,omitempty"`   //S is not used!
 	LinkedID  uint             `json:"l,omitempty"` //For duplicating shooters that are in different classes with the same score
-	SID       int              `json:"M,omitempty"`
+	EID       string           `json:"M,omitempty"` //Points to EventBucket Shooter ID
 	Disabled  bool             `json:"d,omitempty"`
 	Ladies    bool             `json:"x,omitempty"`
 	//SCOREBOARD
@@ -125,6 +126,7 @@ type Shooter struct {
 	Surname   string         `json:"s,omitempty"`
 	NickName  string         `json:"n,omitempty"`
 	Club      string         `json:"C,omitempty"`
+	ClubID    string         `json:"c,omitempty"`
 	Skill     map[uint]Skill `json:"K,omitempty"` //Grading set by the VRA for each class
 	Address   string         `json:"a,omitempty"`
 	Email     string         `json:"e,omitempty"`
@@ -170,15 +172,4 @@ type field struct {
 	manyRequired       []int
 	manyRequiredQty    uint
 	Placeholder        string
-}
-
-//TODO fix
-
-//used by enterRangeTotals page
-type enterScore struct {
-	EventID   uint `json:"E,omitempty"`
-	RangeID   uint `json:"R,omitempty"`
-	ShooterID uint `json:"S,omitempty"`
-	Total     uint `json:"t,omitempty"`
-	Centers   uint `json:"c,omitempty"`
 }
