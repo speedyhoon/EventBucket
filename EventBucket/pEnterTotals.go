@@ -44,14 +44,11 @@ func enterTotals(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 		}
 	}
 
-	//TODO fix
-
 	templater(w, page{
 		Title:   "Enter Range Totals",
 		Menu:    urlEvents,
 		MenuID:  event.ID,
 		Heading: currentRange.Name,
-		JS:      []string{"enterTotals"},
 		Error:   err,
 		Data: map[string]interface{}{
 			"Range":   currentRange,
@@ -105,4 +102,13 @@ func eventRange(ranges []Range, rID string, w http.ResponseWriter, r *http.Reque
 	//Otherwise event doesn't contain a range with that id and return 404.
 	errorHandler(w, r, http.StatusNotFound, "range")
 	return Range{}, errors.New("Range with that ID doesn't exists in this event")
+}
+
+//used by enterRangeTotals page
+type enterScore struct {
+	EventID   uint `json:"E,omitempty"`
+	RangeID   uint `json:"R,omitempty"`
+	ShooterID uint `json:"S,omitempty"`
+	Total     uint `json:"t,omitempty"`
+	Centers   uint `json:"c,omitempty"`
 }

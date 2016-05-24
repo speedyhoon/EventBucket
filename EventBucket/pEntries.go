@@ -91,40 +91,43 @@ func eventAvailableGradesUpsert(w http.ResponseWriter, r *http.Request, submitte
 }
 
 func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
-	if _, err := getClubByName(submittedForm.Fields[2].Value); err != nil {
-		insertClub(Club{Name: submittedForm.Fields[2].Value})
-	}
-
-	//Loop through the grades selected and add an new shooter for each with a different grade
-	eventID := submittedForm.Fields[7].Value
-	for _, grade := range submittedForm.Fields[4].valueUintSlice {
-		err := updateDocument(tblEvent, eventID, &EventShooter{
-			FirstName: submittedForm.Fields[0].Value,
-			Surname:   submittedForm.Fields[1].Value,
-			Club:      submittedForm.Fields[2].Value,
-			Grade:     grade,
-			AgeGroup:  submittedForm.Fields[5].valueUint,
-			Ladies:    submittedForm.Fields[6].Checked,
-		}, &Event{}, eventShooterInsertDB)
+	var clubID string
+	if club, err := getClubByName(submittedForm.Fields[2].Value); err != nil {
+		clubID, err = insertClub(Club{Name: submittedForm.Fields[2].Value})
 		if err != nil {
 			formError(w, submittedForm, redirect, err)
 			return
 		}
-	}
-	//TODO possibly return shooter id from insert and use that in eventShooter?
-	if len(searchShootersOptions(submittedForm.Fields[0].Value, submittedForm.Fields[1].Value, submittedForm.Fields[2].Value)) <= 1 { //search always returns a blank option for html rendering so the select box isn't mandatory.
-		//shooterInsert will redirect the user back to the referer page.
-		shooterInsert(w, r, form{Fields: []field{
-			submittedForm.Fields[0],
-			submittedForm.Fields[1],
-			submittedForm.Fields[2],
-			submittedForm.Fields[4],
-			submittedForm.Fields[5],
-			submittedForm.Fields[6],
-		}}, redirect)
 	} else {
-		http.Redirect(w, r, urlEntries+eventID, http.StatusSeeOther)
+		clubID = club.ID
 	}
+
+	shooter := Shooter{
+		FirstName: submittedForm.Fields[0].Value,
+		NickName:  submittedForm.Fields[0].Value,
+		Surname:   submittedForm.Fields[1].Value,
+		Club:      submittedForm.Fields[2].Value,
+		ClubID:    clubID,
+		Grade:     submittedForm.Fields[4].valueUintSlice,
+		AgeGroup:  submittedForm.Fields[5].valueUint,
+		Ladies:    submittedForm.Fields[6].Checked,
+	}
+	//Insert shooter into Shooter Bucket
+	shooterID, err := insertShooter(shooter)
+	if err != nil {
+		formError(w, submittedForm, redirect, err)
+		return
+	}
+
+	//Insert shooter into event
+	eventID := submittedForm.Fields[7].Value
+	shooter.ID = shooterID
+	err = updateDocument(tblEvent, eventID, &shooter, &Event{}, eventShooterInsertDB)
+	if err != nil {
+		formError(w, submittedForm, redirect, err)
+		return
+	}
+	http.Redirect(w, r, urlEntries+eventID, http.StatusSeeOther)
 }
 
 func eventShooterExistingInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
@@ -134,12 +137,14 @@ func eventShooterExistingInsert(w http.ResponseWriter, r *http.Request, submitte
 		formError(w, submittedForm, redirect, err)
 		return
 	}
-	err = updateDocument(tblEvent, eventID, &EventShooter{
-		Grade:     submittedForm.Fields[1].valueUint,
-		AgeGroup:  submittedForm.Fields[2].valueUint,
+	err = updateDocument(tblEvent, eventID, &Shooter{
+		ID:        shooter.ID,
 		FirstName: shooter.NickName,
 		Surname:   shooter.Surname,
 		Club:      shooter.Club,
+		Grade:     submittedForm.Fields[1].valueUintSlice,
+		AgeGroup:  submittedForm.Fields[2].valueUint,
+		Ladies:    shooter.Ladies,
 	}, &Event{}, eventShooterInsertDB)
 	if err != nil {
 		formError(w, submittedForm, redirect, err)

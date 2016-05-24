@@ -14,12 +14,6 @@ func enterShotsIncomplete(w http.ResponseWriter, r *http.Request, parameters str
 	enterShots(w, r, false, parameters)
 }
 
-//TODO fix
-
-//type Nasty struct{
-//	Shots []struct
-//}
-
 func enterShots(w http.ResponseWriter, r *http.Request, showAll bool, parameters string) {
 	//eventID/rangeID
 	ids := strings.Split(parameters, "/")
@@ -37,64 +31,11 @@ func enterShots(w http.ResponseWriter, r *http.Request, showAll bool, parameters
 		return
 	}
 
-	var firstShooterClass uint
+	var firstShooterID uint
 	for _, shooter := range event.Shooters {
 		if !shooter.Hidden && (showAll || !showAll && shooter.Scores[currentRange.StrID()].Total > 0) {
-			firstShooterClass = globalGrades[shooter.Grade].ClassID
+			firstShooterID = shooter.ID
 			break
-		}
-	}
-
-	disciplines := make(map[uint]Discipline)
-	//var custom map[uint]
-
-	if len(event.Grades) == 0 {
-		for i, discipline := range globalDisciplines {
-			disciplines[uint(i)] = discipline
-		}
-	} else {
-		for _, gradeID := range event.Grades {
-			disciplines[globalGrades[gradeID].ClassID] = globalDisciplines[globalGrades[gradeID].ClassID]
-		}
-	}
-
-	//	for classID, discipline := range disciplines {
-	/*
-		shots
-		sighters
-		both
-
-	*/
-	//	}
-
-	//TODO this is messy as hell - calculate it during class grade changes?
-	var classesAdded []uint
-	var myDosc []Discipline
-	var temp bool
-	for _, id := range event.Grades {
-		temp = false
-		for _, added := range classesAdded {
-			if id == added {
-				temp = true
-				break
-			}
-		}
-		if !temp {
-			classesAdded = append(classesAdded, id) //TODO messy
-			myDosc = append(myDosc, globalDisciplines[findGrade(id).ClassID])
-		}
-	}
-	var longestShoot uint
-	var longestClassID int
-	for i, discipline := range globalDisciplines {
-		if discipline.QtySighters+discipline.QtyShots > longestShoot {
-			longestShoot = discipline.QtySighters + discipline.QtyShots
-			longestClassID = i
-		}
-	}
-	for i, discipline := range myDosc {
-		if longestShoot-discipline.QtySighters-discipline.QtyShots > 1 {
-			myDosc[i].Colspan = longestShoot - discipline.QtySighters - discipline.QtyShots + 1
 		}
 	}
 
@@ -103,65 +44,59 @@ func enterShots(w http.ResponseWriter, r *http.Request, showAll bool, parameters
 		Menu:    urlEvents,
 		MenuID:  event.ID,
 		Heading: event.Name,
-		JS:      []string{"enterShots"},
 		Data: map[string]interface{}{
-			"Range":   currentRange,
-			"Event":   event,
-			"URL":     "enter-shots",
-			"ShowAll": showAll,
-
-			//TODO this is messy as hell
-			//			"Disciplines":    myDosc,
+			"Range":          currentRange,
+			"Event":          event,
+			"URL":            "enter-shots",
+			"ShowAll":        showAll,
 			"Disciplines":    globalDisciplines,
-			"AllGrades":      globalGrades,
-			"LongestClassID": longestClassID,
-			"LongestShoot":   longestShoot,
-			"defaultGrades2": defaultGrades2(),
-			"Sighters":       make([]struct{}, globalDisciplines[longestClassID].QtySighters+1),
-			"Shots":          make([]struct{}, globalDisciplines[longestClassID].QtyShots+1),
-
-			"firstShooterClass": firstShooterClass,
+			"firstShooterID": firstShooterID,
 		},
 	})
 }
 
-func updateShotScores(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
-	event, err := getEvent(submittedForm.Fields[1].Value)
+func updateShotScores( /*w http.ResponseWriter, r *http.Request,*/ fields []field /*, redirect func()*/) string {
+	event, err := getEvent(fields[1].Value)
 	if err != nil {
-		fmt.Fprintf(w, "Event with id %v doesn't exist", submittedForm.Fields[1].Value)
-		http.NotFound(w, r)
-		return
+		//		fmt.Fprintf(w, "Event with id %v doesn't exist", fields.Fields[1].Value)
+		//		http.NotFound(w, r)
+		//		return
+		return fmt.Sprintf("Event with id %v doesn't exist", fields[1].Value)
 	}
 
-	shooterID := submittedForm.Fields[3].valueUint
+	shooterID := fields[3].valueUint
 	if shooterID != event.Shooters[shooterID].ID {
-		fmt.Fprintf(w, "Shooter with id %v doesn't exist in Event with id %v", shooterID, event.ID)
-		http.NotFound(w, r)
-		return
+		//		fmt.Fprintf(w, "Shooter with id %v doesn't exist in Event with id %v", shooterID, event.ID)
+		//		http.NotFound(w, r)
+		//		return
+		return fmt.Sprintf("Shooter with id %v doesn't exist in Event with id %v", shooterID, event.ID)
 	}
 	shooter := event.Shooters[shooterID]
 
 	//Calculate the score with the shots given
-	newScore := calcTotalCenters(submittedForm.Fields[0].Value, globalGrades[shooter.Grade].ClassID)
+	newScore := calcTotalCenters(fields[0].Value, globalGrades[shooter.Grade].ClassID)
 
 	err = updateDocument(tblEvent, event.ID, &shooterScore{
-		rangeID: submittedForm.Fields[2].Value,
+		rangeID: fields[2].Value,
 		id:      shooterID,
 		score:   newScore,
 	}, &Event{}, upsertScore)
 
 	//Display any upsert errors onscreen.
 	if err != nil {
-		fmt.Fprint(w, err.Error())
-		return
+		//		fmt.Fprint(w, err.Error())
+		//		return
+		return err.Error()
 	}
 
 	//Return the score to the client
 	if newScore.Centers == 0 {
-		fmt.Fprint(w, newScore.Total)
-		return
+		//		fmt.Fprint(w, newScore.Total)
+		//		return
+		return fmt.Sprintf("%v", newScore.Total)
 	}
-	fmt.Fprintf(w, "%v<sup>%v</sup>", newScore.Total, newScore.Centers)
+	//	fmt.Fprintf(w, "%v<sup>%v</sup>", newScore.Total, newScore.Centers)
+	return fmt.Sprintf("%v<sup>%v</sup>", newScore.Total, newScore.Centers)
 }
 
 //This function assumes all validation on input "shots" has at least been done!

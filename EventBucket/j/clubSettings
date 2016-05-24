@@ -9,7 +9,7 @@ function stuff(editCell){
 	t.querySelector('form').id = '_'+ID;
 	t.querySelector('[name=n]').value = row.children[0].textContent;
 	t.querySelector('[name=I]').value = ID;
-	var outerFormFields = t.querySelectorAll('[form=edit]'), index = outerFormFields.length;
+	var outerFormFields = t.querySelectorAll('[form=editRow]'), index = outerFormFields.length;
 	while(index--){
 		outerFormFields[index].setAttribute('form', '_'+ID);
 	}

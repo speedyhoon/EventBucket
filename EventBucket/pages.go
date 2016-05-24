@@ -85,7 +85,7 @@ func pages() {
 	post(pst, shooterDetails, shooterUpdate)
 	//post(pst, eventTotalScores, eventTotalUpsert)
 	post(pst, eventAvailableGrades, eventAvailableGradesUpsert)
-	post(pst, eventUpdateShotScore, updateShotScores)
+	//post(pst, eventUpdateShotScore, updateShotScores)
 	post(pst, importShooter, importShooters)
 	post(get, mapResults, mapClubs)
 	post(pst, clubMoundEdit, editClubMound)
@@ -201,6 +201,25 @@ func ProcessSocket(ws *websocket.Conn) {
 				continue
 			}
 			websocket.Message.Send(ws, fmt.Sprintf("%U%s", msg[0], response))
+		case eventUpdateShotScore:
+			var form url.Values
+			err = json.Unmarshal([]byte(msg[1:]), &form)
+			if err != nil {
+				warn.Println(err)
+				continue
+			}
+
+			if form, passed := isValid(form, getForm(command)); passed {
+				websocket.Message.Send(ws, updateShotScores(form))
+			} else {
+				var response []byte
+				response, err = json.Marshal(form)
+				if err != nil {
+					warn.Println(err)
+					continue
+				}
+				websocket.Message.Send(ws, fmt.Sprintf("%U%s", msg[0], response))
+			}
 		}
 	}
 }
