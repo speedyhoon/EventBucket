@@ -165,7 +165,6 @@ type field struct {
 	Checked            bool //only used by checkboxes
 	regex              *regexp.Regexp
 	v8                 func(*field, ...string)
-	defValue           func() []string
 	valueUint          uint
 	valueUintSlice     []uint
 	valueFloat32       float32
