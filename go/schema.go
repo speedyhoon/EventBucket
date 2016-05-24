@@ -169,7 +169,5 @@ type field struct {
 	valueUint          uint
 	valueUintSlice     []uint
 	valueFloat32       float32
-	manyRequired       []int
-	manyRequiredQty    uint
 	Placeholder        string
 }
