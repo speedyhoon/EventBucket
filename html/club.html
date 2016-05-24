@@ -19,7 +19,23 @@
 	{{end}}
 
 	<h2>Mounds</h2>
-	{{template "clubMounds" .Club.Mounds}}
+	{{with .Club.Mounds}}
+		<table id=editRow>
+			<thead>
+				<tr>
+					<th>Name
+					<td>Edit
+			</thead>
+			{{range $index, $mound := .}}
+				<tr id={{$index}}>
+					<td>{{.Name}}
+					<td>
+			{{end}}
+		</table>
+	{{else}}
+		<samp>No mounds listed</samp>
+	{{end}}
+
 	<template>
 		<td>
 			<form method=post action=/19 id=editRow>

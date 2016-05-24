@@ -110,7 +110,6 @@ type MapClub struct {
 
 func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	name := submittedForm.Fields[0].Value
-	//isDefault := submittedForm.Fields[1].Checked
 	var ID string
 	defaultClub := getDefaultClub()
 
@@ -122,14 +121,6 @@ func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redi
 			formError(w, submittedForm, redirect, err)
 			return
 		}
-
-		/*if isDefault && defaultClub.ID != "" {
-			// TODO change this so it is some how atomic & winithin the same transaction.
-			err := updateDocument(tblClub, defaultClub.ID, &Club{IsDefault: false}, &Club{}, updateClubDefault)
-			if err != nil {
-				warn.Println(err)
-			}
-		}*/
 	} else {
 		//Use a generic pageError form to pass the error message to the Club Settings page.
 		/*TODO investigate if there is a simpler way to pass error messages between different pages. Maybe use a slice []string so several messages could be displayed if needed?
