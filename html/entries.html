@@ -22,15 +22,17 @@
 					{{if not $.Event.Closed}}<td>Edit{{end}}
 			</thead>
 			{{range .}}
-				<tr>
-					<td>{{.ID}}
-					<td>{{if $hasRanges}}<a href=/print-cards/{{$.Event.ID}}/{{.ID}} title="Print scorecards for {{.FirstName}}">{{end}}{{.FirstName}} <span>{{.Surname}}</span>{{if $hasRanges}}</a>{{end}}
-					<td>{{.Club}}
-					<td>{{(grade .Grade).Name}}
-					<td>{{ageGroup .AgeGroup}}
-					{{if .Disabled}}<td class=tick>{{else}}<td>{{end}}
-					{{if .Ladies}}<td class=tick>{{else}}<td>{{end}}
-					{{if not $.Event.Closed}}<td>{{end}}
+				{{if not .Hidden}}
+					<tr>
+						<td>{{.ID}}
+						<td>{{if $hasRanges}}<a href=/print-cards/{{$.Event.ID}}/{{.ID}} title="Print scorecards for {{.FirstName}}">{{end}}{{.FirstName}} <span>{{.Surname}}</span>{{if $hasRanges}}</a>{{end}}
+						<td>{{.Club}}
+						<td>{{(grade .Grade).Name}}
+						<td>{{ageGroup .AgeGroup}}
+						{{if .Disabled}}<td class=tick>{{else}}<td>{{end}}
+						{{if .Ladies}}<td class=tick>{{else}}<td>{{end}}
+						{{if not $.Event.Closed}}<td>{{end}}
+				{{end}}
 			{{end}}
 		</table>
 	{{else}}

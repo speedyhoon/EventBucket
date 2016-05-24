@@ -103,3 +103,12 @@ func eventRange(ranges []Range, rID string, w http.ResponseWriter, r *http.Reque
 	errorHandler(w, r, http.StatusNotFound, "range")
 	return Range{}, errors.New("Range with that ID doesn't exists in this event")
 }
+
+//used by enterRangeTotals page
+type enterScore struct {
+	EventID   uint `json:"E,omitempty"`
+	RangeID   uint `json:"R,omitempty"`
+	ShooterID uint `json:"S,omitempty"`
+	Total     uint `json:"t,omitempty"`
+	Centers   uint `json:"c,omitempty"`
+}
