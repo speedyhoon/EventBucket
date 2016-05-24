@@ -140,6 +140,7 @@ func eventShooterExistingInsert(w http.ResponseWriter, r *http.Request, submitte
 		FirstName: shooter.NickName,
 		Surname:   shooter.Surname,
 		Club:      shooter.Club,
+		Ladies:    shooter.Ladies,
 	}, &Event{}, eventShooterInsertDB)
 	if err != nil {
 		formError(w, submittedForm, redirect, err)

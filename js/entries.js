@@ -55,3 +55,13 @@ function entries(t, tds){
 	checked(tds[6], t.querySelector('[name=x]'));
 	return t;
 }
+var button = document.querySelectorAll('[action="/8"] button'), i=button.length;
+while(i--){
+	button[i].onclick = function shooterEntry(){
+		var isNew = !this.getAttribute('formAction');
+		this.form.f.required = isNew;
+		this.form.s.required = isNew;
+		this.form.S.required = !isNew;
+		this.form.C.required = isNew;
+	};
+}
