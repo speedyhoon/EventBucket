@@ -136,7 +136,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "s", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
-			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr, Options: clubsDataList(), Placeholder: defaultClubName(),
+			name: "C", Value: defaultClubName(), Required: true, maxLen: 64, minLen: 1, v8: isValidStr, Options: clubsDataList(), Placeholder: defaultClubName(),
 		}, {
 			name: "S", v8: isValidStr, Options: searchShootersOptions("", "", defaultClubName()),
 		}, {
@@ -152,7 +152,7 @@ func getForm(id uint8) []field {
 		return []field{{
 			name: "S", Required: true, v8: isValidRegex, regex: regexID,
 		}, {
-			name: "g", Required: true, max: float32(len(globalGrades) - 1), step: 1, v8: isValidUint, Options: globalGradesDataList,
+			name: "g", Required: true, minLen: 1, max: float32(len(globalGrades) - 1), step: 1, v8: listUint, Options: globalGradesDataList,
 		}, {
 			name: "r", max: 4, step: 1, v8: isValidUint, Options: dataListAgeGroup(),
 		}, {

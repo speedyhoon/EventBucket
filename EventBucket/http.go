@@ -12,7 +12,6 @@ const (
 	cacheControl   = "Cache-Control"
 	expires        = "Expires"
 	cache          = "cache"
-	maps           = "style-src 'self'"
 	nocache        = "nocache"
 	cGzip          = "gzip"
 	acceptEncoding = "Accept-Encoding"

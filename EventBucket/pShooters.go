@@ -55,15 +55,14 @@ func eventSearchShooters(w http.ResponseWriter, r *http.Request, submittedForm f
 }
 
 func shooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
-	shooter := Shooter{
+	_, err := insertShooter(Shooter{
 		FirstName: submittedForm.Fields[0].Value,
 		Surname:   submittedForm.Fields[1].Value,
 		Club:      submittedForm.Fields[2].Value,
 		Grade:     submittedForm.Fields[3].valueUintSlice,
 		AgeGroup:  submittedForm.Fields[4].valueUint,
 		Ladies:    submittedForm.Fields[5].Checked,
-	}
-	_, err := insertShooter(shooter)
+	})
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
 		return

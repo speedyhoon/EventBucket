@@ -30,9 +30,11 @@ type Mark struct {
 
 //Grade are subcategories of each discipline that shooters can be grouped together by similar skill levels.
 type Grade struct {
-	Name    string `json:"name,omitempty"` //Target A, F Class B, Match Reserve
-	Abbr    string `json:"abbr,omitempty"` //Abbreviation of Name: A,B,C,FA,FB,FO,MO,MR
-	ClassID uint   `json:"classID,omitempty"`
+	ID          uint   `json:"id,omitempty"`
+	Name        string `json:"name,omitempty"` //Target A, F Class B, Match Reserve
+	Abbr        string `json:"abbr,omitempty"` //Abbreviation of Name: A,B,C,FA,FB,FO,MO,MR
+	ClassID     uint   `json:"classID,omitempty"`
+	DuplicateTo []uint `json:"duplicateTo,omitempty"`
 }
 
 //TODO fix
@@ -166,9 +168,9 @@ func defaultGlobalDisciplines() []Discipline {
 		Marking:     XV5,
 		//Target rifle is traditionally scored up to 5 (bullseye) which is has a larger area than 6 on an F class target.
 		//This causes significantly more shoot-offs for winning a range than F Class.
-		Grades: []Grade{{Abbr: "A", Name: "Target A"},
-			{Abbr: "B", Name: "Target B"},
-			{Abbr: "C", Name: "Target C"}},
+		Grades: []Grade{{ID: 0, Abbr: "A", Name: "Target A"},
+			{ID: 1, Abbr: "B", Name: "Target B"},
+			{ID: 2, Abbr: "C", Name: "Target C"}},
 	}, {
 		ID:          1,
 		Name:        "F Class",
@@ -189,10 +191,10 @@ func defaultGlobalDisciplines() []Discipline {
 				"6": {Value: 6, Center: 0, CountBack: "6", Shot: "6", Sighter: "g"},
 				"X": {Value: 6, Center: 1, CountBack: "7", Shot: "X", Sighter: "x"},
 			}},
-		Grades: []Grade{{Abbr: "FA", Name: "F Standard A"},
-			{Abbr: "FB", Name: "F Standard B"},
-			{Abbr: "FO", Name: "F Open"},
-			{Abbr: "FTR", Name: "F/TR"}},
+		Grades: []Grade{{ID: 3, Abbr: "FA", Name: "F Standard A"},
+			{ID: 4, Abbr: "FB", Name: "F Standard B"},
+			{ID: 5, Abbr: "FO", Name: "F Open"},
+			{ID: 6, Abbr: "FTR", Name: "F/TR"}},
 	}, {
 		ID:          2,
 		Name:        "Match Rifle",
@@ -200,8 +202,8 @@ func defaultGlobalDisciplines() []Discipline {
 		QtyShots:    15,
 		QtyTotal:    18,
 		Marking:     XV5,
-		Grades: []Grade{{Abbr: "MO", Name: "Match Open"},
-			{Abbr: "MR", Name: "Match Reserve"}},
+		Grades: []Grade{{ID: 7, Abbr: "MO", Name: "Match Open"},
+			{ID: 8, Abbr: "MR", Name: "Match Reserve", DuplicateTo: []uint{7}}}, //If shooter is Match Reserve, duplicate them in the Match Open category. Used for Victorian Match Rifle Championships.
 	}, {
 		ID:          3,
 		Name:        "Service Rifle",
@@ -222,7 +224,7 @@ func defaultGlobalDisciplines() []Discipline {
 				"6": {Value: 5, Center: 1, CountBack: "6", Shot: "V", Sighter: "v"},
 				"X": {Value: 5, Center: 1, CountBack: "6", Shot: "V", Sighter: "v"},
 			}},
-		Grades: []Grade{{Abbr: "303", Name: "303 Rifle"}},
+		Grades: []Grade{{ID: 9, Abbr: "303", Name: "303 Rifle"}},
 	}}
 }
 
