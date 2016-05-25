@@ -51,12 +51,11 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 }
 
 func eventInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
-	//Try to find an existing club
-	club, err := getClubByName(submittedForm.Fields[0].Value)
-	clubID := club.ID
+	//Try to find an existing club and insert and insert one if it doesn't exist.
+	clubID, err := clubInsertIfMissing(submittedForm.Fields[0].Value)
 	if err != nil {
-		//Insert a new club
-		clubID, err = insertClub(Club{Name: submittedForm.Fields[0].Value})
+		formError(w, submittedForm, redirect, err)
+		return
 	}
 
 	//Insert new event into database.
@@ -91,15 +90,10 @@ func eventAvailableGradesUpsert(w http.ResponseWriter, r *http.Request, submitte
 }
 
 func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
-	var clubID string
-	if club, err := getClubByName(submittedForm.Fields[2].Value); err != nil {
-		clubID, err = insertClub(Club{Name: submittedForm.Fields[2].Value})
-		if err != nil {
-			formError(w, submittedForm, redirect, err)
-			return
-		}
-	} else {
-		clubID = club.ID
+	clubID, err := clubInsertIfMissing(submittedForm.Fields[2].Value)
+	if err != nil {
+		formError(w, submittedForm, redirect, err)
+		return
 	}
 
 	shooter := Shooter{
