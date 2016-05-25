@@ -1,6 +1,10 @@
 package main
 
-import "net/http"
+import (
+	"bytes"
+	"encoding/json"
+	"net/http"
+)
 
 func shooters(w http.ResponseWriter, r *http.Request, submittedForm form, isValid bool) {
 	_, pageForms := sessionForms(w, r, shooterNew, importShooter)
@@ -66,6 +70,39 @@ func shooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, r
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
 		return
+	}
+	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
+}
+
+func importShooters(w http.ResponseWriter, r *http.Request /*, submittedForm form, redirect func()*/) {
+	//r.ParseMultipartForm(32 << 20)
+	file, _, err := r.FormFile("f")
+	if err != nil {
+		warn.Println(err)
+		http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
+		return
+	}
+	defer file.Close()
+
+	//Read file contents into bytes buffer.
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(file)
+
+	//Convert file source into structs.
+	var shooters []Shooter
+	err = json.Unmarshal(buf.Bytes(), &shooters)
+	if err != nil {
+		warn.Println(err)
+		http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
+		return
+	}
+
+	//Insert each shooter into database. //TODO look into batch writing
+	for _, shooter := range shooters {
+		_, err := insertShooter(shooter)
+		if err != nil {
+			warn.Println(err)
+		}
 	}
 	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 }
