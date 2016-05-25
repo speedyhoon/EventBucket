@@ -138,7 +138,7 @@ type Shooter struct {
 	Modified  time.Time `json:"o,omitempty"`
 	AgeGroup  uint      `json:"r,omitempty"`
 	Ladies    bool      `json:"l,omitempty"`
-	Grade     []uint    `json:"g,omitempty"` //TODO change to a slice in future
+	Grade     []uint    `json:"g,omitempty"`
 }
 
 //Skill is exported
