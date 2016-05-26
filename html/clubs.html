@@ -11,7 +11,7 @@
 			{{range .}}
 				<tr>
 					<td><a href=/club/{{.ID}}>{{.Name}}</a>
-					{{if.IsDefault}}<td class=center><img src=/v/tick alt="Default Club" height=100%>{{else}}<td>{{end}}
+					{{if.IsDefault}}<td class=tick>{{else}}<td>{{end}}
 					<td class=center><a href=/club/{{.ID}}#edit><img src=/v/edit alt="edit club" height=100%></a>
 				{{end}}
 		</table>

@@ -49,7 +49,6 @@ func pages() {
 	serveFile("favicon.ico")
 	serveFile("robots.txt")
 	serveDir(dirCSS, "./cz/")
-	serveDir(dirGIF, "")
 	serveDir(dirJS, "./jz/")
 	serveDir(dirPNG, "")
 	serveDir(dirSVG, "./vz/")

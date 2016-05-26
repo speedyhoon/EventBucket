@@ -7,6 +7,8 @@ $liteGrey: #cdd
 $blue: #08b
 $briteBlue: #08f
 $red: #c24
+$rose :  #fdd
+$lightGreen: #dfd
 $white: #fff
 //menu
 $margin: 1.5em
@@ -62,10 +64,10 @@ table:not(.scorecards) th:not(:empty)
 	border-color: $briteBlue
 
 .asc
-	background: url(/v/asc) no-repeat
+	background: url(/v/asc) no-repeat bottom right
 
 .desc
-	background: url(/v/desc) no-repeat bottom left
+	background: url(/v/desc) no-repeat bottom right
 
 .tick
 	background: url(/v/tick) no-repeat center center
@@ -86,18 +88,17 @@ fieldset
 	label:not(:last-child), button:not(:last-child)
 		margin: 0 $margin $margin 0
 
-input, select
-	border: $thinBorder
-	border-radius: $menuPadding
-	padding: $menuPadding
-
-fieldset
 	label
 		position: relative
 	input, select
 		display: block
 	button
 		margin-top: 1em
+
+input, select
+	border: $thinBorder
+	border-radius: $menuPadding
+	padding: $menuPadding
 
 [type=checkbox]
 	$size: 2.2em
@@ -119,10 +120,6 @@ label select
 samp:not([hidden])
 	color: $red
 	display: block
-	//background: pink
-	//border: 1px solid
-	//padding: .5em
-	//border-radius: .5em
 
 button
 	background: transparent
@@ -143,10 +140,10 @@ button
 		margin-bottom: 0
 
 input.dirty:not(:focus):invalid
-	background-color: #fdd
+	background-color: $rose
 
 input.dirty:not(:focus):valid
-	background-color: #dfd
+	background-color: $lightGreen
 
 form#edit:target
 	display: block
