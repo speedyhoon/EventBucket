@@ -38,7 +38,7 @@ func serveDir(contentType, gzipDir string) {
 				return
 			}
 			headers(w, contentType, cache)
-			if gzipDir != "" && strings.Contains(r.Header.Get(acceptEncoding), cGzip) {
+			if gzipDir != "" { //&& strings.Contains(r.Header.Get(acceptEncoding), cGzip) {
 				headers(w, cGzip)
 				http.StripPrefix(contentType, http.FileServer(http.Dir(gzipDir))).ServeHTTP(w, r)
 				return
