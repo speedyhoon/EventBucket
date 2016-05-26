@@ -1,3 +1,33 @@
 {{define "page"}}
-	id={{.Event.ID}}
+		{{range $a, $b := .Event.Ranges}}
+		<table>
+			<tr>
+				<th>Grade
+				<th>{{.Name}}
+				<th>Shots
+				<th>Total
+			{{range $.Event.Shooters}}
+				<tr>
+					<td>{{(grade .Grade).Abbr}}
+					<td>{{.FirstName}} {{.Surname}} - {{.Club}}
+					{{$score := index .Scores $b.StrID}}
+					<td>{{$score.Shots}}
+					<td>{{$score.Total}}{{with $score.Centers}}<sup>{{.}}</sup>{{end}}
+			{{end}}
+	</table>
+		{{end}}
+	<br><br>
+		{{range $.Event.Shooters}}
+		<table>
+			<tr>
+				<th>{{(grade .Grade).Abbr}} {{.FirstName}} {{.Surname}} - {{.Club}}
+				<th colspan=2>Scores
+			{{range $id, $score := .Scores}}
+				<tr>
+					<td>{{(findRange $id $.Event.Ranges).Name}}
+					<td>{{.Shots}}
+					<td>{{.Total}}{{with .Centers}}<sup>{{.}}</sup>{{end}}
+			{{end}}
+		</table>
+		{{end}}
 {{end}}
