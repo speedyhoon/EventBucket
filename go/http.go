@@ -29,7 +29,7 @@ func serveFile(fileName string) {
 	})
 }
 
-func serveDir(contentType, gzipDir string) {
+func serveDir(contentType string, gzip bool) {
 	http.Handle(contentType,
 		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			//If url is a directory return a 404 to prevent displaying a directory listing.
@@ -38,10 +38,8 @@ func serveDir(contentType, gzipDir string) {
 				return
 			}
 			headers(w, contentType, cache)
-			if gzipDir != "" { //&& strings.Contains(r.Header.Get(acceptEncoding), cGzip) {
+			if gzip {
 				headers(w, cGzip)
-				http.StripPrefix(contentType, http.FileServer(http.Dir(gzipDir))).ServeHTTP(w, r)
-				return
 			}
 			http.FileServer(http.Dir(dirRoot)).ServeHTTP(w, r)
 		}))
@@ -51,10 +49,10 @@ var headerOptions = map[string][2]string{
 	cGzip:  {"Content-Encoding", "gzip"},
 	"html": {contentType, "text/html; charset=utf-8"},
 	dirCSS: {contentType, "text/css; charset=utf-8"},
-	dirGIF: {contentType, "image/gif"},
 	dirJS:  {contentType, "text/javascript"},
 	dirPNG: {contentType, "image/png"},
 	dirSVG: {contentType, "image/svg+xml"},
+	//dirGIF: {contentType, "image/gif"},
 	//dirWOF2:   {contentType, "application/font-woff2"},
 }
 

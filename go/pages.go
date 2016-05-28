@@ -16,7 +16,6 @@ const (
 	dirCSS      = "dirCSS"
 	dirJS       = "dirJS"
 	dirPNG      = "dirPNG"
-	dirGIF      = "dirGIF"
 	dirSVG      = "dirSVG"
 	urlEvents   = "/"
 	urlAbout    = "/about"
@@ -47,11 +46,10 @@ var (
 
 func pages() {
 	serveFile("favicon.ico")
-	serveFile("robots.txt")
-	serveDir(dirCSS, "./cz/")
-	serveDir(dirJS, "./jz/")
-	serveDir(dirPNG, "")
-	serveDir(dirSVG, "./vz/")
+	serveDir(dirCSS, true)
+	serveDir(dirJS, true)
+	serveDir(dirPNG, false)
+	serveDir(dirSVG, true)
 	http.Handle("/w/", websocket.Handler(ProcessSocket))
 	getParameters("/b/", barcode2D, regexBarcode)
 	getRedirectPermanent(urlAbout, about)
