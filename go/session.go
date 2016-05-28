@@ -33,6 +33,7 @@ func setSession(w http.ResponseWriter, returns form) {
 		Expires:  time.Now().Add(sessionExpiryTime),
 	}
 	returns.expiry = cookie.Expires
+	//Start mutex write lock.
 	globalSessions.Lock()
 	globalSessions.m[cookie.Value] = returns
 	globalSessions.Unlock()
