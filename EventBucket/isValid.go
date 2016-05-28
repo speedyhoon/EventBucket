@@ -16,26 +16,19 @@ func listUint(f *field, inp ...string) {
 	check := make(map[uint]bool, len(inp))
 	var list []uint
 
-	//Use a temporary field as a pointer so isValidUint can assign values & errors.
-	g := *f
-
 	for _, in := range inp {
-		//t.Println("unvalidated rangeID", in, "Isn't empty", in != "")
-
-		g.Error = ""
-		isValidUint(&g, in)
-		if g.Error != "" {
-			f.Error = g.Error
+		isValidUint(f, in)
+		if f.Error != "" {
 			return
 		}
 
-		_, ok := check[g.valueUint]
+		_, ok := check[f.valueUint]
 		if ok {
 			f.Error = "Duplicate values found in list."
 			return
 		}
-		check[g.valueUint] = true
-		list = append(list, g.valueUint)
+		check[f.valueUint] = true
+		list = append(list, f.valueUint)
 	}
 
 	f.valueUintSlice = list

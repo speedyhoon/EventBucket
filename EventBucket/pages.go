@@ -16,7 +16,6 @@ const (
 	dirCSS      = "/c/"
 	dirJS       = "/j/"
 	dirPNG      = "/p/"
-	dirGIF      = "/g/"
 	dirSVG      = "/v/"
 	urlEvents   = "/"
 	urlAbout    = "/about"
@@ -47,12 +46,10 @@ var (
 
 func pages() {
 	serveFile("favicon.ico")
-	serveFile("robots.txt")
-	serveDir(dirCSS, "./cz/")
-	serveDir(dirGIF, "")
-	serveDir(dirJS, "./jz/")
-	serveDir(dirPNG, "")
-	serveDir(dirSVG, "./vz/")
+	serveDir(dirCSS, true)
+	serveDir(dirJS, true)
+	serveDir(dirPNG, false)
+	serveDir(dirSVG, true)
 	http.Handle("/w/", websocket.Handler(ProcessSocket))
 	getParameters("/b/", barcode2D, regexBarcode)
 	getRedirectPermanent(urlAbout, about)
@@ -86,7 +83,8 @@ func pages() {
 	//post(pst, eventTotalScores, eventTotalUpsert)
 	post(pst, eventAvailableGrades, eventAvailableGradesUpsert)
 	//post(pst, eventUpdateShotScore, updateShotScores)
-	post(pst, importShooter, importShooters)
+	//post(pst, importShooter, importShooters)
+	http.HandleFunc("/17", importShooters)
 	post(get, mapResults, mapClubs)
 	post(pst, clubMoundEdit, editClubMound)
 	post(pst, eventUpdateRange, updateRange)
