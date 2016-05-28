@@ -66,9 +66,9 @@ var (
 				Name:      "Enter Range Totals",
 				Link:      urlEnterTotals,
 				RangeMenu: true,
-				//}, {
-				//	Name: "Event Report",
-				//	Link: urlEventReport,
+			}, {
+				Name: "Event Report",
+				Link: urlEventReport,
 			}, {
 				Name:   "Print Entry List",
 				Link:   urlEntryList,
@@ -149,7 +149,14 @@ var (
 			return ""
 		},
 		"ordinal": ordinal,
-		"findRange": func(rangeID uint, ranges []Range) Range {
+		"findRange": func(id interface{}, ranges []Range) Range {
+			var rangeID uint
+			switch id.(type) {
+			case uint:
+				rangeID = id.(uint)
+			case string:
+				rangeID, _ = stoU(id.(string))
+			}
 			for _, r := range ranges {
 				if rangeID == r.ID {
 					return r
