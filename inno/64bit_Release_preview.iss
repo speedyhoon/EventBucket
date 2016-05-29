@@ -44,6 +44,7 @@ Source: "Z:\EventBucket\h\*"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Z:\EventBucket\j\*"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Z:\EventBucket\p\*"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Z:\EventBucket\v\*"; DestDir: "{app}"; Flags: ignoreversion
+Source: "Z:\inno\cc-by-sa-4.0_legalcode.txt" DestDir: "{app}"; DestName: "licence.txt" Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
