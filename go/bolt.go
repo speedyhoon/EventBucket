@@ -536,6 +536,7 @@ func getSearchShooters(firstName, surname, club string) ([]Shooter, uint, error)
 	var shooters []Shooter
 	var totalQty uint
 
+	//Search for shooters in the default club if all search values are empty.
 	if firstName == "" && surname == "" && club == "" {
 		club = defaultClubName()
 	}
