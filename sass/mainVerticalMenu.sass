@@ -85,15 +85,17 @@ fieldset
 	label, button
 		float: left
 
-	label:not(:last-child), button:not(:last-child)
+	label:not(:last-child)
 		margin: 0 $margin $margin 0
 
-	label
-		position: relative
 	input, select
 		display: block
+
 	button
 		margin-top: 1em
+
+	button:not(:last-child)
+		margin-right: $margin
 
 input, select
 	border: $thinBorder
@@ -132,18 +134,12 @@ button
 \:focus
 	box-shadow: .2em .2em .3em $blue
 
-.inline
-	float: left
-	margin-bottom: 0
+input.dirty:not(:focus)
+	&:invalid
+		background-color: $rose
 
-	label
-		margin-bottom: 0
-
-input.dirty:not(:focus):invalid
-	background-color: $rose
-
-input.dirty:not(:focus):valid
-	background-color: $lightGreen
+	&:valid
+		background-color: $lightGreen
 
 form#edit:target
 	display: block
@@ -217,12 +213,6 @@ a, header li
 	font-weight: bold
 .center, .centerPadding
 	text-align: center
-
-.emptyBucket
-	height: 200px
-	display: block
-	margin: 30px auto
-	stroke: $black
 
 //.loading
 //	background: url(/g/loading) center right no-repeat

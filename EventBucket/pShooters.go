@@ -8,12 +8,14 @@ import (
 
 func shooters(w http.ResponseWriter, r *http.Request, submittedForm form, isValid bool) {
 	_, pageForms := sessionForms(w, r, shooterNew, importShooter)
+	shooters, shooterQty, err := getSearchShooters(submittedForm.Fields[0].Value, submittedForm.Fields[1].Value, submittedForm.Fields[2].Value)
 
 	//Search for shooters in the default club if EventBucket was not started in debug mode & all values are empty.
-	if !debug && submittedForm.Fields[0].Value == "" && submittedForm.Fields[1].Value == "" && submittedForm.Fields[2].Value == "" {
-		submittedForm.Fields[2].Value = defaultClubName()
+	if submittedForm.Fields[0].Value == "" && submittedForm.Fields[1].Value == "" && submittedForm.Fields[2].Value == "" {
+		defaultClub := defaultClubName()
+		submittedForm.Fields[2].Value = defaultClub
+		submittedForm.Fields[2].Placeholder = defaultClub
 	}
-	shooters, shooterQty, err := getSearchShooters(submittedForm.Fields[0].Value, submittedForm.Fields[1].Value, submittedForm.Fields[2].Value)
 
 	templater(w, page{
 		Title: "Shooters",
@@ -109,11 +111,13 @@ func importShooters(w http.ResponseWriter, r *http.Request /*, submittedForm for
 	var clubID string
 	//Insert each shooter into database. //TODO look into batch writing
 	for _, shooter := range shooters {
-		clubID, err = clubInsertIfMissing(shooter.Club)
-		if err != nil {
-			warn.Println(err)
-		} else {
-			shooter.ClubID = clubID
+		if shooter.Club != "" {
+			clubID, err = clubInsertIfMissing(shooter.Club)
+			if err != nil {
+				warn.Println(err)
+			} else {
+				shooter.ClubID = clubID
+			}
 		}
 
 		if _, err = insertShooter(shooter); err != nil {

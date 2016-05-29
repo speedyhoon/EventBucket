@@ -119,18 +119,18 @@ type EventShooter struct {
 
 //Shooter is exported
 type Shooter struct {
-	ID        string         `json:"I"`
-	SID       uint           `json:"M,omitempty"`
-	NID       uint           `json:"N,omitempty"` //NRAA sequential integer id.
-	FirstName string         `json:"f,omitempty"`
-	Surname   string         `json:"s,omitempty"`
-	NickName  string         `json:"n,omitempty"`
-	Club      string         `json:"C,omitempty"`
-	ClubID    string         `json:"c,omitempty"`
-	Skill     map[uint]Skill `json:"K,omitempty"` //Grading set by the VRA for each class
-	Address   string         `json:"a,omitempty"`
-	Email     string         `json:"e,omitempty"`
-	Status    int            `json:"v,omitempty"` //Shooter details 0=not modified, 1=updated, 2=merged, 3=deleted
+	ID        string           `json:"I"`
+	SID       uint             `json:"M,omitempty"`
+	NID       uint             `json:"N,omitempty"` //NRAA sequential integer id.
+	FirstName string           `json:"f,omitempty"`
+	Surname   string           `json:"s,omitempty"`
+	NickName  string           `json:"n,omitempty"`
+	Club      string           `json:"C,omitempty"`
+	ClubID    string           `json:"c,omitempty"`
+	Skill     map[string]Skill `json:"K,omitempty"` //Grading set by the NRAA for each class
+	Address   string           `json:"a,omitempty"`
+	Email     string           `json:"e,omitempty"`
+	Status    int              `json:"v,omitempty"` //Shooter details 0=not modified, 1=updated, 2=merged, 3=deleted
 	//If shooter details are merged with another existing shooter then this is the other NRAA_SID it was merged with
 	//When merging set one record to merged, the other to deleted.
 	//Both records must set MergedSID to the other corresponding shooter SID
@@ -141,11 +141,11 @@ type Shooter struct {
 	Grade     []uint    `json:"g,omitempty"`
 }
 
-//Skill is exported
+//Skill is used for importing shooters from JSON files
 type Skill struct {
-	Threshold string  `json:"t,omitempty"`
 	AvgScore  float64 `json:"a,omitempty"`
-	ShootQty  int     `json:"s,omitempty"`
+	ShootQty  int     `json:"q,omitempty"`
+	Threshold float32 `json:"t,omitempty"`
 }
 
 type shooterScore struct {
@@ -155,18 +155,14 @@ type shooterScore struct {
 }
 
 type field struct {
-	name, Error, Value string
-	Required, Disable  bool
-	Options            []option
-	maxLen, minLen     int
-	min, max, step     float32
-	AutoFocus          bool
-	size               uint8
-	Checked            bool //only used by checkboxes
-	regex              *regexp.Regexp
-	v8                 func(*field, ...string)
-	valueUint          uint
-	valueUintSlice     []uint
-	valueFloat32       float32
-	Placeholder        string
+	name, Error, Value, Placeholder       string
+	Required, Disable, AutoFocus, Checked bool
+	Options                               []option
+	maxLen, minLen                        int
+	min, max, step, valueFloat32          float32
+	size                                  uint8
+	regex                                 *regexp.Regexp
+	v8                                    func(*field, ...string)
+	valueUint                             uint
+	valueUintSlice                        []uint
 }
