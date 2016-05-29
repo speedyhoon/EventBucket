@@ -7,7 +7,6 @@
 	{{$hasRanges := ge (len .Event.Ranges) 1}}
 	{{if not $hasRanges}}<samp>This event has no ranges</samp>{{end}}
 	{{with .Event.Shooters}}
-		<!--TODO Fix empty bucket error page size-->
 		<p>Total Entries: {{len .}} <a href=/print-entry-list/{{$.Event.ID}}>Print Entry List</a>
 		<table id=editRow>
 			<thead>

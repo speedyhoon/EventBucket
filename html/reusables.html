@@ -17,37 +17,6 @@
 	{{end}}
 {{end}}
 
-{{define "tableShooters"}}
-	{{with.}}
-		<table id=editRow>
-			<thead>
-				<tr>
-					<th class=asc>Id
-					<th>Name
-					<th>Club
-					<th>Grade
-					<th>Age Group
-					<td>Ladies
-					<td>Edit
-			</thead>
-			<!--TODO in debug mode allow empty search otherwise disallow empty search-->
-			{{range .}}
-				<tr>
-					<td>{{.ID}}
-					<td>{{.FirstName}} <span>{{.Surname}}</span>
-					<td>{{.Club}}
-					<td>{{range .Grade}}{{(grade .).Name}}, {{end}}
-					<td>{{ageGroup .AgeGroup}}
-					{{if.Ladies}}<td class=tick>{{else}}<td>{{end}}
-					<td>
-				</tr>
-			{{end}}
-		</table>
-	{{else}}
-		<samp>No shooters listed.</samp>
-	{{end}}
-{{end}}
-
 {{define "incompleteShooters"}}
 	{{if.ShowAll}}
 		<a href=/{{.URL}}/{{.Event.ID}}/{{.Range.ID}}>View Incomplete Shooters</a>
