@@ -23,11 +23,13 @@
 		<table id=editRow>
 			<thead>
 				<tr>
+					<th>ID
 					<th>Name
 					<td>Edit
 			</thead>
 			{{range $index, $mound := .}}
-				<tr id={{$index}}>
+				<tr>
+					<td>{{$index}}
 					<td>{{.Name}}
 					<td>
 			{{end}}
@@ -37,6 +39,7 @@
 	{{end}}
 
 	<template>
+		<td></td>
 		<td>
 			<form method=post action=/19 id=editRow>
 				<input name=n required placeholder="Mound name" accesskey=m maxlength=64>

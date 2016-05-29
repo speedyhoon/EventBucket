@@ -47,7 +47,7 @@
 			</form>
 		</td>
 		<td>
-			<input type=search name=C required maxlength=64 form=editRow list=C>
+			<input type=search name=C required maxlength=64 form=editRow list=C placeholder="Club name">
 		</td>
 		<td>
 			<select name=g required form=editRow>
@@ -74,5 +74,6 @@
 		{{template "GradesAvailable" .GradesAvailable}}
 		<script defer src=dirJS/shooterSearch></script>
 		<script defer src=dirJS/entries></script>
+		<script defer src=dirJS/editRow></script>
 	{{end}}
 {{end}}

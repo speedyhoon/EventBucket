@@ -20,7 +20,7 @@ func shooters(w http.ResponseWriter, r *http.Request, submittedForm form, isVali
 	templater(w, page{
 		Title: "Shooters",
 		Error: err,
-		JS:    []string{"shooterDetails"},
+		JS:    []string{"shooterDetails", "editRow"},
 		Data: map[string]interface{}{
 			"NewShooter":     pageForms[0],
 			"ImportShooters": pageForms[1],
