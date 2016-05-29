@@ -4,8 +4,33 @@
 		{{template "ShooterSearch" .ShooterSearch}}
 	{{end}}
 	<p>Total Shooters: {{.QtyShooters}}{{with.ListShooters}}, Search returned {{len .}} shooter{{if ne (len .) 1}}s{{end}}.{{end}}
-	{{template "tableShooters" .ListShooters}}
-
+	{{with.ListShooters}}
+		<table id=editRow>
+			<thead>
+				<tr>
+					<th class=asc>Id
+					<th>Name
+					<th>Club
+					<th>Grade
+					<th>Age Group
+					<td>Ladies
+					<td>Edit
+			</thead>
+			{{range .}}
+				<tr>
+					<td>{{.ID}}
+					<td>{{.FirstName}} <span>{{.Surname}}</span>
+					<td>{{.Club}}
+					<td>{{range .Grade}}{{(grade .).Name}}, {{end}}
+					<td>{{ageGroup .AgeGroup}}
+					{{if.Ladies}}<td class=tick>{{else}}<td>{{end}}
+					<td>
+				</tr>
+			{{end}}
+		</table>
+	{{else}}
+		<samp>No shooters listed.</samp>
+	{{end}}
 	<template>
 		<td></td>
 		<td>
