@@ -3,7 +3,6 @@
 
 #define MyAppName "EventBucket"
 #define MyAppVersion "3.0 Release Preview"
-#define MyAppPublisher "EventBucket"
 #define MyAppURL "http://www.eventbucket.com.au/"
 #define MyAppExeName "EventBucket.exe"
 
@@ -15,7 +14,7 @@ AppId={{D515AFDE-322D-49BE-8240-94C5A655BB5C}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
-AppPublisher={#MyAppPublisher}
+AppPublisher={#MyAppName}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
