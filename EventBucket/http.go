@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 )
 
 const (
@@ -45,16 +46,20 @@ func serveDir(contentType string, gzip bool) {
 		}))
 }
 
-var headerOptions = map[string][2]string{
-	cGzip:  {"Content-Encoding", "gzip"},
-	"html": {contentType, "text/html; charset=utf-8"},
-	dirCSS: {contentType, "text/css; charset=utf-8"},
-	dirJS:  {contentType, "text/javascript"},
-	dirPNG: {contentType, "image/png"},
-	dirSVG: {contentType, "image/svg+xml"},
-	//dirGIF: {contentType, "image/gif"},
-	//dirWOF2:   {contentType, "application/font-woff2"},
-}
+var (
+	headerOptions = map[string][2]string{
+		cGzip:  {"Content-Encoding", "gzip"},
+		"html": {contentType, "text/html; charset=utf-8"},
+		dirCSS: {contentType, "text/css; charset=utf-8"},
+		dirJS:  {contentType, "text/javascript"},
+		dirPNG: {contentType, "image/png"},
+		dirSVG: {contentType, "image/svg+xml"},
+		//dirGIF: {contentType, "image/gif"},
+		//dirWOF2:   {contentType, "application/font-woff2"},
+	}
+	//Used for every HTTP request with cache headers set.
+	cacheExpires = time.Now().UTC().AddDate(1, 0, 0).Format(formatGMT)
+)
 
 //security add Access-Control-Allow-Origin //net.tutsplus.com/tutorials/client-side-security-best-practices/
 func headers(w http.ResponseWriter, setHeaders ...string) {
@@ -197,3 +202,20 @@ func formError(w http.ResponseWriter, submittedForm form, redirect func(), err e
 	setSession(w, submittedForm)
 	redirect()
 }
+
+/*//Update the expires http header time, every 15 minutes rather than recalculating it on every http request.
+func maintainExpiresTime() {
+	ticker := time.NewTicker(time.Minute * 15)
+	for range ticker.C {
+		//Can't directly change global variables in a go routine, so call an external function.
+		setExpiresTime()
+	}
+}
+
+//Set expiry date 1 year, 0 months & 0 days in the future.
+func setExpiresTime() {
+	//Date format is the same as Go`s time.RFC1123 but uses "GMT" timezone instead of "UTC" time standard.
+	cacheExpires = time.Now().UTC().AddDate(1, 0, 0).Format(formatGMT)
+	//w3.org: "All HTTP date/time stamps MUST be represented in Greenwich Mean Time" under 3.3.1 Full Date //www.w3.org/Protocols/rfc2616/rfc2616-sec3.html
+	masterTemplate.CurrentYear = time.Now().Format("2006")
+}*/

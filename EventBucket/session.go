@@ -79,7 +79,6 @@ func purgeOldSessions() {
 	t.Println("about to purge sessions, qty", len(globalSessions.m))
 	for sessionID := range globalSessions.m {
 		if globalSessions.m[sessionID].expiry.Before(time.Now()) {
-			t.Println("deleted sessionID:", sessionID, len(globalSessions.m))
 			delete(globalSessions.m, sessionID)
 		}
 	}
