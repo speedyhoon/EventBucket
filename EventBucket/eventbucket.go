@@ -12,7 +12,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"time"
 
 	"github.com/boltdb/bolt"
 )
@@ -25,9 +24,6 @@ var (
 	portAddr, dbPath string
 	debug            bool
 
-	//Used for every HTTP request with cache headers set.
-	cacheExpires string
-
 	//Logging
 	t    = log.New(ioutil.Discard, "TRACE: ", log.Lshortfile) //Flags can be log.Lshortfile|log.Ltime
 	info = log.New(os.Stdout, "INFO:  ", log.Lshortfile)
@@ -38,8 +34,8 @@ var (
 const formatGMT = "Mon, 02 Jan 2006 15:04:05 GMT"
 
 func init() {
-	go maintainExpiresTime()
-	go maintainSessions()
+	//go maintainExpiresTime()
+	//go maintainSessions()
 
 	//Command line flags
 	flag.StringVar(&dbPath, "dbpath", filepath.Join(os.Getenv("ProgramData"), `EventBucket`), "Directory for datafiles.")
@@ -76,7 +72,7 @@ func init() {
 	}
 	portAddr = fmt.Sprintf(":%d", *port)
 
-	setExpiresTime()
+	//setExpiresTime()
 }
 
 func main() {
@@ -121,21 +117,4 @@ func mkDir(path string) error {
 		}
 	}
 	return err
-}
-
-//Update the expires http header time, every 15 minutes rather than recalculating it on every http request.
-func maintainExpiresTime() {
-	ticker := time.NewTicker(time.Minute * 15)
-	for range ticker.C {
-		//Can't directly change global variables in a go routine, so call an external function.
-		setExpiresTime()
-	}
-}
-
-//Set expiry date 1 year, 0 months & 0 days in the future.
-func setExpiresTime() {
-	//Date format is the same as Go`s time.RFC1123 but uses "GMT" timezone instead of "UTC" time standard.
-	cacheExpires = time.Now().UTC().AddDate(1, 0, 0).Format(formatGMT)
-	//w3.org: "All HTTP date/time stamps MUST be represented in Greenwich Mean Time" under 3.3.1 Full Date //www.w3.org/Protocols/rfc2616/rfc2616-sec3.html
-	masterTemplate.CurrentYear = time.Now().Format("2006")
 }

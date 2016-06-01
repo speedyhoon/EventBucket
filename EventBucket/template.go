@@ -22,9 +22,9 @@ type page struct {
 }
 
 type markupEnv struct {
-	CurrentYear string
-	Page        page
-	Menu        []menu
+	//CurrentYear string
+	Page page
+	Menu []menu
 }
 
 const (
