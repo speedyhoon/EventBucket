@@ -188,17 +188,11 @@ func ProcessSocket(ws *websocket.Conn) {
 				warn.Println(err)
 				continue
 			}
-
 			if form, passed := isValid(form, getForm(command)); passed {
-				eventTotalUpsert(form)
+				websocket.Message.Send(ws, eventTotalUpsert(form))
+			} else {
+				websocket.Message.Send(ws, fmt.Sprintf("Unable to save %v.", msg))
 			}
-			var response []byte
-			response, err = json.Marshal(form)
-			if err != nil {
-				warn.Println(err)
-				continue
-			}
-			websocket.Message.Send(ws, fmt.Sprintf("%U%s", msg[0], response))
 		case eventUpdateShotScore:
 			var form url.Values
 			err = json.Unmarshal([]byte(msg[1:]), &form)

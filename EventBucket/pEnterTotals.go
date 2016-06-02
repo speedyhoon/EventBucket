@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 )
@@ -62,8 +63,8 @@ func enterTotals(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 	})
 }
 
-func eventTotalUpsert( /*w http.ResponseWriter, r *http.Request,*/ fields []field /*, redirect func()*/) {
-	//Insert new event into database.
+func eventTotalUpsert(fields []field) string {
+	//Save score to event in database.
 	err := updateDocument(tblEvent, fields[2].Value, &shooterScore{
 		rangeID: fields[3].Value,
 		id:      fields[4].valueUint,
@@ -72,14 +73,11 @@ func eventTotalUpsert( /*w http.ResponseWriter, r *http.Request,*/ fields []fiel
 			Centers: fields[1].valueUint,
 		}}, &Event{}, upsertScore)
 
-	//Display any upsert errors onscreen.
+	//Return any upsert errors onscreen.
 	if err != nil {
-		warn.Println(err)
+		return err.Error()
 	}
-	//		formError(w, submittedForm, redirect, err)
-	//		return
-	//	}
-	//http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
+	return fmt.Sprintf("Saved %v.%v for shooter %v on range %v in event %v.", fields[0].valueUint, fields[1].valueUint, fields[4].valueUint, fields[3].Value, fields[2].Value)
 }
 
 func eventRange(ranges []Range, rID string, w http.ResponseWriter, r *http.Request) (Range, error) {
