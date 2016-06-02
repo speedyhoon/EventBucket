@@ -101,7 +101,6 @@ function goToShooter(shooterID, search){
 }
 
 function save(event){
-	console.log('save');
 	var row = event.target.parentElement.parentElement,
 		name = event.target.name,
 		otherInput = name==='t'?'c':'t',
@@ -112,46 +111,40 @@ function save(event){
 		R: [rangeID],
 		S: [row.children[0].textContent]
 	};
-	//Use double bitwise operator to convert strings to an integer
+	//Strip any decimal places with double bitwise operator & then convert to string because the backend is expecting a string array.
 	score[name] = [~~event.target.value+''];
 	score[otherInput]= [~~row.querySelector('input[name='+otherInput+']').value+''];
-	var highestCentres = ~~(score.t[0]/ ~~centreElement.getAttribute('data-top'));
-	centreElement.setAttribute('max', highestCentres);
-	var y = document.querySelector('.^popup^');
-	if(score.t[0] >= 0 && score.t[0] <= ~~row.querySelector('input[name=t]').max && score.c[0] >= 0 && highestCentres >= score.c[0]){
+	if(errorMessage(score, row.querySelector('input[name=t]'), centreElement)){
 		ws.send('\u000E' + JSON.stringify(score));
-		y.setAttribute('hidden', '');
-	}else{
-//		var rect = centreElement.getBoundingClientRect();
-		y.style.top = centreElement.getBoundingClientRect().top + centreElement.clientHeight+'px';
-		y.removeAttribute('hidden');
-		if(score.t[0] < 0 || score.t[0] > ~~row.querySelector('input[name=t]').max){
-			y.innerHTML = 'Please enter a total between 0 and '+row.querySelector('input[name=t]').max+'.';
-			return
-		}
-
-
-		//Display validation error
-//		console.warn('Score is invalid: total=',score.t[0], 'centers=', score.c[0], 'max centres ==',highestCentres);
-
-
-
-
-
-
-		var scoreNeedsToBe = score.c[0] * centreElement.getAttribute('data-top');
-
-
-		var topScore = centreElement.getAttribute('data-top') * centreElement.getAttribute('data-max');
-		var topps = scoreNeedsToBe > topScore ? topScore : scoreNeedsToBe;
-
-
-		var ttt = Math.min(score.c[0] * centreElement.getAttribute('data-top'), centreElement.getAttribute('data-top') * centreElement.getAttribute('data-max'));
-
-//		console.log(score.c[0] , centreElement.getAttribute('data-top'), centreElement.getAttribute('data-top') , centreElement.getAttribute('data-max'));
-
-		y.innerHTML = 'Score has too many centres for a total of '+score.t[0]+'.<br>Please decrease centres to '+highestCentres+'<br><b>OR</b><br>increase total to '+ttt+(scoreNeedsToBe > topScore ?' and decrease centres to '+centreElement.getAttribute('data-max'):'')+'.';
-		y.removeAttribute('hidden');
-//		console.log(rect.top, rect.right, rect.bottom, rect.left, centreElement.clientHeight, y);
 	}
+}
+
+function errorMessage(score, $total, $centre){
+	var popup = document.querySelector('.^popup^'),
+		totalMax = ~~$total.max,
+		highestPossibleCentres = ~~$centre.getAttribute('data-max'), //string
+		highestShot = $centre.getAttribute('data-top'),   //string
+		highestCentres = ~~(score.t[0] / highestShot),
+		errorMessage;
+	$centre.max = highestCentres;
+	switch(true){
+	case score.t[0] < 0 || score.t[0] > totalMax:
+		errorMessage = 'Please enter a total between 0 and ' + totalMax + '.';
+		break;
+	case score.c[0] < 0 || score.c[0] > highestPossibleCentres:
+		errorMessage = 'Please enter centres between 0 and ' + highestPossibleCentres + '.';
+		break;
+	case score.c[0] > highestCentres:
+		errorMessage = 'Score has too many centres for a total of ' + score.t[0] + '.<br>Please decrease centres to ' + highestCentres + '<br><b>OR</b><br>increase total to ' + score.c[0] * highestShot + '.';
+	}
+	if(errorMessage){
+		//Display error message
+		popup.innerHTML = errorMessage;
+		popup.style.top = $centre.getBoundingClientRect().top + $centre.clientHeight + 'px';
+		popup.removeAttribute('hidden');
+		return
+	}
+	//No validation errors with total or centres
+	popup.setAttribute('hidden', '');
+	return 1;   //return true value
 }
