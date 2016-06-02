@@ -22,7 +22,9 @@ function reconnect (){
 	};
 	//TODO
 	//Update UI with save / error message.
-	//ws.onmessage = function(message){};
+	ws.onmessage = function(message){
+		console.log(message.data);
+	};
 	ws.onclose = function(){
 		if(!intervalId){
 			intervalId = setInterval(reconnect, 3000); //try to reconnect every 3 seconds after the connection is dropped.
