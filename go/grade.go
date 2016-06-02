@@ -19,6 +19,8 @@ type Discipline struct {
 	Grades      []Grade `json:"grades,omitempty"`
 	Marking     Mark    `json:"marking,omitempty"`
 	ShootOff    bool    `json:"shootOff,omitempty"`
+	TopShot     uint    `json:"-"`
+	TopTotal    uint    `json:"-"`
 }
 
 // Mark is a group of settings associated with possible shooter scores on a target also known as "marking". Each type of target scoring standard can be specified by a Mark and be reused within several Disciplines.
@@ -165,6 +167,8 @@ func defaultGlobalDisciplines() []Discipline {
 		QtySighters: 2,
 		QtyShots:    10,
 		QtyTotal:    12,
+		TopShot:     5,
+		TopTotal:    50,
 		Marking:     XV5,
 		//Target rifle is traditionally scored up to 5 (bullseye) which is has a larger area than 6 on an F class target.
 		//This causes significantly more shoot-offs for winning a range than F Class.
@@ -177,6 +181,8 @@ func defaultGlobalDisciplines() []Discipline {
 		QtyShots:    12,
 		QtySighters: 3,
 		QtyTotal:    15,
+		TopShot:     6,
+		TopTotal:    72,
 		Marking: Mark{
 			Buttons: "0123456X",
 			Shots: map[string]Shot{
@@ -201,6 +207,8 @@ func defaultGlobalDisciplines() []Discipline {
 		QtySighters: 3,
 		QtyShots:    15,
 		QtyTotal:    18,
+		TopShot:     5,
+		TopTotal:    75,
 		Marking:     XV5,
 		Grades: []Grade{{ID: 7, Abbr: "MO", Name: "Match Open"},
 			{ID: 8, Abbr: "MR", Name: "Match Reserve", DuplicateTo: []uint{7}}}, //If shooter is Match Reserve, duplicate them in the Match Open category. Used for Victorian Match Rifle Championships.
@@ -210,6 +218,8 @@ func defaultGlobalDisciplines() []Discipline {
 		QtySighters: 1,
 		QtyShots:    8,
 		QtyTotal:    9,
+		TopShot:     5,
+		TopTotal:    45,
 		Marking: Mark{
 			Buttons: "012345V",
 			Shots: map[string]Shot{
