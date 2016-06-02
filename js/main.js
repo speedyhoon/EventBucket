@@ -67,10 +67,7 @@ function initInputs(){
 }
 initInputs();
 
-
-/*
-var t = document.querySelectorAll('[required]'), r=t.length;
+/*var t = document.querySelectorAll('[required]'), r=t.length;
 while(r--){
   t[r].removeAttribute('required');
-}
-* */
+}*/

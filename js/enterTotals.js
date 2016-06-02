@@ -101,9 +101,11 @@ function goToShooter(shooterID, search){
 }
 
 function save(event){
+	console.log('save');
 	var row = event.target.parentElement.parentElement,
 		name = event.target.name,
-		otherInput = name==='t'?'c':'t';
+		otherInput = name==='t'?'c':'t',
+		centreElement = row.querySelector('input[name=c]');
 	//Assigning values as arrays so json.Marshal can convert it to url.Values straight away & doesn't require custom validation code
 	var score = {
 		E: [eventID],
@@ -113,18 +115,43 @@ function save(event){
 	//Use double bitwise operator to convert strings to an integer
 	score[name] = [~~event.target.value+''];
 	score[otherInput]= [~~row.querySelector('input[name='+otherInput+']').value+''];
-	if(validateScore(score)){
+	var highestCentres = ~~(score.t[0]/ ~~centreElement.getAttribute('data-top'));
+	centreElement.setAttribute('max', highestCentres);
+	var y = document.querySelector('.^popup^');
+	if(score.t[0] >= 0 && score.t[0] <= ~~row.querySelector('input[name=t]').max && score.c[0] >= 0 && highestCentres >= score.c[0]){
 		ws.send('\u000E' + JSON.stringify(score));
+		y.setAttribute('hidden', '');
 	}else{
-		//Display validation error
-		console.warn('Score is invalid: total=',score.t[0], 'centers=', score.c[0]);
-	}
-}
+//		var rect = centreElement.getBoundingClientRect();
+		y.style.top = centreElement.getBoundingClientRect().top + centreElement.clientHeight+'px';
+		y.removeAttribute('hidden');
+		if(score.t[0] < 0 || score.t[0] > ~~row.querySelector('input[name=t]').max){
+			y.innerHTML = 'Please enter a total between 0 and '+row.querySelector('input[name=t]').max+'.';
+			return
+		}
 
-function validateScore(score){
-	//TODO dynamicly change 5 to 6
-	if(score.c[0] > ~~(score.t[0]/5)){
-		return false;
+
+		//Display validation error
+//		console.warn('Score is invalid: total=',score.t[0], 'centers=', score.c[0], 'max centres ==',highestCentres);
+
+
+
+
+
+
+		var scoreNeedsToBe = score.c[0] * centreElement.getAttribute('data-top');
+
+
+		var topScore = centreElement.getAttribute('data-top') * centreElement.getAttribute('data-max');
+		var topps = scoreNeedsToBe > topScore ? topScore : scoreNeedsToBe;
+
+
+		var ttt = Math.min(score.c[0] * centreElement.getAttribute('data-top'), centreElement.getAttribute('data-top') * centreElement.getAttribute('data-max'));
+
+//		console.log(score.c[0] , centreElement.getAttribute('data-top'), centreElement.getAttribute('data-top') , centreElement.getAttribute('data-max'));
+
+		y.innerHTML = 'Score has too many centres for a total of '+score.t[0]+'.<br>Please decrease centres to '+highestCentres+'<br><b>OR</b><br>increase total to '+ttt+(scoreNeedsToBe > topScore ?' and decrease centres to '+centreElement.getAttribute('data-max'):'')+'.';
+		y.removeAttribute('hidden');
+//		console.log(rect.top, rect.right, rect.bottom, rect.left, centreElement.clientHeight, y);
 	}
-	return true;
 }
