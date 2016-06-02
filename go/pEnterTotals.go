@@ -51,12 +51,13 @@ func enterTotals(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 		Heading: currentRange.Name,
 		Error:   err,
 		Data: map[string]interface{}{
-			"Range":   currentRange,
-			"Event":   event,
-			"URL":     "enter-totals",
-			"ShowAll": showAll,
-			"Hidden":  hidden,
-			"Plural":  plural(hidden),
+			"Range":       currentRange,
+			"Event":       event,
+			"URL":         "enter-totals",
+			"ShowAll":     showAll,
+			"Hidden":      hidden,
+			"Plural":      plural(hidden),
+			"Disciplines": globalDisciplines,
 		},
 	})
 }
