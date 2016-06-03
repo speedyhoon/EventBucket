@@ -34,9 +34,6 @@
 		var j = new XMLHttpRequest();
 	}
 
-	//Set shooter barcode form onsubmit because it's not allowed with the current Content Security Policy.
-	document.querySelector('#sb').onsubmit='return shooterBarcode(B)';
-
 	function getShootersClass(){
 		return currentRow.getAttribute('data-class');
 	}
