@@ -11,6 +11,7 @@ for(var n = document.forms.length; n--;){
 		document.forms[n].onsubmit = stopDoubleSubmit;
 	}
 }
+
 function tableSort(th){
 	th = th.target;
 	/*If th.textContent == id compare using base36 else use textContent */
@@ -39,10 +40,12 @@ function tableSort(th){
 	}
 	th.className = direction > 0 ? '^asc^' : '^desc^';
 }
+
 //Form help dialog popup
 var dialog = document.createElement('dialog');
 dialog.onclick = dialog.close;
 document.body.appendChild(dialog);
+
 //Add table sort to TH elements within a THEAD
 document.onclick = function(event){
 	//Help message popup
