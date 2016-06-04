@@ -1,7 +1,9 @@
 'use strict';
 
-//Set shooter barcode form onsubmit because it's not allowed with the current Content Security Policy.
-document.querySelector('#sb').onsubmit='return shooterBarcode(B)';
+//Set shooter barcode form onsubmit because it's not allowed to be set directly in HTML with the current Content Security Policy.
+document.querySelector('#sb').onsubmit= function(){
+	return shooterBarcode(this['B']);
+};
 
 //If shooter ID is provided, try to find the shooter. Otherwise autofocus on barcode search textbox
 if(!window.location.hash){
@@ -31,7 +33,10 @@ function shooterBarcode($search){
 	}
 	var barcodeEventID = $search.value.split('/')[0],
 		barcodeRangeID = $search.value.split('/')[1].split('#')[0],
-		shooterID = $search.value.split('#')[1];
+		shooterID = $search.value.split('#')[1],
+		pathName = window.location.pathname.split('/')[1];
+
+	//eventID & rangeID is a global variable set in enterShots.js & enterTotals.js
 	if(eventID !== barcodeEventID){
 		//Go to a different event if user presses OK.
 		if(confirm('This barcode is for a different event. Do you want to go to event with id '+barcodeEventID+'?')){
@@ -50,7 +55,8 @@ function shooterBarcode($search){
 		$search.select();
 		return false;
 	}
-	return goToShooter(shooterID, $search);
+	goToShooter(shooterID, $search);
+	return false;
 }
 
 function goToShooter(shooterID, search){
@@ -67,5 +73,4 @@ function goToShooter(shooterID, search){
 		//If the shooter doesn't exist go to the scorecards-all OR total-scores-all page
 		window.location.href = '/' + pathName + '-all/' + eventID + '/' + rangeID + '#' + shooterID;
 	}
-	return false;
 }
