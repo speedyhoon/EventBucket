@@ -1,6 +1,7 @@
 $briteBlue: #0af
 $valid: #474
 $invalid:  #744
+$bgGrey: #445
 
 @import "mainVerticalMenu"
 
@@ -9,22 +10,22 @@ html
 	color: $liteGrey
 
 tr
-	border-bottom-color: $dark
+	border-bottom-color: $bgGrey
 
 th, thead td
-	border-bottom-color: $dark
+	border-bottom-color: $bgGrey
 
 //Forms
 legend
 	color: $liteGrey
 
 input, select
-	background: $dark
+	background: $bgGrey
 	border-color: $grey
 	color: $liteGrey
 
 fieldset
-	border-color: $dark
+	border-color: $bgGrey
 
 //Vertical Menus
 header
@@ -42,17 +43,9 @@ h1,h2,h3
 .events
 	time
 		background: $charcoal
-		border-color: $dark
+		border-color: $bgGrey
 	p
-		border-bottom-color: $dark
+		border-bottom-color: $bgGrey
 
 table:not(.scorecards):not(.printCards) tbody tr:nth-child(2n)
-	background: #222
-
-@media print
-	body
-		background: $white
-		color: $black
-
-	.printCards tr:nth-child(3n):not(:last-child)
-		border-bottom-color: $dark
+	background: $charcoal

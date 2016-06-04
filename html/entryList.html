@@ -10,6 +10,7 @@
 				<th>Club
 				<th>Grade
 				<th>Age Group
+				<th>Ladies
 			</thead>
 			{{range .}}
 				<tr>
@@ -18,6 +19,7 @@
 					<td>{{.Club}}
 					<td>{{(grade .Grade).Name}}
 					<td>{{ageGroup .AgeGroup}}
+					{{if .Ladies}}<td class=tick>{{else}}<td>{{end}}
 			{{end}}
 		</table>
 	{{else}}

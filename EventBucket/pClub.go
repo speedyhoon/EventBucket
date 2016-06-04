@@ -40,7 +40,7 @@ func club(w http.ResponseWriter, r *http.Request, clubID string) {
 		Menu:     urlClubs,
 		template: 25,
 		Error:    forms[2].Error,
-		JS:       []string{"clubSettings", "editRow"},
+		JS:       []string{"main", "clubSettings", "editRow"},
 		Data: map[string]interface{}{
 			"Club":        club,
 			"debug":       debug,
@@ -59,6 +59,7 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
 		Title:    "Clubs",
 		template: 25,
+		JS:       []string{"main"},
 		Data: map[string]interface{}{
 			"NewClub":   forms[0],
 			"ListClubs": listClubs,

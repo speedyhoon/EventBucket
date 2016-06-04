@@ -8,7 +8,11 @@
 	{{if not $hasRanges}}<samp>This event has no ranges</samp>{{end}}
 	{{with .Event.Shooters}}
 		<p>Total Entries: {{len .}} <a href=/print-entry-list/{{$.Event.ID}}>Print Entry List</a>
-		<table id=editRow>
+		{{if not $.Event.Closed}}
+			<table id=editRow>
+		{{else}}
+			<table>
+		{{end}}
 			<thead>
 				<tr>
 					<th class=asc>ID
@@ -37,43 +41,44 @@
 	{{else}}
 		<samp>No shooters entered in event.</samp>
 	{{end}}
-	<template>
-		<td></td>
-		<td>
-			<form method=post action=/22 id=editRow>
-				<input name=f required placeholder="First name" accesskey=d maxlength=64>
-				<input name=s required placeholder=Surname maxlength=64>
-				<input type=hidden name=E value={{.Event.ID}}>
-			</form>
-		</td>
-		<td>
-			<input type=search name=C required maxlength=64 form=editRow list=C placeholder="Club name">
-		</td>
-		<td>
-			<select name=g required form=editRow>
-				{{template "optionList" .AvailableGrades}}
-			</select>
-		</td>
-		<td>
-			<select name=r form=editRow>
-				<!--TODO load dynamic age groups from import file-->
-				{{template "optionList" .AgeGroups}}
-			</select>
-		</td>
-		<td>
-			<input name=k type=checkbox form=editRow>
-		</td>
-		<td>
-			<input name=x type=checkbox form=editRow>
-		</td>
-		<td>
-			<button name=I form=editRow>Save</button>
-		</td>
-	</template>
 	{{if not .Event.Closed}}
+		<template>
+			<td></td>
+			<td>
+				<form method=post action=/22 id=editRow>
+					<input name=f required placeholder="First name" accesskey=d maxlength=64>
+					<input name=s required placeholder=Surname maxlength=64>
+					<input type=hidden name=E value={{.Event.ID}}>
+				</form>
+			</td>
+			<td>
+				<input type=search name=C required maxlength=64 form=editRow list=C placeholder="Club name">
+			</td>
+			<td>
+				<select name=g required form=editRow>
+					{{template "optionList" .AvailableGrades}}
+				</select>
+			</td>
+			<td>
+				<select name=r form=editRow>
+					<!--TODO load dynamic age groups from import file-->
+					{{template "optionList" .AgeGroups}}
+				</select>
+			</td>
+			<td>
+				<input name=k type=checkbox form=editRow>
+			</td>
+			<td>
+				<input name=x type=checkbox form=editRow>
+			</td>
+			<td>
+				<button name=I form=editRow>Save</button>
+			</td>
+		</template>
 		{{template "GradesAvailable" .GradesAvailable}}
 		<script defer src=dirJS/shooterSearch></script>
 		<script defer src=dirJS/entries></script>
 		<script defer src=dirJS/editRow></script>
+		<script defer src=dirJS/main></script>
 	{{end}}
 {{end}}
