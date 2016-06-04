@@ -1,7 +1,6 @@
 //Colours
 $black: #000
 $charcoal: #222
-$dark: #445
 $grey: #777
 $liteGrey: #cdd
 $blue: #08b
@@ -14,10 +13,11 @@ $bigPadding: $margin/3
 $fatWidth: 2px
 $fatBorder: $fatWidth solid
 $thinBorder: 1px solid
-html
-	background: url(/v/bottom_landscape_14) bottom left no-repeat
-	background-size: 14em
-	background-attachment: fixed
+@media screen
+	html
+		background: url(/v/bottom_landscape_14) bottom left no-repeat
+		background-size: 14em
+		background-attachment: fixed
 
 html,body
 	height: 100%
@@ -276,4 +276,6 @@ abbr
 		tr
 			border: 0
 
-//@import "enterShots"
+@media print
+	.printCards tr:nth-child(3n):not(:last-child)
+		border-bottom-color: $bgGrey

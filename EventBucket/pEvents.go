@@ -20,6 +20,7 @@ func events(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
 		Title: "Events",
 		Error: err,
+		JS:    []string{"main"},
 		Data: map[string]interface{}{
 			"NewEvent": forms[0],
 			"Events":   events,
@@ -48,7 +49,7 @@ func licence(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-//localIP returns the non loopback local IPv4 of the host
+// localIP returns the non loopback local IPv4 of the host
 func localIPs() []string {
 	var localIPs []string
 	addrs, err := net.InterfaceAddrs()
@@ -56,7 +57,7 @@ func localIPs() []string {
 		var ipnet *net.IPNet
 		var ok bool
 		for _, address := range addrs {
-			//check the address type and if it is not a loopback the display it
+			// check the address type and if it is not a loopback the display it
 			ipnet, ok = address.(*net.IPNet)
 			if ok && !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil && !strings.HasPrefix(ipnet.IP.String(), "169.254.") {
 				localIPs = append(localIPs, ipnet.IP.String())
@@ -102,7 +103,7 @@ func (ms *multiSorter2) Swap(i, j int) {
 
 func (ms *multiSorter2) Less(i, j int) bool {
 	p, q := &ms.changes[i], &ms.changes[j]
-	//Try all but the last comparison.
+	// Try all but the last comparison.
 	var k int
 	for k = 0; k < len(ms.less)-1; k++ {
 		less := ms.less[k]
