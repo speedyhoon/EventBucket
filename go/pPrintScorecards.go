@@ -60,6 +60,7 @@ func printScorecards(w http.ResponseWriter, r *http.Request, parameters string) 
 		Title:  "Print Scorecards",
 		Menu:   urlEvents,
 		MenuID: event.ID,
+		JS:     []string{"print"},
 		Data: map[string]interface{}{
 			"Event":     event,
 			"ShooterID": shooterID,
