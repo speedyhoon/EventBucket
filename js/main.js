@@ -39,6 +39,7 @@ function tableSort(th){
 	}
 	th.className = direction > 0 ? '^asc^' : '^desc^';
 }
+//Form help dialog popup
 var dialog = document.createElement('dialog');
 dialog.onclick = dialog.close;
 document.body.appendChild(dialog);
