@@ -2,7 +2,8 @@
 
 //Set shooter barcode form onsubmit because it's not allowed to be set directly in HTML with the current Content Security Policy.
 document.querySelector('#sb').onsubmit= function(){
-	return shooterBarcode(this['B']);
+	shooterBarcode(this['B']);
+	return false;
 };
 
 //If shooter ID is provided, try to find the shooter. Otherwise autofocus on barcode search textbox
@@ -19,24 +20,23 @@ function shooterBarcode($search){
 	document.getElementById('shooterErr').setAttribute('hidden', '');
 	if(!$search||!$search.value){
 		document.getElementById('searchErr').removeAttribute('hidden');
-		return false;
+		return
 	}
 	if(/^\d+$/g.test($search.value)){
 		goToShooter($search.value, $search);
-		return false;
+		return
 	}
 	//If barcode doesn't match display error message
 	if(!/^\d+\/\d+#\d+$/g.test($search.value)){
 		document.getElementById('barcodeErr').removeAttribute('hidden');
 		$search.select();
-		return false;
+		return
 	}
 	var barcodeEventID = $search.value.split('/')[0],
 		barcodeRangeID = $search.value.split('/')[1].split('#')[0],
 		shooterID = $search.value.split('#')[1],
 		pathName = window.location.pathname.split('/')[1];
 
-	//eventID & rangeID is a global variable set in enterShots.js & enterTotals.js
 	if(eventID !== barcodeEventID){
 		//Go to a different event if user presses OK.
 		if(confirm('This barcode is for a different event. Do you want to go to event with id '+barcodeEventID+'?')){
@@ -44,7 +44,7 @@ function shooterBarcode($search){
 		}
 		//Else do nothing.
 		$search.select();
-		return false;
+		return
 	}
 	if(rangeID !== barcodeRangeID){
 		//Go to a different range if user presses OK.
@@ -53,13 +53,12 @@ function shooterBarcode($search){
 		}
 		//Else do nothing.
 		$search.select();
-		return false;
+		return
 	}
-	goToShooter(shooterID, $search);
-	return false;
+	goToShooter(shooterID, $search, pathName);
 }
 
-function goToShooter(shooterID, search){
+function goToShooter(shooterID, search, pathName){
 	//If the shooter textbox exists in the DOM, set focus to their text box.
 	var d = document.getElementById(shooterID);
 	if(d){
