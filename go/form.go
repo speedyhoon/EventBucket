@@ -94,7 +94,7 @@ func getForm(id uint8) []field {
 		}}
 	case 4: //New Event
 		return []field{{
-			name: "C", Value: defaultClubName(), Required: hasDefaultClub(), maxLen: 64, v8: isValidStr, Options: clubsDataList(),
+			name: "C", Value: defaultClubName(), Required: hasDefaultClub(), maxLen: 64, minLen: 1, v8: isValidStr, Options: clubsDataList(),
 		}, {
 			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {

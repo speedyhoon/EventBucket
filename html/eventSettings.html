@@ -13,6 +13,7 @@
 			{{template "AddAggregateRange" .AddAgg}}
 		{{end}}
 	{{end}}
+	{{range .UpdateErrors}}<samp>{{.}}</samp>{{end}}
 	{{with .Event.Ranges}}
 		<p>Total Ranges: {{len .}}
 		{{if not $.Event.Closed}}

@@ -46,10 +46,10 @@ func isValid(urlValues url.Values, fields []field) ([]field, bool) {
 		fieldValue, ok = urlValues[field.name]
 		//t.Println(field.name, fieldValue, ok)
 
-		//if fieldValue is empty and...
+		//if fieldValue is empty and field is required
 		if !ok || len(fieldValue) == 0 || (len(fieldValue) == 1 && strings.TrimSpace(fieldValue[0]) == "") {
 			if field.Required {
-				fields[i].Error = "Please fill in this field"
+				fields[i].Error = "Please fill in this field."
 			}
 			//else if field is not required - do nothing.
 		} else {
@@ -58,7 +58,6 @@ func isValid(urlValues url.Values, fields []field) ([]field, bool) {
 		}
 
 		if fields[i].Error != "" {
-			//warn.Println(i, fields[i].name, fields[i].Error)
 			//Set the first field with failed validation to have focus onscreen
 			if valid {
 				fields[i].AutoFocus = true
