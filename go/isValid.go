@@ -160,13 +160,13 @@ func isValidRegex(f *field, inp ...string) {
 	//TODO remove developer check
 	if f.regex == nil {
 		t.Println("missing regex for field:", f.name)
-		f.Error = "Missing regex to check against"
+		f.Error = "Missing regex to check against."
 		return
 	}
 
 	f.Value = strings.TrimSpace(inp[0])
 	if !f.regex.MatchString(f.Value) {
-		f.Error = "ID supplied is incorrect"
+		f.Error = "ID supplied is incorrect."
 	}
 	return
 }
