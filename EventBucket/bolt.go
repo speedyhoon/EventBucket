@@ -268,7 +268,7 @@ func editRange(decode interface{}, contents interface{}) interface{} {
 	for i, r := range event.Ranges {
 		if r.ID == rangeDetails.ID {
 			event.Ranges[i].Name = rangeDetails.Name
-			if event.Ranges[i].IsAgg {
+			if r.IsAgg {
 				event.Ranges[i].Aggs = rangeDetails.Aggs
 			} else {
 				event.Ranges[i].Locked = rangeDetails.Locked
