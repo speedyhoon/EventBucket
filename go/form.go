@@ -270,7 +270,7 @@ func getForm(id uint8) []field {
 		}}
 	case 22: //Entries Edit Shooter Details
 		return []field{{
-			name: "I", Required: true, v8: isValidRegex, regex: regexID,
+			name: "S", Required: true, max: 65535, step: 1, v8: isValidUint,
 		}, {
 			name: "E", Required: true, v8: isValidRegex, regex: regexID,
 		}, {

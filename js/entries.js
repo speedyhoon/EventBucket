@@ -17,7 +17,7 @@ function buildRow(t, tds){
 	t.querySelector('[name=C]').value = tds[2].textContent;
 	findValue(t.querySelector('[name=g]'), tds[3].textContent);
 	findValue(t.querySelector('[name=r]'), tds[4].textContent);
-	t.querySelector('[name=I]').value = tds[0].textContent;
+	t.querySelector('[name=S]').value = tds[0].textContent;
 	checked(tds[5], t.querySelector('[name=k]'));
 	checked(tds[6], t.querySelector('[name=x]'));
 	return t;
