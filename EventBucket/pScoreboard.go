@@ -100,10 +100,10 @@ func scoreBoardLegend() []legend {
 		{Class: "d", Name: "1st"},
 		{Class: "e", Name: "2nd"},
 		{Class: "f", Name: "3rd"},
-		{Class: "g", Name: "4th"},
+		/*{Class: "g", Name: "4th"},
 		{Class: "h", Name: "5th"},
 		{Class: "i", Name: "6th"},
 		{Class: "j", Name: "7th"},
-		{Class: "k", Name: "8th"},
+		{Class: "k", Name: "8th"},*/
 	}
 }

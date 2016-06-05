@@ -100,10 +100,10 @@ func scoreBoardLegend() []legend {
 		{Class: "^p1^", Name: "1st"},
 		{Class: "^p2^", Name: "2nd"},
 		{Class: "^p3^", Name: "3rd"},
-		{Class: "^p4^", Name: "4th"},
+		/*{Class: "^p4^", Name: "4th"},
 		{Class: "^p5^", Name: "5th"},
 		{Class: "^p6^", Name: "6th"},
 		{Class: "^p7^", Name: "7th"},
-		{Class: "^p8^", Name: "8th"},
+		{Class: "^p8^", Name: "8th"},*/
 	}
 }
