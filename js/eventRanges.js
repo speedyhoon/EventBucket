@@ -7,9 +7,10 @@ function buildRow(t, tds){
 	}else{
 		R.parentElement.removeChild(R);
 	}
+	t.querySelector('[name=n]').value = tds[1].textContent;
 	var l = t.querySelector('[name=k]');
 	if(!tds[2].textContent){
-		if(tds[3].className == '^tick^'){
+		if(tds[3].className === '^tick^'){
 			l.setAttribute('checked', '');
 		}
 	}else{
