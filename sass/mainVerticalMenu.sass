@@ -47,10 +47,11 @@ table:not(.printCards) tr
 	border-bottom: $thinBorder
 	padding: $bigPadding
 
-th, thead td
-	text-align: left
-	font-weight: 700
-	border-bottom: $fatBorder
+table:not(.scorecards)
+	th, thead td
+		text-align: left
+		font-weight: 700
+		border-bottom: $fatBorder
 
 table:not(.scorecards) th:not(:empty)
 	cursor: pointer
@@ -251,7 +252,7 @@ a, header li
 	background: url(/v/speechBubble) no-repeat
 	color: $white
 	position: absolute
-	padding: $margin/2 $margin/2 $margin
+	padding: $margin $margin/2 $margin/2
 	right: 2*$margin
 	text-align: center
 
@@ -276,3 +277,5 @@ abbr
 @media print
 	.printCards tr:nth-child(3n):not(:last-child)
 		border-bottom-color: $bgGrey
+
+@import "enterShots"
