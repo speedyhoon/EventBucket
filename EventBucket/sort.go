@@ -36,7 +36,7 @@ func sorterCountBack2(rangeID string, c1, c2 *EventShooter) bool {
 func sorterShootOff(rangeID string, c1, c2 *EventShooter) bool {
 	//t.Println("sorterShootOff", rangeID, c1.ID, c1.FirstName, c1.Surname, c2.ID, c2.FirstName, c2.Surname)
 	if c1.Scores[rangeID].CountBack != "" && c1.Scores[rangeID].CountBack == c2.Scores[rangeID].CountBack {
-		info.Printf("shooters scores are the same? c1= g:%v t:%v c:%v b:%v h:%v c2= g:%v t:%v c:%v b:%v h:%v", c1.Grade, c1.Scores[rangeID].Total, c1.Scores[rangeID].Centers, c1.Scores[rangeID].CountBack, c1.Scores[rangeID].ShootOff, c2.Grade, c2.Scores[rangeID].Total, c2.Scores[rangeID].Centers, c2.Scores[rangeID].CountBack, c2.Scores[rangeID].ShootOff)
+		t.Printf("shooters scores are the same? c1= g:%v t:%v c:%v b:%v h:%v c2= g:%v t:%v c:%v b:%v h:%v", c1.Grade, c1.Scores[rangeID].Total, c1.Scores[rangeID].Centers, c1.Scores[rangeID].CountBack, c1.Scores[rangeID].ShootOff, c2.Grade, c2.Scores[rangeID].Total, c2.Scores[rangeID].Centers, c2.Scores[rangeID].CountBack, c2.Scores[rangeID].ShootOff)
 		temp := c1.Scores[rangeID]
 		//temp.Warning = legendShootOff
 		c1.Scores[rangeID] = temp
@@ -78,7 +78,7 @@ func (ms *multiEventShooterSorter) Swap(i, j int) {
 //TODO change the functions to return -1, 0, 1 and reduce the number of calls for greater efficiency
 func (ms *multiEventShooterSorter) Less(i, j int) bool {
 	p, q := &ms.shooter[i], &ms.shooter[j]
-	//Try all but the last comparison.
+	// Try all but the last comparison.
 	var k int
 	for k = 0; k < len(ms.sort)-1; k++ {
 		sort := ms.sort[k]
@@ -297,7 +297,7 @@ func recalculateShootersAggs(updates map[string]calculateShooter) {
 //	if updateRequired {
 //		//tableUpdateData(tblEvent, event.ID, updateBson)
 //	}
-//	info.Println("finished grade recalculation")
+//	t.Println("finished grade recalculation")
 //}
 
 /*func hasShootFinished(shots string, grade uint) bool {
@@ -345,8 +345,8 @@ func recalculateShootersAggs(updates map[string]calculateShooter) {
 	return event
 }*/
 
-//Ordinal gives you the input number in a rank/ordinal format.
-//Ordinal(3) -> 3rd
+// Ordinal gives you the input number in a rank/ordinal format.
+// Ordinal(3) -> 3rd
 //author: github.com/dustin/go-humanize/blob/master/ordinals.go
 func ordinal(x int) string {
 	suffix := "th"
