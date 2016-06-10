@@ -40,14 +40,14 @@
 				<input type=search name=C required maxlength=64 form=editRow list=C>
 			</td>
 			<td>
-				<select name=g multiple required size={{len .Grades}} form=editRow>
-				{{template "optionList" .Grades}}
+				<select name=g multiple required size={{len $.Grades}} form=editRow>
+				{{template "optionList" $.Grades}}
 				</select>
 			</td>
 			<td>
 				<select name=r form=editRow>
 					<!--TODO load dynamic age groups from import file-->
-					{{template "optionList" .AgeGroups}}
+					{{template "optionList" $.AgeGroups}}
 				</select>
 			</td>
 			<td>
