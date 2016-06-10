@@ -26,8 +26,8 @@ var (
 
 	//Logging
 	t    = log.New(ioutil.Discard, "TRACE: ", log.Lshortfile) //Flags can be log.Lshortfile|log.Ltime
-	info = log.New(os.Stdout, "INFO:  ", log.Lshortfile)
-	warn = log.New(os.Stderr, "WARN:  ", log.Lshortfile)
+	info = log.New(os.Stdout, "", 0)
+	warn = log.New(os.Stderr, "WARN: ", log.Lshortfile)
 )
 
 //Date format
