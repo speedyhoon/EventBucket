@@ -1,56 +1,56 @@
 {{define "page"}}
 <a class=floatRight href=//eventbucket.com.au><img src=/v/logo alt=EventBucket height=16>.com.au</a>
 <h1>{{.Event.Name}}</h1>
-<table>
-	{{range.Event.Shooters}}
-		{{if.ClassSeparator}}
-			<tr class=specialRow>
-				<td colspan=5 class=classHeadingRow>{{(grade .Grade).Name}}
-				{{range $.Ranges}}
-					{{if eq .ID $.SortByRange}}
-						<td rowspan=2 class=sortBy>{{.Name}}
-					{{else}}
-						<td rowspan=2>{{.Name}}
+	<table>
+		{{range.Event.Shooters}}
+			{{if.ClassSeparator}}
+				<tr class=specialRow>
+					<td colspan=5 class=classHeadingRow>{{(grade .Grade).Name}}
+					{{range $.Ranges}}
+						{{if eq .ID $.SortByRange}}
+							<td rowspan=2 class=sortBy>{{.Name}}
+						{{else}}
+							<td rowspan=2>{{.Name}}
+						{{end}}
 					{{end}}
-				{{end}}
-			{{template "scoreboardHeader" $}}
-		{{end}}
-		{{if and .GradeSeparator (not .ClassSeparator)}}
-			<tr class=classHeadingRow>
-				<td colspan=5>{{(grade .Grade).Name}}
-				{{range $.Ranges}}
-					{{if eq .ID $.SortByRange}}
-						<td class=sortBy>{{.Name}}
-					{{else}}
-						<td>{{.Name}}
-					{{end}}
-				{{end}}
-		{{end}}
-		<tr>
-			<td>
-			<td class=tc>{{.FirstName}} {{.Surname}}
-			<td>{{.ID}}
-			<td>{{.Club}}
-			<td>{{ageGroup .AgeGroup}}
-			{{$shooter := .}}
-			{{range $.Ranges}}
-				<td>
-					{{with index $shooter.Scores .StrID}}
-						{{if.Total}}
-							{{.Total}}
-							{{if.Centers}}<sup>{{.Centers}}{{end}}
+				{{template "scoreboardHeader" $}}
+			{{end}}
+			{{if and .GradeSeparator (not .ClassSeparator)}}
+				<tr class=classHeadingRow>
+					<td colspan=5>{{(grade .Grade).Name}}
+					{{range $.Ranges}}
+						{{if eq .ID $.SortByRange}}
+							<td class=sortBy>{{.Name}}
+						{{else}}
+							<td>{{.Name}}
 						{{end}}
 					{{end}}
 			{{end}}
-	{{end}}
-	<tr>
-		<td colspan={{.Colspan}} class=legend>
-			{{with .Legend}}
-				Legend: {{range .}}
-					<label class={{.Class}}>{{.Name}}</label>
+			<tr>
+				<td>
+				<td class=tc>{{.FirstName}} {{.Surname}}
+				<td>{{.ID}}
+				<td>{{.Club}}
+				<td>{{ageGroup .AgeGroup}}
+				{{$shooter := .}}
+				{{range $.Ranges}}
+					<td>
+						{{with index $shooter.Scores .StrID}}
+							{{if.Total}}
+								{{.Total}}
+								{{if.Centers}}<sup>{{.Centers}}{{end}}
+							{{end}}
+						{{end}}
 				{{end}}
-			{{end}}
-</table>
+		{{end}}
+		<tr>
+			<td colspan={{.Colspan}} class=legend>
+				{{with .Legend}}
+					Legend: {{range .}}
+						<label class={{.Class}}>{{.Name}}</label>
+					{{end}}
+				{{end}}
+	</table>
 {{end}}
 
 {{define "scoreboardHeader"}}
