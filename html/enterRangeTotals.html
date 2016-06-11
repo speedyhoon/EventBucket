@@ -2,7 +2,7 @@
 	{{if and (not .Event.Closed) (not .Range.Locked)}}
 		{{template "barcodeSearch"}}
 		{{template "incompleteShooters" .}}
-		{{if and .Hidden (not .ShowAll)}}<samp>{{.Hidden}} Shooter{{.Plural}} have finished</samp>{{end}}
+		{{if and .Hidden (not .ShowAll)}}<samp>{{.Hidden}} Shooter{{.Plural}} finished.</samp>{{end}}
 		{{with .Event.Shooters}}
 			<table>
 				<thead>

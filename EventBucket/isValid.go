@@ -9,7 +9,7 @@ import (
 
 func listUint(f *field, inp ...string) {
 	if len(inp) < f.minLen {
-		f.Error = fmt.Sprintf("Not enough items selected. At least %v items are needed.", f.minLen) //TODO plural
+		f.Error = fmt.Sprintf("Not enough items selected. At least %v item%s needed.", f.minLen, plural(len(inp), " is", "s are"))
 		return
 	}
 
@@ -111,13 +111,13 @@ func toFixed(num /*, precision*/ float64) float32 {
 }
 
 func isValidStr(f *field, inp ...string) {
-	//Developer checks
+	//>> Developer checks
 	if f.maxLen == 0 {
 		t.Println("f.maxLen should be set: isValidStr", f.name)
 	}
 	if f.minLen == 0 && f.Required {
 		t.Println("f.minLen should be set: isValidStr", f.name)
-	}
+	} //<<
 
 	f.Value = strings.TrimSpace(inp[0])
 	length := len(f.Value)
@@ -157,12 +157,12 @@ func isValidStr(f *field, inp ...string) {
 }
 
 func isValidRegex(f *field, inp ...string) {
-	//TODO remove developer check
+	//>> Developer check
 	if f.regex == nil {
 		t.Println("missing regex for field:", f.name)
 		f.Error = "Missing regex to check against."
 		return
-	}
+	} //<<
 
 	f.Value = strings.TrimSpace(inp[0])
 	if !f.regex.MatchString(f.Value) {
@@ -179,9 +179,15 @@ func isValidBool(f *field, inp ...string) {
 	return
 }
 
-func plural(length int) string {
+func plural(length int, single, multiple string) string {
 	if length != 1 {
+		if multiple != "" {
+			return multiple
+		}
 		return "s"
+	}
+	if single != "" {
+		return single
 	}
 	return ""
 }

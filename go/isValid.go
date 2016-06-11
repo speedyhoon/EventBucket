@@ -9,7 +9,7 @@ import (
 
 func listUint(f *field, inp ...string) {
 	if len(inp) < f.minLen {
-		f.Error = fmt.Sprintf("Not enough items selected. At least %v items are needed.", f.minLen) //TODO plural
+		f.Error = fmt.Sprintf("Not enough items selected. At least %v item%s needed.", f.minLen, plural(len(inp), " is", "s are"))
 		return
 	}
 
@@ -36,7 +36,6 @@ func listUint(f *field, inp ...string) {
 }
 
 func isValidUint(f *field, inp ...string) {
-	//>>
 	if debug {
 		if f.step == 0 {
 			warn.Println("Are you sure about step == 0? isValidUint", f.name)
@@ -44,7 +43,7 @@ func isValidUint(f *field, inp ...string) {
 		if f.max == 0 {
 			warn.Println("Are you sure about max == 0? isValidUint", f.name)
 		}
-	} //<<
+	}
 
 	var err error
 	f.Value = inp[0]
@@ -180,9 +179,15 @@ func isValidBool(f *field, inp ...string) {
 	return
 }
 
-func plural(length int) string {
+func plural(length int, single, multiple string) string {
 	if length != 1 {
+		if multiple != "" {
+			return multiple
+		}
 		return "s"
+	}
+	if single != "" {
+		return single
 	}
 	return ""
 }

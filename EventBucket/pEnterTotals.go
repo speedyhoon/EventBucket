@@ -57,7 +57,7 @@ func enterTotals(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 			"URL":         "enter-totals",
 			"ShowAll":     showAll,
 			"Hidden":      hidden,
-			"Plural":      plural(hidden),
+			"Plural":      plural(hidden, " is", "s have"),
 			"Disciplines": globalDisciplines,
 		},
 	})
