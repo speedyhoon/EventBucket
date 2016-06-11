@@ -1,1 +1,1 @@
-{{define "page"}}<h1>Oops&mldr;{{/* horizontal ellipsis */}}</h1>Something kicked the bucket&mldr; That {{with .Type}}{{.}}{{else}}page{{end}} wasn't found.<p class=m><img src=/v/empty_bucket alt="empty bucket" height=200>{{end}}
+{{define "page"}}<h1>Oops&mldr;</h1>Something kicked the bucket&mldr; That {{with .Type}}{{.}}{{else}}page{{end}} wasn't found.<p class=n><img src=/v/empty_bucket alt="empty bucket" height=200>{{end}}
