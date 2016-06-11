@@ -1,18 +1,10 @@
-.scorecards
-	//border-spacing: 0
-	//width: 100%
-	//font-family: Courier New
+.enterShots
 	font-family: monospace
-
-	//background: #fff
-	//color: #000
 
 	tbody tr:not(#h) th:nth-child(4) //a:hover,th.name:hover
 		color: $briteBlue
 		cursor: pointer
-		//text-decoration: underline
-		font-size: 2em
-		//white-space: nowrap
+		font-size: 1.8em
 
 		&:hover //a:hover,th.name:hover
 			color: $blue
@@ -52,16 +44,9 @@
 		&[data-selected="1"]
 			background: #088
 
-	//tr[data-selected="1"] .name
-		cursor: default
-		text-decoration: none
-
 	tr:not(#x) th:last-child
-		//Total fields (and heading) but no the footer with buttons
+		//Total fields (and heading) but not the footer with buttons
 		text-align: right
-
-	//tr,th
-		padding: 0
 
 	tr[data-selected="1"]
 		border: 0 solid $red

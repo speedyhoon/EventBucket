@@ -3,22 +3,20 @@
 		{{template "incompleteShooters" .}}
 		<br>{{template "barcodeSearch"}}
 		{{with .Event.Shooters}}
-			<table class=scorecards data-eventID={{$.Event.ID}} data-rangeID={{$.Range.ID}}>
-				<thead>
-					<tr id=h>
-						<th>ID
-						<th>Club
-						<th>Grade
-						<th>Shooter
-						{{$shotsHeader := (index $.Disciplines (grade (index . $.firstShooterID).Grade).ClassID)}}
-						{{range $i := N $shotsHeader.QtySighters}}
-							<td>S{{.}}
-						{{end}}
-						{{range $i := N $shotsHeader.QtyShots}}
-							<td>{{.}}
-						{{end}}
-						<th colspan=99>Total
-				</thead>
+			<table class=enterShots data-eventID={{$.Event.ID}} data-rangeID={{$.Range.ID}}>
+				<tr id=h>
+					<th>ID
+					<th>Club
+					<th>Grade
+					<th>Shooter
+					{{$shotsHeader := (index $.Disciplines (grade (index . $.firstShooterID).Grade).ClassID)}}
+					{{range $i := N $shotsHeader.QtySighters}}
+						<td>S{{.}}
+					{{end}}
+					{{range $i := N $shotsHeader.QtyShots}}
+						<td>{{.}}
+					{{end}}
+					<th colspan=99>Total
 				{{range .}}
 					{{if not .Hidden}}
 						{{$score := index .Scores $.Range.StrID}}
@@ -27,14 +25,14 @@
 								<th>{{.ID}}
 								<th>{{.Club}}
 								<th>{{(grade .Grade).Abbr}}
-								<th>{{.FirstName}} {{.Surname}}
+								<th id={{.ID}}>{{.FirstName}} {{.Surname}}
 								{{range $i := N (index $.Disciplines (grade .Grade).ClassID).QtyTotal}}
 									<td>
 										{{if gt (len $score.Shots) .}}
 											{{printf "%c" (index $score.Shots .)}}
 										{{end}}
 								{{end}}
-								<th colspan=99 class=t>
+								<th colspan=99>
 									{{with $score}}
 										{{.Total}}{{with .Centers}}<sup>{{.}}</sup>{{end}}
 									{{end}}

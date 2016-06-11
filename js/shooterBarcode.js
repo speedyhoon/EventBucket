@@ -63,8 +63,12 @@ function goToShooter(shooterID, search, pathName){
 	var d = document.getElementById(shooterID);
 	if(d){
 		search.value = '';
+		if(d.tagName === 'input'){
+			d.select();
+		}else{
+			d.click();
+		}
 		window.location.hash = '#' + shooterID;
-		d.select();
 	}else if(pathName.indexOf('-all') >= 0){
 		//Display shooter not is this event error message.
 		document.getElementById('shooterErr').removeAttribute('hidden');
