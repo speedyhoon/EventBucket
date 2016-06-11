@@ -137,11 +137,11 @@ func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request,
 				pageFunc(w, r, lowerParams)
 				return
 			}
-			pageType := "event"
+			errorType := "event"
 			if url == urlClub {
-				pageType = "club"
+				errorType = "club"
 			}
-			errorHandler(w, r, http.StatusNotFound, pageType)
+			errorHandler(w, r, http.StatusNotFound, errorType)
 		})
 }
 
