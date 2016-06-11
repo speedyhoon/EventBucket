@@ -122,35 +122,6 @@ func post(method string, formID uint8, runner func(http.ResponseWriter, *http.Re
 	http.HandleFunc(fmt.Sprintf("/%d", formID), h)
 }
 
-/*
-//TODO fix
-
-func post(method string, formID uint8, runner func(http.ResponseWriter, *http.Request, form, func())) {
-	h := func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != method {
-			/*405 Method Not Allowed
-			A request was made of a resource using a request method not supported by that resource; for example,
-			using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
-			//en.wikipedia.org/wiki/List_of_HTTP_status_codes * /
-//TODO maybe don't redirect user?
-http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
-return
-}
-submittedFields, isValid := validPost(r, getForm(formID))
-redirect := func() { http.Redirect(w, r, r.Referer(), http.StatusSeeOther) }
-if !isValid && method != get {
-setSession(w, form{action: formID, Fields: submittedFields})
-redirect()
-return
-}
-runner(w, r, submittedFields, redirect)
-}
-http.HandleFunc(fmt.Sprintf("/%d", formID), h)
-}
-*/
-
-//func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
-
 func gt(url string, formID uint8, runner func(http.ResponseWriter, *http.Request, form, bool)) {
 	http.HandleFunc(url, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" {
