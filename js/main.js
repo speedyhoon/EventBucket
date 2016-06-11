@@ -15,19 +15,26 @@ for(var n = document.forms.length; n--;){
 function tableSort(th){
 	th = th.target;
 	/*If th.textContent == id compare using base36 else use textContent */
-	var tbody = th.parentElement.parentElement.parentElement.querySelector('tbody'), column = Array.prototype.indexOf.call(th.parentElement.children, th), direction = th.className === '^asc^' ? -1 : 1, rows = Array.from(tbody.children);
-	var sortBy = function(input){
+	var tbody = th.parentElement.parentElement.parentElement.querySelector('tbody'),
+		column = Array.prototype.indexOf.call(th.parentElement.children, th),
+		direction = th.className === '^asc^' ? -1 : 1,
+		rows = Array.from(tbody.children);
+	var sortBy = function(cell){
+		if(!cell){
+			return '';
+		}
+		var input = cell.textContent;
 		switch(th.textContent){
 			case 'ID':
-				return +input;
+				return ~~input;
 			case 'Id':
 				return parseInt(input, 36);   //Id = base 36 string (0-9a-z) e.g. a2e = 13046
 		}
 		return input;
 	};
 	rows.sort(function(a, b){
-		a = sortBy(a.children[column].textContent);
-		b = sortBy(b.children[column].textContent);
+		a = sortBy(a.children[column]);
+		b = sortBy(b.children[column]);
 		return a > b ? direction : a < b ? -1 * direction : 0;
 	});
 	tbody.innerHTML = '';
@@ -70,8 +77,3 @@ function initInputs(){
 	}
 }
 initInputs();
-
-/*var t = document.querySelectorAll('[required]'), r=t.length;
-while(r--){
-  t[r].removeAttribute('required');
-}*/
