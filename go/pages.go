@@ -102,7 +102,6 @@ func post(method string, formID uint8, runner func(http.ResponseWriter, *http.Re
 			A request was made of a resource using a request method not supported by that resource; for example,
 			using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
 			//en.wikipedia.org/wiki/List_of_HTTP_status_codes*/
-			//TODO maybe don't redirect user?
 			http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
 			return
 		}
@@ -129,7 +128,6 @@ func gt(url string, formID uint8, runner func(http.ResponseWriter, *http.Request
 			A request was made of a resource using a request method not supported by that resource; for example,
 			using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
 			//en.wikipedia.org/wiki/List_of_HTTP_status_codes*/
-			//TODO maybe don't redirect user?
 			http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
 			return
 		}
