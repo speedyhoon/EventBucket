@@ -21,8 +21,8 @@ const (
 
 func serveFile(fileName string) {
 	http.HandleFunc("/"+fileName, func(w http.ResponseWriter, r *http.Request) {
-		// Check if the request contains accept gzip encoding header & return the appropriate resource
-		// Unfortunately uncompressed responses may still be required even though all modern browsers support gzip
+		//Check if the request contains accept gzip encoding header & return the appropriate resource
+		//Unfortunately uncompressed responses may still be required even though all modern browsers support gzip
 		//webmasters.stackexchange.com/questions/22217/which-browsers-handle-content-encoding-gzip-and-which-of-them-has-any-special
 		//www.stevesouders.com/blog/2009/11/11/whos-not-getting-gzip/
 		headers(w, cache)
@@ -78,7 +78,7 @@ func headers(w http.ResponseWriter, setHeaders ...string) {
 			w.Header().Set("Pragma", "no-cache")
 			break
 		default:
-			//TODO add comment
+			//Set resource content type header or set content encoding gzip header
 			if lookup == cGzip || headerOptions[lookup][0] == "Content-Type" {
 				w.Header().Set(headerOptions[lookup][0], headerOptions[lookup][1])
 			}
@@ -137,62 +137,40 @@ func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request,
 				pageFunc(w, r, lowerParams)
 				return
 			}
-			whoops(w, r, url)
+			pageType := "event"
+			if url == urlClub {
+				pageType = "club"
+			}
+			errorHandler(w, r, http.StatusNotFound, pageType)
 		})
 }
 
 func errorHandler(w http.ResponseWriter, r *http.Request, status int, errorType string) {
 	//All EventBucket page urls and ids are lowercase
-	lowerURL := strings.ToLower(strings.TrimSuffix(r.URL.Path, "/"))
+	lowerURL := strings.ToLower(r.URL.Path)
 
-	//prevents a redirect loop if url is already in lowercase letters.
+	//Redirect if url contains any uppercase letters.
 	if r.URL.Path != lowerURL {
-
-		//check if the request matches any of the pages that don't require parameters
-		if strings.Count(lowerURL, "/") >= 2 {
-			for _, page := range []string{urlAbout, urlArchive, urlClubs /*urlEvent,*/, urlLicence, urlShooters} {
-				if strings.HasPrefix(lowerURL, page) {
-					//redirect to page without parameters
-					http.Redirect(w, r, page, http.StatusSeeOther)
-					return
-				}
-			}
-		}
 		http.Redirect(w, r, lowerURL, http.StatusSeeOther)
 		return
+	}
+	lowerURL = strings.TrimSuffix(r.URL.Path, "/")
+
+	//check if the request matches any of the pages that don't require parameters
+	if strings.Count(lowerURL, "/") >= 2 {
+		for _, page := range []string{urlAbout, urlArchive, urlClubs, urlLicence, urlShooters} {
+			if strings.HasPrefix(lowerURL, page) {
+				//redirect to page without parameters
+				http.Redirect(w, r, page, http.StatusSeeOther)
+				return
+			}
+		}
 	}
 	w.WriteHeader(status)
 	templater(w, page{
 		Title: "Error",
 		Data: map[string]interface{}{
 			"Type": errorType,
-		},
-	})
-}
-
-//whoops an error occurred
-// that club id you supplied doesn't match anything
-//here is a list of valid clubs - that link to the clubsettings page.
-func whoops(w http.ResponseWriter, r *http.Request, url string) {
-	var pageName string
-	pageType := "event"
-	parameterType := "ID"
-	switch url {
-	case urlClub:
-		pageName = "Club"
-		pageType = "club"
-	case urlEntries:
-		pageName = "Event"
-	case urlEventSettings:
-		pageName = "Event Settings"
-	}
-	templater(w, page{
-		Title: "noId",
-		Data: map[string]interface{}{
-			"PageName":      pageName,
-			"PageType":      pageType,
-			"ParameterType": parameterType,
-			"List":          "no data available right now",
 		},
 	})
 }

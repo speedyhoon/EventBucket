@@ -35,7 +35,6 @@ const formatGMT = "Mon, 02 Jan 2006 15:04:05 GMT"
 
 func init() {
 	//go maintainExpiresTime()
-	//go maintainSessions()
 
 	//Command line flags
 	flag.StringVar(&dbPath, "dbpath", filepath.Join(os.Getenv("ProgramData"), `EventBucket`), "Directory for datafiles.")
@@ -77,6 +76,8 @@ func init() {
 }
 
 func main() {
+	go maintainSessions()
+
 	//Database save location
 	dbPath = filepath.Join(dbPath, "EventBucket.db")
 	info.Println("Opening database...", dbPath)
