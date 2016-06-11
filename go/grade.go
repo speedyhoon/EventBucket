@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-// Discipline separates different types of shooting so the number of shots & sighters can be easily changed while still using the same targets and Mark as another Discipline, e.g. Target rifles and Match rifles are vastly different disciplines but use the same scoring standard.
+//Discipline separates different types of shooting so the number of shots & sighters can be easily changed while still using the same targets and Mark as another Discipline, e.g. Target rifles and Match rifles are vastly different disciplines but use the same scoring standard.
 type Discipline struct {
 	Name        string  `json:"name,omitempty"`
 	ID          uint    `json:"id,omitempty"`
@@ -23,14 +23,14 @@ type Discipline struct {
 	TopTotal    uint    `json:"-"`
 }
 
-// Mark is a group of settings associated with possible shooter scores on a target also known as "marking". Each type of target scoring standard can be specified by a Mark and be reused within several Disciplines.
+//Mark is a group of settings associated with possible shooter scores on a target also known as "marking". Each type of target scoring standard can be specified by a Mark and be reused within several Disciplines.
 type Mark struct {
 	Buttons      string          `json:",buttons      omitempty"`
 	Shots        map[string]Shot `json:",shots        omitempty"`
 	DoCountBack2 bool            `json:",doCountBack2 omitempty"`
 }
 
-// Grade are subcategories of each discipline that shooters can be grouped together by similar skill levels.
+//Grade are subcategories of each discipline that shooters can be grouped together by similar skill levels.
 type Grade struct {
 	ID          uint   `json:"id,omitempty"`
 	Name        string `json:"name,omitempty"` //Target A, F Class B, Match Reserve
@@ -39,26 +39,7 @@ type Grade struct {
 	DuplicateTo []uint `json:"duplicateTo,omitempty"`
 }
 
-//TODO fix
-// Grade are subcategories of each discipline that shooters can be grouped together by similar skill levels.
-type Grade2 struct {
-	ID      int    `json:"id,omitempty"`
-	Name    string `json:"name,omitempty"` //Target A, F Class B, Match Reserve
-	Abbr    string `json:"abbr,omitempty"` //Abbreviation of Name: A,B,C,FA,FB,FO,MO,MR
-	ClassID uint   `json:"classID,omitempty"`
-
-	ClassName             string `json:"name,omitempty"`
-	QtySighters           uint   `json:"sightersQty,omitempty"`
-	QtyShots              uint   `json:"shotsQty,omitempty"`
-	QtyTotal              uint   `json:"-"`
-	Colspan               uint   `json:"-"`
-	Marking               Mark   `json:"marking,omitempty"`
-	ShootOff              bool   `json:"shootOff,omitempty"`
-	Loop, Sighters, Shots []struct{}
-	//Grades      []Grade `json:"grades,omitempty"`
-}
-
-// Shot is exported
+//Shot is exported
 type Shot struct {
 	Value      uint   `json:"value"`
 	Center     uint   `json:"center,omitempty"`
@@ -72,7 +53,6 @@ type Shot struct {
 var (
 	globalDisciplines     []Discipline
 	globalGrades          []Grade
-	globalGrades2         []Grade2
 	globalGradesDataList  []option
 	globalAvailableGrades []option
 )
@@ -86,7 +66,6 @@ func redoGlobals(disciplines []Discipline) {
 	globalGrades = defaultGrades(globalDisciplines)
 	globalGradesDataList = dataListGrades(globalGrades)
 	globalAvailableGrades = availableGrades([]uint{})
-	globalGrades2 = defaultGrades2()
 }
 
 func defaultGrades(classes []Discipline) []Grade {
@@ -285,26 +264,4 @@ func findGrade(index uint) Grade {
 		return globalGrades[index]
 	}
 	return Grade{}
-}
-
-func defaultGrades2() (grades []Grade2) {
-	for gradeID, grade := range globalGrades {
-		grades = append(grades, Grade2{
-			ID:          gradeID,
-			Name:        grade.Name,
-			Abbr:        grade.Abbr,
-			ClassID:     grade.ClassID,
-			ClassName:   globalDisciplines[grade.ClassID].Name,
-			QtySighters: globalDisciplines[grade.ClassID].QtySighters,
-			QtyShots:    globalDisciplines[grade.ClassID].QtyShots,
-			QtyTotal:    globalDisciplines[grade.ClassID].QtyTotal,
-			Colspan:     globalDisciplines[grade.ClassID].Colspan,
-			Marking:     globalDisciplines[grade.ClassID].Marking,
-			ShootOff:    globalDisciplines[grade.ClassID].ShootOff,
-			Loop:        make([]struct{}, globalDisciplines[grade.ClassID].QtyTotal+globalDisciplines[grade.ClassID].QtyShots+1),
-			Shots:       make([]struct{}, globalDisciplines[grade.ClassID].QtyTotal+1),
-			Sighters:    make([]struct{}, globalDisciplines[grade.ClassID].QtyShots+1),
-		})
-	}
-	return grades
 }
