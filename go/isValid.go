@@ -36,6 +36,7 @@ func listUint(f *field, inp ...string) {
 }
 
 func isValidUint(f *field, inp ...string) {
+	//>>
 	if debug {
 		if f.step == 0 {
 			warn.Println("Are you sure about step == 0? isValidUint", f.name)
@@ -43,7 +44,7 @@ func isValidUint(f *field, inp ...string) {
 		if f.max == 0 {
 			warn.Println("Are you sure about max == 0? isValidUint", f.name)
 		}
-	}
+	} //<<
 
 	var err error
 	f.Value = inp[0]
@@ -111,13 +112,13 @@ func toFixed(num /*, precision*/ float64) float32 {
 }
 
 func isValidStr(f *field, inp ...string) {
-	//Developer checks
+	//>> Developer checks
 	if f.maxLen == 0 {
 		t.Println("f.maxLen should be set: isValidStr", f.name)
 	}
 	if f.minLen == 0 && f.Required {
 		t.Println("f.minLen should be set: isValidStr", f.name)
-	}
+	} //<<
 
 	f.Value = strings.TrimSpace(inp[0])
 	length := len(f.Value)
@@ -157,12 +158,12 @@ func isValidStr(f *field, inp ...string) {
 }
 
 func isValidRegex(f *field, inp ...string) {
-	//TODO remove developer check
+	//>> Developer check
 	if f.regex == nil {
 		t.Println("missing regex for field:", f.name)
 		f.Error = "Missing regex to check against."
 		return
-	}
+	} //<<
 
 	f.Value = strings.TrimSpace(inp[0])
 	if !f.regex.MatchString(f.Value) {
