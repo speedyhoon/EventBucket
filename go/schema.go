@@ -49,11 +49,8 @@ type Event struct {
 	Shooters []EventShooter `json:"S,omitempty"`
 	Closed   bool           `json:"z,omitempty"`
 	Grades   []uint         `json:"g,omitempty"`
-	/*SortScoreboard string         `json:"o,omitempty"`
-	IsPrizeMeet    bool           `json:"p,omitempty"`
-	TeamCats       map[string]TeamCats     `json:"A,omitempty"`
-	Teams          map[string]Team         `json:"T,omitempty"`
-	AverTwin bool           `json:"a,omitempty"` //TODO remove support for allowing shooter with the same details to enter an event twice or more.*/
+	/*TeamCats       map[string]TeamCats     `json:"A,omitempty"`
+	Teams          map[string]Team         `json:"T,omitempty"`*/
 }
 
 //Range is exported
@@ -65,7 +62,6 @@ type Range struct {
 	IsAgg  bool   `json:"i,omitempty"` //Prevents aggs switching to normal ranges
 	Order  int    `json:"o,omitempty"`
 	Status uint8  `json:"u,omitempty"` //ENUM change to 1 when the first shooter has recorded their first shot change to 2 when the range is finished. http://stackoverflow.com/questions/14426366/what-is-an-idiomatic-way-of-representing-enums-in-golang
-	//Class      map[string]RangeProperty `json:"omitempty,inline"` //TODO possibly change it to optional grades per range in future
 }
 
 //StrID returns Range.ID as a string instead of an unsigned integer
@@ -82,39 +78,36 @@ type Score struct {
 	CountBack  string `json:"v,omitempty"`
 	CountBack2 string `json:"x,omitempty"`
 	ShootOff   uint   `json:"h,omitempty"`
-	//position  int    `json:"p,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
-	//warning   uint8    `json:"w,omitempty"` //DON'T SAVE THIS TO DB! used for scoreboard only.
-	//Ordinal   string `json:"o,omitempty"`
-	//Info      string `json:"i,omitempty"`
+	//position   int    `json:"-"` //Used for scoreboard only.
+	//warning    uint8  `json:"-"` //Used for scoreboard only.
+	//Ordinal    string `json:"o,omitempty"`
+	//Info       string `json:"i,omitempty"`
 }
 
 //EventShooter is exported
 type EventShooter struct {
 	ID        uint             `json:"I"`
-	FirstName string           `json:"f"` //TODO change these to point to shooters in the other shooter tables? Would require extra look ups though :(
+	FirstName string           `json:"f"`
 	Surname   string           `json:"s"`
-	Club      string           `json:"C"` //TODO change Club to struct Club{ID uint, Name string} ??
-	ClubID    string           `json:"c"`
-	Grade     uint             `json:"g"`
+	Club      string           `json:"C,omitempty"`
+	ClubID    string           `json:"c,omitempty"`
+	Grade     uint             `json:"g,omitempty"`
 	Hidden    bool             `json:"h,omitempty"`
 	AgeGroup  uint             `json:"r,omitempty"`
-	Scores    map[string]Score `json:"S,omitempty"` //TODO look into using uint as index instead of string. //TODO look into inline the json field and if it would work with uint indexes //Scores   []Score `json:"schemaScores,omitempty"`   //S is not used!
+	Scores    map[string]Score `json:"S,omitempty"` //Using string instead of uint as an index because JSON doesn't support map[uint]Score
 	LinkedID  uint             `json:"l,omitempty"` //For duplicating shooters that are in different classes with the same score
 	EID       string           `json:"M,omitempty"` //Points to EventBucket Shooter ID
 	Disabled  bool             `json:"d,omitempty"`
 	Ladies    bool             `json:"x,omitempty"`
-	//SCOREBOARD
-	position string //DON'T SAVE THIS TO DB! used for scoreboard only.
-	warning  uint8  //DON'T SAVE THIS TO DB! used for scoreboard only.
-	//		0 = nil
-	//		1 = shoot off
-	//		2 = warning, no score
-	//		3 = incomplete
-	//		4 = highest posible score
-
-	//START-SHOOTING & TOTAL-SCORES
-	GradeSeparator bool //DON'T SAVE THIS TO DB! used for start-shooting and total-scores only.
-	ClassSeparator bool //DON'T SAVE THIS TO DB! used for start-shooting and total-scores only.
+	position  string           `json:"-"` //Used for scoreboard only.
+	warning   uint8            `json:"-"` //Used for scoreboard only.
+	//0 = nil
+	//1 = shoot off
+	//2 = no score
+	//3 = incomplete
+	//4 = highest possible score
+	GradeSeparator bool `json:"-"` //Used for enterShots and enterRangeTotals only.
+	ClassSeparator bool `json:"-"` //Used for enterShots and enterRangeTotals only.
 }
 
 //Shooter is exported
