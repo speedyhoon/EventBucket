@@ -111,10 +111,6 @@ func getRedirectPermanent(url string, pageFunc func(http.ResponseWriter, *http.R
 	http.Handle(url+"/", http.RedirectHandler(url, http.StatusMovedPermanently))
 }
 
-/*TODO if no parameters provided, keep user on the same page but display when they need to provide in order for the page to work.
-not doing this may frustrate some users who want to get to the club settings page but can't remember the club id.
-then display a list of clubs and status code 404
-*/
 func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request, string), regex *regexp.Regexp) {
 	var parameters, lowerParams string
 	http.HandleFunc(url,
