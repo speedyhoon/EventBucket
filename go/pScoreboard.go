@@ -42,7 +42,6 @@ func scoreboard(w http.ResponseWriter, r *http.Request, parameters string) {
 		Data: map[string]interface{}{
 			"Event":       event,
 			"Ranges":      ranges,
-			"Legend":      scoreBoardLegend(),
 			"SortByRange": rangeID,
 			"Colspan":     5 + len(ranges),
 		},
@@ -86,24 +85,4 @@ func findAggs(rangeID uint, ranges []Range) []Range {
 		}
 	}
 	return rs
-}
-
-func scoreBoardLegend() []legend {
-	//Constants are not able to be slices so using a function instead.
-	//Using a Legend slice because a map[string]string would render with a random order.
-	return []legend{
-		{Class: "^sortBy^", Name: "Sorted By"},
-		{Class: "^highestPossibleScore^", Name: "Highest Possible Score"},
-		{Class: "^shootOff^", Name: "Shoot Off"},
-		{Class: "^incompleteScore^", Name: "Incomplete Score"},
-		{Class: "^noScore^", Name: "Missing Score"},
-		{Class: "^p1^", Name: "1st"},
-		{Class: "^p2^", Name: "2nd"},
-		{Class: "^p3^", Name: "3rd"},
-		/*{Class: "^p4^", Name: "4th"},
-		{Class: "^p5^", Name: "5th"},
-		{Class: "^p6^", Name: "6th"},
-		{Class: "^p7^", Name: "7th"},
-		{Class: "^p8^", Name: "8th"},*/
-	}
 }

@@ -35,58 +35,59 @@ a
 td
 	border-width: $thinBorder 0 0 $thinBorder
 
-//sort by red triangle
-.sortBy
-	background: url(/v/sortby) no-repeat 3px 2px $lightGrey
+//Horizontal Menu
+@media not print
+	ul
+		list-style: none
+		margin: 0
+		padding: 0
 
-.rowSeparator
+	body > ul > li
+		display: inline-block
+		position: relative
+
+	ul
+		a
+			padding: 1em
+			text-align: center
+
+		ul a
+			padding: .3em 0
+			display: block
+
+	li
+		ul
+			background: $white
+			display: none
+			position: absolute
+			z-index: 1
+			min-width: 100%
+
+	li:hover
+		ul
+			display: block
+			padding: .3em 0
+
+@media print
+	ul
+		display: none
+
+.floatRight
+	float: right
+
+//.rowSeparator
 	background: #888
 	height: 2px
 
 .classHeadingRow
 	background: #fdd
 
-//Awarded Postiions
-.p1  //First
-	+background-gradient(goldenrod, gold)
+//.capitalizeText
+	text-transform: capitalize
 
-.p2  //Second
-	+background-gradient(#888, silver)
-
-.p3  //Third
-	+background-gradient(sienna, peru)
-
-//.p4  //Fourth
-//	+background-gradient(#f70, red)
-//
-//.p5  //Fith
-//	+background-gradient(aqua, #07f)
-//
-//.p6  //Sixth
-//	+background-gradient(green, lime)
-//
-//.p7  //Badge Place
-//	+background-gradient(#faf, grey)
-//
-//.p8  //Badge Place
-//	+background-gradient(#00f, #ff0079)
-
-//WARNINGS::
-.highestPossibleScore
-	background: #707
-	color: #faf
-
-.noScore
-	background: #00f
-	color: $white
-
-.incompleteScore
-	background: $black
-	color: $white
-
-.shootOff //used in position column
-	background: #900
-	color: $white
+//sort by red triangle
+.sortBy
+	background: url(/v/sortby) no-repeat 3px 2px $lightGrey
 
 .legend
 	padding: 0 5px
@@ -103,14 +104,40 @@ td
 		&:first-child
 			border-left: $thinBorder $solidBorder
 
-.floatRight
-	float: right
+//Awarded Postiions
+//.p8  //Badge Place
+	+background-gradient(#00f, #ff0079)
+//.p7  //Badge Place
+	+background-gradient(#faf, grey)
+//.p6  //Sixth
+	+background-gradient(green, lime)
+//.p5  //Fith
+	+background-gradient(aqua, #07f)
+//.p4  //Fourth
+	+background-gradient(#f70, red)
+.p3  //Third
+	+background-gradient(sienna, peru)
+.p2  //Second
+	+background-gradient(#888, silver)
+.p1  //First
+	+background-gradient(goldenrod, gold)
 
-//#scoreSettings
-//	background: url(/v/settings) no-repeat center center
+//WARNINGS::
+.highestPossibleScore
+	background: #707
+	color: #faf
 
-.capitalizeText
-	text-transform: capitalize
+.shootOff //used in position column
+	background: #900
+	color: $white
+
+.noScore
+	background: #00f
+	color: $white
+
+.incompleteScore
+	background: $black
+	color: $white
 
 //.specialRow
 	//box-shadow: 0 -5px 0 red, 0 -10px 0 yellow, 0 -15px 0 green, 0 -20px 0 purple
@@ -119,10 +146,3 @@ td
 	//margin-top: 5em
 	//border-spacing: 5em
 	border-bottom: 1em solid
-
-
-//+menu()
-
-//@media print
-	ul,#scoreboard_settings
-		display: none !important
