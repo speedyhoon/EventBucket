@@ -45,11 +45,14 @@
 		{{end}}
 		<tr>
 			<td colspan={{.Colspan}} class=legend>
-				{{with .Legend}}
-					Legend: {{range .}}
-						<label class={{.Class}}>{{.Name}}</label>
-					{{end}}
-				{{end}}
+				Legend: <label class=sortBy>Sorted By</label>
+				<label class=incompleteScore>Incomplete Score</label>
+				<label class=noScore>Missing Score</label>
+				<label class=shootOff>Shoot Off</label>
+				<label class=highestPossibleScore>Highest Possible Score</label>
+				<label class=p1>1st</label>
+				<label class=p2>2nd</label>
+				<label class=p3>3rd</label>
 	</table>
 {{end}}
 
