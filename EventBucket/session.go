@@ -76,13 +76,13 @@ func purgeOldSessions() {
 		return
 	}
 	globalSessions.Lock()
-	t.Println("about to purge sessions, qty", len(globalSessions.m))
+	t.Println("About to purge sessions, qty", len(globalSessions.m))
 	for sessionID := range globalSessions.m {
 		if globalSessions.m[sessionID].expiry.Before(time.Now()) {
 			delete(globalSessions.m, sessionID)
 		}
 	}
-	t.Println("remaining sessions:", len(globalSessions.m))
+	t.Println("Remaining sessions:", len(globalSessions.m))
 	globalSessions.Unlock()
 }
 
