@@ -5,6 +5,7 @@
 #define MyAppVersion "3.0 Release Preview"
 #define MyAppURL "http://www.eventbucket.com.au/"
 #define MyAppExeName "EventBucket.exe"
+#define Z "\\camtop\EventBucket"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -21,10 +22,10 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
-OutputDir=Z:\inno
-LicenseFile=Z:\inno\cc-by-sa-4.0_legalcode.txt
+OutputDir={#Z}\inno
+LicenseFile={#Z}\inno\cc-by-sa-4.0_legalcode.txt
 OutputBaseFilename={#MyAppName} {#MyAppVersion} 32bit
-SetupIconFile=Z:\EventBucket\EventBucket4.ico
+SetupIconFile={#Z}\EventBucket\EventBucket4.ico
 Compression=lzma
 SolidCompression=yes
 
@@ -32,25 +33,26 @@ SolidCompression=yes
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
-Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
+Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "Z:\EventBucket\EventBucket.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "Z:\EventBucket\favicon.ico"; DestDir: "{app}"; Flags: ignoreversion
-Source: "Z:\EventBucket\c\*"; DestDir: "{app}\c"; Flags: ignoreversion
-Source: "Z:\EventBucket\h\*"; DestDir: "{app}\h"; Flags: ignoreversion
-Source: "Z:\EventBucket\j\*"; DestDir: "{app}\j"; Flags: ignoreversion
-Source: "Z:\EventBucket\p\*"; DestDir: "{app}\p"; Flags: ignoreversion
-Source: "Z:\EventBucket\v\*"; DestDir: "{app}\v"; Flags: ignoreversion
-Source: "Z:\inno\cc-by-sa-4.0_legalcode.txt"; DestDir: "{app}"; DestName: "licence.txt"; Flags: ignoreversion
+Source: "{#Z}\EventBucket\EventBucket.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Z}\EventBucket\favicon.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Z}\EventBucket\c\*"; DestDir: "{app}\c"; Flags: ignoreversion
+Source: "{#Z}\EventBucket\h\*"; DestDir: "{app}\h"; Flags: ignoreversion
+Source: "{#Z}\EventBucket\j\*"; DestDir: "{app}\j"; Flags: ignoreversion
+Source: "{#Z}\EventBucket\p\*"; DestDir: "{app}\p"; Flags: ignoreversion
+Source: "{#Z}\EventBucket\v\*"; DestDir: "{app}\v"; Flags: ignoreversion
+Source: "{#Z}\inno\cc-by-sa-4.0_legalcode.txt"; DestDir: "{app}"; DestName: "licence.txt"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
+Name: "{group}\{#MyAppName} dark"; Filename: "{app}\{#MyAppExeName}"; Parameters: "-dark"
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+Name: "{commondesktop}\{#MyAppName} dark"; Filename: "{app}\{#MyAppExeName}"; Parameters: "-dark"; Tasks: desktopicon
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: quicklaunchicon
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
-
