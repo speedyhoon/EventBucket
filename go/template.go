@@ -23,8 +23,9 @@ type page struct {
 
 type markupEnv struct {
 	//CurrentYear string
-	Page page
-	Menu []menu
+	Page  page
+	Menu  []menu
+	Theme bool
 }
 
 const (
