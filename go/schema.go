@@ -49,8 +49,8 @@ type Event struct {
 	Shooters []EventShooter `json:"S,omitempty"`
 	Closed   bool           `json:"z,omitempty"`
 	Grades   []uint         `json:"g,omitempty"`
-	/*TeamCats       map[string]TeamCats     `json:"A,omitempty"`
-	Teams          map[string]Team         `json:"T,omitempty"`*/
+	/*TeamCats map[string]TeamCats `json:"A,omitempty"`
+	Teams    map[string]Team     `json:"T,omitempty"`*/
 }
 
 //Range is exported
@@ -61,7 +61,7 @@ type Range struct {
 	Locked bool   `json:"l,omitempty"`
 	IsAgg  bool   `json:"i,omitempty"` //Prevents aggs switching to normal ranges
 	Order  int    `json:"o,omitempty"`
-	Status uint8  `json:"u,omitempty"` //ENUM change to 1 when the first shooter has recorded their first shot change to 2 when the range is finished. http://stackoverflow.com/questions/14426366/what-is-an-idiomatic-way-of-representing-enums-in-golang
+	Status uint8  `json:"u,omitempty"` //ENUM change to 1 when the first shooter has recorded their first shot. Change to 2 when the range is finished.
 }
 
 //StrID returns Range.ID as a string instead of an unsigned integer

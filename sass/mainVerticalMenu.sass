@@ -55,14 +55,16 @@ table:not(.printCards) tr
 	border-bottom: $thinBorder
 	padding: $bigPadding
 
-table:not(.scorecards)
+table
 	th, thead td
 		text-align: left
 		font-weight: 700
-		border-bottom: $fatBorder
 
-table:not(.scorecards) th:not(:empty)
-	cursor: pointer
+table:not(.enterShots)
+	th:not(:empty)
+		cursor: pointer
+	th, thead td
+		border-bottom: $fatBorder
 
 .asc, .desc, legend u
 	color: $briteBlue
