@@ -165,7 +165,6 @@ var (
 			}
 			return Range{}
 		},
-		//TODO cleanup N & getClass
 		"N": func(end uint) (stream chan uint) {
 			stream = make(chan uint)
 			go func() {
@@ -176,14 +175,6 @@ var (
 				close(stream)
 			}()
 			return
-		},
-		"getClass": func(disc []Discipline, classID uint) Discipline {
-			for _, ds := range disc {
-				if classID == ds.ID {
-					return ds
-				}
-			}
-			return Discipline{}
 		},
 	}
 )
