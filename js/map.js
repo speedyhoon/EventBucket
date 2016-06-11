@@ -14,7 +14,7 @@ j.onreadystatechange = function stateChanger(){
 };
 
 function initMap() {
-	// When the user clicks the marker, an info window opens.
+	//When the user clicks the marker, an info window opens.
 	var map, t, u = {zoom: 4}, infoW = function (gh) { return function() {
 		gh.infowindow.open(map, gh.marker);
 	}};

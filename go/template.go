@@ -129,7 +129,7 @@ var (
 			var hasValue bool
 			switch t.(type) {
 			default:
-				warn.Printf("unexpected type %T", t) // %T prints whatever type t has
+				warn.Printf("unexpected type %T", t) //%T prints whatever type t has
 			case []option:
 				hasValue = len(t.([]option)) >= 1
 			case string:
