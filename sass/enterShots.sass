@@ -10,23 +10,20 @@
 			color: $blue
 
 	tr[data-selected="1"] td
-		border-right:  2px solid #000
+		border-right:  2px solid $grey
 
-	.B,tr[data-selected="1"] .B
-		border-right: 2px solid #09f
+	//.B, tr[data-selected="1"] .B
+		border-right: 2px solid $briteBlue
 
 	#bu
 		padding-bottom: 1em
 
 	button
 		font-weight: 900
-		//background: #000
 		font-size: 32px
 		height: 75px
 		margin: 0 1% 1% 0
 		width: 11.5%
-		//border: none
-		//color: #fff
 
 		&:last-child
 			margin-right: 0
@@ -42,7 +39,7 @@
 		font-weight: bold
 
 		&[data-selected="1"]
-			background: #088
+			background: $briteBlue
 
 	tr:not(#x) th:last-child
 		//Total fields (and heading) but not the footer with buttons
