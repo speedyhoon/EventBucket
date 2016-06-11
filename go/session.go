@@ -11,9 +11,9 @@ const (
 	sessionToken      = "s"
 	sessionIDLength   = 24                                                                                            //Recommended to be at least 16 characters long.
 	letterBytes       = "!#$%&'()*+,-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~" //string generated from validCookieValueByte golang source code net/http/cookie.go
-	letterIdxBits     = 6                                                                                             // 6 bits to represent a letter index
-	letterIdxMask     = 1<<letterIdxBits - 1                                                                          // All 1-bits, as many as letterIdxBits
-	letterIdxMax      = 63 / letterIdxBits                                                                            // # of letter indices fitting in 63 bits
+	letterIdxBits     = 6                                                                                             //6 bits to represent a letter index
+	letterIdxMask     = 1<<letterIdxBits - 1                                                                          //All 1-bits, as many as letterIdxBits
+	letterIdxMax      = 63 / letterIdxBits                                                                            //# of letter indices fitting in 63 bits
 	sessionExpiryTime = 2 * time.Minute
 )
 
@@ -43,7 +43,7 @@ func setSession(w http.ResponseWriter, returns form) {
 func sessionID(n int) string {
 	//author: icza, stackoverflow.com/questions/22892120/how-to-generate-a-random-string-of-a-fixed-length-in-golang
 	b := make([]byte, n)
-	// A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
+	//A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
 	for i, cache, remain := n-1, src.Int63(), letterIdxMax; i >= 0; {
 		if remain == 0 {
 			cache, remain = src.Int63(), letterIdxMax
