@@ -34,13 +34,12 @@ func isValid(urlValues url.Values, fields []field) ([]field, bool) {
 	var ok bool
 	valid := true
 	for i, field := range fields {
-		//>> Output warning if validation function is not set for this field in the submitted form.
+		/*// Output warning if validation function is not set for this field in the submitted form.
 		if debug && field.v8 == nil {
 			field.Error = "No v8 function setup!"
 			warn.Println("No v8 function setup! for", field.name)
 			continue
-		} //<<
-
+		}*/
 		fieldValue, ok = urlValues[field.name]
 
 		//if fieldValue is empty and field is required
