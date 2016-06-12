@@ -151,8 +151,10 @@
 
 	function moveHeader(){
 		currentRow.parentNode.insertBefore(document.getElementById('h'), currentRow);
-		currentRow.parentNode.insertBefore(document.getElementById('x'), currentRow.nextSibling);//equivilent to insertAfter!
+		currentRow.parentNode.insertBefore(document.getElementById('x'), currentRow.nextSibling);//equivalent to insertAfter!
+		document.getElementById('h').removeAttribute('hidden');
 		generateButtons();
+		document.getElementById('x').removeAttribute('hidden');
 	}
 
 	/*function changeSighters(){//when changing the value of the select box "sighters"
