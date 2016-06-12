@@ -48,14 +48,13 @@ func serveDir(contentType string, gzip bool) {
 
 var (
 	headerOptions = map[string][2]string{
-		cGzip:  {"Content-Encoding", "gzip"},
-		"html": {contentType, "text/html; charset=utf-8"},
-		dirCSS: {contentType, "text/css; charset=utf-8"},
-		dirJS:  {contentType, "text/javascript"},
-		dirPNG: {contentType, "image/png"},
-		dirSVG: {contentType, "image/svg+xml"},
-		//dirGIF: {contentType, "image/gif"},
-		//dirWOF2:   {contentType, "application/font-woff2"},
+		cGzip:   {"Content-Encoding", "gzip"},
+		"html":  {contentType, "text/html; charset=utf-8"},
+		dirCSS:  {contentType, "text/css; charset=utf-8"},
+		dirJS:   {contentType, "text/javascript"},
+		dirSVG:  {contentType, "image/svg+xml"},
+		dirWEBP: {contentType, "image/webp"},
+		//dirGIF:  {contentType, "image/gif"},
 	}
 	//Used for every HTTP request with cache headers set.
 	cacheExpires = time.Now().UTC().AddDate(1, 0, 0).Format(formatGMT)

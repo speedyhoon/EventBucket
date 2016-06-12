@@ -15,8 +15,8 @@ const (
 	pst         = "POST"
 	dirCSS      = "/c/"
 	dirJS       = "/j/"
-	dirPNG      = "/p/"
 	dirSVG      = "/v/"
+	dirWEBP     = "/w/"
 	urlEvents   = "/"
 	urlAbout    = "/about"
 	urlArchive  = "/archive"
@@ -48,9 +48,9 @@ func pages() {
 	serveFile("favicon.ico")
 	serveDir(dirCSS, true)
 	serveDir(dirJS, true)
-	serveDir(dirPNG, false)
 	serveDir(dirSVG, true)
-	http.Handle("/w/", websocket.Handler(ProcessSocket))
+	serveDir(dirWEBP, false)
+	http.Handle("/k/", websocket.Handler(ProcessSocket))
 	getParameters("/b/", barcode2D, regexBarcode)
 	getRedirectPermanent(urlAbout, about)
 	getRedirectPermanent(urlArchive, eventArchive)

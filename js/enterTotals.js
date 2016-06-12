@@ -9,7 +9,7 @@ while(i--){
 }
 
 function reconnect (){
-	ws = new WebSocket('ws://'+window.location.host+'/w/');
+	ws = new WebSocket('ws://'+window.location.host+'/k/');
 	ws.onopen = function(){
 		if(intervalId){
 			clearInterval(intervalId);
