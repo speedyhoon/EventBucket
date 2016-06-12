@@ -43,9 +43,9 @@ func about(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func licence(w http.ResponseWriter, r *http.Request) {
+func license(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
-		Title: "Licence",
+		Title: "License",
 	})
 }
 

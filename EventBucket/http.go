@@ -153,7 +153,7 @@ func errorHandler(w http.ResponseWriter, r *http.Request, status int, errorType 
 
 	//check if the request matches any of the pages that don't require parameters
 	if strings.Count(lowerURL, "/") >= 2 {
-		for _, page := range []string{urlAbout, urlArchive, urlClubs, urlLicence, urlShooters} {
+		for _, page := range []string{urlAbout, urlArchive, urlClubs, urlLicense, urlShooters} {
 			if strings.HasPrefix(lowerURL, page) {
 				//redirect to page without parameters
 				http.Redirect(w, r, page, http.StatusSeeOther)
@@ -190,5 +190,4 @@ func setExpiresTime() {
 	//Date format is the same as Go`s time.RFC1123 but uses "GMT" timezone instead of "UTC" time standard.
 	cacheExpires = time.Now().UTC().AddDate(1, 0, 0).Format(formatGMT)
 	//w3.org: "All HTTP date/time stamps MUST be represented in Greenwich Mean Time" under 3.3.1 Full Date //www.w3.org/Protocols/rfc2616/rfc2616-sec3.html
-	masterTemplate.CurrentYear = time.Now().Format("2006")
 }*/
