@@ -117,7 +117,7 @@ func isValidStr(f *field, inp ...string) {
 	}
 	if f.minLen == 0 && f.Required {
 		t.Println("f.minLen should be set: isValidStr", f.name)
-	}//<<
+	} //<<
 
 	f.Value = strings.TrimSpace(inp[0])
 	length := len(f.Value)
@@ -162,7 +162,7 @@ func isValidRegex(f *field, inp ...string) {
 		t.Println("missing regex for field:", f.name)
 		f.Error = "Missing regex to check against."
 		return
-	}//<<
+	} //<<
 
 	f.Value = strings.TrimSpace(inp[0])
 	if !f.regex.MatchString(f.Value) {
