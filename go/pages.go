@@ -50,7 +50,7 @@ func pages() {
 	serveDir(dirJS, true)
 	serveDir(dirSVG, true)
 	serveDir(dirWEBP, false)
-	http.Handle("/k/", websocket.Handler(ProcessSocket))
+	http.Handle("/k/", websocket.Handler(processSocket))
 	getParameters("/b/", barcode2D, regexBarcode)
 	getRedirectPermanent(urlAbout, about)
 	getRedirectPermanent(urlArchive, eventArchive)
@@ -140,7 +140,7 @@ func gt(url string, formID uint8, runner func(http.ResponseWriter, *http.Request
 	})
 }
 
-func ProcessSocket(ws *websocket.Conn) {
+func processSocket(ws *websocket.Conn) {
 	var msg string
 	var command uint8
 	var err error
@@ -181,6 +181,8 @@ func ProcessSocket(ws *websocket.Conn) {
 				}
 				websocket.Message.Send(ws, fmt.Sprintf("%U%s", msg[0], response))
 			}
+		case getDisciplines:
+			websocket.Message.Send(ws, "hello!")
 		}
 	}
 }
