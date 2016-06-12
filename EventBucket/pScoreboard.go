@@ -67,11 +67,6 @@ func addGradeSeparatorToShooterObject(eventShooters []EventShooter) []EventShoot
 	return eventShooters
 }
 
-type legend struct {
-	//To access a field in HTML a struct, it must start with an uppercase letter. Other wise it will output error: xxx is an unexported field of struct type main.legend
-	Class, Name string
-}
-
 func findAggs(rangeID uint, ranges []Range) []Range {
 	var rs []Range
 	for _, r := range ranges {
