@@ -32,7 +32,7 @@ const (
 	urlScoreboard      = "/scoreboard/"       //eventID
 	urlEnterShots      = "/enter-shots/"      //eventID
 	urlEnterShotsAll   = "/enter-shots-all/"  //eventID
-	urlPrintScorecards = "/print-cards/"      //eventID/shooterID
+	urlPrintScorecards = "/print-scorecards/" //eventID/shooterID
 	urlEnterTotals     = "/enter-totals/"     //eventID
 	urlEnterTotalsAll  = "/enter-totals-all/" //eventID
 )
