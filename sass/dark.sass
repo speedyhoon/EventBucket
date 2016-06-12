@@ -5,50 +5,50 @@ $bgGrey: #445
 
 @import "mainVerticalMenu"
 
-html
-	background-color: $black
-	color: $liteGrey
-
 tr
 	border-bottom-color: $bgGrey
 
 th, thead td
 	border-bottom-color: $bgGrey
 
-//Forms
-legend
-	color: $liteGrey
+@media not print
+	html
+		background-color: $black
+		color: $liteGrey
 
-input, select
-	background: $bgGrey
-	border-color: $grey
-	color: $liteGrey
+	//Forms
+	legend
+		color: $liteGrey
 
-fieldset
-	border-color: $bgGrey
+	input, select
+		background: $bgGrey
+		border-color: $grey
+		color: $liteGrey
+
+	fieldset
+		border-color: $bgGrey
+
+	//Headings
+	h1,h2,h3
+		color: $white
+
+	.events
+		div div
+			background: $black
+		time
+			background: $charcoal
+			border-color: $bgGrey
+		p
+			border-bottom-color: $bgGrey
+
+	table:not(.scorecards):not(.printCards) tbody tr:nth-child(2n)
+		background: $charcoal
 
 //Vertical Menus
 header
 	.visited, .open
 		color: $white
 		border-left-color: $white
-
-//header ul ul ul,
-.events div div
-	background: $black
-
-h1,h2,h3
-	color: $white
-
-.events
-	time
-		background: $charcoal
-		border-color: $bgGrey
-	p
-		border-bottom-color: $bgGrey
-
-table:not(.scorecards):not(.printCards) tbody tr:nth-child(2n)
-	background: $charcoal
 
 //If Background graphics checkbox is ticked in the print window then the QR barcodes won't be scannable.
 .printCards
