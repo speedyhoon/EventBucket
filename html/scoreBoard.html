@@ -54,6 +54,9 @@
 				<label class=p2>2nd</label>
 				<label class=p3>3rd</label>
 	</table>
+	{{if.Event.Shooters}}
+		<script defer src=dirJS/scoreboard></script>
+	{{end}}
 {{end}}
 
 {{define "scoreboardHeader"}}
