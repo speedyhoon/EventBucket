@@ -141,6 +141,7 @@ func gt(url string, formID uint8, runner func(http.ResponseWriter, *http.Request
 }
 
 func processSocket(ws *websocket.Conn) {
+	//Start listening to each websocket client
 	var msg string
 	var command uint8
 	var err error
@@ -171,7 +172,7 @@ func processSocket(ws *websocket.Conn) {
 			}
 
 			if form, passed := isValid(form, getForm(command)); passed {
-				websocket.Message.Send(ws, updateShotScores(form))
+				websocket.Message.Send(ws, "!"+updateShotScores(form))
 			} else {
 				var response []byte
 				response, err = json.Marshal(form)
@@ -179,10 +180,18 @@ func processSocket(ws *websocket.Conn) {
 					warn.Println(err)
 					continue
 				}
-				websocket.Message.Send(ws, fmt.Sprintf("%U%s", msg[0], response))
+				websocket.Message.Send(ws, fmt.Sprintf("!%U%s", msg[0], response))
 			}
-		case getDisciplines:
-			websocket.Message.Send(ws, "hello!")
+		case 125: //Scoreboard subscribe to updates
+			websocket.Message.Send(ws, `321` /*fmt.Sprintf("~%s", response)*/)
+		case 126: //getDisciplines:
+			var response []byte
+			response, err = json.Marshal(globalDisciplines)
+			if err != nil {
+				warn.Println(err)
+				continue
+			}
+			websocket.Message.Send(ws, fmt.Sprintf("~%s", response))
 		}
 	}
 }

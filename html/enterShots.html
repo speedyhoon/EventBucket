@@ -19,19 +19,6 @@
 							<td>{{.}}
 						{{end}}
 				</thead>
-				<tr id=h hidden>
-					<th>ID
-					<th>Club
-					<th>Grade
-					<th>Shooter
-					<th>Total
-					{{$shotsHeader := (index $.Disciplines (grade (index . $.firstShooterID).Grade).ClassID)}}
-					{{range $i := N $shotsHeader.QtySighters}}
-						<td>S{{.}}
-					{{end}}
-					{{range $i := N $shotsHeader.QtyShots}}
-						<td>{{.}}
-					{{end}}
 				{{range .}}
 					{{if not .Hidden}}
 						{{$score := index .Scores $.Range.StrID}}
@@ -51,6 +38,19 @@
 						{{end}}
 					{{end}}
 				{{end}}
+				<tr id=h hidden>
+					<th>ID
+					<th>Club
+					<th>Grade
+					<th>Shooter
+					<th>Total
+						{{$shotsHeader := (index $.Disciplines (grade (index . $.firstShooterID).Grade).ClassID)}}
+						{{range $i := N $shotsHeader.QtySighters}}
+					<td>S{{.}}
+						{{end}}
+						{{range $i := N $shotsHeader.QtyShots}}
+					<td>{{.}}
+						{{end}}
 				<tr id=x hidden>
 					<th id=bu colspan=99></th>
 				</tr>
