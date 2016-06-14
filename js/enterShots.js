@@ -11,10 +11,11 @@
 	}
 
 	function recalculateTotal(value){
-		var newValue = currentClass.marking.shots[value].value,
-			oldValue = currentClass.marking.shots[currentCell.textContent].value,
-			newCentre = ~~currentClass.marking.shots[value].center,
-			oldCentre = ~~currentClass.marking.shots[currentCell.textContent].center,
+		var shots = currentClass.marking.shots,
+			newValue = shots[value].value,
+			oldValue = ~~(shots[currentCell.textContent] && shots[currentCell.textContent].value),
+			newCentre = ~~shots[value].center,
+			oldCentre = ~~(shots[currentCell.textContent] && shots[currentCell.textContent].center),
 			total = 0, centers = 0;
 		currentCell.textContent = value;
 		if(getCurrentNth() >= currentClass.sightersQty){
