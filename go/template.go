@@ -165,10 +165,10 @@ var (
 			}
 			return Range{}
 		},
-		"N": func(end uint) (stream chan uint) {
+		"N": func(start, end uint) (stream chan uint) {
 			stream = make(chan uint)
 			go func() {
-				var i uint = 1
+				var i uint = start
 				for ; i <= end; i++ {
 					stream <- i
 				}

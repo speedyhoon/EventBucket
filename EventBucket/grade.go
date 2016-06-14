@@ -25,9 +25,9 @@ type Discipline struct {
 
 //Mark is a group of settings associated with possible shooter scores on a target also known as "marking". Each type of target scoring standard can be specified by a Mark and be reused within several Disciplines.
 type Mark struct {
-	Buttons      string          `json:",buttons      omitempty"`
-	Shots        map[string]Shot `json:",shots        omitempty"`
-	DoCountBack2 bool            `json:",doCountBack2 omitempty"`
+	Buttons      string          `json:"buttons,omitempty"`
+	Shots        map[string]Shot `json:"shots,omitempty"`
+	DoCountBack2 bool            `json:"doCountBack2,omitempty"`
 }
 
 //Grade are subcategories of each discipline that shooters can be grouped together by similar skill levels.
@@ -134,6 +134,15 @@ func defaultGlobalDisciplines() []Discipline {
 			"V": {Value: 5, Center: 1, CountBack: "6", Center2: 0, CountBack2: "6", Shot: "V", Sighter: "v"},
 			"6": {Value: 5, Center: 1, CountBack: "6", Center2: 0, CountBack2: "6", Shot: "V", Sighter: "g"},
 			"X": {Value: 5, Center: 1, CountBack: "6", Center2: 1, CountBack2: "7", Shot: "X", Sighter: "x"},
+			"a": {Value: 0, Center: 0, CountBack: "0", Shot: "0", Sighter: "a"},
+			"b": {Value: 0, Center: 0, CountBack: "0", Shot: "1", Sighter: "b"},
+			"c": {Value: 0, Center: 0, CountBack: "0", Shot: "2", Sighter: "c"},
+			"d": {Value: 0, Center: 0, CountBack: "0", Shot: "3", Sighter: "d"},
+			"e": {Value: 0, Center: 0, CountBack: "0", Shot: "4", Sighter: "e"},
+			"f": {Value: 0, Center: 0, CountBack: "0", Shot: "5", Sighter: "f"},
+			"g": {Value: 0, Center: 0, CountBack: "0", Shot: "6", Sighter: "g"},
+			"v": {Value: 0, Center: 0, CountBack: "0", Shot: "V", Sighter: "v"},
+			"x": {Value: 0, Center: 0, CountBack: "0", Shot: "X", Sighter: "x"},
 			//TODO sort isn't sorting by countback 2 descending.
 			//TODO precedence is taken over the last X shot rather than the most X's shot
 		}}
@@ -174,6 +183,15 @@ func defaultGlobalDisciplines() []Discipline {
 				"V": {Value: 6, Center: 0, CountBack: "6", Shot: "6", Sighter: "g"},
 				"6": {Value: 6, Center: 0, CountBack: "6", Shot: "6", Sighter: "g"},
 				"X": {Value: 6, Center: 1, CountBack: "7", Shot: "X", Sighter: "x"},
+				"a": {Value: 0, Center: 0, CountBack: "0", Shot: "0", Sighter: "a"},
+				"b": {Value: 0, Center: 0, CountBack: "0", Shot: "1", Sighter: "b"},
+				"c": {Value: 0, Center: 0, CountBack: "0", Shot: "2", Sighter: "c"},
+				"d": {Value: 0, Center: 0, CountBack: "0", Shot: "3", Sighter: "d"},
+				"e": {Value: 0, Center: 0, CountBack: "0", Shot: "4", Sighter: "e"},
+				"f": {Value: 0, Center: 0, CountBack: "0", Shot: "5", Sighter: "f"},
+				"g": {Value: 0, Center: 0, CountBack: "0", Shot: "6", Sighter: "g"},
+				"v": {Value: 0, Center: 0, CountBack: "0", Shot: "V", Sighter: "v"},
+				"x": {Value: 0, Center: 0, CountBack: "0", Shot: "X", Sighter: "x"},
 			}},
 		Grades: []Grade{{ID: 3, Abbr: "FA", Name: "F Standard A"},
 			{ID: 4, Abbr: "FB", Name: "F Standard B"},
@@ -211,6 +229,15 @@ func defaultGlobalDisciplines() []Discipline {
 				"V": {Value: 5, Center: 1, CountBack: "6", Shot: "V", Sighter: "v"},
 				"6": {Value: 5, Center: 1, CountBack: "6", Shot: "V", Sighter: "v"},
 				"X": {Value: 5, Center: 1, CountBack: "6", Shot: "V", Sighter: "v"},
+				"a": {Value: 0, Center: 0, CountBack: "0", Shot: "0", Sighter: "a"},
+				"b": {Value: 0, Center: 0, CountBack: "0", Shot: "1", Sighter: "b"},
+				"c": {Value: 0, Center: 0, CountBack: "0", Shot: "2", Sighter: "c"},
+				"d": {Value: 0, Center: 0, CountBack: "0", Shot: "3", Sighter: "d"},
+				"e": {Value: 0, Center: 0, CountBack: "0", Shot: "4", Sighter: "e"},
+				"f": {Value: 0, Center: 0, CountBack: "0", Shot: "5", Sighter: "f"},
+				"g": {Value: 0, Center: 0, CountBack: "0", Shot: "6", Sighter: "g"},
+				"v": {Value: 0, Center: 0, CountBack: "0", Shot: "V", Sighter: "v"},
+				"x": {Value: 0, Center: 0, CountBack: "0", Shot: "X", Sighter: "x"},
 			}},
 		Grades: []Grade{{ID: 9, Abbr: "303", Name: "303 Rifle"}},
 	}}

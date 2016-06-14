@@ -39,7 +39,6 @@ const (
 	eventUpdateRange     uint8 = 20
 	eventUpdateAgg       uint8 = 21
 	eventEditShooter     uint8 = 22
-	getDisciplines       uint8 = 254
 	pageError            uint8 = 255
 )
 

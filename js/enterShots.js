@@ -5,80 +5,44 @@
 		rangeID = window.location.pathname.split('/')[3],
 		passed = true,
 		classes;
-	if(window.XMLHttpRequest){
-		var j = new XMLHttpRequest();
-	}
 
 	function getCurrentNth(){
 		return Array.prototype.indexOf.call(currentRow.getElementsByTagName('td'), currentCell);
 	}
 
-	function getNoOfSighters(){
-		return currentClass.sighters;
-	}
-
-	function getValue(thisCell, attribute){
-		//Putting plus in front of a string converts it to a number (integer or float)
-		return+thisCell.getAttribute('data-' + attribute);
-	}
-
 	function recalculateTotal(value){
-		var newValue = currentClass.marking.Shots[value].value,
-			newCentre = ~~currentClass.marking.Shots[value].center,
+		var newValue = currentClass.marking.shots[value].value,
+			oldValue = currentClass.marking.shots[currentCell.textContent].value,
+			newCentre = ~~currentClass.marking.shots[value].center,
+			oldCentre = ~~currentClass.marking.shots[currentCell.textContent].center,
 			total = 0, centers = 0;
 		currentCell.textContent = value;
-		//console.log(currentRow.total, currentRow.centers, currentCell.value, currentCell.center);
-		if(getCurrentNth() >= getNoOfSighters()){
-			total = getValue(currentRow, 'total') - getValue(currentCell, 'value') + newValue;
-			//total = ~~currentRow.total - ~~currentCell.value + newValue;
-			centers = getValue(currentRow, 'centers') - getValue(currentCell, 'center') + newCentre;
-			//centers = ~~currentRow.centers - ~~currentCell.center + newCentre;
-			currentRow.lastChild.innerHTML = total + (centers ? '<sup>' + centers + '</sup>' : '');
+		if(getCurrentNth() >= currentClass.sightersQty){
+			total = ~~currentRow.getAttribute('data-total') - oldValue + newValue;
+			centers = ~~currentRow.getAttribute('data-centers') - oldCentre + newCentre;
+			currentRow.querySelector('th:last-of-type').innerHTML = total + (centers ? '<sup>' + centers + '</sup>' : '');
 			currentRow.setAttribute('data-total', total);
-			//currentRow.total = total;
 			currentRow.setAttribute('data-centers', centers);
-			//currentRow.centers = centers;
 		}
-
-
-		currentCell.value = newValue;
-		currentCell.center = newCentre;
-		console.log('bugger', currentCell.value, currentCell.center);
 	}
 
 	function getShots(){
-		var cells = currentRow.getElementsByTagName('td'), send = '', sighters = getNoOfSighters(), value = '', i = -1, max = cells.length, index;
+		var cells = currentRow.getElementsByTagName('td'),
+			send = '',
+			value,
+			i = -1,
+			max = cells.length;
 		while(++i < max){
 			value = cells[i].textContent;
 			if(!value){
 				send += '-';
-			}else if(i < sighters){
-				index = currentClass.validShots.indexOf(value);
-				if(index && currentClass.validSighters[index]){
-					//send+=encodeURIComponent(currentClass.validSighters[index]);
-					send += currentClass.validSighters[index];
-				}else{
-					send += '-';
-				}
+			}else if(i < currentClass.sightersQty){
+				send += currentClass.marking.shots[value].sighter || '-';
 			}else{
-				//send+=encodeURIComponent(value);
-				send += value;
+				send += currentClass.marking.shots[value].shot;
 			}
 		}
 		return send.replace(/-+$/, '');  //trim training hyphens
-	}
-
-	function ajax(id){
-		/*TODO reimplement for websockets
-		j.onreadystatechange = function stateChanger(){
-			if(j.readyState == 4){
-				//TODO status ok && html == same - GREEN    else    RED
-				currentRow.querySelector('.t').innerHTML = j.status === 200 ? j.response : 'failed';
-			}
-		};*/
-		//Form 16 - eventUpdateShotScore
-		console.log({E: eventID, R: rangeID, S: id, s: getShots()});
-		ws.send('\u0010' + JSON.stringify({E: [eventID], R: [rangeID], S: [id], s: [getShots()]}));
 	}
 
 	function highlightOnlyTheCell(cell){
@@ -97,7 +61,8 @@
 		if(currentCell){
 			if(currentCell.textContent !== value){//prevents recalculating the score if it is the same value
 				recalculateTotal(value);
-				ajax(currentRow.children[0].textContent);
+				var id = currentRow.children[0].textContent;
+				ws.send('\u0010' + JSON.stringify({E: [eventID], R: [rangeID], S: [id], s: [getShots()]}));
 			}
 			if(currentCell.nextSibling && currentCell.nextSibling.nodeName === 'TD'){
 				highlightOnlyTheCell(currentCell.nextSibling);
@@ -106,8 +71,8 @@
 	}
 
 	function generateButtons(){
-		if(currentClass && currentType !== currentClass.marking.Buttons){
-			currentType = currentClass.marking.Buttons;
+		if(currentClass && currentType !== currentClass.marking.buttons){
+			currentType = currentClass.marking.buttons;
 			var h = -1, th = document.createElement('th'), buttonLength = currentType.length, buttonOnClickEvent = function buttonClickEventer(buttonValue){
 					return function buttonClicker(){
 						changeValue(buttonValue);
@@ -189,7 +154,7 @@
 				currentRow.visited = 1;
 			}
 		};
-	};
+	}
 
 	var shooters = document.querySelectorAll('tbody :not(#h) th:nth-child(4)'), shooterQty = shooters.length;
 	while(shooterQty--){		//assign onclick events to all shooters names
@@ -210,23 +175,24 @@
 		//TODO
 		//Update UI with save / error message.
 		ws.onmessage = function(message){
+			var data = JSON.parse(message.data.substr(1));
 			switch(message.data[0]){
 			case'~':
-				classes = JSON.parse(message.data.substr(1));
+				classes = data;
 				if(!passed){
 					setCurrentClass();
 				}
 				console.log(classes);
 				break;
 			case'!':
-				classes = JSON.parse(message.data.substr(1));
-				if(!passed){
-					setCurrentClass();
+				document.getElementById(data.S).parentElement.children[4].className = '';
+				if(rangeID === data.R){
+					document.getElementById(data.S).parentElement.children[4].innerHTML = data.T;
+					//TODO status ok && html == same - GREEN    else    RED
+					setTimeout(function() {
+						document.getElementById(data.S).parentElement.children[4].className = '^save^';
+					}, 10);
 				}
-				console.log(classes);
-				break;
-			default:
-				console.log('no handler for:', message.data);
 			}
 		};
 		ws.onclose = function(){
