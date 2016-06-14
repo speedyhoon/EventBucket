@@ -34,7 +34,8 @@ function shooterBarcode($search){
 	}
 	var barcodeEventID = $search.value.split('/')[0],
 		barcodeRangeID = $search.value.split('/')[1].split('#')[0],
-		shooterID = $search.value.split('#')[1];
+		shooterID = $search.value.split('#')[1],
+		pathName = window.location.pathname.split('/')[1];
 
 	if(eventID !== barcodeEventID){
 		//Go to a different event if user presses OK.
