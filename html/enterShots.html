@@ -12,10 +12,10 @@
 						<th>Shooter
 						<th>Total
 						{{$shotsHeader := (index $.Disciplines (grade (index . $.firstShooterID).Grade).ClassID)}}
-						{{range $i := N $shotsHeader.QtySighters}}
+						{{range $i := N 1 $shotsHeader.QtySighters}}
 							<td>S{{.}}
 						{{end}}
-						{{range $i := N $shotsHeader.QtyShots}}
+						{{range $i := N 1 $shotsHeader.QtyShots}}
 							<td>{{.}}
 						{{end}}
 				</thead>
@@ -29,10 +29,11 @@
 								<th>{{(grade .Grade).Abbr}}
 								<th id={{.ID}}>{{.FirstName}} {{.Surname}}
 								<th>{{with $score}}{{.Total}}{{with .Centers}}<sup>{{.}}</sup>{{end}}{{end}}
-								{{range $i := N (index $.Disciplines (grade .Grade).ClassID).QtyTotal}}
+								{{$disc := index $.Disciplines (grade .Grade).ClassID}}
+								{{range $i := N 0 $disc.QtyTotal}}
 									<td>
 										{{if gt (len $score.Shots) .}}
-											{{printf "%c" (index $score.Shots .)}}
+											{{(index $disc.Marking.Shots (printf "%c" (index $score.Shots .))).Shot}}
 										{{end}}
 								{{end}}
 						{{end}}
@@ -45,11 +46,11 @@
 					<th>Shooter
 					<th>Total
 						{{$shotsHeader := (index $.Disciplines (grade (index . $.firstShooterID).Grade).ClassID)}}
-						{{range $i := N $shotsHeader.QtySighters}}
-					<td>S{{.}}
+						{{range $i := N 1 $shotsHeader.QtySighters}}
+							<td>S{{.}}
 						{{end}}
-						{{range $i := N $shotsHeader.QtyShots}}
-					<td>{{.}}
+						{{range $i := N 1 $shotsHeader.QtyShots}}
+							<td>{{.}}
 						{{end}}
 				<tr id=x hidden>
 					<th id=bu colspan=99></th>

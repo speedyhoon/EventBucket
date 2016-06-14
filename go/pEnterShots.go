@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -89,14 +90,33 @@ func updateShotScores( /*w http.ResponseWriter, r *http.Request,*/ fields []fiel
 		return err.Error()
 	}
 
+	var score string
+
 	//Return the score to the client
 	if newScore.Centers == 0 {
 		//		fmt.Fprint(w, newScore.Total)
 		//		return
-		return fmt.Sprintf("%v", newScore.Total)
+		score = fmt.Sprintf("%v", newScore.Total)
+	} else {
+		//	fmt.Fprintf(w, "%v<sup>%v</sup>", newScore.Total, newScore.Centers)
+		score = fmt.Sprintf("%v<sup>%v</sup>", newScore.Total, newScore.Centers)
 	}
-	//	fmt.Fprintf(w, "%v<sup>%v</sup>", newScore.Total, newScore.Centers)
-	return fmt.Sprintf("%v<sup>%v</sup>", newScore.Total, newScore.Centers)
+	data := struct {
+		R string
+		S uint
+		T string
+	}{
+		fields[2].Value,
+		shooterID,
+		score,
+	}
+
+	var response []byte
+	response, err = json.Marshal(data)
+	if err != nil {
+		warn.Println(err)
+	}
+	return fmt.Sprintf("%s", response)
 }
 
 //This function assumes all validation on input "shots" has at least been done!

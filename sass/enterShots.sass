@@ -1,3 +1,5 @@
+$orange: #f70
+
 .enterShots
 	font-family: monospace
 
@@ -42,12 +44,21 @@
 			background: $briteBlue
 			color: $black
 
-	//:not(#x) th:last-child
-		//Total fields (and heading) but not the footer with buttons
-		text-align: right
-
 	tr[data-selected="1"]
-		border: 0 solid $red
+		border: 0 solid $orange
 		border-width: 5px 0
 		td
 			cursor: pointer
+
+	.save
+		animation: 3s greenFade
+
+	.error
+		background-color: $red
+		color: $white
+
+@keyframes greenFade
+	0%
+		background-color: #0a0
+	100%
+		background-color: none

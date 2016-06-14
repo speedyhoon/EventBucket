@@ -182,8 +182,8 @@ func processSocket(ws *websocket.Conn) {
 				}
 				websocket.Message.Send(ws, fmt.Sprintf("!%U%s", msg[0], response))
 			}
-		case 125: //Scoreboard subscribe to updates
-			websocket.Message.Send(ws, `321` /*fmt.Sprintf("~%s", response)*/)
+			//		case 125: //Scoreboard subscribe to updates
+			//			websocket.Message.Send(ws, `321` /*fmt.Sprintf("~%s", response)*/)
 		case 126: //getDisciplines:
 			var response []byte
 			response, err = json.Marshal(globalDisciplines)

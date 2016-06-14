@@ -75,6 +75,7 @@ type Score struct {
 	Centers    uint   `json:"c,omitempty"`
 	Centers2   uint   `json:"n,omitempty"`
 	Shots      string `json:"s,omitempty"` //Don't include this in the scoreboard struct when using a different []EventShooter
+	Sighters   string `json:"i,omitempty"`
 	CountBack  string `json:"v,omitempty"`
 	CountBack2 string `json:"x,omitempty"`
 	ShootOff   uint   `json:"h,omitempty"`
