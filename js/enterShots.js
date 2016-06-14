@@ -1,4 +1,4 @@
-(function(){
+//(function(){
 	'use strict';
 	var currentCell, currentRow, currentType, currentClass,
 		eventID = window.location.pathname.split('/')[2],
@@ -141,7 +141,6 @@
 			highlightRow(trElement);
 
 			//if visited attribute is present it has already been processed
-			//console.log('visited?', currentRow.visited);
 			if(!currentRow.visited){
 				currentRow.onclick = function tdClicker(tdElement){
 					return function tdClick(event){
@@ -172,7 +171,6 @@
 				ws.send('\u007E');   //126
 			}
 		};
-		//TODO
 		//Update UI with save / error message.
 		ws.onmessage = function(message){
 			var data = JSON.parse(message.data.substr(1));
@@ -202,7 +200,7 @@
 		};
 	}
 	reconnect();
-}());
+//}());
 
 
 
