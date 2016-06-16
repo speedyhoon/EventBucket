@@ -29,6 +29,8 @@ const (
 	urlEntryList       = "/print-entry-list/" //eventID
 	urlEventSettings   = "/event-settings/"   //eventID
 	urlEventReport     = "/event-report/"     //eventID
+	urlShooterReport   = "/shooter-report/"   //eventID/shooterID
+	urlShootersReport  = "/shooters-report/"  //eventID
 	urlScoreboard      = "/scoreboard/"       //eventID
 	urlEnterShots      = "/enter-shots/"      //eventID
 	urlEnterShotsAll   = "/enter-shots-all/"  //eventID
@@ -56,12 +58,13 @@ func pages() {
 	getRedirectPermanent(urlArchive, eventArchive)
 	getRedirectPermanent(urlClubs, clubs)
 	getRedirectPermanent(urlLicence, licence)
-	gt(urlShooters, shooterSearch, shooters)
 	getParameters(urlClub, club, regexID)
 	getParameters(urlEntries, entries, regexID)
 	getParameters(urlEntryList, entryList, regexID)
 	getParameters(urlEventSettings, eventSettings, regexID)
 	getParameters(urlEventReport, eventReport, regexID)
+	getParameters(urlShooterReport, shooterReport, regexPath)
+	getParameters(urlShootersReport, shootersReport, regexID)
 	getParameters(urlScoreboard, scoreboard, regexPath)
 	getParameters(urlEnterShots, enterShotsIncomplete, regexPath)
 	getParameters(urlEnterShotsAll, enterShotsAll, regexPath)
@@ -90,6 +93,8 @@ func pages() {
 	post(pst, eventUpdateRange, updateRange)
 	post(pst, eventUpdateAgg, updateAgg)
 	post(pst, eventEditShooter, eventShooterUpdate)
+
+	gt(urlShooters, shooterSearch, shooters)
 
 	//BUG any url breaks when appending "&*((&*%"
 	get404(urlEvents, events)
