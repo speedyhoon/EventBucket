@@ -119,7 +119,7 @@ func eventGrades(grades []uint) []option {
 	return options
 }
 
-func (d *Discipline) QtyTotal() uint {
+func (d Discipline) QtyTotal() uint {
 	return d.QtySighters + d.QtyShots
 }
 
