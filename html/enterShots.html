@@ -30,6 +30,7 @@
 								<th id={{.ID}}>{{.FirstName}} {{.Surname}}
 								<th>{{with $score}}{{.Total}}{{with .Centers}}<sup>{{.}}</sup>{{end}}{{end}}
 								{{$disc := index $.Disciplines (grade .Grade).ClassID}}
+								<!-- TODO convert shots into strike through sighters and normal shots -->
 								{{range $i := N 0 $disc.QtyTotal}}
 									<td>
 										{{if gt (len $score.Shots) .}}
