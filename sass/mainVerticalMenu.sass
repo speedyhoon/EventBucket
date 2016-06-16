@@ -141,46 +141,6 @@ input.dirty:not(:focus)
 form#edit:target
 	display: block
 
-//Vertical Menus
-header
-	ul
-		list-style: none
-		padding: 0
-
-	//& > li  //disable to push the menu down rather than popup overlay
-		position: relative
-
-	li a, .visited
-		display: block
-		padding: $menuPadding
-
-	.visited
-		border-left: $fatBorder
-
-	li a, li ul, .visited
-		padding-left: $margin
-
-	ul a
-		border-left: $fatBorder transparent
-
-	div
-		padding: $menuPadding $menuPadding $menuPadding calc(#{$margin} + #{$fatWidth})
-
-	.open
-		padding-left: $margin
-
-	ul a:hover, button:hover, a:hover
-		border-color: $blue
-		color: $blue
-
-	//ul ul ul
-		display: none
-	//position: absolute  //disable to push the menu down rather than popup overlay
-
-
-	//ul ul li:hover > ul
-		display: block
-
 //Horizontal Menu
 @media not print
 	nav
