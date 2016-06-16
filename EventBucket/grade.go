@@ -14,7 +14,6 @@ type Discipline struct {
 	ID          uint    `json:"id,omitempty"`
 	QtySighters uint    `json:"sightersQty,omitempty"`
 	QtyShots    uint    `json:"shotsQty,omitempty"`
-	QtyTotal    uint    `json:"-"`
 	Colspan     uint    `json:"-"`
 	Grades      []Grade `json:"grades,omitempty"`
 	Marking     Mark    `json:"marking,omitempty"`
@@ -120,6 +119,10 @@ func eventGrades(grades []uint) []option {
 	return options
 }
 
+func (d *Discipline) QtyTotal() uint {
+	return d.QtySighters + d.QtyShots
+}
+
 func defaultGlobalDisciplines() []Discipline {
 	XV5 := Mark{Buttons: "012345VX",
 		DoCountBack2: true,
@@ -153,7 +156,6 @@ func defaultGlobalDisciplines() []Discipline {
 		Name:        "Target Rifle",
 		QtySighters: 2,
 		QtyShots:    10,
-		QtyTotal:    12,
 		TopShot:     5,
 		TopTotal:    50,
 		Marking:     XV5,
@@ -165,9 +167,8 @@ func defaultGlobalDisciplines() []Discipline {
 	}, {
 		ID:          1,
 		Name:        "F Class",
-		QtyShots:    12,
-		QtySighters: 3,
-		QtyTotal:    15,
+		QtyShots:    10,
+		QtySighters: 2,
 		TopShot:     6,
 		TopTotal:    72,
 		Marking: Mark{
@@ -202,7 +203,6 @@ func defaultGlobalDisciplines() []Discipline {
 		Name:        "Match Rifle",
 		QtySighters: 3,
 		QtyShots:    15,
-		QtyTotal:    18,
 		TopShot:     5,
 		TopTotal:    75,
 		Marking:     XV5,
@@ -213,7 +213,6 @@ func defaultGlobalDisciplines() []Discipline {
 		Name:        "Service Rifle",
 		QtySighters: 1,
 		QtyShots:    8,
-		QtyTotal:    9,
 		TopShot:     5,
 		TopTotal:    45,
 		Marking: Mark{
