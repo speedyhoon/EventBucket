@@ -143,16 +143,18 @@
 
 			//if visited attribute is present it has already been processed
 			if(!currentRow.visited){
-				currentRow.onclick = function tdClicker(tdElement){
-					return function tdClick(event){
+				currentRow.onclick = function trClicker(tdElement){
+					return function trClick(event){
 						//console.log('tdClicker');
 						if(event.target.nodeName === 'TD'){
 							highlightCell(tdElement);
 						}
 					};
 				};
+				//TODO click on all td elements in the row.
+				//var trElement.getElementsByTagName('td')
 				currentRow.visited = 1;
-			}
+			}else{console.log('already visited')}
 		};
 	}
 
