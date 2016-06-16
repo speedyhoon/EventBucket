@@ -104,9 +104,9 @@ func getForm(id uint8) []field {
 		}}
 	case 5://Event Details
 		return []field{{
-			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
-		}, {
 			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr, Options: clubsDataList(),
+		}, {
+			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
 			name: "d", maxLen: 10, minLen: 1, v8: isValidStr,
 		}, {
@@ -136,15 +136,15 @@ func getForm(id uint8) []field {
 		}, {
 			name: "s", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
-			name: "C", Value: defaultClubName(), Required: true, maxLen: 64, minLen: 1, v8: isValidStr, Options: clubsDataList(), Placeholder: defaultClubName(),
+			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr, Options: clubsDataList(), Placeholder: defaultClubName(),
 		}, {
 			name: "S", v8: isValidStr, Options: searchShootersOptions("", "", defaultClubName()),
-		}, {
-			name: "g", Required: true, minLen: 1, max: float32(len(globalGrades)-1), step: 1, v8: listUint, Options: globalGradesDataList,
 		}, {
 			name: "r", max: 4, step: 1, v8: isValidUint, Options: dataListAgeGroup(),
 		}, {
 			name: "x", v8: isValidBool,
+		}, {
+			name: "g", Required: true, minLen: 1, max: float32(len(globalGrades)-1), step: 1, v8: listUint, Options: globalGradesDataList,
 		}, {
 			name: "E", v8: isValidRegex, regex: regexID,
 		}}
@@ -172,13 +172,13 @@ func getForm(id uint8) []field {
 		}, {
 			name: "s", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
-			name: "C", Value: defaultClubName(), Required: true, maxLen: 64, minLen: 1, v8: isValidStr, Options: clubsDataList(),
-		}, {
-			name: "g", Required: true, max: float32(len(globalGrades)-1), step: 1, v8: listUint, Options: globalGradesDataList,
+			name: "C", Value: defaultClubName(), Required: true, maxLen: 64, minLen: 1, v8: isValidStr, Options: clubsDataList(), Placeholder: defaultClubName(),
 		}, {
 			name: "r", max: 4, step: 1, v8: isValidUint, Options: dataListAgeGroup(),
 		}, {
 			name: "x", v8: isValidBool,
+		}, {
+			name: "g", Required: true, max: float32(len(globalGrades)-1), step: 1, v8: listUint, Options: globalGradesDataList,
 		}}
 	case 12://Shooter Details
 		return []field{{

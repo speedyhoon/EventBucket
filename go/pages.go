@@ -21,7 +21,7 @@ const (
 	urlAbout    = "/about"
 	urlArchive  = "/archive"
 	urlClubs    = "/clubs"
-	urlLicense  = "/license"
+	urlLicence  = "/licence"
 	urlShooters = "/shooters"
 	//GET with PARAMETERS
 	urlClub            = "/club/"             //clubID
@@ -55,14 +55,14 @@ func pages() {
 	getRedirectPermanent(urlAbout, about)
 	getRedirectPermanent(urlArchive, eventArchive)
 	getRedirectPermanent(urlClubs, clubs)
-	getRedirectPermanent(urlLicense, license)
+	getRedirectPermanent(urlLicence, licence)
 	gt(urlShooters, shooterSearch, shooters)
 	getParameters(urlClub, club, regexID)
 	getParameters(urlEntries, entries, regexID)
 	getParameters(urlEntryList, entryList, regexID)
 	getParameters(urlEventSettings, eventSettings, regexID)
 	getParameters(urlEventReport, eventReport, regexID)
-	getParameters(urlScoreboard, scoreboard, regexPath)
+	getParameters(urlScoreboard, scoreboard, regexPa	th)
 	getParameters(urlEnterShots, enterShotsIncomplete, regexPath)
 	getParameters(urlEnterShotsAll, enterShotsAll, regexPath)
 	getParameters(urlPrintScorecards, printScorecards, regexPath)
