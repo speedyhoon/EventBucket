@@ -13,20 +13,21 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 	action, pageForms := sessionForms(w, r, eventShooterNew, eventShooterExisting, eventAvailableGrades)
 	shooterEntry := pageForms[0]
 	if action == eventShooterExisting {
+		//Existing shooter select box
 		shooterEntry.Fields[3].Error = pageForms[1].Fields[0].Error
 		//Grade
-		shooterEntry.Fields[4].Error = pageForms[1].Fields[1].Error
-		shooterEntry.Fields[4].Value = pageForms[1].Fields[1].Value
+		shooterEntry.Fields[6].Error = pageForms[1].Fields[1].Error
+		shooterEntry.Fields[6].Value = pageForms[1].Fields[1].Value
 		//Age Group
-		shooterEntry.Fields[5].Error = pageForms[1].Fields[2].Error
-		shooterEntry.Fields[5].Value = pageForms[1].Fields[2].Value
-		//Add Existing Shooter button
-		shooterEntry.Fields[6].Error = pageForms[1].Fields[3].Error
+		shooterEntry.Fields[4].Error = pageForms[1].Fields[2].Error
+		shooterEntry.Fields[4].Value = pageForms[1].Fields[2].Value
+		//Existing Shooter button
+		shooterEntry.Fields[7].Error = pageForms[1].Fields[3].Error
 	}
 	shooterEntry.Fields[2].Options = clubsDataList()
 
 	grades := eventGrades(event.Grades)
-	shooterEntry.Fields[4].Options = grades
+	shooterEntry.Fields[6].Options = grades
 	shooterEntry.Fields[6].Value = eventID
 	shooterEntry.Fields[7].Value = eventID
 	shooterEntry.Fields = append(shooterEntry.Fields, field{Value: eventID})

@@ -153,7 +153,7 @@ func errorHandler(w http.ResponseWriter, r *http.Request, status int, errorType 
 
 	//check if the request matches any of the pages that don't require parameters
 	if strings.Count(lowerURL, "/") >= 2 {
-		for _, page := range []string{urlAbout, urlArchive, urlClubs, urlLicense, urlShooters} {
+		for _, page := range []string{urlAbout, urlArchive, urlClubs, urlLicence, urlShooters} {
 			if strings.HasPrefix(lowerURL, page) {
 				//redirect to page without parameters
 				http.Redirect(w, r, page, http.StatusSeeOther)
