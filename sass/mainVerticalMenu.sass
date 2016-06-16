@@ -13,7 +13,7 @@ $bigPadding: $margin/3
 $fatWidth: 2px
 $fatBorder: $fatWidth solid
 $thinBorder: 1px solid
-@media screen
+@media not print
 	html
 		background: url(/v/shooter) bottom left no-repeat
 		background-size: 14em
@@ -22,22 +22,10 @@ $thinBorder: 1px solid
 html,body
 	height: 100%
 body
-	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif !important
-	margin: 0
-
-section, header
-	float: left
-	padding: $margin/2 0 0 $margin
-
-header
-	height: calc(100% - 3em)
+	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
 
 section
-	width: calc(100% - 16em)
-
-nav
-	border-right: 1px dashed
-	padding-bottom: $menuPadding
+	padding: $margin/2 0 0 $margin
 
 //About images
 .builtWith
@@ -79,7 +67,7 @@ table:not(.enterShots)
 .tick
 	background: url(/v/tick) no-repeat center
 
-section > form, table:not(.printCards)
+section > form:not(:last-of-type), table:not(.printCards)
 	margin-bottom: $margin
 
 section > form, table
@@ -192,6 +180,54 @@ header
 
 	//ul ul li:hover > ul
 		display: block
+
+//Horizontal Menu
+@media not print
+	nav
+		display: block
+		float: left
+		width: 100%
+		div
+			padding: .5em 1.5em
+			display: inline-block
+			float: left
+		ul
+			float: left
+			display: inline-block
+			width: calc(100% - 3em - 190px)
+			list-style: none
+			margin: 0
+			padding: 0
+
+		& > ul > li
+			display: inline-block
+			position: relative
+
+		ul
+			a
+				padding: .5em
+				text-align: center
+				display: block
+
+			ul a
+				padding: .3em 0
+				display: block
+
+		li
+			ul
+				background: $white
+				display: none
+				position: absolute
+				z-index: 1
+				min-width: 100%
+				box-shadow: .1em .1em 6px #0af
+
+		li:hover
+			& > a
+				color: $blue
+			ul
+				display: block
+				padding: .3em 0
 
 //Text
 h1,h2,h3,h4
