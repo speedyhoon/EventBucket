@@ -10,14 +10,10 @@ function reconnect (){
 		console.log("open");
 		ws.send('}');
 	};
-	//TODO
+	//TODO refresh page when receiving any message
 	//Update UI with save / error message.
 	ws.onmessage = function(message){
 		console.log(message.data);
-		var stuff = JSON.parse(message.data);
-		if(stuff.E == eventID){
-			console.log('refresh!!!');
-		}
 	};
 	ws.onclose = function(){
 		if(!intervalId){
