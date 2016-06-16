@@ -44,7 +44,7 @@ func enterShots(w http.ResponseWriter, r *http.Request, showAll bool, parameters
 		Title:   "Enter Shots",
 		Menu:    urlEvents,
 		MenuID:  event.ID,
-		Heading: event.Name,
+		Heading: currentRange.Name,
 		Data: map[string]interface{}{
 			"Range":          currentRange,
 			"Event":          event,
