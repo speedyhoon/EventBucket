@@ -62,7 +62,7 @@ func pages() {
 	getParameters(urlEntryList, entryList, regexID)
 	getParameters(urlEventSettings, eventSettings, regexID)
 	getParameters(urlEventReport, eventReport, regexID)
-	getParameters(urlScoreboard, scoreboard, regexPa	th)
+	getParameters(urlScoreboard, scoreboard, regexPath)
 	getParameters(urlEnterShots, enterShotsIncomplete, regexPath)
 	getParameters(urlEnterShotsAll, enterShotsAll, regexPath)
 	getParameters(urlPrintScorecards, printScorecards, regexPath)

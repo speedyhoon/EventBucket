@@ -46,7 +46,7 @@ func enterTotals(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 	}
 
 	templater(w, page{
-		Title:   "Enter Range Totals",
+		Title:   "Enter Totals",
 		Menu:    urlEvents,
 		MenuID:  event.ID,
 		Heading: currentRange.Name,
