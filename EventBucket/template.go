@@ -64,12 +64,15 @@ var (
 				Link:      urlEnterShots,
 				RangeMenu: true,
 			}, {
-				Name:      "Enter Range Totals",
+				Name:      "Enter Totals",
 				Link:      urlEnterTotals,
 				RangeMenu: true,
 			}, {
 				Name: "Event Report",
 				Link: urlEventReport,
+			}, {
+				Name: "Shooters Report",
+				Link: urlShootersReport,
 			}, {
 				Name:   "Print Entry List",
 				Link:   urlEntryList,
@@ -190,9 +193,9 @@ func templater(w http.ResponseWriter, page page) {
 	}
 
 	//Convert page.Title to the HTML template file name (located within htmlDirectory), e.g. Events > Events, Club Settings > ClubSettings
-	pageName := strings.Replace(strings.Title(page.Title), " ", "", -1)
+	fileName := strings.Replace(strings.Title(page.Title), " ", "", -1)
 
-	htmlFileNames := []string{htmlDirectory + pageName}
+	htmlFileNames := []string{htmlDirectory + fileName}
 	if page.template != templateNone {
 		htmlFileNames = append(htmlFileNames, masterStuff[page.template]...)
 	}
@@ -200,12 +203,12 @@ func templater(w http.ResponseWriter, page page) {
 	//Add page content just generated to the default page environment (which has CSS and JS, etc).
 	masterTemplate.Page = page
 
-	html, ok := templates[pageName]
+	html, ok := templates[fileName]
 	//debug is for dynamically re-parsing (reloading) templates on every request
 	if !ok || debug {
 
-		templates[pageName] = template.Must(template.New("main").Funcs(templateFuncMap).ParseFiles(htmlFileNames...))
-		html = templates[pageName]
+		templates[fileName] = template.Must(template.New("main").Funcs(templateFuncMap).ParseFiles(htmlFileNames...))
+		html = templates[fileName]
 	}
 
 	if err := html.ExecuteTemplate(w, "master", masterTemplate); err != nil {
