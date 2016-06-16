@@ -21,8 +21,8 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 
 	action, forms := sessionForms(w, r, eventDetails, eventRangeNew, eventAggNew, eventUpdateRange, eventUpdateAgg)
 	if action != eventDetails {
-		forms[0].Fields[0].Value = event.Name
-		forms[0].Fields[1].Value = event.Club
+		forms[0].Fields[0].Value = event.Club
+		forms[0].Fields[1].Value = event.Name
 		forms[0].Fields[2].Value = event.Date
 		forms[0].Fields[3].Value = event.Time
 		forms[0].Fields[4].Checked = event.Closed
@@ -82,8 +82,8 @@ func dataListRanges(ranges []Range, selected bool) []option {
 func eventDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	eventID := submittedForm.Fields[5].Value
 	err := updateDocument(tblEvent, eventID, &Event{
-		Name:   submittedForm.Fields[0].Value,
-		Club:   submittedForm.Fields[1].Value,
+		Club:   submittedForm.Fields[0].Value,
+		Name:   submittedForm.Fields[1].Value,
 		Date:   submittedForm.Fields[2].Value,
 		Time:   submittedForm.Fields[3].Value,
 		Closed: submittedForm.Fields[4].Checked,
