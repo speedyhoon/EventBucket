@@ -1,0 +1,1 @@
+{{define "page"}}<table><tr><th>{{(grade .Shooter.Grade).Abbr}} {{.Shooter.FirstName}} {{.Shooter.Surname}} - {{.Shooter.Club}}<th>Scores<th>Total{{range $id, $score := .Shooter.Scores}}<tr><td>{{(findRange $id $.Event.Ranges).Name}}<td>{{.Shots}}<td>{{.Total}}{{with .Centers}}<sup>{{.}}</sup>{{end}}{{end}}</table>{{end}}
