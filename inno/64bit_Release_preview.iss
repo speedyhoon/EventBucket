@@ -23,7 +23,7 @@ DefaultDirName={pf64}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputDir={#Z}\inno
-LicenseFile={#Z}\inno\cc-by-sa-4.0_legalcode.txt
+LicenseFile={#Z}\EventBucket\licence.txt
 OutputBaseFilename={#MyAppName} {#MyAppVersion} 64bit
 SetupIconFile={#Z}\EventBucket\EventBucket4.ico
 Compression=lzma
@@ -44,7 +44,7 @@ Source: "{#Z}\EventBucket\h\*"; DestDir: "{app}\h"; Flags: ignoreversion
 Source: "{#Z}\EventBucket\j\*"; DestDir: "{app}\j"; Flags: ignoreversion
 Source: "{#Z}\EventBucket\v\*"; DestDir: "{app}\v"; Flags: ignoreversion
 Source: "{#Z}\EventBucket\w\*"; DestDir: "{app}\w"; Flags: ignoreversion
-Source: "{#Z}\inno\cc-by-sa-4.0_legalcode.txt"; DestDir: "{app}"; DestName: "licence.txt"; Flags: ignoreversion
+Source: "{#Z}\EventBucket\licence.txt"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

@@ -21,7 +21,7 @@ const (
 	urlAbout    = "/about"
 	urlArchive  = "/archive"
 	urlClubs    = "/clubs"
-	urlLicence  = "/licence"
+	urlLicence  = "licence.txt"
 	urlShooters = "/shooters"
 	//GET with PARAMETERS
 	urlClub            = "/club/"             //clubID
@@ -48,6 +48,7 @@ var (
 
 func pages() {
 	serveFile("favicon.ico")
+	serveFile(urlLicence)
 	serveDir(dirCSS, true)
 	serveDir(dirJS, true)
 	serveDir(dirSVG, true)
@@ -57,7 +58,6 @@ func pages() {
 	getRedirectPermanent(urlAbout, about)
 	getRedirectPermanent(urlArchive, eventArchive)
 	getRedirectPermanent(urlClubs, clubs)
-	getRedirectPermanent(urlLicence, licence)
 	getParameters(urlClub, club, regexID)
 	getParameters(urlEntries, entries, regexID)
 	getParameters(urlEntryList, entryList, regexID)
