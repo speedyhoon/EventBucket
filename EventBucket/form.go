@@ -257,6 +257,8 @@ func getForm(id uint8) []field {
 			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
 			name: "k", v8: isValidBool,
+		}, {
+			name: "o", Required: true, max: 65535, step: 1, v8: isValidUint,
 		}}
 	case 21: //Update Agg
 		return []field{{
@@ -267,6 +269,8 @@ func getForm(id uint8) []field {
 			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
 			name: "R", Required: true, minLen: 2, min: 1, max: 65535, step: 1, v8: listUint,
+		}, {
+			name: "o", Required: true, max: 65535, step: 1, v8: isValidUint,
 		}}
 	case 22: //Entries Edit Shooter Details
 		return []field{{

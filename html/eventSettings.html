@@ -57,6 +57,8 @@
 			<td></td>
 			<td>
 				<input required name=n maxlength=64 list=r type=search placeholder="Range name" form=editRow>
+				<span onclick=moveRange class="^arrows^ ^desc^" title="Move Up"></span>
+				<span onclick=moveRange class="^arrows^ ^asc^" title="Move Down"></span>
 			</td>
 			<td>
 				<select size={{len .Ranges}} required name=R multiple form=editRow>
@@ -70,6 +72,7 @@
 				<form method=post action=/20 id=editRow>
 					<button name=I>Save</button>
 					<input type=hidden name=E value={{.Event.ID}}>
+					<input type=hidden name=o>
 				</form>
 			</td>
 		</template>

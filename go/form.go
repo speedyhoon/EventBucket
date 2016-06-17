@@ -144,7 +144,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "x", v8: isValidBool,
 		}, {
-			name: "g", Required: true, minLen: 1, max: float32(len(globalGrades)-1), step: 1, v8: listUint, Options: globalGradesDataList,
+			name: "g", Required: true, minLen: 1, max: float32(len(globalGrades) - 1), step: 1, v8: listUint, Options: globalGradesDataList,
 		}, {
 			name: "E", v8: isValidRegex, regex: regexID,
 		}}
@@ -152,7 +152,7 @@ func getForm(id uint8) []field {
 		return []field{{
 			name: "S", Required: true, v8: isValidRegex, regex: regexID,
 		}, {
-			name: "g", Required: true, minLen: 1, max: float32(len(globalGrades)-1), step: 1, v8: listUint, Options: globalGradesDataList,
+			name: "g", Required: true, minLen: 1, max: float32(len(globalGrades) - 1), step: 1, v8: listUint, Options: globalGradesDataList,
 		}, {
 			name: "r", max: 4, step: 1, v8: isValidUint, Options: dataListAgeGroup(),
 		}, {
@@ -178,7 +178,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "x", v8: isValidBool,
 		}, {
-			name: "g", Required: true, max: float32(len(globalGrades)-1), step: 1, v8: listUint, Options: globalGradesDataList,
+			name: "g", Required: true, max: float32(len(globalGrades) - 1), step: 1, v8: listUint, Options: globalGradesDataList,
 		}}
 	case 12: //Shooter Details
 		return []field{{
@@ -188,7 +188,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
-			name: "g", Required: true, max: float32(len(globalGrades)-1), step: 1, v8: listUint, Options: globalGradesDataList,
+			name: "g", Required: true, max: float32(len(globalGrades) - 1), step: 1, v8: listUint, Options: globalGradesDataList,
 		}, {
 			name: "r", max: 4, step: 1, v8: isValidUint, Options: dataListAgeGroup(),
 		}, {
@@ -218,7 +218,7 @@ func getForm(id uint8) []field {
 		}}
 	case 15: //Grades Available
 		return []field{{
-			name: "g", Required: true, minLen: 1, max: float32(len(globalGrades)-1), step: 1, v8: listUint, Options: availableGrades([]uint{}),
+			name: "g", Required: true, minLen: 1, max: float32(len(globalGrades) - 1), step: 1, v8: listUint, Options: availableGrades([]uint{}),
 		}, {
 			name: "I", v8: isValidRegex, regex: regexID,
 		}}
@@ -257,6 +257,8 @@ func getForm(id uint8) []field {
 			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
 			name: "k", v8: isValidBool,
+		}, {
+			name: "o", Required: true, max: 65535, step: 1, v8: isValidUint,
 		}}
 	case 21: //Update Agg
 		return []field{{
@@ -267,6 +269,8 @@ func getForm(id uint8) []field {
 			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
 			name: "R", Required: true, minLen: 2, min: 1, max: 65535, step: 1, v8: listUint,
+		}, {
+			name: "o", Required: true, max: 65535, step: 1, v8: isValidUint,
 		}}
 	case 22: //Entries Edit Shooter Details
 		return []field{{
@@ -280,7 +284,7 @@ func getForm(id uint8) []field {
 		}, {
 			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
 		}, {
-			name: "g", Required: true, max: float32(len(globalGrades)-1), step: 1, v8: isValidUint, Options: globalGradesDataList,
+			name: "g", Required: true, max: float32(len(globalGrades) - 1), step: 1, v8: isValidUint, Options: globalGradesDataList,
 		}, {
 			name: "r", max: 4, step: 1, v8: isValidUint, Options: dataListAgeGroup(),
 		}, {
