@@ -32,26 +32,17 @@ function moveRange(event){
 		qty = tbody.children.length- 1,
 		index = Array.prototype.indexOf.call(tbody.children, currentRow);
 
-	console.log(index , qty);
-	//TODO change moving rows to use numbers instead. that might use less code.
-	if(event.target.classList.contains('^asc^')){
-		//Move Down
-		//if row is not the last in the table;
-		if(index !== qty){
-			//Insert row after next sibling;
-			currentRow.parentNode.insertBefore(currentRow.nextSibling, currentRow);
-		}else{
-			//Otherwise insert currentRow before the row first.
-			currentRow.parentNode.insertBefore(currentRow, tbody.children[0]);
-		}
-	}else{
-		//Move Up
-		if(index){
-			currentRow.parentNode.insertBefore(currentRow, currentRow.previousSibling);
-		}else{
-			currentRow.parentNode.insertBefore(currentRow, tbody.children[qty]);
-			currentRow.parentNode.insertBefore(tbody.children[qty], currentRow);
-		}
+	var direction = event.target.classList.contains('^asc^') ? 2 : -1,
+		moveTo = index + direction;
+	if(moveTo < 0){
+		moveTo = qty;
+	}else if(moveTo-1 > qty){
+		moveTo = 0
+	}
+
+	tbody.insertBefore(currentRow, tbody.children[moveTo]);
+	if(moveTo === qty && direction < 0){
+		tbody.insertBefore(tbody.children[qty], currentRow);
 	}
 	currentRow.querySelector('[name=o]').value = Array.prototype.indexOf.call(tbody.children, currentRow);
 }
