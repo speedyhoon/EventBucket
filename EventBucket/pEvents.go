@@ -43,12 +43,6 @@ func about(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func licence(w http.ResponseWriter, r *http.Request) {
-	templater(w, page{
-		Title: "Licence",
-	})
-}
-
 //localIP returns the non loopback local IPv4 of the host
 func localIPs() []string {
 	var localIPs []string
