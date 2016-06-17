@@ -267,11 +267,48 @@ func editRange(decode interface{}, contents interface{}) interface{} {
 	rangeDetails := contents.(*Range)
 	for i, r := range event.Ranges {
 		if r.ID == rangeDetails.ID {
-			event.Ranges[i].Name = rangeDetails.Name
+			r.Name = rangeDetails.Name
 			if r.IsAgg {
-				event.Ranges[i].Aggs = rangeDetails.Aggs
+				r.Aggs = rangeDetails.Aggs
 			} else {
-				event.Ranges[i].Locked = rangeDetails.Locked
+				r.Locked = rangeDetails.Locked
+			}
+			//Move range if the order has changed
+			if uint(i) != rangeDetails.Order {
+				//Cut range
+				if i <= 0 {
+					event.Ranges = append([]Range{}, event.Ranges[1:]...)
+				} else if i >= len(event.Ranges)-1 {
+					event.Ranges = append([]Range{}, event.Ranges[:i]...)
+				} else {
+					event.Ranges = append(event.Ranges[:i], event.Ranges[i+1:]...)
+				}
+
+				//Paste range
+				if rangeDetails.Order <= 0 {
+					event.Ranges = append([]Range{r}, event.Ranges...)
+				} else if rangeDetails.Order >= uint(len(event.Ranges)-1) {
+					event.Ranges = append(event.Ranges, r)
+				} else {
+					event.Ranges = append(event.Ranges[:rangeDetails.Order], append([]Range{r}, event.Ranges[rangeDetails.Order:]...)...)
+				}
+
+				//Now rearrange any list of Aggregates that contain this range. This saves performing a double loop in the scoreboard page because the aggregate list is now out of order.
+				for w, rng := range event.Ranges {
+					if rng.IsAgg {
+						var rangeList []uint
+						for _, t := range event.Ranges {
+							for _, rngID := range rng.Aggs {
+								if rngID == t.ID {
+									rangeList = append(rangeList, rngID)
+								}
+							}
+						}
+						event.Ranges[w].Aggs = rangeList
+					}
+				}
+			} else {
+				event.Ranges[i] = r
 			}
 			break
 		}

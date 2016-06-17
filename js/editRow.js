@@ -16,7 +16,7 @@ function editRow(editCell){
 	}
 	t.querySelector('td').textContent = tds[0].textContent;
 	if(buildRow){
-		t = buildRow(t, tds, form.id);
+		t = buildRow(t, tds, form.id, row);
 		row.innerHTML = '';
 		row.appendChild(t);
 	}

@@ -111,6 +111,7 @@ func updateRange(w http.ResponseWriter, r *http.Request, submittedForm form, red
 		ID:     submittedForm.Fields[1].valueUint,
 		Name:   submittedForm.Fields[2].Value,
 		Locked: submittedForm.Fields[3].Checked,
+		Order:  submittedForm.Fields[4].valueUint,
 	}, &Event{}, editRange)
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
@@ -122,9 +123,10 @@ func updateRange(w http.ResponseWriter, r *http.Request, submittedForm form, red
 func updateAgg(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
 	eventID := submittedForm.Fields[0].Value
 	err := updateDocument(tblEvent, eventID, &Range{
-		ID:   submittedForm.Fields[1].valueUint,
-		Name: submittedForm.Fields[2].Value,
-		Aggs: submittedForm.Fields[3].valueUintSlice,
+		ID:    submittedForm.Fields[1].valueUint,
+		Name:  submittedForm.Fields[2].Value,
+		Aggs:  submittedForm.Fields[3].valueUintSlice,
+		Order: submittedForm.Fields[4].valueUint,
 	}, &Event{}, editRange)
 	if err != nil {
 		formError(w, submittedForm, redirect, err)
