@@ -9,34 +9,43 @@ $thinBorder: 1px
 body
 	font: 700 small Arial,sans-serif
 
-h1
-	text-align: center
-
 body, h1
 	margin: 0
 
-td, ul
-	padding: 0
+h1
+	text-align: center
 
 table, td
 	border: 0 $solidBorder
 
 table
-	//border-spacing: 0
-	border-collapse: collapse
+	border-spacing: 0
 	border-width: 0 $thinBorder $thinBorder 0
 	text-align: center
 	width: 100%
+	text-transform: capitalize
+
+td
+	padding: 0
+	border-width: $thinBorder 0 0 $thinBorder
 
 a
 	text-decoration: none
 	color: #08f
 
-td
-	border-width: $thinBorder 0 0 $thinBorder
+@media print
+	ul
+		display: none
 
 //Horizontal Menu
 @media not print
+	.classHeadingRow
+		background: #fdd
+
+	.separator td
+		border-top-width: 7px
+		border-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAVCAYAAAB2Wd+JAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsIAAA7CARUoSoAAAAAwSURBVDhPY2RgYPgPxCQDxvr6erI0MkFpksEQ0kh2qI6EwBkJGkdzBx5AZu5gYAAA24kIG4re3CYAAAAASUVORK5CYII=") 7 1
+
 	ul
 		list-style: none
 		margin: 0
@@ -68,25 +77,11 @@ td
 			display: block
 			padding: .3em 0
 
-@media print
-	ul
-		display: none
-
 .floatRight
 	float: right
 
-//.rowSeparator
-	background: #888
-	height: 2px
-
-.classHeadingRow
-	background: #fdd
-
-//.capitalizeText
-	text-transform: capitalize
-
 //sort by red triangle
-.sortBy
+.sortBy, .classHeadingRow.separator :last-child
 	background: url(/v/sortby) no-repeat 3px 2px $lightGrey
 
 .legend
@@ -138,11 +133,3 @@ td
 .incompleteScore
 	background: $black
 	color: $white
-
-//.specialRow
-	//box-shadow: 0 -5px 0 red, 0 -10px 0 yellow, 0 -15px 0 green, 0 -20px 0 purple
-	//border-top: 20px solid orange
-	//padding-top: 5em
-	//margin-top: 5em
-	//border-spacing: 5em
-	border-bottom: 1em solid

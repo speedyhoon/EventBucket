@@ -1,36 +1,29 @@
 {{define "page"}}
-<a class=floatRight href=//eventbucket.com.au target=_blank><img src=/v/logo alt=EventBucket height=16>.com.au</a>
-<h1>{{.Event.Name}}</h1>
+	<a class=floatRight href=//eventbucket.com.au target=_blank><img src=/v/logo alt=EventBucket height=16 width=140>.com.au</a>
+	<h1>{{.Event.Name}}</h1>
+	{{$colspan := 4}}
 	<table>
 		{{range.Event.Shooters}}
 			{{if.ClassSeparator}}
-				<tr class=specialRow>
-					<td colspan=5 class=classHeadingRow>{{(grade .Grade).Name}}
+				<tr class="^classHeadingRow^ ^separator^">
+					<td colspan={{$colspan}}>{{(grade .Grade).Name}}
 					{{range $.Ranges}}
-						{{if eq .ID $.SortByRange}}
-							<td rowspan=2 class=sortBy>{{.Name}}
-						{{else}}
-							<td rowspan=2>{{.Name}}
-						{{end}}
+						<td{{/* rowspan=2*/}}>{{.Name}}
 					{{end}}
-				{{template "scoreboardHeader" $}}
+				{{/*template "scoreboardHeader" $*/}}
 			{{end}}
 			{{if and .GradeSeparator (not .ClassSeparator)}}
-				<tr class=classHeadingRow>
-					<td colspan=5>{{(grade .Grade).Name}}
+				<tr class="^classHeadingRow^ ^separator^">
+					<td colspan={{$colspan}}>{{(grade .Grade).Name}}
 					{{range $.Ranges}}
-						{{if eq .ID $.SortByRange}}
-							<td class=sortBy>{{.Name}}
-						{{else}}
-							<td>{{.Name}}
-						{{end}}
+						<td>{{.Name}}
 					{{end}}
 			{{end}}
 			<tr>
-				<td>
-				<td class=tc>{{.FirstName}} {{.Surname}}
-				<td>{{.ID}}
+				<td>1
+				<td>{{.FirstName}} {{.Surname}}
 				<td>{{.Club}}
+				<!--<td>{{.ID}}-->
 				<td>{{ageGroup .AgeGroup}}
 				{{$shooter := .}}
 				{{range $.Ranges}}
@@ -54,16 +47,16 @@
 				<label class=p2>2nd</label>
 				<label class=p3>3rd</label>
 	</table>
-	{{if.Event.Shooters}}
+	{{/*if.Event.Shooters}}
 		<script defer src=dirJS/scoreboard></script>
-	{{end}}
+	{{end*/}}
 {{end}}
 
 {{define "scoreboardHeader"}}
-	<tr>
+	<tr class=classHeadingRow>
 		<td>Pos
 		<td>Shooter
-		<td>ID
 		<td>Club
+		<!--<td>ID-->
 		<td>Age Group
 {{end}}
