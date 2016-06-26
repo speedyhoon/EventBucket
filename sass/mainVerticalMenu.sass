@@ -2,10 +2,8 @@
 $charcoal: #222
 $grey: #777
 $liteGrey: #cdd
-$blue: #08b
 $red: #c24
 $white: #fff
-$briteBlue: #08f
 //menu
 $margin: 1.5em
 $halfMargin: $margin/2
@@ -16,6 +14,9 @@ $fatBorder: $fatWidth solid
 $thinBorder: 1px solid
 body
 	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+
+section
+	margin-left: 1em
 
 //About images
 .builtWith
@@ -43,8 +44,8 @@ table
 		cursor: pointer
 
 .asc, .desc, legend u
-	border-color: $briteBlue
-	color: $briteBlue
+	border-color: $blue
+	color: $blue
 
 .asc
 	background: url(/v/asc) no-repeat right
@@ -56,7 +57,7 @@ table
 	background: url(/v/tick) no-repeat center
 
 section > form, table:not(.printCards)
-	margin: 1em 0
+	margin-bottom: 1em
 
 section > form, table
 	width: 100%
@@ -110,9 +111,9 @@ samp:not([hidden])
 
 button
 	background: transparent
-	border: $fatBorder $briteBlue
+	border: $fatBorder $blue
 	border-radius: $bigPadding
-	color: $briteBlue
+	color: $blue
 	cursor: pointer
 	padding: $bigPadding
 
@@ -140,17 +141,18 @@ form#edit:target
 		display: block
 		float: left
 		width: 100%
+		margin-bottom: .5em
 		div
 			display: inline-block
 			float: left
-			padding: $bigPadding $margin
+			padding: $bigPadding $margin $bigPadding 1em
 		ul
 			display: inline-block
 			float: left
 			list-style: none
 			margin: 0
 			padding: 0
-			width: calc(100% - $margin*2 - 190px)
+			width: calc(100% - #{$margin * 2} - 190px)
 
 		& > ul > li
 			display: inline-block
@@ -169,7 +171,7 @@ form#edit:target
 		li
 			ul
 				background: $background
-				box-shadow: .1em .1em 6px $briteBlue
+				box-shadow: .1em .1em 6px $blue
 				display: none
 				position: absolute
 				min-width: 100%
@@ -193,6 +195,9 @@ form#edit:target
 h1,h2,h3,h4
 	margin: 0
 
+h4
+	color: $base-color
+
 #map
 	height: 350px
 
@@ -200,7 +205,7 @@ h1,h2,h3,h4
 	font-size: .7em
 
 a, header li
-	color: $briteBlue
+	color: $blue
 	text-decoration: none
 
 .clear
@@ -260,7 +265,7 @@ a, header li
 	text-align: center
 
 abbr
-	color: $briteBlue
+	color: $blue
 	cursor: help
 	font-weight: 900
 	line-height: 1em
