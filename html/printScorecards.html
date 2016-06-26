@@ -6,7 +6,7 @@
 				{{$barcode := print $.Event.ID "/" .ID "#" $shooter.ID}}
 				<td rowspan=3 class=^centerPadding^>
 					<img class=barcode src=dirBarcode/q{{urlquery $barcode}} alt={{$barcode}}><br>
-					<strong><a href=/enter-totals-all/{{$barcode}}>{{$barcode}}</a></strong>
+					<strong>{{$barcode}}</strong>
 				<td>Event ID: {{$.Event.ID}}<td>{{$.Event.Name}}
 			<tr>
 				<td>Shooter ID: {{$shooter.ID}}<td>{{$shooter.FirstName}} {{$shooter.Surname}}
