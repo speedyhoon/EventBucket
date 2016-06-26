@@ -6,51 +6,43 @@ $liteGrey: #cdd
 $blue: #08b
 $red: #c24
 $white: #fff
+$briteBlue: #08f
 //menu
 $margin: 1.5em
+$halfMargin: $margin/2
 $menuPadding: $margin/6
 $bigPadding: $margin/3
 $fatWidth: 2px
 $fatBorder: $fatWidth solid
 $thinBorder: 1px solid
-@media not print
-	html
-		background: url(/v/shooter) bottom left no-repeat
-		background-attachment: fixed
-		background-size: 14em
-
 body
 	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
-
-section
-	padding: $margin/2 0 0 $margin
 
 //About images
 .builtWith
 	background: $white
 	display: inline-block
-	padding: .5em .5em .2em
+	padding: $bigPadding $bigPadding .2em
 	a
 		margin: .3em
+
+a:hover
+	color: $text
 
 //Tables
 table
 	border-collapse: collapse
 
-table:not(.printCards) tr
-	border-bottom: $thinBorder
-	padding: $bigPadding
-
-table
 	th, thead td
 		text-align: left
 		font-weight: 700
 
-table:not(.enterShots)
-	th:not(:empty)
-		cursor: pointer
-	th, thead td
-		border-bottom: $fatBorder
+	&:not(.printCards) tr
+		border-bottom: $thinBorder $m2
+
+	&:not(.enterShots)
+		th:not(:empty)
+			cursor: pointer
 
 .asc, .desc, legend u
 	color: $briteBlue
@@ -66,7 +58,7 @@ table:not(.enterShots)
 	background: url(/v/tick) no-repeat center
 
 section > form:not(:last-of-type), table:not(.printCards)
-	margin-bottom: $margin
+	margin-bottom: 1em
 
 section > form, table
 	width: 100%
@@ -81,7 +73,7 @@ fieldset
 		float: left
 
 	label:not(:last-child)
-		margin: 0 $margin $margin 0
+		margin: 0 $margin $menuPadding*3 0
 
 	input, select
 		display: block
@@ -141,12 +133,17 @@ form#edit:target
 
 //Horizontal Menu
 @media not print
+	html
+		background: url(/v/shooter) bottom left no-repeat
+		background-attachment: fixed
+		background-size: 14em
+
 	nav
 		display: block
 		float: left
 		width: 100%
 		div
-			padding: .5em 1.5em
+			padding: $bigPadding $margin
 			display: inline-block
 			float: left
 		ul
@@ -173,27 +170,30 @@ form#edit:target
 
 		li
 			ul
-				background: $white
+				background: $background
 				display: none
 				position: absolute
 				z-index: 1
 				min-width: 100%
-				box-shadow: .1em .1em 6px #0af
+				box-shadow: .1em .1em 6px $briteBlue
 
 		li:hover
-			& > a
-				color: $blue
 			ul
 				display: block
 				padding: .3em 0
 
+	legend
+		color: $grey
+
+	table:not(.scorecards):not(.printCards) tbody tr:nth-child(2n)
+		background: $m4
+
+	th.asc, th.desc
+		border-bottom: 1px solid
+
 //Text
 h1,h2,h3,h4
-	color: $grey
 	margin: 0
-
-h1,h2,h3
-	font-weight: 100
 
 #map
 	height: 350px
@@ -216,9 +216,6 @@ a, header li
 .center, .centerPadding
 	text-align: center
 
-//.loading
-//	background: url(/g/loading) center right no-repeat
-
 .barcode
 	width: 80px
 	image-rendering: pixelated
@@ -232,6 +229,7 @@ a, header li
 		display: inline-block
 		width: 100%
 		div
+			background: $background
 			border: $thinBorder
 			text-align: center
 			width: 130px
@@ -242,6 +240,7 @@ a, header li
 		font-size: 26px
 		line-height: 23px
 	p
+		border-bottom-color: $bgGrey
 		padding: 0 $bigPadding
 		text-decoration: none
 		border-bottom: $thinBorder
@@ -269,7 +268,7 @@ abbr
 	line-height: 1em
 
 @media print
-	nav, h1
+	nav
 		display: none
 
 	section

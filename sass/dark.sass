@@ -1,25 +1,33 @@
-$briteBlue: #0af
+$base-color: #888
+
+//Colours
+//$briteBlue: #0af
 $valid: #474
 $invalid:  #744
 $bgGrey: #445
 
+$background: darken($base-color, 100%)
+$text: lighten($base-color, 100%)
+$oddTableRowBackground: darken($base-color, 30%)
+
+$p1: lighten($base-color, 10%)
+$p2: lighten($base-color, 20%)
+$p3: lighten($base-color, 30%)
+$p4: lighten($base-color, 40%)
+
+$m1: darken($base-color, 10%)
+$m2: darken($base-color, 20%)
+$m3: darken($base-color, 30%)
+$m4: darken($base-color, 40%)
+
 @import "mainVerticalMenu"
-
-tr
-	border-bottom-color: $bgGrey
-
-th, thead td
-	border-bottom-color: $bgGrey
 
 @media not print
 	html
-		background-color: $black
-		color: $liteGrey
+		background-color: $background
+		color: $p3
 
 	//Forms
-	legend
-		color: $liteGrey
-
 	input, select
 		background: $bgGrey
 		border-color: $grey
@@ -28,33 +36,7 @@ th, thead td
 	fieldset
 		border-color: $bgGrey
 
-	//Headings
-	h1,h2,h3
-		color: $white
-
-	.events
-		div div
-			background: $black
-		time
-			background: $charcoal
-			border-color: $bgGrey
-		p
-			border-bottom-color: $bgGrey
-
-	table:not(.scorecards):not(.printCards) tbody tr:nth-child(2n)
-		background: $charcoal
-
-//Vertical Menus
-header
-	.visited, .open
-		color: $white
-		border-left-color: $white
-
-//Horizontal Menu
-nav li ul
-	background: $black
-
 //If Background graphics checkbox is ticked in the print window then the QR barcodes won't be scannable.
 .printCards
-	background: $white
-	color: $black
+	background: $text
+	color: $background
