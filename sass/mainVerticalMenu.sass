@@ -1,5 +1,4 @@
 //Colours
-$black: #000
 $charcoal: #222
 $grey: #777
 $liteGrey: #cdd
@@ -38,7 +37,7 @@ table
 		font-weight: 700
 
 	&:not(.printCards) tr
-		border-bottom: $thinBorder $m2
+		border-bottom: $thinBorder #555
 
 	&:not(.enterShots)
 		th:not(:empty)
@@ -186,10 +185,10 @@ form#edit:target
 		color: $grey
 
 	table:not(.scorecards):not(.printCards) tbody tr:nth-child(2n)
-		background: $m4
+		background: $charcoal
 
 	th.asc, th.desc
-		border-bottom: 1px solid
+		border-bottom: $thinBorder
 
 //Text
 h1,h2,h3,h4
