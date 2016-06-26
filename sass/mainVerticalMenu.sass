@@ -33,19 +33,18 @@ table
 	border-collapse: collapse
 
 	th, thead td
-		text-align: left
 		font-weight: 700
+		text-align: left
 
 	&:not(.printCards) tr
 		border-bottom: $thinBorder #555
 
-	&:not(.enterShots)
-		th:not(:empty)
-			cursor: pointer
+	&:not(.enterShots) th:not(:empty)
+		cursor: pointer
 
 .asc, .desc, legend u
-	color: $briteBlue
 	border-color: $briteBlue
+	color: $briteBlue
 
 .asc
 	background: url(/v/asc) no-repeat right
@@ -56,8 +55,8 @@ table
 .tick
 	background: url(/v/tick) no-repeat center
 
-section > form:not(:last-of-type), table:not(.printCards)
-	margin-bottom: 1em
+section > form, table:not(.printCards)
+	margin: 1em 0
 
 section > form, table
 	width: 100%
@@ -90,9 +89,9 @@ input, select
 
 [type=checkbox]
 	$size: 2.2em
-	width: $size
 	height: $size
 	margin: 0
+	width: $size
 
 ::-webkit-search-cancel-button
 	cursor: pointer
@@ -111,11 +110,11 @@ samp:not([hidden])
 
 button
 	background: transparent
-	color: $briteBlue
 	border: $fatBorder $briteBlue
-	padding: $bigPadding
 	border-radius: $bigPadding
+	color: $briteBlue
 	cursor: pointer
+	padding: $bigPadding
 
 \:focus
 	box-shadow: .2em .2em .3em $blue
@@ -142,16 +141,16 @@ form#edit:target
 		float: left
 		width: 100%
 		div
+			display: inline-block
+			float: left
 			padding: $bigPadding $margin
-			display: inline-block
-			float: left
 		ul
-			float: left
 			display: inline-block
-			width: calc(100% - 3em - 190px)
+			float: left
 			list-style: none
 			margin: 0
 			padding: 0
+			width: calc(100% - $margin*2 - 190px)
 
 		& > ul > li
 			display: inline-block
@@ -159,22 +158,22 @@ form#edit:target
 
 		ul
 			a
+				display: block
 				padding: .5em
 				text-align: center
-				display: block
 
 			ul a
-				padding: .3em 0
 				display: block
+				padding: .3em 0
 
 		li
 			ul
 				background: $background
+				box-shadow: .1em .1em 6px $briteBlue
 				display: none
 				position: absolute
-				z-index: 1
 				min-width: 100%
-				box-shadow: .1em .1em 6px $briteBlue
+				z-index: 1
 
 		li:hover
 			ul
@@ -201,8 +200,8 @@ h1,h2,h3,h4
 	font-size: .7em
 
 a, header li
-	text-decoration: none
 	color: $briteBlue
+	text-decoration: none
 
 .clear
 	clear: both
@@ -212,38 +211,38 @@ a, header li
 
 .bold
 	font-weight: bold
+
 .center, .centerPadding
 	text-align: center
 
 .barcode
-	width: 80px
 	image-rendering: pixelated
+	width: 80px
 
 .centerPadding
 	padding: 1em
 
 .events
 	div
-		margin-bottom: $bigPadding
 		display: inline-block
+		margin-bottom: $bigPadding
 		width: 100%
 		div
 			background: $background
 			border: $thinBorder
-			text-align: center
-			width: 130px
 			float: left
 			margin-right: $bigPadding
+			text-align: center
+			width: 130px
 	b
 		display: block
 		font-size: 26px
 		line-height: 23px
 	p
-		border-bottom-color: $bgGrey
+		border-bottom: $thinBorder $bgGrey
+		margin: 0
 		padding: 0 $bigPadding
 		text-decoration: none
-		border-bottom: $thinBorder
-		margin: 0
 
 #editRow tbody td:last-of-type:empty
 	background: url(/v/edit) center center no-repeat
@@ -255,15 +254,15 @@ a, header li
 .popup
 	background: url(/v/speechBubble) no-repeat
 	color: $white
-	position: absolute
 	padding: $margin $margin/2 $margin/2
+	position: absolute
 	right: 2*$margin
 	text-align: center
 
 abbr
 	color: $briteBlue
-	font-weight: 900
 	cursor: help
+	font-weight: 900
 	line-height: 1em
 
 @media print
@@ -284,7 +283,7 @@ abbr
 @import "enterShots"
 
 .arrows
-	display: inline-block
-	width: 1em
-	height: 1em
 	cursor: pointer
+	display: inline-block
+	height: 1em
+	width: 1em

@@ -1,5 +1,7 @@
 $black: #000
+$blue: #08f
 $lightGrey: #ccc
+$rose: #fdd
 $white: #fff
 $solidBorder: solid $black
 $thinBorder: 1px
@@ -22,16 +24,16 @@ table
 	border-spacing: 0
 	border-width: 0 $thinBorder $thinBorder 0
 	text-align: center
-	width: 100%
 	text-transform: capitalize
+	width: 100%
 
 td
-	padding: 0
 	border-width: $thinBorder 0 0 $thinBorder
+	padding: 0
 
 a
+	color: $blue
 	text-decoration: none
-	color: #08f
 
 @media print
 	ul
@@ -40,11 +42,11 @@ a
 //Horizontal Menu
 @media not print
 	.classHeadingRow
-		background: #fdd
+		background: $rose
 
 	.separator td
-		border-top-width: 7px
 		border-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAVCAYAAAB2Wd+JAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsIAAA7CARUoSoAAAAAwSURBVDhPY2RgYPgPxCQDxvr6erI0MkFpksEQ0kh2qI6EwBkJGkdzBx5AZu5gYAAA24kIG4re3CYAAAAASUVORK5CYII=") 7 1
+		border-top-width: 7px
 
 	ul
 		list-style: none
@@ -61,16 +63,16 @@ a
 			text-align: center
 
 		ul a
-			padding: .3em 0
 			display: block
+			padding: .3em 0
 
 	li
 		ul
 			background: $white
 			display: none
 			position: absolute
-			z-index: 1
 			min-width: 100%
+			z-index: 1
 
 	li:hover
 		ul
