@@ -1,48 +1,24 @@
-$briteBlue: #08f
+$base-color: #888
+
+//Colours
+//$briteBlue: #08f
 $valid: #dfd
 $invalid:  #fdd
 $bgGrey: #777
 $lightGrey: #ddd
 
+$background: lighten($base-color, 100%)
+$text: darken($base-color, 100%)
+$oddTableRowBackground: lighten($base-color, 30%)
+
+$p1: darken($base-color, 10%)
+$p2: darken($base-color, 20%)
+$p3: darken($base-color, 30%)
+$p4: darken($base-color, 40%)
+
+$m1: lighten($base-color, 10%)
+$m2: lighten($base-color, 20%)
+$m3: lighten($base-color, 30%)
+$m4: lighten($base-color, 40%)
+
 @import "mainVerticalMenu"
-
-html
-	background-color: $white
-	color: $black
-
-tr
-	border-bottom-color: $bgGrey
-
-th, thead td
-	border-bottom-color: $bgGrey
-
-//Forms
-legend
-	color: $bgGrey
-
-//Vertical Menus
-header
-	.visited, .open
-		color: $black
-		border-left-color: $black
-
-//Horizontal Menu
-nav li ul
-	background: $white
-
-//header ul ul ul,
-.events div div
-	background: $white
-
-h1,h2,h3
-	color: $black
-
-.events
-	time
-		background: $bgGrey
-		border-color: $bgGrey
-	p
-		border-bottom-color: $bgGrey
-
-table:not(.scorecards):not(.printCards) tbody tr:nth-child(2n)
-	background: $lightGrey
