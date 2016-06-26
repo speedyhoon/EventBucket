@@ -20,7 +20,7 @@
 					{{end}}
 			{{end}}
 			<tr>
-				<td>1
+				<td>1st
 				<td>{{.FirstName}} {{.Surname}}
 				<td>{{.Club}}
 				<!--<td>{{.ID}}-->
@@ -31,7 +31,7 @@
 						{{with index $shooter.Scores .StrID}}
 							{{if.Total}}
 								{{.Total}}
-								{{if.Centers}}<sup>{{.Centers}}{{end}}
+								{{with.Centers}}<sup>{{.}}{{end}}
 							{{end}}
 						{{end}}
 				{{end}}
