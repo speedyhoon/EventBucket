@@ -86,8 +86,7 @@ func pages() {
 	//post(pst, eventTotalScores, eventTotalUpsert)
 	post(pst, eventAvailableGrades, eventAvailableGradesUpsert)
 	//post(pst, eventUpdateShotScore, updateShotScores)
-	//post(pst, importShooter, importShooters)
-	http.HandleFunc("/17", importShooters)
+	http.HandleFunc("/17", importShooters) //Don't use normal form validation because a reusable file upload validation function hasn't been written yet.
 	post(get, mapResults, mapClubs)
 	post(pst, clubMoundEdit, editClubMound)
 	post(pst, eventUpdateRange, updateRange)
@@ -145,16 +144,20 @@ func gt(url string, formID uint8, runner func(http.ResponseWriter, *http.Request
 	})
 }
 
+//Start listening to each websocket client that connects.
 func processSocket(ws *websocket.Conn) {
-	//Start listening to each websocket client
 	var msg string
 	var command uint8
 	var err error
+	//Start a loop to listen to incoming websocket traffic from all clients.
 	for {
+		//Ignore any empty messages.
 		if websocket.Message.Receive(ws, &msg) != nil || len(msg) < 1 {
 			break
 		}
+		//The first character of the websocket message is used as a "router" to decide where to send the message.
 		command = uint8(msg[0])
+		//Ignore any messages that do not have a case in this switch.
 		switch command {
 		case eventTotalScores:
 			var form url.Values
@@ -187,8 +190,6 @@ func processSocket(ws *websocket.Conn) {
 				}
 				websocket.Message.Send(ws, fmt.Sprintf("!%U%s", msg[0], response))
 			}
-			//		case 125: //Scoreboard subscribe to updates
-			//			websocket.Message.Send(ws, `321` /*fmt.Sprintf("~%s", response)*/)
 		case 126: //getDisciplines:
 			var response []byte
 			response, err = json.Marshal(globalDisciplines)

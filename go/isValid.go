@@ -32,7 +32,6 @@ func listUint(f *field, inp ...string) {
 	}
 
 	f.valueUintSlice = list
-	return
 }
 
 func isValidUint(f *field, inp ...string) {
@@ -67,7 +66,6 @@ func isValidUint(f *field, inp ...string) {
 		f.Error = fmt.Sprintf("Please enter a valid value. The two nearest values are %d and %d.", below, below+uint(f.step))
 		return
 	}
-	return
 }
 
 func isValidFloat32(f *field, inp ...string) {
@@ -101,7 +99,6 @@ func isValidFloat32(f *field, inp ...string) {
 	}
 	f.Value = fmt.Sprintf("%v", num)
 	f.valueFloat32 = num
-	return
 }
 
 func toFixed(num /*, precision*/ float64) float32 {
@@ -135,40 +132,14 @@ func isValidStr(f *field, inp ...string) {
 	if length > f.maxLen {
 		//Truncate string instead of raising an error
 		f.Value = f.Value[:f.maxLen]
-		//f.Error = fmt.Sprintf("Please shorten this text to %d characters or less (you are currently using %d character%v).", f.maxLen, length, plural(length))
-		//return
 	}
-
-	//Check value matches one of the options (optional).
-	/*if len(f.Options) > 0 {
-		matched := false
-		for _, option := range f.Options {
-			matched = option.Value == f.Value
-			if matched {
-				break
-			}
-		}
-		if !matched {
-			f.Error = "Value doesn't match any of the options"
-			return
-		}
-	}*/
-	return
 }
 
 func isValidRegex(f *field, inp ...string) {
-	//>> Developer check
-	if f.regex == nil {
-		t.Println("missing regex for field:", f.name)
-		f.Error = "Missing regex to check against."
-		return
-	} //<<
-
 	f.Value = strings.TrimSpace(inp[0])
 	if !f.regex.MatchString(f.Value) {
 		f.Error = "ID supplied is incorrect."
 	}
-	return
 }
 
 func isValidBool(f *field, inp ...string) {
@@ -176,7 +147,6 @@ func isValidBool(f *field, inp ...string) {
 	if f.Required && !f.Checked {
 		f.Error = "Please check this field."
 	}
-	return
 }
 
 func plural(length int, single, multiple string) string {

@@ -149,8 +149,8 @@ func defaultGlobalDisciplines() []Discipline {
 			//TODO sort isn't sorting by countback 2 descending.
 			//TODO precedence is taken over the last X shot rather than the most X's shot
 		}}
-	/*Disciplines F Standard, F Open and F/TR have been merged together because they all use the same scoring method (0123456X). Although they are technically separate disciplines, most events assign the same number of shots and sighters for all three.  If the disciplines need to be independent, these settings can be overwritten using the command line flag -grades and specifying a JSON settings file. e.g. EventBucket.exe -grades my_new_grades.json
-	EventBucket will not import or remember the settings file next time you start the application. Adding command line flags to an EventBucket shortcut is the easiest way to specify settings every time EventBucket is started.*/
+	//Disciplines F Standard, F Open and F/TR have been merged together because they all use the same scoring method (0123456X). Although they are technically separate disciplines, most events assign the same number of shots and sighters for all three.  If the disciplines need to be independent, these settings can be overwritten using the command line flag -grades and specifying a JSON settings file. e.g. EventBucket.exe -grades my_new_grades.json
+	//EventBucket will not import or remember the settings file next time you start the application. Adding command line flags to an EventBucket shortcut is the easiest way to specify settings every time EventBucket is started.
 	return []Discipline{{
 		ID:          0,
 		Name:        "Target Rifle",
@@ -256,7 +256,7 @@ func loadGrades(filePath string) error {
 	err = json.Unmarshal(contents, &disciplines)
 	if err != nil {
 		//Unable to unmarshal settings from JSON file.
-		warn.Println("error:", err)
+		warn.Println(err)
 		return fmt.Errorf("Error: %v, File: %v", err, filePath)
 	}
 	info.Println("Loaded grade settings from:", filePath)
@@ -269,7 +269,7 @@ func buildGradesFile(filePath string) error {
 	src, err := json.MarshalIndent(globalDisciplines, "", "\t")
 	if err != nil {
 		//Output marshal errors
-		warn.Println("error:", err)
+		warn.Println(err)
 	}
 	if !strings.HasSuffix(filePath, ".json") {
 		filePath += ".json"
