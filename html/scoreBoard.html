@@ -8,9 +8,8 @@
 				<tr class="^classHeadingRow^ ^separator^">
 					<td colspan={{$colspan}}>{{(grade .Grade).Name}}
 					{{range $.Ranges}}
-						<td{{/* rowspan=2*/}}>{{.Name}}
+						<td>{{.Name}}
 					{{end}}
-				{{/*template "scoreboardHeader" $*/}}
 			{{end}}
 			{{if and .GradeSeparator (not .ClassSeparator)}}
 				<tr class="^classHeadingRow^ ^separator^">
@@ -23,7 +22,6 @@
 				<td>1st
 				<td>{{.FirstName}} {{.Surname}}
 				<td>{{.Club}}
-				<!--<td>{{.ID}}-->
 				<td>{{ageGroup .AgeGroup}}
 				{{$shooter := .}}
 				{{range $.Ranges}}
@@ -36,27 +34,5 @@
 						{{end}}
 				{{end}}
 		{{end}}
-		<tr>
-			<td colspan={{.Colspan}} class=legend>
-				Legend: <label class=sortBy>Sorted By</label>
-				<label class=noScore>Missing Score</label>
-				<label class=incompleteScore>Incomplete Score</label>
-				<label class=shootOff>Shoot Off</label>
-				<label class=highestPossibleScore>Highest Possible Score</label>
-				<label class=p1>1st</label>
-				<label class=p2>2nd</label>
-				<label class=p3>3rd</label>
 	</table>
-	{{/*if.Event.Shooters}}
-		<script defer src=dirJS/scoreboard></script>
-	{{end*/}}
-{{end}}
-
-{{define "scoreboardHeader"}}
-	<tr class=classHeadingRow>
-		<td>Pos
-		<td>Shooter
-		<td>Club
-		<!--<td>ID-->
-		<td>Age Group
 {{end}}
