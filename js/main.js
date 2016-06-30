@@ -14,7 +14,7 @@ for(var n = document.forms.length; n--;){
 
 function tableSort(th){
 	th = th.target;
-	/*If th.textContent == id compare using base36 else use textContent */
+	//If th.textContent == id compare using base36 else use textContent
 	var tbody = th.parentElement.parentElement.parentElement.querySelector('tbody'),
 		column = Array.prototype.indexOf.call(th.parentElement.children, th),
 		direction = th.className === '^asc^' ? -1 : 1,
@@ -66,6 +66,7 @@ document.onclick = function(event){
 	}
 };
 
+//Start event listeners that add a class to form fields based on their valid/invalid values that changes the background color.
 function initInputs(){
 	var inputs = document.getElementsByTagName('input'), i = inputs.length, flagClass = function(evt){
 		evt.srcElement.classList.toggle('^dirty^', true);

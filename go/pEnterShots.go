@@ -59,17 +59,11 @@ func enterShots(w http.ResponseWriter, r *http.Request, showAll bool, parameters
 func updateShotScores( /*w http.ResponseWriter, r *http.Request,*/ fields []field /*, redirect func()*/) string {
 	event, err := getEvent(fields[1].Value)
 	if err != nil {
-		//		fmt.Fprintf(w, "Event with id %v doesn't exist", fields.Fields[1].Value)
-		//		http.NotFound(w, r)
-		//		return
 		return fmt.Sprintf("Event with id %v doesn't exist", fields[1].Value)
 	}
 
 	shooterID := fields[3].valueUint
 	if shooterID != event.Shooters[shooterID].ID {
-		//		fmt.Fprintf(w, "Shooter with id %v doesn't exist in Event with id %v", shooterID, event.ID)
-		//		http.NotFound(w, r)
-		//		return
 		return fmt.Sprintf("Shooter with id %v doesn't exist in Event with id %v", shooterID, event.ID)
 	}
 	shooter := event.Shooters[shooterID]
@@ -85,8 +79,6 @@ func updateShotScores( /*w http.ResponseWriter, r *http.Request,*/ fields []fiel
 
 	//Display any upsert errors onscreen.
 	if err != nil {
-		//		fmt.Fprint(w, err.Error())
-		//		return
 		return err.Error()
 	}
 
@@ -94,11 +86,8 @@ func updateShotScores( /*w http.ResponseWriter, r *http.Request,*/ fields []fiel
 
 	//Return the score to the client
 	if newScore.Centers == 0 {
-		//		fmt.Fprint(w, newScore.Total)
-		//		return
 		score = fmt.Sprintf("%v", newScore.Total)
 	} else {
-		//	fmt.Fprintf(w, "%v<sup>%v</sup>", newScore.Total, newScore.Centers)
 		score = fmt.Sprintf("%v<sup>%v</sup>", newScore.Total, newScore.Centers)
 	}
 	data := struct {
@@ -146,29 +135,3 @@ func calcTotalCenters(shots string, classID uint) Score {
 	}*/
 	return Score{Total: total, Centers: centers, Shots: shots, CountBack: countBack /*, warning: warning*/}
 }
-
-/*
-func updateShotScores2(w http.ResponseWriter, r *http.Request) {
-	validatedValues := checkForm(startShootingForm("", "", "", "").inputs, r)
-	rangeID, rangeErr := strconv.Atoi(validatedValues["rangeid"])
-	shooterID, shooterErr := strconv.Atoi(validatedValues["shooterid"])
-	event, eventErr := getEvent(validatedValues["eventid"])
-
-	//Check the score can be saved
-	if rangeErr != nil || shooterErr != nil || eventErr != nil || rangeID >= len(event.Ranges) || event.Ranges[rangeID].Locked || event.Ranges[rangeID].IsAgg {
-		http.NotFound(w, r)
-		return
-	}
-
-	//Calculate the score based on the shots given
-	newScore := calcTotalCenters(validatedValues["shots"], grades()[event.Shooters[shooterID].Grade].classID)
-
-	//Return the score to the client
-	if newScore.Centers > 0 {
-		fmt.Fprintf(w, "%v<sup>%v</sup>", newScore.Total, newScore.Centers)
-	} else {
-		fmt.Fprintf(w, "%v", newScore.Total)
-	}
-
-	go triggerScoreCalculation(newScore, rangeID, event.Shooters[shooterID], event)
-}*/

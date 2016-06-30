@@ -85,8 +85,8 @@ func shooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, r
 	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 }
 
-func importShooters(w http.ResponseWriter, r *http.Request /*, submittedForm form, redirect func()*/) {
-	//r.ParseMultipartForm(32 << 20)
+func importShooters(w http.ResponseWriter, r *http.Request) {
+	//Form validation doesn't yet have a
 	file, _, err := r.FormFile("f")
 	if err != nil {
 		warn.Println(err)
@@ -109,7 +109,7 @@ func importShooters(w http.ResponseWriter, r *http.Request /*, submittedForm for
 	}
 
 	var clubID string
-	//Insert each shooter into database. //TODO look into batch writing
+	//Insert each shooter into database. //TODO look into using a batch write to update the database.
 	for _, shooter := range shooters {
 		if shooter.Club != "" {
 			clubID, err = clubInsertIfMissing(shooter.Club)
