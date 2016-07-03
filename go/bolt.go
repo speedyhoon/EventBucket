@@ -469,8 +469,7 @@ SearchNextGrade:
 		}
 
 		//Assign shooter ID
-		linkedID := event.AutoInc.Shooter
-		shooter.ID = linkedID
+		shooter.ID = event.AutoInc.Shooter
 		shooter.Grade = gradeID
 		event.Shooters = append(event.Shooters, shooter)
 
@@ -481,10 +480,10 @@ SearchNextGrade:
 		for _, grade := range globalGrades[gradeID].DuplicateTo {
 			//Don't add the shooter because they have already selected to enter into the duplicate grade.
 			if !containsUint(newShooter.Grade, grade) {
+				shooter.LinkedID = shooter.ID
 				shooter.ID = event.AutoInc.Shooter
 				shooter.Grade = grade
 				shooter.Hidden = true
-				shooter.LinkedID = linkedID
 				event.Shooters = append(event.Shooters, shooter)
 				event.AutoInc.Shooter++
 			}

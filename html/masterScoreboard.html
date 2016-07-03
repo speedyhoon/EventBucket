@@ -3,6 +3,7 @@
 <title>EventBucket{{with .Page.Title}} - {{.}}{{end}}</title>
 {{with (index .Menu 0).SubMenu}}
 	<ul>
+		<li><a href=/>Events</a>
 		{{range.}}
 			{{if and (not .RangeMenu) (not .Hidden)}}
 				<li><a href={{.Link}}{{$.Page.MenuID}}>{{.Name}}</a>

@@ -103,9 +103,9 @@ func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm fo
 		Surname:   submittedForm.Fields[1].Value,
 		Club:      submittedForm.Fields[2].Value,
 		ClubID:    clubID,
-		Grade:     submittedForm.Fields[4].valueUintSlice,
-		AgeGroup:  submittedForm.Fields[5].valueUint,
-		Ladies:    submittedForm.Fields[6].Checked,
+		AgeGroup:  submittedForm.Fields[4].valueUint,
+		Ladies:    submittedForm.Fields[5].Checked,
+		Grade:     submittedForm.Fields[6].valueUintSlice,
 	}
 	//Insert shooter into Shooter Bucket
 	shooterID, err := insertShooter(shooter)
