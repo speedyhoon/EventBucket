@@ -4,14 +4,7 @@
 	{{$colspan := 4}}
 	<table>
 		{{range.Event.Shooters}}
-			{{if.ClassSeparator}}
-				<tr class="^classHeadingRow^ ^separator^">
-					<td colspan={{$colspan}}>{{(grade .Grade).Name}}
-					{{range $.Ranges}}
-						<td>{{.Name}}
-					{{end}}
-			{{end}}
-			{{if and .GradeSeparator (not .ClassSeparator)}}
+			{{if .GradeSeparator}}
 				<tr class="^classHeadingRow^ ^separator^">
 					<td colspan={{$colspan}}>{{(grade .Grade).Name}}
 					{{range $.Ranges}}
@@ -19,7 +12,7 @@
 					{{end}}
 			{{end}}
 			<tr>
-				<td>1st
+				<td>{{(index .Scores $.SortByRange).Ordinal}}
 				<td>{{.FirstName}} {{.Surname}}
 				<td>{{.Club}}
 				<td>{{ageGroup .AgeGroup}}

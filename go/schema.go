@@ -76,36 +76,25 @@ type Score struct {
 	CountBack  string `json:"v,omitempty"`
 	CountBack2 string `json:"x,omitempty"`
 	ShootOff   uint   `json:"h,omitempty"`
-	//position   int    `json:"-"` //Used for scoreboard only.
-	//warning    uint8  `json:"-"` //Used for scoreboard only.
-	//Ordinal    string `json:"o,omitempty"`
-	//Info       string `json:"i,omitempty"`
+	Ordinal    string `json:"-"` //Used for scoreboard only.
 }
 
 //EventShooter is exported
 type EventShooter struct {
-	ID        uint             `json:"I"`
-	FirstName string           `json:"f"`
-	Surname   string           `json:"s"`
-	Club      string           `json:"C,omitempty"`
-	ClubID    string           `json:"c,omitempty"`
-	Grade     uint             `json:"g,omitempty"`
-	Hidden    bool             `json:"h,omitempty"`
-	AgeGroup  uint             `json:"r,omitempty"`
-	Scores    map[string]Score `json:"S,omitempty"` //Using string instead of uint as an index because JSON doesn't support map[uint]Score
-	LinkedID  uint             `json:"l,omitempty"` //For duplicating shooters that are in different classes with the same score
-	EID       string           `json:"M,omitempty"` //Points to EventBucket Shooter ID
-	Disabled  bool             `json:"d,omitempty"`
-	Ladies    bool             `json:"x,omitempty"`
-	position  string           `json:"-"` //Used for scoreboard only.
-	warning   uint8            `json:"-"` //Used for scoreboard only.
-	//0 = nil
-	//1 = shoot off
-	//2 = no score
-	//3 = incomplete
-	//4 = highest possible score
-	GradeSeparator bool `json:"-"` //Used for enterShots and enterRangeTotals only.
-	ClassSeparator bool `json:"-"` //Used for enterShots and enterRangeTotals only.
+	ID             uint             `json:"I"`
+	FirstName      string           `json:"f"`
+	Surname        string           `json:"s"`
+	Club           string           `json:"C,omitempty"`
+	ClubID         string           `json:"c,omitempty"`
+	Grade          uint             `json:"g,omitempty"`
+	Hidden         bool             `json:"h,omitempty"`
+	AgeGroup       uint             `json:"r,omitempty"`
+	Scores         map[string]Score `json:"S,omitempty"` //Using string instead of uint as an index because JSON doesn't support map[uint]Score
+	LinkedID       uint             `json:"l,omitempty"` //For duplicating shooters that are in different classes with the same score
+	EID            string           `json:"M,omitempty"` //Points to EventBucket Shooter ID
+	Disabled       bool             `json:"d,omitempty"`
+	Ladies         bool             `json:"x,omitempty"`
+	GradeSeparator bool             `json:"-"` //Used for enterShots and enterRangeTotals only.
 }
 
 //Shooter is exported

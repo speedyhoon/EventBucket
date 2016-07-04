@@ -96,7 +96,7 @@ var (
 			Link: urlAbout,
 		}, {
 			Name: "Licence",
-			Link: urlLicence,
+			Link: "/" + urlLicence,
 		}},
 	}
 )
@@ -155,7 +155,9 @@ var (
 			}
 			return ""
 		},
-		"ordinal": ordinal,
+		"ordinal": func(x int) string {
+			return ordinal(uint(x), false)
+		},
 		"findRange": func(id interface{}, ranges []Range) Range {
 			var rangeID uint
 			switch id.(type) {
