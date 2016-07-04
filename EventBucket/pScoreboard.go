@@ -1,7 +1,6 @@
 package main
 
 import (
-	"math"
 	"net/http"
 	"strings"
 )
@@ -18,20 +17,16 @@ func scoreboard(w http.ResponseWriter, r *http.Request, parameters string) {
 	}
 
 	rangeID, err := stoU(ids[1])
-	if err != nil {
+	var ranges []Range
+	if err == nil {
+		ranges = findAggs(rangeID, event.Ranges)
+	}
+	if len(ranges) < 1 {
 		errorHandler(w, r, http.StatusNotFound, "range")
 		return
 	}
 
 	sortShooters(ids[1]).Sort(event.Shooters)
-
-	event.Shooters = addGradeSeparatorToShooterObject(event.Shooters)
-
-	ranges := findAggs(rangeID, event.Ranges)
-	if len(ranges) < 1 {
-		errorHandler(w, r, http.StatusNotFound, "range")
-		return
-	}
 
 	templater(w, page{
 		Title:    "Scoreboard",
@@ -42,29 +37,10 @@ func scoreboard(w http.ResponseWriter, r *http.Request, parameters string) {
 		Data: map[string]interface{}{
 			"Event":       event,
 			"Ranges":      ranges,
-			"SortByRange": rangeID,
+			"SortByRange": ids[1],
 			"Colspan":     5 + len(ranges),
 		},
 	})
-}
-
-func addGradeSeparatorToShooterObject(eventShooters []EventShooter) []EventShooter {
-	//Add a boolean field to each shooter in a list of ordered shooters and is true for the first shooter that has a different grade than the last
-	var previousShooterGrade uint = math.MaxUint32
-	var previousShooterClass uint = math.MaxUint32
-
-	for shooterID := range eventShooters {
-		if eventShooters[shooterID].Grade != previousShooterGrade {
-			eventShooters[shooterID].GradeSeparator = true
-			previousShooterGrade = eventShooters[shooterID].Grade
-
-			if globalGrades[eventShooters[shooterID].Grade].ClassID != previousShooterClass {
-				eventShooters[shooterID].ClassSeparator = true
-				previousShooterClass = globalGrades[eventShooters[shooterID].Grade].ClassID
-			}
-		}
-	}
-	return eventShooters
 }
 
 func findAggs(rangeID uint, ranges []Range) []Range {
