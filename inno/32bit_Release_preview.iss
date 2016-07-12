@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "EventBucket"
-#define MyAppVersion "3.0 Release Preview"
+#define MyAppVersion "3.0"
 #define MyAppURL "http://www.eventbucket.com.au/"
 #define MyAppExeName "EventBucket.exe"
 #define Z "\\camtop\EventBucket"
