@@ -59,18 +59,15 @@ func getDocument(bucketName []byte, ID string, result interface{}) error {
 	return err
 }
 
-func getEvent(ID string) (Event, error) {
-	var event Event
+func getEvent(ID string) (event Event, err error) {
 	return event, getDocument(tblEvent, ID, &event)
 }
 
-func getClub(ID string) (Club, error) {
-	var club Club
+func getClub(ID string) (club Club, err error) {
 	return club, getDocument(tblClub, ID, &club)
 }
 
-func getShooter(ID string) (Shooter, error) {
-	var shooter Shooter
+func getShooter(ID string) (shooter Shooter, err error) {
 	return shooter, getDocument(tblShooter, ID, &shooter)
 }
 
@@ -94,7 +91,7 @@ func insertEvent(event Event) (string, error) {
 		var id []byte
 		b36, id = nextID(bucket)
 		//Generate ID for the user.
-		//This returns an error only if the Tx is closed or not writeable.
+		//This returns an error only if the Tx is closed or not writable.
 		//That can't happen in an Update() call so I ignore the error check.
 		event.ID = b36
 
@@ -122,7 +119,7 @@ func insertClub(club Club) (string, error) {
 		var id []byte
 		b36, id = nextID(bucket)
 		//Generate ID for the user.
-		//This returns an error only if the Tx is closed or not writeable.
+		//This returns an error only if the Tx is closed or not writable.
 		//That can't happen in an Update() call so I ignore the error check.
 		club.ID = b36
 		//Marshal user data into bytes.
@@ -145,7 +142,7 @@ func insertShooter(shooter Shooter) (string, error) {
 		var id []byte
 		b36, id = nextID(bucket)
 		//Generate ID for the user.
-		//This returns an error only if the Tx is closed or not writeable.
+		//This returns an error only if the Tx is closed or not writable.
 		//That can't happen in an Update() call so I ignore the error check.
 		shooter.ID = b36
 		//Marshal user data into bytes.
