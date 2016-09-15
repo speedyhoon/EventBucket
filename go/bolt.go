@@ -557,7 +557,7 @@ func calcShooterAgg(aggRangeIDs []uint, shooterScores map[string]Score) Score {
 	}
 }
 
-//Converts base36 string to binary used for bolt maps
+//Converts base36 string to []byte used for bolt maps
 func b36toBy(id string) ([]byte, error) {
 	num, err := strconv.ParseUint(id, 36, 64)
 	if err != nil {
