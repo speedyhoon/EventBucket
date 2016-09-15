@@ -104,7 +104,7 @@ var (
 var (
 	templateFuncMap = template.FuncMap{
 		"hasindex": func(inputs []field, index int) *field {
-			if index < len(inputs) && index >= 0 {
+			if index < len(inputs) {
 				return &inputs[index]
 			}
 			return nil
@@ -188,7 +188,7 @@ var (
 )
 
 func templater(w http.ResponseWriter, page page) {
-	//Add HTTP headers so browsers don't cache the HTML resource because it can contain different content every request.
+	//Add HTTP headers so browsers don't cache the HTML resource because it may contain different content every request.
 	headers(w, nocache)
 	if page.template == 25 {
 		page.template = 0
