@@ -7,8 +7,7 @@ import (
 )
 
 func validPost(r *http.Request, fields []field) ([]field, bool) {
-	err := r.ParseForm()
-	if err != nil {
+	if err := r.ParseForm(); err != nil {
 		warn.Println(err)
 		return fields, false
 	}
