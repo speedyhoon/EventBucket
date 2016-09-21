@@ -35,17 +35,18 @@ func eventReportPage(w http.ResponseWriter, r *http.Request, eventID, title stri
 }
 
 func shooterReport(w http.ResponseWriter, r *http.Request, parameters string) {
+	//eventID/shooterID
 	ids := strings.Split(parameters, "/")
-	eventID := ids[0]
 
-	event, err := getEvent(eventID)
-	//If event not found in the database return error event not found (404).
+	event, err := getEvent(ids[0]) //eventID
+	//If event not found in the database, return error event not found (404).
 	if err != nil {
 		errorHandler(w, r, http.StatusNotFound, "event")
 		return
 	}
 
-	shooterID, err := strconv.Atoi(ids[1])
+	shooterID, err := strconv.Atoi(ids[1]) //shooterID string
+	//If shooter not available in the event, return error shooter not found (404).
 	if err != nil || shooterID >= len(event.Shooters) {
 		errorHandler(w, r, http.StatusNotFound, "shooter")
 		return
@@ -54,7 +55,7 @@ func shooterReport(w http.ResponseWriter, r *http.Request, parameters string) {
 	templater(w, page{
 		Title:   "Shooter Report",
 		Menu:    urlEvents,
-		MenuID:  eventID,
+		MenuID:  ids[0], //eventID
 		Heading: event.Name,
 		Data: map[string]interface{}{
 			"Event":   event,
