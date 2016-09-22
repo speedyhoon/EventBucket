@@ -10,7 +10,7 @@ func shooters(w http.ResponseWriter, r *http.Request, submittedForm form, isVali
 	_, pageForms := sessionForms(w, r, shooterNew, importShooter)
 	shooters, shooterQty, err := getSearchShooters(submittedForm.Fields[0].Value, submittedForm.Fields[1].Value, submittedForm.Fields[2].Value)
 
-	//Search for shooters in the default club if EventBucket was not started in debug mode & all values are empty.
+	//Search for shooters in the default club if all values are empty.
 	if submittedForm.Fields[0].Value == "" && submittedForm.Fields[1].Value == "" && submittedForm.Fields[2].Value == "" {
 		defaultClub := defaultClubName()
 		submittedForm.Fields[2].Value = defaultClub
