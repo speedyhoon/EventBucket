@@ -75,8 +75,9 @@ func purgeOldSessions() {
 	if qty == 0 {
 		return
 	}
+
+	t.Println("About to purge sessions, qty", qty)
 	globalSessions.Lock()
-	t.Println("About to purge sessions, qty", len(globalSessions.m))
 	for sessionID := range globalSessions.m {
 		if globalSessions.m[sessionID].expiry.Before(time.Now()) {
 			delete(globalSessions.m, sessionID)
@@ -127,8 +128,7 @@ func sessionForms(w http.ResponseWriter, r *http.Request, formActions ...uint8) 
 	return 0, getForms(formActions...)
 }
 
-func getForms(formActions ...uint8) []form {
-	var forms []form
+func getForms(formActions ...uint8) (forms []form) {
 	for _, action := range formActions {
 		forms = append(forms, form{Fields: getForm(action)})
 	}
