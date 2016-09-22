@@ -57,3 +57,12 @@ func isValid(urlValues url.Values, fields []field) ([]field, bool) {
 	}
 	return fields, valid
 }
+
+//Converts numeric string to uint
+func stoU(id string) (uint, error) {
+	u, err := strconv.ParseUint(strings.TrimSpace(id), 10, systemArch)
+	if err != nil {
+		warn.Printf("Unable to convert %v to uint", id)
+	}
+	return uint(u), err
+}
