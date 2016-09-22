@@ -43,8 +43,7 @@ func scoreboard(w http.ResponseWriter, r *http.Request, parameters string) {
 	})
 }
 
-func findAggs(rangeID uint, ranges []Range) []Range {
-	var rs []Range
+func findAggs(rangeID uint, ranges []Range) (rs []Range) {
 	for _, r := range ranges {
 		if r.ID == rangeID {
 			if r.IsAgg {
