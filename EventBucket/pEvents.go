@@ -43,15 +43,14 @@ func about(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-//localIP returns the non loopback local IPv4 of the host
-func localIPs() []string {
-	var localIPs []string
+//localIPs returns the non loopback local IPv4 of the host
+func localIPs() (localIPs []string) {
 	addrs, err := net.InterfaceAddrs()
 	if err == nil {
 		var ipnet *net.IPNet
 		var ok bool
 		for _, address := range addrs {
-			//check the address type and if it is not a loopback the display it
+			//Check the address type is not localhost or a loopback address
 			ipnet, ok = address.(*net.IPNet)
 			if ok && !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil && !strings.HasPrefix(ipnet.IP.String(), "169.254.") {
 				localIPs = append(localIPs, ipnet.IP.String())
