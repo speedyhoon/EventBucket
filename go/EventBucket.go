@@ -85,7 +85,6 @@ func main() {
 	db, err = bolt.Open(dbPath, 0644, nil)
 	if err != nil {
 		warn.Println(err)
-		db.Close()
 		os.Exit(4)
 	}
 	defer db.Close()
