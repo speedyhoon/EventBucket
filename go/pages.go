@@ -21,7 +21,7 @@ const (
 	urlAbout    = "/about"
 	urlArchive  = "/archive"
 	urlClubs    = "/clubs"
-	urlLicence  = "licence.txt"
+	urlLicense  = "/license"
 	urlShooters = "/shooters"
 	//GET with PARAMETERS
 	urlClub            = "/club/"             //clubID
@@ -47,8 +47,8 @@ var (
 )
 
 func pages() {
-	serveFile("favicon.ico")
-	serveFile(urlLicence)
+	serveFile("/favicon.ico")
+	serveFile(urlLicense)
 	serveDir(dirCSS, true)
 	serveDir(dirJS, true)
 	serveDir(dirSVG, true)
