@@ -1,4 +1,5 @@
 {{define "page"}}
+	{{$medalsLimit := 3}}
 	<a class=floatRight href=//eventbucket.com.au target=_blank><img src=/v/logo alt=EventBucket height=16 width=140>.com.au</a>
 	<h1>{{.Event.Name}}</h1>
 	{{$colspan := 4}}
@@ -18,8 +19,13 @@
 				<td>{{ageGroup .AgeGroup}}
 				{{$shooter := .}}
 				{{range $.Ranges}}
-					<td>
-						{{with index $shooter.Scores .StrID}}
+					{{$score := index $shooter.Scores .StrID}}
+					{{if and $score.Total (le $score.Position $medalsLimit)}}
+						<td class=p{{$score.Position}}>
+					{{else}}
+						<td>
+					{{end}}
+						{{with $score}}
 							{{if.Total}}
 								{{.Total}}
 								{{with.Centers}}<sup>{{.}}{{end}}
