@@ -175,3 +175,19 @@ func formError(w http.ResponseWriter, submittedForm form, redirect func(), err e
 	setSession(w, submittedForm)
 	redirect()
 }
+
+/*//Update the expires http header time, every 15 minutes rather than recalculating it on every http request.
+func maintainExpiresTime() {
+	ticker := time.NewTicker(time.Minute * 15)
+	for range ticker.C {
+		//Can't directly change global variables in a go routine, so call an external function.
+		setExpiresTime()
+	}
+}
+
+//Set expiry date 1 year, 0 months & 0 days in the future.
+func setExpiresTime() {
+	//Date format is the same as Go`s time.RFC1123 but uses "GMT" timezone instead of "UTC" time standard.
+	cacheExpires = time.Now().UTC().AddDate(1, 0, 0).Format(formatGMT)
+	//w3.org: "All HTTP date/time stamps MUST be represented in Greenwich Mean Time" under 3.3.1 Full Date //www.w3.org/Protocols/rfc2616/rfc2616-sec3.html
+}*/
