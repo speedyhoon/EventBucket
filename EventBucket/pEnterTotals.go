@@ -69,8 +69,9 @@ func eventTotalUpsert(fields []field) string {
 		rangeID: fields[3].Value,
 		id:      fields[4].valueUint,
 		score: Score{
-			Total:   fields[0].valueUint,
-			Centers: fields[1].valueUint,
+			Total:    fields[0].valueUint,
+			Centers:  fields[1].valueUint,
+			ShootOff: fields[5].valueUint,
 		}}, &Event{}, upsertScore)
 
 	//Return any upsert errors onscreen.
