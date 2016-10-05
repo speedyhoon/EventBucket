@@ -17,6 +17,7 @@ const (
 	cGzip          = "gzip"
 	acceptEncoding = "Accept-Encoding"
 	csp            = "Content-Security-Policy"
+	formatGMT      = "Mon, 02 Jan 2006 15:04:05 GMT"	//Date format
 )
 
 func serveFile(fileName string) {
