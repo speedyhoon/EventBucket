@@ -1,4 +1,4 @@
-//go:generate goversioninfo -icon=EventBucket4.ico
+//go:generate goversioninfo -icon="..\icon\app.ico"
 
 package main
 
@@ -30,16 +30,13 @@ var (
 	warn = log.New(os.Stderr, "WARN: ", log.Lshortfile)
 )
 
-//Date format
-const formatGMT = "Mon, 02 Jan 2006 15:04:05 GMT"
-
 func init() {
 	//go maintainExpiresTime()
 
 	//Command line flags
 	flag.StringVar(&dbPath, "dbpath", filepath.Join(os.Getenv("ProgramData"), `EventBucket`), "Directory for datafiles.")
 	flag.BoolVar(&debug, "debug", false, "Turn on debugging and turn off HTML file caching & club maps.")
-	flag.BoolVar(&masterTemplate.Theme, "dark", false, "Switch EventBucket to use the dark theme for night shooting")
+	flag.BoolVar(&masterTemplate.Theme, "dark", false, "Switch EventBucket to use a dark theme for night shooting")
 	gradesFilePath := flag.String("grades", "", "Load grade settings from a JSON file. If the file doesn't exist, EventBucket will try to create it & exit")
 	port := flag.Uint("port", 80, "Assign a differnet port number for the HTTP server. Range: 1 through 65535. Some port numbers may already be in use on this system.")
 	flag.Parse()
