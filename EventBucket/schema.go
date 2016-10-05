@@ -49,6 +49,8 @@ type Event struct {
 	Shooters []EventShooter `json:"S,omitempty"`
 	Closed   bool           `json:"z,omitempty"`
 	Grades   []uint         `json:"g,omitempty"`
+	/*TeamCats map[string]TeamCats `json:"A,omitempty"`
+	Teams    map[string]Team     `json:"T,omitempty"`*/
 }
 
 //Range is exported
@@ -59,6 +61,7 @@ type Range struct {
 	Locked bool   `json:"l,omitempty"`
 	IsAgg  bool   `json:"i,omitempty"` //Prevents aggs switching to normal ranges
 	Order  uint   `json:"-"`
+	//Status uint8  `json:"u,omitempty"` //ENUM change to 1 when the first shooter has recorded their first shot. Change to 2 when the range is finished.
 }
 
 //StrID returns Range.ID as a string instead of an unsigned integer
@@ -76,7 +79,9 @@ type Score struct {
 	CountBack  string `json:"v,omitempty"`
 	CountBack2 string `json:"x,omitempty"`
 	ShootOff   uint   `json:"h,omitempty"`
-	Ordinal    string `json:"-"` //Used for scoreboard only.
+	Ordinal    string `json:"o,omitempty"`
+	Position   uint   `json:"p,omitempty"`
+	//Warning    uint8  `json:"w,omitempty"`
 }
 
 //EventShooter is exported
@@ -95,6 +100,13 @@ type EventShooter struct {
 	Disabled       bool             `json:"d,omitempty"`
 	Ladies         bool             `json:"x,omitempty"`
 	GradeSeparator bool             `json:"-"` //Used for enterShots and enterRangeTotals only.
+	//position  string           `json:"-"` //Used for scoreboard only.
+	//warning   uint8            `json:"-"` //Used for scoreboard only.
+	//0 = nil
+	//1 = shoot off
+	//2 = no score
+	//3 = incomplete
+	//4 = highest possible score
 }
 
 //Shooter is exported
