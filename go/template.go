@@ -208,15 +208,20 @@ func templater(w http.ResponseWriter, page page) {
 	//Add page content just generated to the default page environment (which has CSS and JS, etc).
 	masterTemplate.Page = page
 
+	var err error
 	html, ok := templates[fileName]
 	//debug is for dynamically re-parsing (reloading) templates on every request
 	if !ok || debug {
 
-		templates[fileName] = template.Must(template.New("main").Funcs(templateFuncMap).ParseFiles(htmlFileNames...))
+		templates[fileName], err = template.New("main").Funcs(templateFuncMap).ParseFiles(htmlFileNames...)
+		if err != nil{
+			warn.Println(err)
+			return
+		}
 		html = templates[fileName]
 	}
 
-	if err := html.ExecuteTemplate(w, "master", masterTemplate); err != nil {
+	if err = html.ExecuteTemplate(w, "master", masterTemplate); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
