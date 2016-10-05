@@ -21,13 +21,13 @@ const (
 )
 
 func serveFile(fileName string) {
-	http.HandleFunc("/"+fileName, func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc(fileName, func(w http.ResponseWriter, r *http.Request) {
 		//Check if the request contains accept gzip encoding header & return the appropriate resource
 		//Unfortunately uncompressed responses may still be required even though all modern browsers support gzip
 		//webmasters.stackexchange.com/questions/22217/which-browsers-handle-content-encoding-gzip-and-which-of-them-has-any-special
 		//www.stevesouders.com/blog/2009/11/11/whos-not-getting-gzip/
 		headers(w, cache)
-		http.ServeFile(w, r, dirRoot+fileName)
+		http.ServeFile(w, r, "."+fileName)
 	})
 }
 
@@ -154,7 +154,7 @@ func errorHandler(w http.ResponseWriter, r *http.Request, status int, errorType 
 
 	//check if the request matches any of the pages that don't require parameters
 	if strings.Count(lowerURL, "/") >= 2 {
-		for _, page := range []string{urlAbout, urlArchive, urlClubs, urlLicence, urlShooters} {
+		for _, page := range []string{urlAbout, urlArchive, urlClubs, urlLicense, urlShooters} {
 			if strings.HasPrefix(lowerURL, page) {
 				//redirect to page without parameters
 				http.Redirect(w, r, page, http.StatusSeeOther)
