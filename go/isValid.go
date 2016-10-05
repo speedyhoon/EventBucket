@@ -133,6 +133,21 @@ func isValidStr(f *field, inp ...string) {
 		//Truncate string instead of raising an error
 		f.Value = f.Value[:f.maxLen]
 	}
+
+	//Check value matches one of the options (optional).
+	/*if len(f.Options) > 0 {
+		matched := false
+		for _, option := range f.Options {
+			matched = option.Value == f.Value
+			if matched {
+				break
+			}
+		}
+		if !matched {
+			f.Error = "Value doesn't match any of the options"
+			return
+		}
+	}*/
 }
 
 func isValidRegex(f *field, inp ...string) {

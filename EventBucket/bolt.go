@@ -263,12 +263,19 @@ func editRange(decode interface{}, contents interface{}) interface{} {
 	event := decode.(*Event)
 	rangeDetails := contents.(*Range)
 	for i, r := range event.Ranges {
+		/*if r.ID != rangeDetails.ID {
+			continue
+		}*/
 		if r.ID == rangeDetails.ID {
 			r.Name = rangeDetails.Name
 			if r.IsAgg {
 				r.Aggs = rangeDetails.Aggs
 			} else {
 				r.Locked = rangeDetails.Locked
+				//if r.Locked {
+				//event.Shooters = addGradeSeparatorToShooterObjectAndPositions(event.Shooters, r.StrID())
+				//info.Println("Recalculate range", r.ID, r.Name)
+				//}
 			}
 			//Move range if the order has changed
 			if uint(i) != rangeDetails.Order {
@@ -534,7 +541,7 @@ func calcShooterAggs(ranges []Range, shooterScores map[string]Score) map[string]
 }
 
 func calcShooterAgg(aggRangeIDs []uint, shooterScores map[string]Score) Score {
-	var total, centers uint
+	var total, centers, centers2, shootOff uint
 	var countBack, countBack2 string
 	for _, id := range aggRangeIDs {
 		aggID := fmt.Sprintf("%d", id)
@@ -542,15 +549,19 @@ func calcShooterAgg(aggRangeIDs []uint, shooterScores map[string]Score) Score {
 		if ok {
 			total += score.Total
 			centers += score.Centers
+			centers2 += score.Centers2
 			countBack = score.CountBack
 			countBack2 = score.CountBack2
+			shootOff = score.ShootOff
 		}
 	}
 	return Score{
 		Total:      total,
 		Centers:    centers,
+		Centers2:   centers2,
 		CountBack:  countBack,
 		CountBack2: countBack2,
+		ShootOff:   shootOff,
 	}
 }
 
