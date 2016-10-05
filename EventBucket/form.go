@@ -45,8 +45,8 @@ const (
 func dataListAgeGroup() []option {
 	return []option{
 		{Value: "0", Label: "None"},
-		{Value: "1", Label: "Junior U21"},
-		{Value: "2", Label: "Junior U25"},
+		{Value: "1", Label: "U21"},
+		{Value: "2", Label: "U25"},
 		{Value: "3", Label: "Veteran"},
 		{Value: "4", Label: "Super Veteran"},
 	}
@@ -206,15 +206,17 @@ func getForm(id uint8) []field {
 		}}
 	case 14: //Enter Range Totals
 		return []field{{
-			name: "t", Required: true, max: 60, step: 1, v8: isValidUint,
+			name: "t", Required: true, max: 120, step: 1, v8: isValidUint,
 		}, {
-			name: "c", max: 10, step: 1, v8: isValidUint,
+			name: "c", max: 20, step: 1, v8: isValidUint,
 		}, {
 			name: "E", Required: true, v8: isValidRegex, regex: regexID,
 		}, {
 			name: "R", Required: true, min: 1, max: 65535, step: 1, v8: isValidUint,
 		}, {
 			name: "S", Required: true, max: 65535, step: 1, v8: isValidUint,
+		}, {
+			name: "h", max: 100, step: 1, v8: isValidUint,
 		}}
 	case 15: //Grades Available
 		return []field{{
