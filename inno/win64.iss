@@ -21,7 +21,7 @@ AllowNoIcons=yes
 OutputDir={#Z}\inno
 LicenseFile={#Z}\LICENSE
 OutputBaseFilename={#MyAppName} {#MyAppVersion} 64bit
-SetupIconFile={#Z}\EventBucket\EventBucket4.ico
+SetupIconFile={#Z}\icon\app.ico
 Compression=lzma
 SolidCompression=yes
 
@@ -34,7 +34,7 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 
 [Files]
 Source: "{#Z}\EventBucket\EventBucket.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#Z}\EventBucket\favicon.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Z}\icon\favicon.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#Z}\EventBucket\c\*"; DestDir: "{app}\c"; Flags: ignoreversion
 Source: "{#Z}\EventBucket\h\*"; DestDir: "{app}\h"; Flags: ignoreversion
 Source: "{#Z}\EventBucket\j\*"; DestDir: "{app}\j"; Flags: ignoreversion

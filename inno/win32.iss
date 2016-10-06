@@ -19,9 +19,9 @@ DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputDir={#Z}\inno
-LicenseFile={#Z}\LICENSE
+LicenseFile={#Z}\license
 OutputBaseFilename={#MyAppName} {#MyAppVersion} 32bit
-SetupIconFile={#Z}\EventBucket\EventBucket4.ico
+SetupIconFile={#Z}\icon\app.ico
 Compression=lzma
 SolidCompression=yes
 
@@ -34,13 +34,13 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 
 [Files]
 Source: "{#Z}\EventBucket\EventBucket.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#Z}\EventBucket\favicon.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Z}\icon\favicon.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#Z}\EventBucket\c\*"; DestDir: "{app}\c"; Flags: ignoreversion
 Source: "{#Z}\EventBucket\h\*"; DestDir: "{app}\h"; Flags: ignoreversion
 Source: "{#Z}\EventBucket\j\*"; DestDir: "{app}\j"; Flags: ignoreversion
 Source: "{#Z}\EventBucket\v\*"; DestDir: "{app}\v"; Flags: ignoreversion
 Source: "{#Z}\EventBucket\w\*"; DestDir: "{app}\w"; Flags: ignoreversion
-Source: "{#Z}\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Z}\license"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
