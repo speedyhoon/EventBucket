@@ -11,12 +11,12 @@ import (
 
 func events(w http.ResponseWriter, r *http.Request) {
 	events, err := getCalendarEvents()
-
-	//Sort list of events by date then by name
-	orderedByEvent(sortByDate, sortByName).Sort(events)
+	if err == nil{
+		//Sort list of events by date then by name
+		orderedByEvent(sortByDate, sortByName).Sort(events)
+	}
 	_, forms := sessionForms(w, r, eventNew)
 
-	hostname, _ := os.Hostname()
 	templater(w, page{
 		Title: "Events",
 		Error: err,
@@ -24,27 +24,20 @@ func events(w http.ResponseWriter, r *http.Request) {
 		Data: map[string]interface{}{
 			"NewEvent": forms[0],
 			"Events":   events,
-			"Network": map[string]interface{}{
-				"hostname":    hostname,
-				"ipAddresses": localIPs(),
-			},
+			"Network": localIPs(),
 		},
 	})
 }
 
 func about(w http.ResponseWriter, r *http.Request) {
-	hostname, _ := os.Hostname()
 	templater(w, page{
 		Title: "About",
-		Data: map[string]interface{}{
-			"hostname":    hostname,
-			"ipAddresses": localIPs(),
-		},
+		Data: localIPs(),
 	})
 }
 
 //localIP returns the non loopback local IPv4 of the host
-func localIPs() []string {
+func localIPs() map[string]interface{} {
 	var localIPs []string
 	addrs, err := net.InterfaceAddrs()
 	if err == nil {
@@ -54,11 +47,15 @@ func localIPs() []string {
 			//check the address type and if it is not a loopback the display it
 			ipnet, ok = address.(*net.IPNet)
 			if ok && !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil && !strings.HasPrefix(ipnet.IP.String(), "169.254.") {
-				localIPs = append(localIPs, ipnet.IP.String())
+				localIPs = append(localIPs, ipnet.IP.String()+portAddr)
 			}
 		}
 	}
-	return localIPs
+	hostname, _ := os.Hostname()
+	return map[string]interface{}{
+		"hostname":    hostname+portAddr,
+		"ipAddresses": localIPs,
+	}
 }
 
 //CalendarEvent is the same as Event struct without Shooters and their scores.

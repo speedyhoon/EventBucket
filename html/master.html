@@ -48,14 +48,12 @@
 		{{end}}
 	</ul>
 </nav>
-<section>
-	{{with .Page}}
-		{{with .Title}}<h4>{{.}}</h4>{{end}}
-		{{with .Heading}}<h2>{{.}}</h2>{{end}}
-		{{with .Error}}<samp>{{.}}</samp>{{end}}
-		{{template "page" .Data}}
-	{{end}}
-</section>
+{{with .Page}}
+	{{with .Title}}<h4>{{.}}</h4>{{end}}
+	{{with .Heading}}<h2>{{.}}</h2>{{end}}
+	{{with .Error}}<samp>{{.}}</samp>{{end}}
+	{{template "page" .Data}}
+{{end}}
 {{range.Page.JS}}
 	<script defer src=dirJS/{{.}}></script>
 {{end}}
