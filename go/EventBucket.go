@@ -67,7 +67,9 @@ func init() {
 		warn.Println("Port number must be between 1 and 65535. (default 80)")
 		os.Exit(3)
 	}
-	portAddr = fmt.Sprintf(":%d", *port)
+	if *port != 80 {
+		portAddr = fmt.Sprintf(":%d", *port)
+	}
 
 	//setExpiresTime()
 }
@@ -92,10 +94,7 @@ func main() {
 	info.Print("Starting EventBucket HTTP server...")
 	//Open the default browser
 	if !debug {
-		fullAddress := "http://localhost"
-		if portAddr != ":80" {
-			fullAddress += portAddr
-		}
+		fullAddress := "http://localhost"+portAddr
 		info.Print(fullAddress)
 		if exec.Command("rundll32.exe", "url.dll,FileProtocolHandler", fullAddress).Start() != nil {
 			warn.Println("Unable to open a web browser for", fullAddress)
