@@ -1,1 +1,0 @@
-{{define "page"}}<h2>Oops&mldr;</h2>Something kicked the bucket&mldr; That {{with .Type}}{{.}}{{else}}page{{end}} wasn't found.<ul><li><a href=/clubs>Clubs</a><li><a href=/>Events</a><li><a href=/archive>Archive</a></ul><p class=m><img src=/v/empty_bucket alt="empty bucket" height=200>{{end}}
