@@ -1,1 +1,0 @@
-{{define "master"}}{{with .Page.Data.ListShooters}}{{range .}}<option{{attr " value" .Value}}>{{.Label}}{{end}}{{end}}{{end}}
