@@ -26,13 +26,13 @@
 					<th>ID
 					<th>Name
 					<td>Edit
-			</thead>
-			{{range $index, $mound := .}}
-				<tr>
-					<td>{{$index}}
-					<td>{{.Name}}
-					<td>
-			{{end}}
+			<tbody>
+				{{range $index, $mound := .}}
+					<tr>
+						<td>{{$index}}
+						<td>{{.Name}}
+						<td>
+				{{end}}
 		</table>
 	{{else}}
 		<samp>No mounds listed</samp>
