@@ -12,23 +12,23 @@ import (
 	"github.com/boombuler/barcode/qr"
 )
 
-func barcode2D(w http.ResponseWriter, r *http.Request, parameters string) {
-	var qrcode barcode.Barcode
-	var err error
+func barcodeDM(w http.ResponseWriter, r *http.Request, parameters string) {
+	dmCode, err := datamatrix.Encode(strings.ToUpper(parameters))
+	barcode2D(w, dmCode, err)
+}
 
-	switch parameters[0] {
-	case 68, 100: //D for datamatrix
-		qrcode, err = datamatrix.Encode(strings.ToUpper(parameters[1:]))
-	default: //qrcode
-		qrcode, err = qr.Encode(strings.ToUpper(parameters[1:]), qr.H, qr.Auto)
-	}
+func barcodeQR(w http.ResponseWriter, r *http.Request, parameters string) {
+	qrCode, err := qr.Encode(strings.ToUpper(parameters), qr.H, qr.Auto)
+	barcode2D(w, qrCode, err)
+}
 
+func barcode2D(w http.ResponseWriter, code barcode.Barcode, err error) {
 	if err != nil {
 		warn.Println(err)
 		return
 	}
 	buf := new(bytes.Buffer)
-	err = png.Encode(buf, qrcode)
+	err = png.Encode(buf, code)
 	if err != nil {
 		warn.Println(err)
 		return
