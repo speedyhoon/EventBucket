@@ -1,6 +1,6 @@
 {{define "page"}}
 	<table class=printCards>
-		{{range .Ranges}}
+		{{range.Ranges}}
 			<tr>
 				{{$barcode := print $.EventID "/" .ID "#" $.Shooter.ID}}
 				<td rowspan=3 class=centerPadding>
