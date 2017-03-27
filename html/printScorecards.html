@@ -4,7 +4,7 @@
 			<tr>
 				{{$barcode := print $.EventID "/" .ID "#" $.Shooter.ID}}
 				<td rowspan=3 class=centerPadding>
-					<img class=barcode src=dirBarcode/q{{urlquery $barcode}} alt={{$barcode}}><br>
+					<img class=barcode src=/q/{{urlquery $barcode}} alt={{$barcode}}><br>
 					<strong>{{$barcode}}</strong>
 				<td>Event ID: {{$.EventID}}
 				<td>{{$.EventName}}
