@@ -33,7 +33,7 @@ func barcode2D(w http.ResponseWriter, r *http.Request, parameters string) {
 		warn.Println(err)
 		return
 	}
-	fmt.Fprintf(w, "%v", buf.String())
+	fmt.Fprint(w, buf.String())
 }
 
 func printScorecards(w http.ResponseWriter, r *http.Request, parameters string) {
