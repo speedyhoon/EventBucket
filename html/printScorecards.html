@@ -1,17 +1,19 @@
 {{define "page"}}
 	<table class=printCards>
-		{{$shooter := index .Event.Shooters .ShooterID}}
-		{{range .Event.Ranges}}
+		{{range.Ranges}}
 			<tr>
-				{{$barcode := print $.Event.ID "/" .ID "#" $shooter.ID}}
-				<td rowspan=3 class=^centerPadding^>
-					<img class=barcode src=dirBarcode/q{{urlquery $barcode}} alt={{$barcode}}><br>
+				{{$barcode := print $.EventID "/" .ID "#" $.Shooter.ID}}
+				<td rowspan=3 class=centerPadding>
+					<img class=barcode src=/q/{{urlquery $barcode}} alt={{$barcode}}><br>
 					<strong>{{$barcode}}</strong>
-				<td>Event ID: {{$.Event.ID}}<td>{{$.Event.Name}}
+				<td>Event ID: {{$.EventID}}
+				<td>{{$.EventName}}
 			<tr>
-				<td>Shooter ID: {{$shooter.ID}}<td>{{$shooter.FirstName}} {{$shooter.Surname}}
+				<td>Shooter ID: {{$.Shooter.ID}}
+				<td>{{$.Shooter.FirstName}} {{$.Shooter.Surname}}
 			<tr>
-				<td>Range ID: {{.ID}}<td>{{.Name}}
+				<td>Range ID: {{.ID}}
+				<td>{{.Name}}
 		{{end}}
 	</table>
 {{end}}
