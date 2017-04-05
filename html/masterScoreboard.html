@@ -5,7 +5,7 @@
 	<ul>
 		<li><a href=/>Events</a>
 		{{range.}}
-			{{if and (not .RangeMenu) (not .Hidden)}}
+			{{if not (and .RangeMenu .Hidden)}}
 				<li><a href={{.Link}}{{$.Page.MenuID}}>{{.Name}}</a>
 			{{end}}
 			{{if and .RangeMenu $.Page.Data.Event}}

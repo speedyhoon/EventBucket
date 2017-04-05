@@ -134,6 +134,6 @@ func clubInsertIfMissing(clubName string) (string, error) {
 	if err != nil {
 		return insertClub(Club{Name: clubName})
 	}
-	//return existing
+	//return existing club
 	return club.ID, err
 }

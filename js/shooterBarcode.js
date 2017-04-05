@@ -20,17 +20,17 @@ function shooterBarcode($search){
 	document.getElementById('shooterErr').setAttribute('hidden', '');
 	if(!$search||!$search.value){
 		document.getElementById('searchErr').removeAttribute('hidden');
-		return
+		return;
 	}
 	if(/^\d+$/g.test($search.value)){
 		goToShooter($search.value, $search);
-		return
+		return;
 	}
 	//If barcode doesn't match display error message
 	if(!/^\d+\/\d+#\d+$/g.test($search.value)){
 		document.getElementById('barcodeErr').removeAttribute('hidden');
 		$search.select();
-		return
+		return;
 	}
 	var barcodeEventID = $search.value.split('/')[0],
 		barcodeRangeID = $search.value.split('/')[1].split('#')[0],
@@ -44,7 +44,7 @@ function shooterBarcode($search){
 		}
 		//Else do nothing.
 		$search.select();
-		return
+		return;
 	}
 	if(rangeID !== barcodeRangeID){
 		//Go to a different range if user presses OK.
@@ -53,7 +53,7 @@ function shooterBarcode($search){
 		}
 		//Else do nothing.
 		$search.select();
-		return
+		return;
 	}
 	goToShooter(shooterID, $search);
 }
