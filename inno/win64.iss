@@ -1,5 +1,5 @@
 #define MyAppName "EventBucket"
-#define MyAppVersion "3.01"
+#define MyAppVersion "3.04"
 #define MyAppURL "http://www.eventbucket.com.au/"
 #define MyAppExeName "EventBucket.exe"
 #define Z "\\camtop\EventBucket"
@@ -41,6 +41,7 @@ Source: "{#Z}\EventBucket\j\*"; DestDir: "{app}\j"; Flags: ignoreversion
 Source: "{#Z}\EventBucket\v\*"; DestDir: "{app}\v"; Flags: ignoreversion
 Source: "{#Z}\EventBucket\w\*"; DestDir: "{app}\w"; Flags: ignoreversion
 Source: "{#Z}\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
+; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

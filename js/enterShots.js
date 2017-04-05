@@ -153,7 +153,7 @@ function shooterNameOnclick(trElement){
 			//TODO click on all td elements in the row.
 			//var trElement.getElementsByTagName('td')
 			currentRow.visited = 1;
-		}else{console.log('already visited')}
+		}//else{console.log('already visited');}
 	};
 }
 
@@ -182,7 +182,7 @@ function reconnect (){
 			if(!passed){
 				setCurrentClass();
 			}
-			console.log(classes);
+			//console.log(classes);
 			break;
 		case'!':
 			document.getElementById(data.S).parentElement.children[4].className = '';

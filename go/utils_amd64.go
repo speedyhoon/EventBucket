@@ -1,3 +1,3 @@
 package main
 
-var sysArch = 64
+const sysArch = 64

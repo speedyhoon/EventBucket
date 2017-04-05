@@ -46,7 +46,7 @@ func isValid(urlValues url.Values, fields []field) ([]field, bool) {
 			if field.Required {
 				fields[i].Error = "Please fill in this field."
 			}
-			//else if field is not required - do nothing.
+			//else if field is not required & its contents is empty - don't validate
 		} else {
 			//Otherwise validate user input
 			field.v8(&fields[i], fieldValue...)

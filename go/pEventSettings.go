@@ -8,17 +8,18 @@ import (
 func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 	event, err := getEvent(eventID)
 
-	var club Club
-	if !event.Closed && event.Club != "" {
-		club, err = getClubByName(event.Club)
-	}
-
-	//If event not found in the database return error event not found (404).
+	//If the event isn't found in the database, return error event not found (404).
 	if err != nil {
 		errorHandler(w, r, http.StatusNotFound, "event")
 		return
 	}
 
+	var club Club
+	if !event.Closed && event.Club != "" {
+		club, err = getClubByName(event.Club)
+	}
+
+	//Retrieve any submitted form that failed to save.
 	action, forms := sessionForms(w, r, eventDetails, eventRangeNew, eventAggNew, eventUpdateRange, eventUpdateAgg)
 	if action != eventDetails {
 		forms[0].Fields[0].Value = event.Club
@@ -69,8 +70,7 @@ func listFormErrors(form form) (errorList []string) {
 	return errorList
 }
 
-func dataListRanges(ranges []Range, selected bool) []option {
-	var options []option
+func dataListRanges(ranges []Range, selected bool) (options []option) {
 	for _, r := range ranges {
 		if !r.IsAgg {
 			options = append(options, option{Label: r.Name, Value: fmt.Sprintf("%d", r.ID), Selected: selected})
