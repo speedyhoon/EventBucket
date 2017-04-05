@@ -31,6 +31,19 @@ var (
 
 func init() {
 	//go maintainExpiresTime()
+   /*ex, err := os.Executable()
+    if err == nil {
+		htmlDirectory = filepath.Join(filepath.Dir(ex), "h")
+	}
+	masterTemplatePath    = filepath.Join(htmlDirectory, "master")
+	masterScoreboard      = filepath.Join(htmlDirectory, "masterScoreboard")
+	formsTemplatePath     = filepath.Join(htmlDirectory, "forms")
+	reusablesTemplatePath = filepath.Join(htmlDirectory, "reusables")
+	
+	masterStuff = [][]string{
+		{formsTemplatePath, reusablesTemplatePath, masterTemplatePath},
+		{masterScoreboard},
+	}*/
 
 	//Command line flags
 	flag.StringVar(&dbPath, "dbpath", filepath.Join(os.Getenv("ProgramData"), `EventBucket`), "Directory for datafiles.")

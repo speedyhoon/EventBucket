@@ -36,17 +36,15 @@ func barcode2D(w http.ResponseWriter, code barcode.Barcode, err error) {
 	fmt.Fprint(w, buf.String())
 }
 
-func printScorecards(w http.ResponseWriter, r *http.Request, parameters string) {
-	//eventID/shooterID
-	ids := strings.Split(parameters, "/")
-	event, err := getEvent(ids[0])
+func printScorecards(w http.ResponseWriter, r *http.Request, eventID, shooterId string) {
+	event, err := getEvent(eventID)
 	if err != nil {
 		errorHandler(w, r, http.StatusNotFound, "event")
 		return
 	}
 
 	var shooterID uint
-	shooterID, err = stoU(ids[1])
+	shooterID, err = stoU(shooterId)
 	if err != nil || shooterID >= uint(len(event.Shooters)) {
 		errorHandler(w, r, http.StatusNotFound, "shooter")
 		return

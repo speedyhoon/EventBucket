@@ -21,8 +21,9 @@ const (
 	urlAbout    = "/about"
 	urlArchive  = "/archive"
 	urlClubs    = "/clubs"
-	urlLicense  = "/license"
+	urlLicence  = "/license"	//TODO should this file be saved with uppercase file name and a .txt file name?
 	urlShooters = "/shooters"
+	urlSettings = "/settings"
 	//GET with PARAMETERS
 	urlClub            = "/club/"             //clubID
 	urlEntries         = "/entries/"          //eventID
@@ -47,8 +48,9 @@ var (
 )
 
 func pages() {
+	//TODO remove prefix "/" from url & urlLicense?
 	serveFile("/favicon.ico")
-	serveFile(urlLicense)
+	serveFile(urlLicence)
 	serveDir(dirCSS, true)
 	serveDir(dirJS, true)
 	serveDir(dirSVG, true)
@@ -57,6 +59,7 @@ func pages() {
 	getParameters("/q/", barcodeQR, regexBarcode)
 	getParameters("/x/", barcodeDM, regexBarcode)
 	getRedirectPermanent(urlAbout, about)
+	getRedirectPermanent(urlSettings, settings)
 	getRedirectPermanent(urlArchive, eventArchive)
 	getRedirectPermanent(urlClubs, clubs)
 	getParameters(urlClub, club, regexID)
@@ -128,7 +131,7 @@ func post(method string, formID uint8, runner func(http.ResponseWriter, *http.Re
 
 func gt(url string, formID uint8, runner func(http.ResponseWriter, *http.Request, form, bool)) {
 	http.HandleFunc(url, func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
+		if r.Method != get {
 			/*405 Method Not Allowed
 			A request was made of a resource using a request method not supported by that resource; for example,
 			using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
