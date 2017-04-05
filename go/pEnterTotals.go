@@ -4,21 +4,18 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"strings"
 )
 
-func enterTotalsAll(w http.ResponseWriter, r *http.Request, parameters string) {
-	enterTotals(w, r, true, parameters)
+func enterTotalsAll(w http.ResponseWriter, r *http.Request, eventID, rangeID string) {
+	enterTotals(w, r, true, eventID, rangeID)
 }
 
-func enterTotalsIncomplete(w http.ResponseWriter, r *http.Request, parameters string) {
-	enterTotals(w, r, false, parameters)
+func enterTotalsIncomplete(w http.ResponseWriter, r *http.Request, eventID, rangeID string) {
+	enterTotals(w, r, false, eventID, rangeID)
 }
 
-func enterTotals(w http.ResponseWriter, r *http.Request, showAll bool, parameters string) {
-	//eventID/rangeID
-	ids := strings.Split(parameters, "/")
-	event, err := getEvent(ids[0])
+func enterTotals(w http.ResponseWriter, r *http.Request, showAll bool, eventID, rangeID string) {
+	event, err := getEvent(eventID)
 
 	//If event not found in the database return error event not found (404).
 	if err != nil {
@@ -27,7 +24,7 @@ func enterTotals(w http.ResponseWriter, r *http.Request, showAll bool, parameter
 	}
 
 	var currentRange Range
-	currentRange, err = eventRange(event.Ranges, ids[1], w, r)
+	currentRange, err = eventRange(event.Ranges, rangeID, w, r)
 	if err != nil {
 		return
 	}

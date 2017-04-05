@@ -1,19 +1,21 @@
 'use strict';
 //Prevent users from double/triple clicking on submit buttons that could cause a form to submit more than once with exactly the same data. If forms used a CSRF token this JavaScript would be redundant
-var submitted = false;
+var submitted = false, n = document.forms.length;
 function stopDoubleSubmit(){
 	if(submitted)return false;
 	return submitted = true;
 }
 
-for(var n = document.forms.length; n--;){
+while(n--){
 	if(!document.forms[n].onsubmit){
 		document.forms[n].onsubmit = stopDoubleSubmit;
 	}
 }
 
 function tableSort(th){
-	th = th.target;
+	if(th.parentElement.parentElement.nodeName !== 'THEAD'){
+		return;
+	}
 	//If th.textContent == id compare using base36 else use textContent
 	var tbody = th.parentElement.parentElement.parentElement.querySelector('tbody'),
 		column = Array.prototype.indexOf.call(th.parentElement.children, th),
@@ -27,6 +29,7 @@ function tableSort(th){
 		switch(th.textContent){
 			case 'ID':
 				return ~~input;
+			//Used on the Shooters page
 			case 'Id':
 				return parseInt(input, 36);   //Id = base 36 string (0-9a-z) e.g. a2e = 13046
 		}
@@ -49,32 +52,38 @@ function tableSort(th){
 }
 
 //Form help dialog popup
-var dialog = document.createElement('dialog');
-dialog.onclick = dialog.close;
+var dialog = document.createElement('dialog'), formFocus;
+dialog.onclick = function(){
+	dialog.close;
+	if(formFocus){
+		formFocus.focus();
+		formFocus = false;
+	}
+};
 document.body.appendChild(dialog);
 
 //Add table sort to TH elements within a THEAD
 document.onclick = function(event){
+	var target = event.target;
+	switch(target.nodeName){
 	//Help message popup
-	if(event.target.nodeName === 'ABBR'){
-		dialog.textContent = event.target.title;
-		return dialog.showModal();
-	}
+	case 'ABBR':
+		dialog.textContent = target.title;
+		formFocus = target;
+		dialog.showModal();
+		break;
 	//Table sort
-	if(event.target.nodeName === 'TH' && event.target.parentElement.parentElement.nodeName === 'THEAD'){
-		tableSort(event);
+	case 'TH':
+		tableSort(target);
 	}
 };
 
-//Start event listeners that add a class to form fields based on their valid/invalid values that changes the background color.
-function initInputs(){
-	var inputs = document.getElementsByTagName('input'), i = inputs.length, flagClass = function(evt){
+//Start event listeners that add a class to form fields based on their valid/invalid values that changes the background colour.
+var inputs = document.querySelectorAll('input'), i = inputs.length, flagClass = function(evt){
 		evt.srcElement.classList.toggle('^dirty^', true);
 	};
 	while(i--){
 		inputs[i].addEventListener('blur', flagClass);
 		inputs[i].addEventListener('invalid', flagClass);
 		inputs[i].addEventListener('valid', flagClass);
-	}
 }
-initInputs();

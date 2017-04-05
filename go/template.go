@@ -5,6 +5,8 @@ import (
 	"html/template"
 	"net/http"
 	"strings"
+	"compress/gzip"
+	"path/filepath"
 )
 
 type menu struct {
@@ -22,28 +24,25 @@ type page struct {
 }
 
 type markupEnv struct {
-	//CurrentYear string
 	Page  page
 	Menu  []menu
 	Theme bool
 }
 
 const (
-	htmlDirectory         = "./h/"
-	masterTemplatePath    = htmlDirectory + "master"
-	masterScoreboard      = htmlDirectory + "masterScoreboard"
-	formsTemplatePath     = htmlDirectory + "forms"
-	reusablesTemplatePath = htmlDirectory + "reusables"
-
 	templateScoreboard = 1
 	templateNone       = 255
 )
 
 var (
-	masterStuff = [][]string{
-		{formsTemplatePath, reusablesTemplatePath, masterTemplatePath},
-		{masterScoreboard},
-	}
+	htmlDirectory = "./h"
+	masterTemplatePath    string
+	masterScoreboard      string
+	formsTemplatePath     string
+	reusablesTemplatePath string
+
+	masterStuff [][]string
+
 	templates      = make(map[string]*template.Template)
 	masterTemplate = markupEnv{
 		Menu: []menu{{
@@ -95,15 +94,14 @@ var (
 			Name: "About",
 			Link: urlAbout,
 		}, {
-			Name: "License",
-			Link: urlLicense,
+			Name: "Licence",
+			Link: urlLicence,
 		}},
 	}
-)
 
-var (
 	templateFuncMap = template.FuncMap{
 		"hasindex": func(inputs []field, index int) *field {
+			//index will always be a positive integer so the check for index >= 0 is not required
 			if index < len(inputs) {
 				return &inputs[index]
 			}
@@ -188,19 +186,24 @@ var (
 )
 
 func templater(w http.ResponseWriter, page page) {
+	//Gzip response, even if requester doesn't support gzip
+	gz := gzip.NewWriter(w)
+	defer gz.Close()
+	wz := gzipResponseWriter{Writer: gz, ResponseWriter: w}
+	
 	//Add HTTP headers so browsers don't cache the HTML resource because it may contain different content every request.
-	headers(w, nocache)
+	headers(wz, "html", nocache, cGzip)
 	if page.template == 25 {
 		page.template = 0
-		w.Header().Set(csp, "style-src 'self'")
+		wz.Header().Set(csp, "style-src 'self'")
 	} else {
-		w.Header().Set(csp, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src ws: 'self'; img-src 'self' data:") //font-src 'self'
+		wz.Header().Set(csp, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src ws: 'self'; img-src 'self' data:") //font-src 'self'
 	}
 
 	//Convert page.Title to the HTML template file name (located within htmlDirectory), e.g. Events > Events, Club Settings > ClubSettings
-	fileName := strings.Replace(strings.Title(page.Title), " ", "", -1)
+	fileName := filepath.Join(htmlDirectory, strings.Replace(/*strings.Title(*/page.Title/*)*/, " ", "", -1))
 
-	htmlFileNames := []string{htmlDirectory + fileName}
+	htmlFileNames := []string{fileName}
 	if page.template != templateNone {
 		htmlFileNames = append(htmlFileNames, masterStuff[page.template]...)
 	}
@@ -215,14 +218,14 @@ func templater(w http.ResponseWriter, page page) {
 
 		templates[fileName], err = template.New("main").Funcs(templateFuncMap).ParseFiles(htmlFileNames...)
 		if err != nil{
-			warn.Println(err)
+			warn.Println(err, fileName)
 			return
 		}
 		html = templates[fileName]
 	}
 
-	if err = html.ExecuteTemplate(w, "master", masterTemplate); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if err = html.ExecuteTemplate(wz, "a", masterTemplate); err != nil {
+		http.Error(wz, err.Error(), http.StatusInternalServerError)
 	}
 }
 

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math"
 	"time"
 )
 
@@ -39,6 +40,7 @@ const (
 	eventUpdateRange     uint8 = 20
 	eventUpdateAgg       uint8 = 21
 	eventEditShooter     uint8 = 22
+	maxLen               int   = 64
 	pageError            uint8 = 255
 )
 
@@ -64,17 +66,17 @@ func getForm(id uint8) []field {
 	switch id {
 	case 1: //New Club
 		return []field{{
-			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "n", Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr,
 		}}
 	case 2: //Club Details
 		return []field{{
-			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "n", Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr,
 		}, {
-			name: "a", maxLen: 64, v8: isValidStr,
+			name: "a", maxLen: maxLen, v8: isValidStr,
 		}, {
-			name: "w", maxLen: 64, v8: isValidStr,
+			name: "w", maxLen: maxLen, v8: isValidStr,
 		}, {
-			name: "p", maxLen: 64, v8: isValidStr,
+			name: "p", maxLen: maxLen, v8: isValidStr,
 		}, {
 			name: "x", min: -90, max: 90, step: .000001, v8: isValidFloat32,
 		}, {
@@ -82,31 +84,31 @@ func getForm(id uint8) []field {
 		}, {
 			name: "b", v8: isValidBool,
 		}, {
-			name: "u", maxLen: 64, v8: isValidStr,
+			name: "u", maxLen: maxLen, v8: isValidStr,
 		}, {
 			name: "C", v8: isValidRegex, regex: regexID,
 		}}
 	case 3: //New Shooting Mound
 		return []field{{
-			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "n", Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr,
 		}, {
 			name: "C", v8: isValidRegex, regex: regexID,
 		}}
 	case 4: //New Event
 		return []field{{
-			name: "C", Value: defaultClubName(), Required: hasDefaultClub(), maxLen: 64, minLen: 1, v8: isValidStr, Options: clubsDataList(),
+			name: "C", Value: defaultClubName(), Required: hasDefaultClub(), maxLen: maxLen, minLen: 1, v8: isValidStr, Options: clubsDataList(),
 		}, {
-			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "n", Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr,
 		}, {
 			name: "d", Value: defaultDate(), maxLen: 10, v8: isValidStr,
 		}, {
-			name: "t", Value: defaultTime(), maxLen: 5, step: 300, v8: isValidStr,
+			name: "t", Value: defaultTime(), maxLen: 5, v8: isValidStr,
 		}}
 	case 5: //Event Details
 		return []field{{
-			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr, Options: clubsDataList(),
+			name: "C", Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr, Options: clubsDataList(),
 		}, {
-			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "n", Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr,
 		}, {
 			name: "d", maxLen: 10, minLen: 1, v8: isValidStr,
 		}, {
@@ -118,25 +120,25 @@ func getForm(id uint8) []field {
 		}}
 	case 6: //Add Range
 		return []field{{
-			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "n", Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr,
 		}, {
 			name: "E", v8: isValidRegex, regex: regexID,
 		}}
 	case 7: //Add Aggregate Range
 		return []field{{
-			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "n", Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr,
 		}, {
-			name: "R", Required: true, minLen: 2, min: 1, max: 65535, step: 1, v8: listUint,
+			name: "R", Required: true, minLen: 2, min: 1, max: math.MaxInt8, step: 1, v8: listUint,
 		}, {
 			name: "E", v8: isValidRegex, regex: regexID,
 		}}
 	case 8: //Shooter Entry
 		return []field{{
-			name: "f", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "f", Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr,
 		}, {
-			name: "s", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "s", Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr,
 		}, {
-			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr, Options: clubsDataList(), Placeholder: defaultClubName(),
+			name: "C", Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr, Options: clubsDataList(), Placeholder: defaultClubName(),
 		}, {
 			name: "S", v8: isValidStr, Options: searchShootersOptions("", "", defaultClubName()),
 		}, {
@@ -160,19 +162,19 @@ func getForm(id uint8) []field {
 		}}
 	case 10: //Shooter Search
 		return []field{{
-			name: "f", maxLen: 64, v8: isValidStr,
+			name: "f", maxLen: maxLen, v8: isValidStr,
 		}, {
-			name: "s", maxLen: 64, v8: isValidStr,
+			name: "s", maxLen: maxLen, v8: isValidStr,
 		}, {
-			name: "C", maxLen: 64, v8: isValidStr,
+			name: "C", maxLen: maxLen, v8: isValidStr,
 		}}
 	case 11: //New Shooter
 		return []field{{
-			name: "f", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "f", Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr,
 		}, {
-			name: "s", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "s", Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr,
 		}, {
-			name: "C", Value: defaultClubName(), Required: true, maxLen: 64, minLen: 1, v8: isValidStr, Options: clubsDataList(), Placeholder: defaultClubName(),
+			name: "C", Value: defaultClubName(), Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr, Options: clubsDataList(), Placeholder: defaultClubName(),
 		}, {
 			name: "r", max: 4, step: 1, v8: isValidUint, Options: dataListAgeGroup(),
 		}, {
@@ -182,11 +184,11 @@ func getForm(id uint8) []field {
 		}}
 	case 12: //Shooter Details
 		return []field{{
-			name: "f", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "f", Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr,
 		}, {
-			name: "s", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "s", Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr,
 		}, {
-			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "C", Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr,
 		}, {
 			name: "g", Required: true, max: float32(len(globalGrades) - 1), step: 1, v8: listUint, Options: globalGradesDataList,
 		}, {
@@ -198,11 +200,11 @@ func getForm(id uint8) []field {
 		}}
 	case 13: //Shooter Search
 		return []field{{
-			name: "f", maxLen: 64, v8: isValidStr,
+			name: "f", maxLen: maxLen, v8: isValidStr,
 		}, {
-			name: "s", maxLen: 64, v8: isValidStr,
+			name: "s", maxLen: maxLen, v8: isValidStr,
 		}, {
-			name: "C", maxLen: 64, v8: isValidStr,
+			name: "C", maxLen: maxLen, v8: isValidStr,
 		}}
 	case 14: //Enter Range Totals
 		return []field{{
@@ -212,9 +214,9 @@ func getForm(id uint8) []field {
 		}, {
 			name: "E", Required: true, v8: isValidRegex, regex: regexID,
 		}, {
-			name: "R", Required: true, min: 1, max: 65535, step: 1, v8: isValidUint,
+			name: "R", Required: true, min: 1, max: math.MaxInt8, step: 1, v8: isValidUint,
 		}, {
-			name: "S", Required: true, max: 65535, step: 1, v8: isValidUint,
+			name: "S", Required: true, max: math.MaxInt8, step: 1, v8: isValidUint,
 		}, {
 			name: "h", max: 100, step: 1, v8: isValidUint,
 		}}
@@ -230,13 +232,13 @@ func getForm(id uint8) []field {
 		}, {
 			name: "E", Required: true, v8: isValidRegex, regex: regexID,
 		}, {
-			name: "R", Required: true, min: 1, max: 65535, step: 1, v8: isValidUint,
+			name: "R", Required: true, min: 1, max: math.MaxInt8, step: 1, v8: isValidUint,
 		}, {
-			name: "S", Required: true, max: 65535, step: 1, v8: isValidUint,
+			name: "S", Required: true, max: math.MaxInt8, step: 1, v8: isValidUint,
 		}}
 	case 17: //Import Shooters
 		return []field{{
-			name: "f", Required: true, maxLen: 64,
+			name: "f", Required: true, maxLen: maxLen,
 		}}
 	case 18: //Map Clubs
 		return []field{{
@@ -244,9 +246,9 @@ func getForm(id uint8) []field {
 		}}
 	case 19: //Edit Shooting Mound
 		return []field{{
-			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "n", Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr,
 		}, {
-			name: "I", max: 65535, step: 1, v8: isValidUint,
+			name: "I", max: math.MaxInt8, step: 1, v8: isValidUint,
 		}, {
 			name: "C", v8: isValidRegex, regex: regexID,
 		}}
@@ -254,37 +256,37 @@ func getForm(id uint8) []field {
 		return []field{{
 			name: "E", v8: isValidRegex, regex: regexID,
 		}, {
-			name: "I", Required: true, min: 1, max: 65535, step: 1, v8: isValidUint,
+			name: "I", Required: true, min: 1, max: math.MaxInt8, step: 1, v8: isValidUint,
 		}, {
-			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "n", Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr,
 		}, {
 			name: "k", v8: isValidBool,
 		}, {
-			name: "o", Required: true, max: 65535, step: 1, v8: isValidUint,
+			name: "o", Required: true, max: math.MaxInt8, step: 1, v8: isValidUint,
 		}}
 	case 21: //Update Agg
 		return []field{{
 			name: "E", v8: isValidRegex, regex: regexID,
 		}, {
-			name: "I", Required: true, min: 1, max: 65535, step: 1, v8: isValidUint,
+			name: "I", Required: true, min: 1, max: math.MaxInt8, step: 1, v8: isValidUint,
 		}, {
-			name: "n", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "n", Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr,
 		}, {
-			name: "R", Required: true, minLen: 2, min: 1, max: 65535, step: 1, v8: listUint,
+			name: "R", Required: true, minLen: 2, min: 1, max: math.MaxInt8, step: 1, v8: listUint,
 		}, {
-			name: "o", Required: true, max: 65535, step: 1, v8: isValidUint,
+			name: "o", Required: true, max: math.MaxInt8, step: 1, v8: isValidUint,
 		}}
 	case 22: //Entries Edit Shooter Details
 		return []field{{
-			name: "S", Required: true, max: 65535, step: 1, v8: isValidUint,
+			name: "S", Required: true, max: math.MaxInt8, step: 1, v8: isValidUint,
 		}, {
 			name: "E", Required: true, v8: isValidRegex, regex: regexID,
 		}, {
-			name: "f", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "f", Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr,
 		}, {
-			name: "s", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "s", Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr,
 		}, {
-			name: "C", Required: true, maxLen: 64, minLen: 1, v8: isValidStr,
+			name: "C", Required: true, maxLen: maxLen, minLen: 1, v8: isValidStr,
 		}, {
 			name: "g", Required: true, max: float32(len(globalGrades) - 1), step: 1, v8: isValidUint, Options: globalGradesDataList,
 		}, {

@@ -18,7 +18,7 @@ document.querySelector('form[action="/8"]').oninput = function search(event){
 			}
 		}
 	};
-	form.S.setAttribute('class', 'loading');
+	form.S.setAttribute('class', '^loading^');
 	xhr.open('GET', '/10' + (f ? '?f=' + f : '') + (s ? '?s=' + s : '') + (c ? '?c=' + c : ''), true);
 	xhr.send();
 };
