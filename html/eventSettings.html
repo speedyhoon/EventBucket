@@ -4,11 +4,13 @@
 		<samp>Event is closed, no changes can be made.</samp>
 	{{else}}
 		{{template "AddRange" .AddRange}}
+{{with.RangeDataList}}
 		<datalist id=r>
-			{{range .RangeDataList}}
+			{{range.}}
 				<option>{{.Name}}
 			{{end}}
 		</datalist>
+{{end}}
 		{{if ge (len .Ranges) 2}}
 			{{template "AddAggregateRange" .AddAgg}}
 		{{end}}
@@ -16,6 +18,7 @@
 	{{range .UpdateErrors}}<samp>{{.}}</samp>{{end}}
 	{{with .Event.Ranges}}
 		<p>Total Ranges: {{len .}}
+		{{/*TODO investigate shortening conditional classes e.g.: <table{{ifnot$.event.closed}} data-s{{end}}> */}}
 		{{if not $.Event.Closed}}
 			<table id=editRow>
 		{{else}}
@@ -29,11 +32,15 @@
 				{{if not $.Event.Closed}}
 					<td>Edit
 				{{end}}
-			</thead>
+			<tbody>
 			{{range .}}
 				<tr>
 					<td>{{.ID}}
 					<td>{{.Name}}
+{{/*TODO investigate shortening conditional classes e.g.: 
+<td>{{range.Aggs}}{{(findRange.$.Event.Ranges).Name}}, {{end}}
+<td{{ifand.locked(not.isagg)}} class=tick{{end}}>
+*/}}
 					<td>
 						{{if .IsAgg}}
 							{{range .Aggs}}{{(findRange . $.Event.Ranges).Name}}, {{end}}
@@ -55,6 +62,7 @@
 	{{if and (not $.Event.Closed) .Event.Ranges}}
 		<template>
 			<td></td>
+{{/* Are closing td tags required? */}}
 			<td>
 				<input required name=n maxlength=64 list=r type=search placeholder="Range name" form=editRow>
 				<span onclick=moveRange class="^arrows^ ^desc^" title="Move Up"></span>

@@ -38,6 +38,7 @@ function save(event){
 	//Assigning values as arrays so Golang json.Marshal can convert it to url.Values straight away & doesn't require custom validation code
 	var score = {
 		//Using string attribute names here otherwise ClosureCompiler changes them.
+		//TODO replace there mapping characters with dynamic build variables?
 		'E': [eventID],
 		'R': [rangeID],
 		'S': [$row.children[0].textContent],

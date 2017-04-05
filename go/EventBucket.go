@@ -10,7 +10,6 @@ import (
 	"math"
 	"net/http"
 	"os"
-	"os/exec"
 	"path/filepath"
 
 	"github.com/boltdb/bolt"
@@ -84,6 +83,8 @@ func main() {
 	db, err = bolt.Open(dbPath, 0644, nil)
 	if err != nil {
 		warn.Println(err)
+		//TODO add db.Close during or before http server shutdown when go1.8 is released
+		//db.Close()
 		os.Exit(4)
 	}
 	defer db.Close()
@@ -94,11 +95,7 @@ func main() {
 	info.Print("Starting EventBucket HTTP server...")
 	//Open the default browser
 	if !debug {
-		fullAddress := "http://localhost"+portAddr
-		info.Print(fullAddress)
-		if exec.Command("rundll32.exe", "url.dll,FileProtocolHandler", fullAddress).Start() != nil {
-			warn.Println("Unable to open a web browser for", fullAddress)
-		}
+		openBrowser("http://localhost" + portAddr)
 	}
 	warn.Printf("ListenAndServe: %v", http.ListenAndServe(portAddr, nil))
 	info.Println("EvenBucket server stopped.")

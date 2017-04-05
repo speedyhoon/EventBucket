@@ -7,18 +7,16 @@ import (
 	"strings"
 )
 
-func enterShotsAll(w http.ResponseWriter, r *http.Request, parameters string) {
-	enterShots(w, r, true, parameters)
+func enterShotsAll(w http.ResponseWriter, r *http.Request, eventID, rangeID string) {
+	enterShots(w, r, true, eventID, rangeID)
 }
 
-func enterShotsIncomplete(w http.ResponseWriter, r *http.Request, parameters string) {
-	enterShots(w, r, false, parameters)
+func enterShotsIncomplete(w http.ResponseWriter, r *http.Request, eventID, rangeID string) {
+	enterShots(w, r, false, eventID, rangeID)
 }
 
-func enterShots(w http.ResponseWriter, r *http.Request, showAll bool, parameters string) {
-	//eventID/rangeID
-	ids := strings.Split(parameters, "/")
-	event, err := getEvent(ids[0])
+func enterShots(w http.ResponseWriter, r *http.Request, showAll bool, eventID, rangeID string) {
+	event, err := getEvent(eventID)
 
 	//If event not found in the database return error event not found (404).
 	if err != nil {
@@ -27,7 +25,7 @@ func enterShots(w http.ResponseWriter, r *http.Request, showAll bool, parameters
 	}
 
 	var currentRange Range
-	currentRange, err = eventRange(event.Ranges, ids[1], w, r)
+	currentRange, err = eventRange(event.Ranges, rangeID, w, r)
 	if err != nil {
 		return
 	}
