@@ -1,0 +1,8 @@
+.dev/
+.idea/
+*.exe
+*.exe~
+*.lnk
+*.syso
+_old/
+built/

@@ -66,7 +66,7 @@ document.body.appendChild(dialog);
 document.onclick = function(event){
 	var target = event.target;
 	switch(target.nodeName){
-	//Help message popup
+	//Help message pop-up
 	case 'ABBR':
 		dialog.textContent = target.title;
 		formFocus = target;

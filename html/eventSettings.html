@@ -4,13 +4,13 @@
 		<samp>Event is closed, no changes can be made.</samp>
 	{{else}}
 		{{template "AddRange" .AddRange}}
-{{with.RangeDataList}}
-		<datalist id=r>
-			{{range.}}
-				<option>{{.Name}}
-			{{end}}
-		</datalist>
-{{end}}
+		{{with.RangeDataList}}
+			<datalist id=r>
+				{{range.}}
+					<option>{{.Name}}
+				{{end}}
+			</datalist>
+		{{end}}
 		{{if ge (len .Ranges) 2}}
 			{{template "AddAggregateRange" .AddAgg}}
 		{{end}}

@@ -6,6 +6,14 @@ import (
 	"time"
 )
 
+//AutoInc is a auto increment counter
+type AutoInc struct {
+	Event   uint `json:"E,omitempty"`
+	Club    uint `json:"C,omitempty"`
+	Range   uint `json:"R,omitempty"`
+	Shooter uint `json:"S,omitempty"`
+}
+
 //Club is exported
 type Club struct {
 	ID        string  `json:"I"`
@@ -18,19 +26,11 @@ type Club struct {
 	Address   string  `json:"a,omitempty"`
 	Town      string  `json:"t,omitempty"`
 	Postcode  string  `json:"p,omitempty"`
-	AutoInc   AutoInc `json:"A,omitempty"`
-}
-
-//AutoInc is a auto increment counter
-type AutoInc struct {
-	Mound   uint `json:"M,omitempty"`
-	Event   uint `json:"E,omitempty"`
-	Club    uint `json:"C,omitempty"`
-	Range   uint `json:"R,omitempty"`
-	Shooter uint `json:"S,omitempty"`
+	AutoInc   AutoInc `json:"U,omitempty"`
 }
 
 //Mound could in future contain additional details like distance
+//TODO remove Mound
 type Mound struct {
 	Name string `json:"n,omitempty"`
 	ID   uint   `json:"-"`
@@ -40,24 +40,37 @@ type Mound struct {
 type Event struct {
 	ID       string         `json:"I"`
 	Name     string         `json:"n"`
-	ClubID   string         `json:"C,omitempty"`
-	Club     string         `json:"c,omitempty"`
+	Club     string         `json:"C,omitempty"`
+	ClubID   string         `json:"c,omitempty"`
 	Date     string         `json:"d,omitempty"`
 	Time     string         `json:"t,omitempty"`
 	Ranges   []Range        `json:"R,omitempty"`
-	AutoInc  AutoInc        `json:"A,omitempty"`
+	AutoInc  AutoInc        `json:"U,omitempty"`
 	Shooters []EventShooter `json:"S,omitempty"`
 	Closed   bool           `json:"z,omitempty"`
-	Grades   []uint         `json:"g,omitempty"`
-	/*TeamCats map[string]TeamCats `json:"A,omitempty"`
+	Grades   []uint         `json:"G,omitempty"`
+	/*TeamCats map[string]TeamCats `json:"M,omitempty"`
 	Teams    map[string]Team     `json:"T,omitempty"`*/
 }
+
+/*Championship is exported
+type Championship struct {
+	ID       string         `json:"I"`
+	Name     string         `json:"n"`
+	Events   []uint         `json:"E,omitempty"`
+	Club     string         `json:"C,omitempty"`
+	AutoInc  AutoInc        `json:"U,omitempty"`
+	Grades   []uint         `json:"G,omitempty"`
+	Closed   bool           `json:"z,omitempty"`
+	TeamCats map[string]TeamCats `json:"M,omitempty"`
+	Teams    map[string]Team     `json:"T,omitempty"`
+}*/
 
 //Range is exported
 type Range struct {
 	ID     uint   `json:"I"`
 	Name   string `json:"n"`
-	Aggs   []uint `json:"a,omitempty"`
+	Aggs   []uint `json:"A,omitempty"`
 	Locked bool   `json:"l,omitempty"`
 	IsAgg  bool   `json:"i,omitempty"` //Prevents aggs switching to normal ranges
 	Order  uint   `json:"-"`
@@ -91,7 +104,7 @@ type EventShooter struct {
 	Surname        string           `json:"s"`
 	Club           string           `json:"C,omitempty"`
 	ClubID         string           `json:"c,omitempty"`
-	Grade          uint             `json:"g,omitempty"`
+	Grade          uint             `json:"G,omitempty"`
 	Hidden         bool             `json:"h,omitempty"`
 	AgeGroup       uint             `json:"r,omitempty"`
 	Scores         map[string]Score `json:"S,omitempty"` //Using string instead of uint as an index because JSON doesn't support map[uint]Score
@@ -111,7 +124,7 @@ type EventShooter struct {
 
 //Shooter is exported
 type Shooter struct {
-	ID        string           `json:"I"`
+	ID        string           `json:"I"`	//EventBucket shooters ID
 	SID       uint             `json:"M,omitempty"`
 	NID       uint             `json:"N,omitempty"` //NRAA sequential integer id.
 	FirstName string           `json:"f,omitempty"`
@@ -130,7 +143,7 @@ type Shooter struct {
 	Modified  time.Time `json:"o,omitempty"`
 	AgeGroup  uint      `json:"r,omitempty"`
 	Ladies    bool      `json:"l,omitempty"`
-	Grade     []uint    `json:"g,omitempty"`
+	Grade     []uint    `json:"G,omitempty"`
 }
 
 //Skill is used for importing shooters from JSON files

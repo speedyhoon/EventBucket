@@ -17,20 +17,20 @@
 					<th>Age Group
 					<td>Ladies
 					<td>Edit
-			</thead>
-			{{range .}}
+			<tbody>
+			{{range.}}
 				<tr>
 					<td>{{.ID}}
 					<td>{{.FirstName}} <span>{{.Surname}}</span>
 					<td>{{.Club}}
 					<td>{{range .Grade}}{{(grade .).Name}}, {{end}}
 					<td>{{ageGroup .AgeGroup}}
-					{{if.Ladies}}<td class=tick>{{else}}<td>{{end}}
+					<td{{if.Ladies}} class=tick{{end}}>
 					<td>
-				</tr>
 			{{end}}
 		</table>
 		<template>
+{{/* can </td> be removed? */}}
 			<td></td>
 			<td>
 				<form method=post action=/12 id=editRow>
