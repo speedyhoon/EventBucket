@@ -1,16 +1,15 @@
 package main
 
 import (
+	"compress/gzip"
+	"io"
 	"net/http"
 	"regexp"
 	"strings"
 	"time"
-	"io"
-	"compress/gzip"
 )
 
 const (
-	dirRoot        = "./"
 	contentType    = "Content-Type"
 	cacheControl   = "Cache-Control"
 	expires        = "Expires"
@@ -19,7 +18,7 @@ const (
 	cGzip          = "gzip"
 	acceptEncoding = "Accept-Encoding"
 	csp            = "Content-Security-Policy"
-	formatGMT      = "Mon, 02 Jan 2006 15:04:05 GMT"	//Date format
+	formatGMT      = "Mon, 02 Jan 2006 15:04:05 GMT" //Date format
 )
 
 func serveFile(fileName string) {
@@ -45,7 +44,7 @@ func serveDir(contentType string, gzip bool) {
 			if gzip {
 				headers(w, cGzip)
 			}
-			http.FileServer(http.Dir(dirRoot)).ServeHTTP(w, r)
+			http.FileServer(http.Dir("./")).ServeHTTP(w, r)
 		}))
 }
 
@@ -97,10 +96,10 @@ func (w gzipResponseWriter) Write(b []byte) (int, error) {
 	return w.Writer.Write(b)
 }
 
-func gzipWriter(w http.ResponseWriter)gzipResponseWriter{
+func gzipWriter(w http.ResponseWriter) gzipResponseWriter {
 	//Add http header Content Type = text/html and encoding = gzip
 	headers(w, "html", cGzip)
-		
+
 	gz := gzip.NewWriter(w)
 	defer gz.Close()
 	return gzipResponseWriter{Writer: gz, ResponseWriter: w}
@@ -109,51 +108,51 @@ func gzipWriter(w http.ResponseWriter)gzipResponseWriter{
 func get404(url string, pageFunc func(http.ResponseWriter, *http.Request)) {
 	http.HandleFunc(url,
 		func(w http.ResponseWriter, r *http.Request) {
-			headers(w, "html", cGzip)
-			gz := gzip.NewWriter(w)
-			defer gz.Close()
-			gzw := gzipResponseWriter{Writer: gz, ResponseWriter: w}
+			// headers(w, "html", cGzip)
+			// gz := gzip.NewWriter(w)
+			// defer gz.Close()
+			// gzw := gzipResponseWriter{Writer: gz, ResponseWriter: w}
 
 			if r.URL.Path != url {
-				errorHandler(gzw, r, http.StatusNotFound, "")
+				errorHandler(w, r, http.StatusNotFound, "")
 				return
 			}
-			pageFunc(gzw, r)
+			pageFunc(w, r)
 		})
 }
 
 func getRedirectPermanent(url string, pageFunc func(http.ResponseWriter, *http.Request)) {
 	http.HandleFunc(url,
 		func(w http.ResponseWriter, r *http.Request) {
-			headers(w, "html", cGzip)
-			gz := gzip.NewWriter(w)
-			defer gz.Close()
-			gzw := gzipResponseWriter{Writer: gz, ResponseWriter: w}
-			
+			// headers(w, "html", cGzip)
+			// gz := gzip.NewWriter(w)
+			// defer gz.Close()
+			// gzw := gzipResponseWriter{Writer: gz, ResponseWriter: w}
+
 			//Don't accept post or put requests
 			if r.Method != get {
-				http.Redirect(gzw, r, url, http.StatusSeeOther)
+				http.Redirect(w, r, url, http.StatusSeeOther)
 			}
 
-			pageFunc(gzw, r)
+			pageFunc(w, r)
 		})
 	//Redirects back to subdirectory "url". Needed when url parameters are not wanted or needed.
 	//e.g. if url = "foobar" then "http://localhost/foobar/fdsa" will redirect to "http://localhost/foobar"
 	http.Handle(url+"/", http.RedirectHandler(url, http.StatusMovedPermanently))
 }
 
-func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request, string), regex *regexp.Regexp) {
+func getParameter(url string, pageFunc func(http.ResponseWriter, *http.Request, string), regex *regexp.Regexp) {
 	var parameters, lowerParams string
 	http.HandleFunc(url,
 		func(w http.ResponseWriter, r *http.Request) {
-			headers(w, "html", cGzip)
-			gz := gzip.NewWriter(w)
-			defer gz.Close()
-			gzw := gzipResponseWriter{Writer: gz, ResponseWriter: w}
-			
+			// headers(w, "html", cGzip)
+			// gz := gzip.NewWriter(w)
+			// defer gz.Close()
+			// gzw := gzipResponseWriter{Writer: gz, ResponseWriter: w}
+
 			//Don't accept post or put requests
 			if r.Method != get {
-				http.Redirect(gzw, r, url, http.StatusSeeOther)
+				http.Redirect(w, r, url, http.StatusSeeOther)
 			}
 
 			parameters = strings.TrimPrefix(r.URL.Path, url)
@@ -161,32 +160,72 @@ func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request,
 
 			if parameters != lowerParams {
 				//Redirect to page with lowercase parameters.
-				http.Redirect(gzw, r, url+lowerParams, http.StatusSeeOther)
+				http.Redirect(w, r, url+lowerParams, http.StatusSeeOther)
 				return
 			}
 
 			if regex.MatchString(lowerParams) {
-				
-				
+
 				//Start gzip
 				//gz := gzip.NewWriter(w)
 				//defer gz.Close()
-				pageFunc(gzw, r, lowerParams)
+				pageFunc(w, r, lowerParams)
 				return
 			}
 			errorType := "event"
 			if url == urlClub {
 				errorType = "club"
 			}
-			errorHandler(gzw, r, http.StatusNotFound, errorType)
+			errorHandler(w, r, http.StatusNotFound, errorType)
+		})
+}
+
+func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request, string, string), regex *regexp.Regexp) {
+	var parameters, lowerParams string
+	var ids []string
+	http.HandleFunc(url,
+		func(w http.ResponseWriter, r *http.Request) {
+			// headers(w, "html", cGzip)
+			// gz := gzip.NewWriter(w)
+			// defer gz.Close()
+			// gzw := gzipResponseWriter{Writer: gz, ResponseWriter: w}
+
+			//Don't accept post or put requests
+			if r.Method != get {
+				http.Redirect(w, r, url, http.StatusSeeOther)
+			}
+
+			parameters = strings.TrimPrefix(r.URL.Path, url)
+			lowerParams = strings.ToLower(parameters)
+
+			if parameters != lowerParams {
+				//Redirect to page with lowercase parameters.
+				http.Redirect(w, r, url+lowerParams, http.StatusSeeOther)
+				return
+			}
+
+			if regex.MatchString(lowerParams) {
+				ids = strings.Split(lowerParams, "/")
+
+				//Start gzip
+				//gz := gzip.NewWriter(w)
+				//defer gz.Close()
+				pageFunc(w, r, ids[0], ids[1])
+				return
+			}
+			errorType := "event"
+			if url == urlClub {
+				errorType = "club"
+			}
+			errorHandler(w, r, http.StatusNotFound, errorType)
 		})
 }
 
 func errorHandler(w http.ResponseWriter, r *http.Request, status int, errorType string) {
-//func errorHandler(gzw gzipResponseWriter, r *http.Request, status int, errorType string) {
+	//func errorHandler(gzw gzipResponseWriter, r *http.Request, status int, errorType string) {
 	//All EventBucket page urls and ids are lowercase
 	lowerURL := strings.ToLower(r.URL.Path)
-	
+
 	// headers(w, "html", cGzip)
 	// gz := gzip.NewWriter(w)
 	// defer gz.Close()
@@ -201,7 +240,7 @@ func errorHandler(w http.ResponseWriter, r *http.Request, status int, errorType 
 
 	//check if the request matches any of the pages that don't require parameters
 	if strings.Count(lowerURL, "/") >= 2 {
-		for _, page := range []string{urlAbout, urlArchive, urlClubs, urlLicense, urlShooters} {
+		for _, page := range []string{urlAbout, urlArchive, urlClubs, urlLicence, urlShooters} {
 			if strings.HasPrefix(lowerURL, page) {
 				//redirect to page without parameters
 				http.Redirect(w, r, page, http.StatusSeeOther)

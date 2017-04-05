@@ -18,7 +18,7 @@
 						{{range $i := N 1 $shotsHeader.QtyShots}}
 							<td>{{.}}
 						{{end}}
-				</thead>
+				<tbody>
 				{{range .}}
 					{{if not .Hidden}}
 						{{$score := index .Scores $.Range.StrID}}
@@ -54,8 +54,7 @@
 							<td>{{.}}
 						{{end}}
 				<tr id=x hidden>
-					<th id=bu colspan=99></th>
-				</tr>
+					<th id=bu colspan=99>
 			</table>
 			<script defer src=dirJS/enterShots></script>
 			<script defer src=dirJS/shooterBarcode></script>
