@@ -11,7 +11,7 @@ import (
 
 func events(w http.ResponseWriter, r *http.Request) {
 	events, err := getCalendarEvents()
-	if err == nil{
+	if err == nil {
 		//Sort list of events by date then by name
 		orderedByEvent(sortByDate, sortByName).Sort(events)
 	}
@@ -24,7 +24,7 @@ func events(w http.ResponseWriter, r *http.Request) {
 		Data: map[string]interface{}{
 			"NewEvent": forms[0],
 			"Events":   events,
-			"Network": localIPs(),
+			"Network":  localIPs(),
 		},
 	})
 }
@@ -32,7 +32,7 @@ func events(w http.ResponseWriter, r *http.Request) {
 func about(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
 		Title: "About",
-		Data: localIPs(),
+		Data:  localIPs(),
 	})
 }
 
@@ -53,7 +53,7 @@ func localIPs() map[string]interface{} {
 	}
 	hostname, _ := os.Hostname()
 	return map[string]interface{}{
-		"hostname":    hostname+portAddr,
+		"hostname":    hostname + portAddr,
 		"ipAddresses": localIPs,
 	}
 }

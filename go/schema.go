@@ -124,7 +124,7 @@ type EventShooter struct {
 
 //Shooter is exported
 type Shooter struct {
-	ID        string           `json:"I"`	//EventBucket shooters ID
+	ID        string           `json:"I"` //EventBucket shooters ID
 	SID       uint             `json:"M,omitempty"`
 	NID       uint             `json:"N,omitempty"` //NRAA sequential integer id.
 	FirstName string           `json:"f,omitempty"`
