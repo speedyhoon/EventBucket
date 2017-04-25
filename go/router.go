@@ -13,15 +13,11 @@ import (
 const (
 	get         = "GET"
 	pst         = "POST"
-	dirCSS      = "/c/"
-	dirJS       = "/j/"
-	dirSVG      = "/v/"
-	dirWEBP     = "/w/"
 	urlEvents   = "/"
 	urlAbout    = "/about"
 	urlArchive  = "/archive"
 	urlClubs    = "/clubs"
-	urlLicence  = "/license"	//TODO should this file be saved with uppercase file name and a .txt file name?
+	urlLicence  = "/license" //TODO should this file be saved with uppercase file name and a .txt file name?
 	urlShooters = "/shooters"
 	urlSettings = "/settings"
 	//GET with PARAMETERS
@@ -51,24 +47,25 @@ func pages() {
 	//TODO remove prefix "/" from url & urlLicense?
 	serveFile("/favicon.ico")
 	serveFile(urlLicence)
-	serveDir(dirCSS, true)
-	serveDir(dirJS, true)
-	serveDir(dirSVG, true)
-	serveDir(dirWEBP, false)
+	serveDir("dirCSS", true)
+	serveDir("dirJS", true)
+	serveDir("dirSVG", true)
+	serveDir("dirWEBP", false)
+
 	http.Handle("/k/", websocket.Handler(processSocket))
-	getParameters("/q/", barcodeQR, regexBarcode)
-	getParameters("/x/", barcodeDM, regexBarcode)
+	getParameter("/q/", barcodeQR, regexBarcode)
+	getParameter("/x/", barcodeDM, regexBarcode)
 	getRedirectPermanent(urlAbout, about)
 	getRedirectPermanent(urlSettings, settings)
 	getRedirectPermanent(urlArchive, eventArchive)
 	getRedirectPermanent(urlClubs, clubs)
-	getParameters(urlClub, club, regexID)
-	getParameters(urlEntries, entries, regexID)
-	getParameters(urlEntryList, entryList, regexID)
-	getParameters(urlEventSettings, eventSettings, regexID)
-	getParameters(urlEventReport, eventReport, regexID)
+	getParameter(urlClub, club, regexID)
+	getParameter(urlEntries, entries, regexID)
+	getParameter(urlEntryList, entryList, regexID)
+	getParameter(urlEventSettings, eventSettings, regexID)
+	getParameter(urlEventReport, eventReport, regexID)
 	getParameters(urlShooterReport, shooterReport, regexPath)
-	getParameters(urlShootersReport, shootersReport, regexID)
+	getParameter(urlShootersReport, shootersReport, regexID)
 	getParameters(urlScoreboard, scoreboard, regexPath)
 	getParameters(urlEnterShots, enterShotsIncomplete, regexPath)
 	getParameters(urlEnterShotsAll, enterShotsAll, regexPath)

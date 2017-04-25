@@ -50,12 +50,12 @@ func serveDir(contentType string, gzip bool) {
 
 var (
 	headerOptions = map[string][2]string{
-		cGzip:   {"Content-Encoding", "gzip"},
-		"html":  {contentType, "text/html; charset=utf-8"},
-		dirCSS:  {contentType, "text/css; charset=utf-8"},
-		dirJS:   {contentType, "text/javascript"},
-		dirSVG:  {contentType, "image/svg+xml"},
-		dirWEBP: {contentType, "image/webp"},
+		cGzip:     {"Content-Encoding", "gzip"},
+		"html":    {contentType, "text/html; charset=utf-8"},
+		"dirCSS":  {contentType, "text/css; charset=utf-8"},
+		"dirJS":   {contentType, "text/javascript"},
+		"dirSVG":  {contentType, "image/svg+xml"},
+		"dirWEBP": {contentType, "image/webp"},
 		//dirGIF:  {contentType, "image/gif"},
 	}
 	//Used for every HTTP request with cache headers set.
