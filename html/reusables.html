@@ -9,7 +9,7 @@
 {{define "listEvents"}}
 	{{with.}}
 		<ul>
-			{{range .}}
+			{{range.}}
 				{{if not .Closed}}<li><a href=/entries/{{.ID}}>{{.Name}}</a>{{end}}
 			{{end}}
 		</ul>
@@ -37,7 +37,7 @@
 {{end}}
 
 {{define "rangeNotDisplayed"}}
-	{{if .Event.Closed}}
+	{{if.Event.Closed}}
 		<samp>Event is closed, no changes can be made. Go to <a href=/event-settings/{{.Event.ID}}>Event Settings</a> to reopen this event.</samp>
 	{{else}}
 		<samp>Range is locked, no changes can be made. Go to <a href=/event-settings/{{.Event.ID}}>Event Settings</a> to unlock this range.</samp>

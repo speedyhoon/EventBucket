@@ -5,7 +5,7 @@
 	{{$colspan := 4}}
 	<table>
 		{{range.Event.Shooters}}
-			{{if .GradeSeparator}}
+			{{if.GradeSeparator}}
 				<tr class="^classHeadingRow^ ^separator^">
 					<td colspan={{$colspan}}>{{(grade .Grade).Name}}
 					{{range $.Ranges}}
