@@ -1,10 +1,10 @@
 {{define "page"}}
 	{{template "NewEvent" .NewEvent}}
 	{{template "networkAdapters" .Network}}
-	{{with .Events}}
+	{{with.Events}}
 		<h2>Open Events</h2>
 		<div class=events>
-			{{range .}}
+			{{range.}}
 				{{if not .Closed}}
 					<div>
 						<div>
@@ -22,7 +22,7 @@
 								<img src=/v/edit alt="Edit event" height=15>
 							</a>
 						</p>
-						{{range .Ranges}}{{.Name}}, {{else}}No ranges added.{{end}}
+						{{range.Ranges}}{{.Name}}, {{else}}No ranges added.{{end}}
 						<br>{{.Club}}
 					</div>
 				{{end}}

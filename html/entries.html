@@ -1,13 +1,13 @@
 {{define "page"}}
-	{{if .Event.Closed}}
+	{{if.Event.Closed}}
 		<samp>Event is closed, no changes can be made.</samp>
 	{{else}}
 		{{template "ShooterEntry" .ShooterEntry}}
 	{{end}}
-	{{$hasRanges := ge (len .Event.Ranges) 1}}
+	{{$hasRanges := ge (len.Event.Ranges) 1}}
 	{{if not $hasRanges}}<samp>This event has no ranges</samp>{{end}}
-	{{with .Event.Shooters}}
-		<p>Total Entries: {{len .}} <a href=/print-entry-list/{{$.Event.ID}}>Print Entry List</a>
+	{{with.Event.Shooters}}
+		<p>Total Entries: {{len.}} <a href=/print-entry-list/{{$.Event.ID}}>Print Entry List</a>
 		{{if not $.Event.Closed}}
 			<table id=editRow>
 		{{else}}
@@ -24,7 +24,7 @@
 					<th>Ladies
 					{{if not $.Event.Closed}}<td>Edit{{end}}
 			<tbody>
-			{{range .}}
+			{{range.}}
 				{{if not .Hidden}}
 					<tr>
 						<td>{{if $hasRanges}}<a href=/shooter-report/{{$.Event.ID}}/{{.ID}} title="{{.FirstName}}'s scores report">{{end}}{{.ID}}{{if $hasRanges}}</a>{{end}}
@@ -32,8 +32,8 @@
 						<td>{{.Club}}
 						<td>{{(grade .Grade).Name}}
 						<td>{{ageGroup .AgeGroup}}
-						{{if .Disabled}}<td class=tick>{{else}}<td>{{end}}
-						{{if .Ladies}}<td class=tick>{{else}}<td>{{end}}
+						{{if.Disabled}}<td class=tick>{{else}}<td>{{end}}
+						{{if.Ladies}}<td class=tick>{{else}}<td>{{end}}
 						{{if not $.Event.Closed}}<td>{{end}}
 				{{end}}
 			{{end}}

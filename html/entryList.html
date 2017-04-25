@@ -1,8 +1,8 @@
 {{define "page"}}
-	{{$hasRanges := ge (len .Event.Ranges) 1}}
+	{{$hasRanges := ge (len.Event.Ranges) 1}}
 	{{if not $hasRanges}}<samp>This event has no ranges</samp>{{end}}
-	{{with .Event.Shooters}}
-		<p>Total Entries: {{len .}}
+	{{with.Event.Shooters}}
+		<p>Total Entries: {{len.}}
 		<table>
 			<thead>
 				<th class=asc>ID
@@ -12,14 +12,14 @@
 				<th>Age Group
 				<th>Ladies
 			<tbody>
-			{{range .}}
+			{{range.}}
 				<tr>
 					<td>{{.ID}}
 					<td>{{.FirstName}} {{.Surname}}
 					<td>{{.Club}}
 					<td>{{(grade .Grade).Name}}
 					<td>{{ageGroup .AgeGroup}}
-					{{if .Ladies}}<td class=tick>{{else}}<td>{{end}}
+					{{if.Ladies}}<td class=tick>{{else}}<td>{{end}}
 			{{end}}
 		</table>
 	{{else}}

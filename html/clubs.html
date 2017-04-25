@@ -1,7 +1,7 @@
 {{define "page"}}
 	{{template "NewClub" .NewClub}}
-	{{with .ListClubs}}
-	Total Clubs: {{len .}}
+	{{with.ListClubs}}
+	Total Clubs: {{len.}}
 		<table>
 			<thead>
 				<tr>
@@ -9,7 +9,7 @@
 					<td>Default Club
 					<td>Edit
 			<tbody>
-			{{range .}}
+			{{range.}}
 				<tr>
 					<td><a href=/club/{{.ID}}>{{.Name}}</a>
 					{{if.IsDefault}}<td class=tick>{{else}}<td>{{end}}

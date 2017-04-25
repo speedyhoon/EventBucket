@@ -1,5 +1,5 @@
 {{define "page"}}
-	{{with .ListEvents}}
+	{{with.ListEvents}}
 		<table>
 			<thead>
 				<tr>
@@ -7,8 +7,8 @@
 					<th>Club
 					<td>Edit
 			<tbody>
-			{{range .}}
-				{{if .Closed}}
+			{{range.}}
+				{{if.Closed}}
 					<tr>
 						<td>
 							{{if.ID}}

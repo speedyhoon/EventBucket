@@ -1,6 +1,6 @@
 {{define "page"}}
 	{{template "EventDetails" .EventDetails}}
-	{{if .Event.Closed}}
+	{{if.Event.Closed}}
 		<samp>Event is closed, no changes can be made.</samp>
 	{{else}}
 		{{template "AddRange" .AddRange}}
@@ -11,13 +11,13 @@
 				{{end}}
 			</datalist>
 		{{end}}
-		{{if ge (len .Ranges) 2}}
+		{{if ge (len.Ranges) 2}}
 			{{template "AddAggregateRange" .AddAgg}}
 		{{end}}
 	{{end}}
-	{{range .UpdateErrors}}<samp>{{.}}</samp>{{end}}
-	{{with .Event.Ranges}}
-		<p>Total Ranges: {{len .}}
+	{{range.UpdateErrors}}<samp>{{.}}</samp>{{end}}
+	{{with.Event.Ranges}}
+		<p>Total Ranges: {{len.}}
 		{{/*TODO investigate shortening conditional classes e.g.: <table{{ifnot$.event.closed}} data-s{{end}}> */}}
 		{{if not $.Event.Closed}}
 			<table id=editRow>
@@ -33,7 +33,7 @@
 					<td>Edit
 				{{end}}
 			<tbody>
-			{{range .}}
+			{{range.}}
 				<tr>
 					<td>{{.ID}}
 					<td>{{.Name}}
@@ -42,8 +42,8 @@
 <td{{ifand.locked(not.isagg)}} class=tick{{end}}>
 */}}
 					<td>
-						{{if .IsAgg}}
-							{{range .Aggs}}{{(findRange . $.Event.Ranges).Name}}, {{end}}
+						{{if.IsAgg}}
+							{{range.Aggs}}{{(findRange . $.Event.Ranges).Name}}, {{end}}
 						{{end}}
 					{{if and .Locked (not .IsAgg)}}
 						<td class=tick>
@@ -69,7 +69,7 @@
 				<span onclick=moveRange class="^arrows^ ^asc^" title="Move Down"></span>
 			</td>
 			<td>
-				<select size={{len .Ranges}} required name=R multiple form=editRow>
+				<select size={{len.Ranges}} required name=R multiple form=editRow>
 					{{template "optionList" .Ranges}}
 				</select>
 			</td>
