@@ -1,5 +1,5 @@
 package main
 
-func openBrowser(url){
+func openBrowser(url) {
 	info.Println("linux open browser needed", url)
 }

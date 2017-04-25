@@ -1,12 +1,12 @@
 package main
 
 import (
+	"compress/gzip"
 	"fmt"
 	"html/template"
 	"net/http"
-	"strings"
-	"compress/gzip"
 	"path/filepath"
+	"strings"
 )
 
 type menu struct {
@@ -35,7 +35,7 @@ const (
 )
 
 var (
-	htmlDirectory = "./h"
+	htmlDirectory         = "./h"
 	masterTemplatePath    string
 	masterScoreboard      string
 	formsTemplatePath     string
@@ -190,7 +190,7 @@ func templater(w http.ResponseWriter, page page) {
 	gz := gzip.NewWriter(w)
 	defer gz.Close()
 	wz := gzipResponseWriter{Writer: gz, ResponseWriter: w}
-	
+
 	//Add HTTP headers so browsers don't cache the HTML resource because it may contain different content every request.
 	headers(wz, "html", nocache, cGzip)
 	if page.template == 25 {
@@ -201,7 +201,7 @@ func templater(w http.ResponseWriter, page page) {
 	}
 
 	//Convert page.Title to the HTML template file name (located within htmlDirectory), e.g. Events > Events, Club Settings > ClubSettings
-	fileName := filepath.Join(htmlDirectory, strings.Replace(/*strings.Title(*/page.Title/*)*/, " ", "", -1))
+	fileName := filepath.Join(htmlDirectory, strings.Replace( /*strings.Title(*/ page.Title /*)*/, " ", "", -1))
 
 	htmlFileNames := []string{fileName}
 	if page.template != templateNone {
@@ -217,7 +217,7 @@ func templater(w http.ResponseWriter, page page) {
 	if !ok || debug {
 
 		templates[fileName], err = template.New("main").Funcs(templateFuncMap).ParseFiles(htmlFileNames...)
-		if err != nil{
+		if err != nil {
 			warn.Println(err, fileName)
 			return
 		}

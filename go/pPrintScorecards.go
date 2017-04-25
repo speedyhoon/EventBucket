@@ -8,14 +8,14 @@ import (
 	"strings"
 
 	"github.com/boombuler/barcode"
-	"github.com/boombuler/barcode/datamatrix"
+	//"github.com/boombuler/barcode/datamatrix"
 	"github.com/boombuler/barcode/qr"
 )
 
-func barcodeDM(w http.ResponseWriter, r *http.Request, parameters string) {
+/*func barcodeDM(w http.ResponseWriter, r *http.Request, parameters string) {
 	dmCode, err := datamatrix.Encode(strings.ToUpper(parameters))
 	barcode2D(w, dmCode, err)
-}
+}*/
 
 func barcodeQR(w http.ResponseWriter, r *http.Request, parameters string) {
 	qrCode, err := qr.Encode(strings.ToUpper(parameters), qr.H, qr.Auto)
