@@ -200,8 +200,8 @@ func templater(w http.ResponseWriter, page page) {
 		wz.Header().Set(csp, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src ws: 'self'; img-src 'self' data:") //font-src 'self'
 	}
 
-	//Convert page.Title to the HTML template file name (located within htmlDirectory), e.g. Events > Events, Club Settings > ClubSettings
-	fileName := filepath.Join(htmlDirectory, strings.Replace( /*strings.Title(*/ page.Title /*)*/, " ", "", -1))
+	//Convert page.Title to the lowercase HTML template file name
+	fileName := filepath.Join(htmlDirectory, strings.Replace(strings.ToLower(page.Title), " ", "", -1))
 
 	htmlFileNames := []string{fileName}
 	if page.template != templateNone {
