@@ -54,7 +54,7 @@ function tableSort(th){
 //Form help dialog popup
 var dialog = document.createElement('dialog'), formFocus;
 dialog.onclick = function(){
-	dialog.close;
+	dialog.close();
 	if(formFocus){
 		formFocus.focus();
 		formFocus = false;
