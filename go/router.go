@@ -13,6 +13,10 @@ import (
 const (
 	get         = "GET"
 	pst         = "POST"
+	dirCSS      = `/c/`
+	dirJS       = `/j/`
+	dirSVG      = `/v/`
+	dirWEBP     = `/w/`
 	urlEvents   = "/"
 	urlAbout    = "/about"
 	urlArchive  = "/archive"
@@ -47,11 +51,10 @@ func pages() {
 	//TODO remove prefix "/" from url & urlLicense?
 	serveFile("/favicon.ico")
 	serveFile(urlLicence)
-	serveDir("dirCSS", true)
-	serveDir("dirJS", true)
-	serveDir("dirSVG", true)
-	serveDir("dirWEBP", false)
-
+	serveDir(dirCSS, true)
+	serveDir(dirJS, true)
+	serveDir(dirSVG, true)
+	serveDir(dirWEBP, false)
 	http.Handle("/k/", websocket.Handler(processSocket))
 	getParameter("/q/", barcodeQR, regexBarcode)
 	getParameter("/x/", barcodeDM, regexBarcode)
