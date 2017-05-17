@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:x="http://www.w3.org/1999/xlink" viewBox="0 0 860 100" fill="#08f">
     <path d="M48 18s-24-1-24 23h58v18H24c0 24 24 23 24 23h34v18H46C10 100 0 79 0 50 0 17 15 0 46 0h36v18m8 8h22l20 53 22-53h21l-33 74h-21zm330-8v23h29c1 0 17 2 17-11 0-14-16-12-16-12zm29 65c1 0 17 1 17-12s-16-12-16-12h-29v24m34 17h-55V0h56s33-1 33 26c0 11-6 20-16 24 11 4 16 13 16 23 0 30-34 27-34 27m165 0s-37 4-37-37c0-39 37-37 37-37h28v16h-25s-19-1-19 13v16c0 14 18 13 18 13h26v16zM661 0h19v61l32-35h24l-34 37 34 37h-26l-30-35v35h-19"/>
-    <path id="b" d="M216 100s-37 4-37-37c0-39 37-37 37-37h28v16h-25s-19-1-19 13h44v16h-44c0 14 19 13 19 13h25v16"/>
-    <path id="a" d="M257 26h36c23 0 31 9 31 28v46h-19V56c0-15-13-14-13-14h-16v58h-19"/>
-    <path id="c" d="M333 26h14V0h19v26h21v16h-21v29c0 10 4 14 13 14h8v15h-18c-16 0-22-9-22-23V42h-14"/>
-    <use x:href="#a" transform="rotate(180 413.5 63)"/>
-    <use x:href="#b" transform="translate(555)"/>
-    <use x:href="#c" transform="translate(471)"/>
+    <path id="X" d="M216 100s-37 4-37-37c0-39 37-37 37-37h28v16h-25s-19-1-19 13h44v16h-44c0 14 19 13 19 13h25v16"/>
+    <path id="Y" d="M257 26h36c23 0 31 9 31 28v46h-19V56c0-15-13-14-13-14h-16v58h-19"/>
+    <path id="Z" d="M333 26h14V0h19v26h21v16h-21v29c0 10 4 14 13 14h8v15h-18c-16 0-22-9-22-23V42h-14"/>
+    <use x:href="#Y" transform="rotate(180 413.5 63)"/>
+    <use x:href="#X" transform="translate(555)"/>
+    <use x:href="#Z" transform="translate(471)"/>
 </svg>
