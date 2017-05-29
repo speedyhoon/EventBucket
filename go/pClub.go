@@ -68,7 +68,7 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func mapClubs(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+func mapClubs(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	clubID := submittedForm.Fields[0].Value
 	clubs, err := getClubs()
 	if err != nil {
@@ -109,7 +109,7 @@ type MapClub struct {
 	Postcode  string  `json:"p,omitempty"`
 }
 
-func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	name := submittedForm.Fields[0].Value
 	var ID string
 	defaultClub := getDefaultClub()
@@ -119,7 +119,7 @@ func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redi
 	if err != nil {
 		ID, err = insertClub(Club{Name: name, IsDefault: defaultClub.ID == ""}) //Set this club to default if no other clubs are the defualt
 		if err != nil {
-			formError(w, submittedForm, redirect, err)
+			formError(w, r, submittedForm, err)
 			return
 		}
 	} else {
@@ -132,7 +132,7 @@ func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redi
 	http.Redirect(w, r, urlClub+ID+"#edit", http.StatusSeeOther)
 }
 
-func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	clubID := submittedForm.Fields[8].Value
 	isDefault := submittedForm.Fields[6].Checked
 	defaultClub := getDefaultClub()
@@ -154,19 +154,19 @@ func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm for
 		URL:       submittedForm.Fields[7].Value,
 	}, &Club{}, updateClubDetails)
 	if err != nil {
-		formError(w, submittedForm, redirect, err)
+		formError(w, r, submittedForm, err)
 		return
 	}
 	http.Redirect(w, r, urlClub+clubID, http.StatusSeeOther)
 }
 
-func clubMoundInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+func clubMoundInsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	clubID := submittedForm.Fields[1].Value
 	err := updateDocument(tblClub, clubID, &Mound{
 		Name: submittedForm.Fields[0].Value,
 	}, &Club{}, insertClubMound)
 	if err != nil {
-		formError(w, submittedForm, redirect, err)
+		formError(w, r, submittedForm, err)
 		return
 	}
 	http.Redirect(w, r, urlClub+clubID, http.StatusSeeOther)
@@ -176,14 +176,14 @@ func trimFloat(num float32) string {
 	return strings.TrimRight(strings.TrimRight(fmt.Sprintf("%.6f", num), "0"), ".")
 }
 
-func editClubMound(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+func editClubMound(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	clubID := submittedForm.Fields[2].Value
 	err := updateDocument(tblClub, clubID, &Mound{
 		Name: submittedForm.Fields[0].Value,
 		ID:   submittedForm.Fields[1].valueUint,
 	}, &Club{}, editMound)
 	if err != nil {
-		formError(w, submittedForm, redirect, err)
+		formError(w, r, submittedForm, err)
 		return
 	}
 	http.Redirect(w, r, urlClub+clubID, http.StatusSeeOther)

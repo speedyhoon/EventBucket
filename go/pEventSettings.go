@@ -79,7 +79,7 @@ func dataListRanges(ranges []Range, selected bool) (options []option) {
 	return options
 }
 
-func eventDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+func eventDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	eventID := submittedForm.Fields[5].Value
 	err := updateDocument(tblEvent, eventID, &Event{
 		Club:   submittedForm.Fields[0].Value,
@@ -89,23 +89,23 @@ func eventDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm fo
 		Closed: submittedForm.Fields[4].Checked,
 	}, &Event{}, updateEventDetails)
 	if err != nil {
-		formError(w, submittedForm, redirect, err)
+		formError(w, r, submittedForm, err)
 		return
 	}
 	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
 }
 
-func eventRangeInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+func eventRangeInsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	eventID := submittedForm.Fields[1].Value
 	err := updateDocument(tblEvent, eventID, &Range{Name: submittedForm.Fields[0].Value}, &Event{}, eventAddRange)
 	if err != nil {
-		formError(w, submittedForm, redirect, err)
+		formError(w, r, submittedForm, err)
 		return
 	}
 	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
 }
 
-func updateRange(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+func updateRange(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	eventID := submittedForm.Fields[0].Value
 	err := updateDocument(tblEvent, eventID, &Range{
 		ID:     submittedForm.Fields[1].valueUint,
@@ -114,13 +114,13 @@ func updateRange(w http.ResponseWriter, r *http.Request, submittedForm form, red
 		Order:  submittedForm.Fields[4].valueUint,
 	}, &Event{}, editRange)
 	if err != nil {
-		formError(w, submittedForm, redirect, err)
+		formError(w, r, submittedForm, err)
 		return
 	}
 	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
 }
 
-func updateAgg(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+func updateAgg(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	eventID := submittedForm.Fields[0].Value
 	err := updateDocument(tblEvent, eventID, &Range{
 		ID:    submittedForm.Fields[1].valueUint,
@@ -129,13 +129,13 @@ func updateAgg(w http.ResponseWriter, r *http.Request, submittedForm form, redir
 		Order: submittedForm.Fields[4].valueUint,
 	}, &Event{}, editRange)
 	if err != nil {
-		formError(w, submittedForm, redirect, err)
+		formError(w, r, submittedForm, err)
 		return
 	}
 	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
 }
 
-func eventAggInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+func eventAggInsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	eventID := submittedForm.Fields[2].Value
 	err := updateDocument(tblEvent, eventID, &Range{
 		Name:  submittedForm.Fields[0].Value,
@@ -143,7 +143,7 @@ func eventAggInsert(w http.ResponseWriter, r *http.Request, submittedForm form, 
 		IsAgg: true,
 	}, &Event{}, eventAddAgg)
 	if err != nil {
-		formError(w, submittedForm, redirect, err)
+		formError(w, r, submittedForm, err)
 		return
 	}
 	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
