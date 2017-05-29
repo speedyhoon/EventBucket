@@ -110,17 +110,18 @@ func endpoint(method string, formID uint8, runner func(http.ResponseWriter, *htt
 			A request was made of a resource using a request method not supported by that resource; for example,
 			using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
 			//en.wikipedia.org/wiki/List_of_HTTP_status_codes*/
-			http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
+			http.Redirect(w, r, r.Referer(), http.StatusMethodNotAllowed)
 			return
 		}
-		newForm, isValid := validPost(r, getForm(formID))
+		form, ok := validPost(r, getForm(formID))
+		if !ok && method != get {
+			setSession(w, form)
+			http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
+			return
+		}
+		//TODO change runner to accept referrer instead of a redirect function because the status code should be different depending on the error. not always http.StatusSeeOther
 		redirect := func() { http.Redirect(w, r, r.Referer(), http.StatusSeeOther) }
-		if !isValid && method != get {
-			setSession(w, newForm)
-			redirect()
-			return
-		}
-		runner(w, r, newForm, redirect)
+		runner(w, r, form, redirect)
 	}
 	http.HandleFunc(fmt.Sprintf("/%d", formID), h)
 }
@@ -132,11 +133,11 @@ func gt(url string, formID uint8, runner func(http.ResponseWriter, *http.Request
 			A request was made of a resource using a request method not supported by that resource; for example,
 			using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
 			//en.wikipedia.org/wiki/List_of_HTTP_status_codes*/
-			http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
+			http.Redirect(w, r, r.Referer(), http.StatusMethodNotAllowed)
 			return
 		}
-		newForm, isValid := validGet(r, getForm(formID))
-		runner(w, r, newForm, isValid)
+		form, ok := validGet(r, getForm(formID))
+		runner(w, r, form, ok)
 	})
 }
 
