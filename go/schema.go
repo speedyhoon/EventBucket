@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-//AutoInc is a auto increment counter
+//AutoInc is an auto increment counter
 type AutoInc struct {
 	Event   uint `json:"E,omitempty"`
 	Club    uint `json:"C,omitempty"`
@@ -16,24 +16,23 @@ type AutoInc struct {
 
 //Club is exported
 type Club struct {
-	ID        string  `json:"I"`
-	Name      string  `json:"n"`
-	IsDefault bool    `json:"d,omitempty"`
-	Mounds    []Mound `json:"M,omitempty"`
-	Latitude  float32 `json:"x,omitempty"`
-	Longitude float32 `json:"y,omitempty"`
-	URL       string  `json:"u,omitempty"`
-	Address   string  `json:"a,omitempty"`
-	Town      string  `json:"t,omitempty"`
-	Postcode  string  `json:"p,omitempty"`
-	AutoInc   AutoInc `json:"U,omitempty"`
+	ID        string   `json:"I"`
+	Name      string   `json:"n"`
+	IsDefault bool     `json:"d,omitempty"`
+	Mounds    []string `json:"M,omitempty"`
+	Latitude  float32  `json:"x,omitempty"`
+	Longitude float32  `json:"y,omitempty"`
+	URL       string   `json:"u,omitempty"`
+	Address   string   `json:"a,omitempty"`
+	Town      string   `json:"t,omitempty"`
+	Postcode  string   `json:"p,omitempty"`
+	AutoInc   AutoInc  `json:"U,omitempty"`
 }
 
 //Mound could in future contain additional details like distance
-//TODO remove Mound
 type Mound struct {
-	Name string `json:"n,omitempty"`
-	ID   uint   `json:"-"`
+	Name string
+	ID   uint
 }
 
 //Event is exported
