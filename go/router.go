@@ -12,7 +12,7 @@ import (
 
 const (
 	get         = "GET"
-	pst         = "POST"
+	post         = "POST"
 	dirCSS      = `/c/`
 	dirJS       = `/j/`
 	dirSVG      = `/v/`
@@ -75,27 +75,27 @@ func pages() {
 	getParameters(urlPrintScorecards, printScorecards, regexPath)
 	getParameters(urlEnterTotals, enterTotalsIncomplete, regexPath)
 	getParameters(urlEnterTotalsAll, enterTotalsAll, regexPath)
-	post(pst, clubNew, clubInsert)
-	post(pst, clubDetails, clubDetailsUpsert)
-	post(pst, clubMoundNew, clubMoundInsert)
-	post(pst, eventNew, eventInsert)
-	post(pst, eventDetails, eventDetailsUpsert)
-	post(pst, eventRangeNew, eventRangeInsert)
-	post(pst, eventAggNew, eventAggInsert)
-	post(pst, eventShooterNew, eventShooterInsert)
-	post(pst, eventShooterExisting, eventShooterExistingInsert)
-	post(get, eventShooterSearch, eventSearchShooters)
-	post(pst, shooterNew, shooterInsert)
-	post(pst, shooterDetails, shooterUpdate)
-	//post(pst, eventTotalScores, eventTotalUpsert)
-	post(pst, eventAvailableGrades, eventAvailableGradesUpsert)
-	//post(pst, eventUpdateShotScore, updateShotScores)
+	endpoint(post, clubNew, clubInsert)
+	endpoint(post, clubDetails, clubDetailsUpsert)
+	endpoint(post, clubMoundNew, clubMoundInsert)
+	endpoint(post, eventNew, eventInsert)
+	endpoint(post, eventDetails, eventDetailsUpsert)
+	endpoint(post, eventRangeNew, eventRangeInsert)
+	endpoint(post, eventAggNew, eventAggInsert)
+	endpoint(post, eventShooterNew, eventShooterInsert)
+	endpoint(post, eventShooterExisting, eventShooterExistingInsert)
+	endpoint(get, eventShooterSearch, eventSearchShooters)
+	endpoint(post, shooterNew, shooterInsert)
+	endpoint(post, shooterDetails, shooterUpdate)
+	//endpoint(post, eventTotalScores, eventTotalUpsert)
+	endpoint(post, eventAvailableGrades, eventAvailableGradesUpsert)
+	//endpoint(post, eventUpdateShotScore, updateShotScores)
 	http.HandleFunc("/17", importShooters) //Don't use normal form validation because a reusable file upload validation function hasn't been written yet.
-	post(get, mapResults, mapClubs)
-	post(pst, clubMoundEdit, editClubMound)
-	post(pst, eventUpdateRange, updateRange)
-	post(pst, eventUpdateAgg, updateAgg)
-	post(pst, eventEditShooter, eventShooterUpdate)
+	endpoint(get, mapResults, mapClubs)
+	endpoint(post, clubMoundEdit, editClubMound)
+	endpoint(post, eventUpdateRange, updateRange)
+	endpoint(post, eventUpdateAgg, updateAgg)
+	endpoint(post, eventEditShooter, eventShooterUpdate)
 
 	gt(urlShooters, shooterSearch, shooters)
 
@@ -103,7 +103,7 @@ func pages() {
 	get404(urlEvents, events)
 }
 
-func post(method string, formID uint8, runner func(http.ResponseWriter, *http.Request, form, func())) {
+func endpoint(method string, formID uint8, runner func(http.ResponseWriter, *http.Request, form, func())) {
 	h := func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != method {
 			/*405 Method Not Allowed
@@ -113,12 +113,8 @@ func post(method string, formID uint8, runner func(http.ResponseWriter, *http.Re
 			http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
 			return
 		}
-		submittedFields, isValid := validPost(r, getForm(formID))
+		newForm, isValid := validPost(r, getForm(formID))
 		redirect := func() { http.Redirect(w, r, r.Referer(), http.StatusSeeOther) }
-		newForm := form{
-			action: formID,
-			Fields: submittedFields,
-		}
 		if !isValid && method != get {
 			setSession(w, newForm)
 			redirect()
@@ -139,11 +135,7 @@ func gt(url string, formID uint8, runner func(http.ResponseWriter, *http.Request
 			http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
 			return
 		}
-		submittedFields, isValid := validGet(r, getForm(formID))
-		newForm := form{
-			action: formID,
-			Fields: submittedFields,
-		}
+		newForm, isValid := validGet(r, getForm(formID))
 		runner(w, r, newForm, isValid)
 	})
 }
@@ -171,7 +163,7 @@ func processSocket(ws *websocket.Conn) {
 				continue
 			}
 			if form, passed := isValid(form, getForm(command)); passed {
-				websocket.Message.Send(ws, eventTotalUpsert(form))
+				websocket.Message.Send(ws, eventTotalUpsert(form.Fields))
 			} else {
 				websocket.Message.Send(ws, fmt.Sprintf("Unable to save %v.", msg))
 			}
@@ -184,7 +176,7 @@ func processSocket(ws *websocket.Conn) {
 			}
 
 			if form, passed := isValid(form, getForm(command)); passed {
-				websocket.Message.Send(ws, "!"+updateShotScores(form))
+				websocket.Message.Send(ws, "!"+updateShotScores(form.Fields))
 			} else {
 				var response []byte
 				response, err = json.Marshal(form)
