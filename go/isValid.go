@@ -36,9 +36,6 @@ func listUint(f *field, inp ...string) {
 
 func isValidUint(f *field, inp ...string) {
 	if debug {
-		if f.step == 0 {
-			warn.Println("Are you sure about step == 0? isValidUint", f.name)
-		}
 		if f.max == 0 {
 			warn.Println("Are you sure about max == 0? isValidUint", f.name)
 		}
@@ -60,6 +57,10 @@ func isValidUint(f *field, inp ...string) {
 	if f.valueUint < uint(f.min) || f.valueUint > uint(f.max) {
 		f.Error = fmt.Sprintf("Must be between %v and %v.", f.min, f.max)
 		return
+	}
+
+	if f.step == 0 {
+		f.step = 1
 	}
 	if f.valueUint%uint(f.step) != 0 {
 		below := f.valueUint - (f.valueUint % uint(f.step))
@@ -108,16 +109,7 @@ func toFixed(num /*, precision*/ float64) float32 {
 }
 
 func isValidStr(f *field, inp ...string) {
-	//>> Developer checks
-	if f.maxLen == 0 {
-		t.Println("f.maxLen should be set: isValidStr", f.name)
-	}
-	if f.minLen == 0 && f.Required {
-		t.Println("f.minLen should be set: isValidStr", f.name)
-	} //<<
-
 	f.Value = strings.TrimSpace(inp[0])
-	length := len(f.Value)
 
 	//Check value matches regex
 	if f.regex != nil && !f.regex.MatchString(f.Value) {
@@ -125,9 +117,17 @@ func isValidStr(f *field, inp ...string) {
 		return
 	}
 
+	if f.minLen == 0 && f.Required {
+		f.minLen = 1
+	}
+	length := len(f.Value)
 	if length < f.minLen {
 		f.Error = fmt.Sprintf("Please lengthen this text to %d characters or more (you are currently using %d character%v).", f.minLen, length, plural(length, "", ""))
 		return
+	}
+
+	if f.maxLen == 0 {
+		f.maxLen = maxLen
 	}
 	if length > f.maxLen {
 		//Truncate string instead of raising an error
