@@ -163,16 +163,3 @@ func isValidBool(f *field, inp ...string) {
 		f.Error = "Please check this field."
 	}
 }
-
-func plural(length int, single, multiple string) string {
-	if length != 1 {
-		if multiple != "" {
-			return multiple
-		}
-		return "s"
-	}
-	if single != "" {
-		return single
-	}
-	return ""
-}
