@@ -103,7 +103,7 @@ func pages() {
 	get404(urlEvents, events)
 }
 
-func endpoint(method string, formID uint8, runner func(http.ResponseWriter, *http.Request, form, func())) {
+func endpoint(method string, formID uint8, runner func(http.ResponseWriter, *http.Request, form)) {
 	h := func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != method {
 			/*405 Method Not Allowed
@@ -119,9 +119,7 @@ func endpoint(method string, formID uint8, runner func(http.ResponseWriter, *htt
 			http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 			return
 		}
-		//TODO change runner to accept referrer instead of a redirect function because the status code should be different depending on the error. not always http.StatusSeeOther
-		redirect := func() { http.Redirect(w, r, r.Referer(), http.StatusSeeOther) }
-		runner(w, r, form, redirect)
+		runner(w, r, form)
 	}
 	http.HandleFunc(fmt.Sprintf("/%d", formID), h)
 }

@@ -33,7 +33,7 @@ func shooters(w http.ResponseWriter, r *http.Request, submittedForm form, isVali
 	})
 }
 
-func shooterUpdate(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+func shooterUpdate(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	err := updateDocument(tblShooter, submittedForm.Fields[6].Value, &Shooter{
 		FirstName: submittedForm.Fields[0].Value,
 		Surname:   submittedForm.Fields[1].Value,
@@ -44,13 +44,13 @@ func shooterUpdate(w http.ResponseWriter, r *http.Request, submittedForm form, r
 	}, &Shooter{}, updateShooterDetails)
 	//Display any insert errors onscreen.
 	if err != nil {
-		formError(w, submittedForm, redirect, err)
+		formError(w, r, submittedForm, err)
 		return
 	}
 	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 }
 
-func eventSearchShooters(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+func eventSearchShooters(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	templater(w, page{
 		Title:    "Shooter Search",
 		template: templateNone,
@@ -60,11 +60,11 @@ func eventSearchShooters(w http.ResponseWriter, r *http.Request, submittedForm f
 	})
 }
 
-func shooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, redirect func()) {
+func shooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	//Add new club if there isn't already a club with that name
 	clubID, err := clubInsertIfMissing(submittedForm.Fields[2].Value)
 	if err != nil {
-		formError(w, submittedForm, redirect, err)
+		formError(w, r, submittedForm, err)
 		return
 	}
 
@@ -79,7 +79,7 @@ func shooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form, r
 		Ladies:    submittedForm.Fields[5].Checked,
 	})
 	if err != nil {
-		formError(w, submittedForm, redirect, err)
+		formError(w, r, submittedForm, err)
 		return
 	}
 	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)

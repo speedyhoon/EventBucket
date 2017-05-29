@@ -217,10 +217,10 @@ func errorHandler(w http.ResponseWriter, r *http.Request, status int, errorType 
 	})
 }
 
-func formError(w http.ResponseWriter, f form, redirect func(), err error) {
+func formError(w http.ResponseWriter, r *http.Request, f form, err error) {
 	f.Error = err
 	setSession(w, f)
-	redirect()
+	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 }
 
 /*//Update the expires http header time, every 15 minutes rather than recalculating it on every http request.
