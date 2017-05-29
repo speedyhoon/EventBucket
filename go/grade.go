@@ -120,6 +120,7 @@ func eventGrades(grades []uint) []option {
 	return options
 }
 
+//QtyTotal add together Sighter quantity and Shots quantity
 func (d Discipline) QtyTotal() uint {
 	return d.QtySighters + d.QtyShots
 }
