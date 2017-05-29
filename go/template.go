@@ -215,8 +215,7 @@ func templater(w http.ResponseWriter, page page) {
 	html, ok := templates[fileName]
 	//debug is for dynamically re-parsing (reloading) templates on every request
 	if !ok || debug {
-
-		templates[fileName], err = template.New("main").Funcs(templateFuncMap).ParseFiles(htmlFileNames...)
+		templates[fileName], err = template.New("master").Funcs(templateFuncMap).ParseFiles(htmlFileNames...)
 		if err != nil {
 			warn.Println(err, fileName)
 			return
@@ -224,7 +223,8 @@ func templater(w http.ResponseWriter, page page) {
 		html = templates[fileName]
 	}
 
-	if err = html.ExecuteTemplate(wz, "a", masterTemplate); err != nil {
+	if err = html.ExecuteTemplate(wz, "master", masterTemplate); err != nil {
+		warn.Println(err)
 		http.Error(wz, err.Error(), http.StatusInternalServerError)
 	}
 }

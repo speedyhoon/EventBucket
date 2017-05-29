@@ -23,6 +23,8 @@ var (
 	portAddr, dbPath string
 	debug            bool
 
+	runDir string
+
 	//Logging
 	t    = log.New(ioutil.Discard, "TRACE: ", log.Lshortfile) //Flags can be log.Lshortfile|log.Ltime
 	info = log.New(os.Stdout, "", 0)
@@ -31,9 +33,11 @@ var (
 
 func init() {
 	//go maintainExpiresTime()
-	ex, err := os.Executable()
+	var err error
+	runDir, err = os.Executable()
 	if err == nil {
-		htmlDirectory = filepath.Join(filepath.Dir(ex), "h")
+		runDir = filepath.Dir(runDir)
+		htmlDirectory = filepath.Join(runDir, "h")
 	}
 	masterTemplatePath = filepath.Join(htmlDirectory, "master")
 	masterScoreboard = filepath.Join(htmlDirectory, "masterscoreboard")
