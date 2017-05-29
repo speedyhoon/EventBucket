@@ -162,9 +162,7 @@ func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm for
 
 func clubMoundInsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	clubID := submittedForm.Fields[1].Value
-	err := updateDocument(tblClub, clubID, &Mound{
-		Name: submittedForm.Fields[0].Value,
-	}, &Club{}, insertClubMound)
+	err := updateDocument(tblClub, clubID, submittedForm.Fields[0].Value, &Club{}, insertClubMound)
 	if err != nil {
 		formError(w, r, submittedForm, err)
 		return

@@ -202,7 +202,7 @@ func updateShooterDetails(decode interface{}, contents interface{}) interface{} 
 func updateClubDetails(decode interface{}, contents interface{}) interface{} {
 	club := decode.(*Club)
 	update := contents.(*Club)
-	//Manually set each one otherwise it would override the existing club and its details (Ranges, Shooters & their scores) since the form doesn't already have that info.
+	//Manually set each one otherwise it would override the existing club and its details (Mounds etc)
 	club.Name = update.Name
 	club.Address = update.Address
 	club.Town = update.Town
@@ -220,9 +220,9 @@ func updateClubDefault(decode interface{}, contents interface{}) interface{} {
 	return club
 }
 
-func insertClubMound(decode interface{}, contents interface{}) interface{} {
+func insertClubMound(decode interface{}, mound interface{}) interface{} {
 	club := decode.(*Club)
-	club.Mounds = append(club.Mounds, *contents.(*Mound))
+	club.Mounds = append(club.Mounds, mound.(string))
 	return club
 }
 
@@ -322,9 +322,9 @@ func editRange(decode interface{}, contents interface{}) interface{} {
 
 func editMound(decode interface{}, contents interface{}) interface{} {
 	club := decode.(*Club)
-	details := contents.(*Mound)
-	if int(details.ID) < len(club.Mounds) {
-		club.Mounds[details.ID].Name = details.Name
+	mound := contents.(*Mound)
+	if int(mound.ID) < len(club.Mounds) {
+		club.Mounds[mound.ID] = mound.Name
 	}
 	return club
 }

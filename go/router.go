@@ -21,7 +21,7 @@ const (
 	urlAbout    = "/about"
 	urlArchive  = "/archive"
 	urlClubs    = "/clubs"
-	urlLicence  = "/license" //TODO should this file be saved with uppercase file name and a .txt file name?
+	urlLicence  = "/license"
 	urlShooters = "/shooters"
 	urlSettings = "/settings"
 	//GET with PARAMETERS
@@ -48,7 +48,6 @@ var (
 )
 
 func pages() {
-	//TODO remove prefix "/" from url & urlLicense?
 	serveFile("/favicon.ico")
 	serveFile(urlLicence)
 	serveDir(dirCSS, true)
