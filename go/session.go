@@ -120,7 +120,7 @@ func sessionForms(w http.ResponseWriter, r *http.Request, formActions ...uint8) 
 			if contents.action == action {
 				forms = append(forms, contents)
 			} else {
-				forms = append(forms, form{Fields: getForm(action)})
+				forms = append(forms, getForm(action))
 			}
 		}
 		return contents.action, forms
@@ -130,7 +130,7 @@ func sessionForms(w http.ResponseWriter, r *http.Request, formActions ...uint8) 
 
 func getForms(formActions ...uint8) (forms []form) {
 	for _, action := range formActions {
-		forms = append(forms, form{Fields: getForm(action)})
+		forms = append(forms, getForm(action))
 	}
 	return forms
 }
