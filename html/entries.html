@@ -4,12 +4,12 @@
 	{{else}}
 		{{template "ShooterEntry" .ShooterEntry}}
 	{{end}}
-	{{$hasRanges := ge (len.Event.Ranges) 1}}
+	{{$hasRanges := ge (len .Event.Ranges) 1}}
 	{{if not $hasRanges}}<samp>This event has no ranges</samp>{{end}}
 	{{with.Event.Shooters}}
-		<p>Total Entries: {{len.}} <a href=/print-entry-list/{{$.Event.ID}}>Print Entry List</a>
+		<p>Total Entries: {{len .}} <a href=/print-entry-list/{{$.Event.ID}}>Print Entry List</a>
 		{{if not $.Event.Closed}}
-			<table id=editRow>
+			<table data-s>
 		{{else}}
 			<table>
 		{{end}}
@@ -75,9 +75,9 @@
 			</td>
 		</template>
 		{{template "GradesAvailable" .GradesAvailable}}
-		<script defer src=dirJS/shooterSearch></script>
-		<script defer src=dirJS/entries></script>
-		<script defer src=dirJS/editRow></script>
-		<script defer src=dirJS/main></script>
+		<script defer src=/j/shooterSearch></script>
+		<script defer src=/j/entries></script>
+		<script defer src=/j/editRow></script>
+		<script defer src=/j/main></script>
 	{{end}}
 {{end}}
