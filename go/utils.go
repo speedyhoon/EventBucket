@@ -13,3 +13,16 @@ func stoU(id string) (uint, error) {
 	}
 	return uint(u), err
 }
+
+func plural(length int, single, multiple string) string {
+	if length != 1 {
+		if multiple != "" {
+			return multiple
+		}
+		return "s"
+	}
+	if single != "" {
+		return single
+	}
+	return ""
+}
