@@ -49,6 +49,7 @@ type Shot struct {
 	CountBack2 string `json:"countBack2,omitempty"`
 }
 
+//TODO remove variable prefix global and possibly replace with a struct instead.
 var (
 	globalDisciplines     []Discipline
 	globalGrades          []Grade
@@ -136,25 +137,29 @@ func defaultGlobalDisciplines() []Discipline {
 	XV5 := Mark{Buttons: "012345VX",
 		DoCountBack2: true,
 		Shots: map[string]Shot{
-			"-": {Value: 0, Center: 0, CountBack: "0", Center2: 0, CountBack2: "0", Shot: "-", Sighter: "-"},
-			"0": {Value: 0, Center: 0, CountBack: "0", Center2: 0, CountBack2: "0", Shot: "0", Sighter: "a"},
-			"1": {Value: 1, Center: 0, CountBack: "1", Center2: 0, CountBack2: "1", Shot: "1", Sighter: "b"},
-			"2": {Value: 2, Center: 0, CountBack: "2", Center2: 0, CountBack2: "2", Shot: "2", Sighter: "c"},
-			"3": {Value: 3, Center: 0, CountBack: "3", Center2: 0, CountBack2: "3", Shot: "3", Sighter: "d"},
-			"4": {Value: 4, Center: 0, CountBack: "4", Center2: 0, CountBack2: "4", Shot: "4", Sighter: "e"},
-			"5": {Value: 5, Center: 0, CountBack: "5", Center2: 0, CountBack2: "5", Shot: "5", Sighter: "f"},
-			"V": {Value: 5, Center: 1, CountBack: "6", Center2: 0, CountBack2: "6", Shot: "V", Sighter: "v"},
-			"6": {Value: 5, Center: 1, CountBack: "6", Center2: 0, CountBack2: "6", Shot: "V", Sighter: "g"},
-			"X": {Value: 5, Center: 1, CountBack: "6", Center2: 1, CountBack2: "7", Shot: "X", Sighter: "x"},
-			"a": {Value: 0, Center: 0, CountBack: "0", Shot: "0", Sighter: "a"},
-			"b": {Value: 0, Center: 0, CountBack: "0", Shot: "1", Sighter: "b"},
-			"c": {Value: 0, Center: 0, CountBack: "0", Shot: "2", Sighter: "c"},
-			"d": {Value: 0, Center: 0, CountBack: "0", Shot: "3", Sighter: "d"},
-			"e": {Value: 0, Center: 0, CountBack: "0", Shot: "4", Sighter: "e"},
-			"f": {Value: 0, Center: 0, CountBack: "0", Shot: "5", Sighter: "f"},
-			"g": {Value: 0, Center: 0, CountBack: "0", Shot: "6", Sighter: "g"},
-			"v": {Value: 0, Center: 0, CountBack: "0", Shot: "V", Sighter: "v"},
-			"x": {Value: 0, Center: 0, CountBack: "0", Shot: "X", Sighter: "x"},
+			//TODO add button title=Miss to start shooting button
+			//TODO if CountBack, CountBack2 or Shot is missing - default to "0"?
+			"-": {CountBack: "0", CountBack2: "0", Shot: "-", Sighter: "-"},
+			"0": {CountBack: "0", CountBack2: "0", Shot: "0", Sighter: "a"},
+			"1": {CountBack: "1", CountBack2: "1", Shot: "1", Sighter: "b", Value: 1},
+			"2": {CountBack: "2", CountBack2: "2", Shot: "2", Sighter: "c", Value: 2},
+			"3": {CountBack: "3", CountBack2: "3", Shot: "3", Sighter: "d", Value: 3},
+			"4": {CountBack: "4", CountBack2: "4", Shot: "4", Sighter: "e", Value: 4},
+			"5": {CountBack: "5", CountBack2: "5", Shot: "5", Sighter: "f", Value: 5},
+			"V": {CountBack: "6", CountBack2: "6", Shot: "V", Sighter: "v", Value: 5, Center: 1},
+			"6": {CountBack: "6", CountBack2: "6", Shot: "V", Sighter: "g", Value: 5, Center: 1},
+			"X": {CountBack: "6", CountBack2: "7", Shot: "X", Sighter: "x", Value: 5, Center: 1, Center2: 1},
+			//Sighters
+			//TODO possibly remove these sighters?
+			"a": {Shot: "0", Sighter: "a"},
+			"b": {Shot: "1", Sighter: "b"},
+			"c": {Shot: "2", Sighter: "c"},
+			"d": {Shot: "3", Sighter: "d"},
+			"e": {Shot: "4", Sighter: "e"},
+			"f": {Shot: "5", Sighter: "f"},
+			"g": {Shot: "6", Sighter: "g"},
+			"v": {Shot: "V", Sighter: "v"},
+			"x": {Shot: "X", Sighter: "x"},
 			//TODO sort isn't sorting by countback 2 descending.
 			//TODO precedence is taken over the last X shot rather than the most X's shot
 		}}
@@ -181,25 +186,25 @@ func defaultGlobalDisciplines() []Discipline {
 		Marking: Mark{
 			Buttons: "0123456X",
 			Shots: map[string]Shot{
-				"-": {Value: 0, Center: 0, CountBack: "0", Shot: "-", Sighter: "-"},
-				"0": {Value: 0, Center: 0, CountBack: "0", Shot: "0", Sighter: "a"},
-				"1": {Value: 1, Center: 0, CountBack: "1", Shot: "1", Sighter: "b"},
-				"2": {Value: 2, Center: 0, CountBack: "2", Shot: "2", Sighter: "c"},
-				"3": {Value: 3, Center: 0, CountBack: "3", Shot: "3", Sighter: "d"},
-				"4": {Value: 4, Center: 0, CountBack: "4", Shot: "4", Sighter: "e"},
-				"5": {Value: 5, Center: 0, CountBack: "5", Shot: "5", Sighter: "f"},
-				"V": {Value: 6, Center: 0, CountBack: "6", Shot: "6", Sighter: "g"},
-				"6": {Value: 6, Center: 0, CountBack: "6", Shot: "6", Sighter: "g"},
-				"X": {Value: 6, Center: 1, CountBack: "7", Shot: "X", Sighter: "x"},
-				"a": {Value: 0, Center: 0, CountBack: "0", Shot: "0", Sighter: "a"},
-				"b": {Value: 0, Center: 0, CountBack: "0", Shot: "1", Sighter: "b"},
-				"c": {Value: 0, Center: 0, CountBack: "0", Shot: "2", Sighter: "c"},
-				"d": {Value: 0, Center: 0, CountBack: "0", Shot: "3", Sighter: "d"},
-				"e": {Value: 0, Center: 0, CountBack: "0", Shot: "4", Sighter: "e"},
-				"f": {Value: 0, Center: 0, CountBack: "0", Shot: "5", Sighter: "f"},
-				"g": {Value: 0, Center: 0, CountBack: "0", Shot: "6", Sighter: "g"},
-				"v": {Value: 0, Center: 0, CountBack: "0", Shot: "V", Sighter: "v"},
-				"x": {Value: 0, Center: 0, CountBack: "0", Shot: "X", Sighter: "x"},
+				"-": {CountBack: "0", Shot: "-", Sighter: "-"},
+				"0": {CountBack: "0", Shot: "0", Sighter: "a"},
+				"1": {CountBack: "1", Shot: "1", Sighter: "b", Value: 1},
+				"2": {CountBack: "2", Shot: "2", Sighter: "c", Value: 2},
+				"3": {CountBack: "3", Shot: "3", Sighter: "d", Value: 3},
+				"4": {CountBack: "4", Shot: "4", Sighter: "e", Value: 4},
+				"5": {CountBack: "5", Shot: "5", Sighter: "f", Value: 5},
+				"V": {CountBack: "6", Shot: "6", Sighter: "g", Value: 6},
+				"6": {CountBack: "6", Shot: "6", Sighter: "g", Value: 6},
+				"X": {CountBack: "7", Shot: "X", Sighter: "x", Value: 6, Center: 1},
+				"a": {CountBack: "0", Shot: "0", Sighter: "a"},
+				"b": {CountBack: "0", Shot: "1", Sighter: "b"},
+				"c": {CountBack: "0", Shot: "2", Sighter: "c"},
+				"d": {CountBack: "0", Shot: "3", Sighter: "d"},
+				"e": {CountBack: "0", Shot: "4", Sighter: "e"},
+				"f": {CountBack: "0", Shot: "5", Sighter: "f"},
+				"g": {CountBack: "0", Shot: "6", Sighter: "g"},
+				"v": {CountBack: "0", Shot: "V", Sighter: "v"},
+				"x": {CountBack: "0", Shot: "X", Sighter: "x"},
 			}},
 		Grades: []Grade{{ID: 3, Abbr: "FA", Name: "F Standard A"},
 			{ID: 4, Abbr: "FB", Name: "F Standard B"},
@@ -223,25 +228,33 @@ func defaultGlobalDisciplines() []Discipline {
 		Marking: Mark{
 			Buttons: "012345V",
 			Shots: map[string]Shot{
-				"-": {Value: 0, Center: 0, CountBack: "0", Shot: "-", Sighter: "-"},
-				"0": {Value: 0, Center: 0, CountBack: "0", Shot: "0", Sighter: "a"},
-				"1": {Value: 1, Center: 0, CountBack: "1", Shot: "1", Sighter: "b"},
-				"2": {Value: 2, Center: 0, CountBack: "2", Shot: "2", Sighter: "c"},
-				"3": {Value: 3, Center: 0, CountBack: "3", Shot: "3", Sighter: "d"},
-				"4": {Value: 4, Center: 0, CountBack: "4", Shot: "4", Sighter: "e"},
-				"5": {Value: 5, Center: 0, CountBack: "5", Shot: "5", Sighter: "f"},
-				"V": {Value: 5, Center: 1, CountBack: "6", Shot: "V", Sighter: "v"},
-				"6": {Value: 5, Center: 1, CountBack: "6", Shot: "V", Sighter: "v"},
-				"X": {Value: 5, Center: 1, CountBack: "6", Shot: "V", Sighter: "v"},
-				"a": {Value: 0, Center: 0, CountBack: "0", Shot: "0", Sighter: "a"},
-				"b": {Value: 0, Center: 0, CountBack: "0", Shot: "1", Sighter: "b"},
-				"c": {Value: 0, Center: 0, CountBack: "0", Shot: "2", Sighter: "c"},
-				"d": {Value: 0, Center: 0, CountBack: "0", Shot: "3", Sighter: "d"},
-				"e": {Value: 0, Center: 0, CountBack: "0", Shot: "4", Sighter: "e"},
-				"f": {Value: 0, Center: 0, CountBack: "0", Shot: "5", Sighter: "f"},
-				"g": {Value: 0, Center: 0, CountBack: "0", Shot: "6", Sighter: "g"},
-				"v": {Value: 0, Center: 0, CountBack: "0", Shot: "V", Sighter: "v"},
-				"x": {Value: 0, Center: 0, CountBack: "0", Shot: "X", Sighter: "x"},
+				"-": {CountBack: "0", Shot: "-", Sighter: "-"},
+				"0": {CountBack: "0", Shot: "0", Sighter: "a"},
+				"1": {CountBack: "1", Shot: "1", Sighter: "b", Value: 1},
+				"2": {CountBack: "2", Shot: "2", Sighter: "c", Value: 2},
+				"3": {CountBack: "3", Shot: "3", Sighter: "d", Value: 3},
+				"4": {CountBack: "4", Shot: "4", Sighter: "e", Value: 4},
+				"5": {CountBack: "5", Shot: "5", Sighter: "f", Value: 5},
+				"V": {CountBack: "6", Shot: "V", Sighter: "v", Value: 5, Center: 1},
+				"6": {CountBack: "6", Shot: "V", Sighter: "v", Value: 5, Center: 1},
+				"X": {CountBack: "6", Shot: "V", Sighter: "v", Value: 5, Center: 1},
+				//TODO change sighters so they are not stored in the database.
+				//if shot, ok := shotMap[input]; ok{
+				//		return shot
+				//else
+				//		for id, shot := range shotMap{
+				//			if input == shot.Sighter
+				//				return shot
+				//otherwise ignore input
+				"a": {CountBack: "0", Shot: "0", Sighter: "a"},
+				"b": {CountBack: "0", Shot: "1", Sighter: "b"},
+				"c": {CountBack: "0", Shot: "2", Sighter: "c"},
+				"d": {CountBack: "0", Shot: "3", Sighter: "d"},
+				"e": {CountBack: "0", Shot: "4", Sighter: "e"},
+				"f": {CountBack: "0", Shot: "5", Sighter: "f"},
+				"g": {CountBack: "0", Shot: "6", Sighter: "g"},
+				"v": {CountBack: "0", Shot: "V", Sighter: "v"},
+				"x": {CountBack: "0", Shot: "X", Sighter: "x"},
 			}},
 		Grades: []Grade{{ID: 9, Abbr: "303", Name: "303 Rifle"}},
 	}}
@@ -249,6 +262,10 @@ func defaultGlobalDisciplines() []Discipline {
 
 func loadGrades(filePath string) error {
 	if filePath == "" {
+		//TODO default to grades.yml? and search through the current working directory, EB.exe directory, %appdata%, %programdata%.
+		//When loaded display filepath loaded
+		//maybe only load from a single directory if none specified?
+		//TODO change the default for portableApps mode
 		return errors.New("File specified is empty")
 	}
 	contents, err := ioutil.ReadFile(filePath)
@@ -289,9 +306,12 @@ func buildGradesFile(filePath string) error {
 	return nil
 }
 
+//TODO Change the event to point to a certain grade revision with an id and save grades in a different database bucket (table)
 func findGrade(index uint) Grade {
 	if index < uint(len(globalGrades)) {
 		return globalGrades[index]
 	}
 	return Grade{}
 }
+
+//TODO create a new grades settings page to change the shots, sighters etc.
