@@ -1,9 +1,9 @@
 package main
 
 import (
-	"compress/gzip"
 	"io"
 	"net/http"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
@@ -16,6 +16,7 @@ const (
 	cache          = "cache"
 	nocache        = "nocache"
 	cGzip          = "gzip"
+	br             = "br"
 	acceptEncoding = "Accept-Encoding"
 	csp            = "Content-Security-Policy"
 	formatGMT      = "Mon, 02 Jan 2006 15:04:05 GMT" //Date format
@@ -28,11 +29,11 @@ func serveFile(fileName string) {
 		//webmasters.stackexchange.com/questions/22217/which-browsers-handle-content-encoding-gzip-and-which-of-them-has-any-special
 		//www.stevesouders.com/blog/2009/11/11/whos-not-getting-gzip/
 		headers(w, cache)
-		http.ServeFile(w, r, "."+fileName)
+		http.ServeFile(w, r, filepath.Join(runDir, fileName))
 	})
 }
 
-func serveDir(contentType string, gzip bool) {
+func serveDir(contentType string, compress bool) {
 	http.Handle(contentType,
 		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			//If url is a directory return a 404 to prevent displaying a directory listing.
@@ -41,21 +42,22 @@ func serveDir(contentType string, gzip bool) {
 				return
 			}
 			headers(w, contentType, cache)
-			if gzip {
-				headers(w, cGzip)
+			if compress {
+				headers(w, br)
 			}
-			http.FileServer(http.Dir("./")).ServeHTTP(w, r)
+			http.FileServer(http.Dir(runDir)).ServeHTTP(w, r)
 		}))
 }
 
 var (
 	headerOptions = map[string][2]string{
-		cGzip:     {"Content-Encoding", "gzip"},
-		"html":    {contentType, "text/html; charset=utf-8"},
-		"dirCSS":  {contentType, "text/css; charset=utf-8"},
-		"dirJS":   {contentType, "text/javascript"},
-		"dirSVG":  {contentType, "image/svg+xml"},
-		"dirWEBP": {contentType, "image/webp"},
+		cGzip:   {"Content-Encoding", "gzip"},
+		br:      {"Content-Encoding", "br"},
+		"html":  {contentType, "text/html; charset=utf-8"},
+		dirCSS:  {contentType, "text/css; charset=utf-8"},
+		dirJS:   {contentType, "text/javascript"},
+		dirSVG:  {contentType, "image/svg+xml"},
+		dirWEBP: {contentType, "image/webp"},
 		//dirGIF:  {contentType, "image/gif"},
 	}
 	//Used for every HTTP request with cache headers set.
@@ -80,7 +82,7 @@ func headers(w http.ResponseWriter, setHeaders ...string) {
 			break
 		default:
 			//Set resource content type header or set content encoding gzip header
-			if lookup == cGzip || headerOptions[lookup][0] == "Content-Type" {
+			if lookup == cGzip || lookup == br || headerOptions[lookup][0] == "Content-Type" {
 				w.Header().Set(headerOptions[lookup][0], headerOptions[lookup][1])
 			}
 		}
@@ -96,23 +98,9 @@ func (w gzipResponseWriter) Write(b []byte) (int, error) {
 	return w.Writer.Write(b)
 }
 
-func gzipWriter(w http.ResponseWriter) gzipResponseWriter {
-	//Add http header Content Type = text/html and encoding = gzip
-	headers(w, "html", cGzip)
-
-	gz := gzip.NewWriter(w)
-	defer gz.Close()
-	return gzipResponseWriter{Writer: gz, ResponseWriter: w}
-}
-
 func get404(url string, pageFunc func(http.ResponseWriter, *http.Request)) {
 	http.HandleFunc(url,
 		func(w http.ResponseWriter, r *http.Request) {
-			// headers(w, "html", cGzip)
-			// gz := gzip.NewWriter(w)
-			// defer gz.Close()
-			// gzw := gzipResponseWriter{Writer: gz, ResponseWriter: w}
-
 			if r.URL.Path != url {
 				errorHandler(w, r, http.StatusNotFound, "")
 				return
@@ -124,11 +112,6 @@ func get404(url string, pageFunc func(http.ResponseWriter, *http.Request)) {
 func getRedirectPermanent(url string, pageFunc func(http.ResponseWriter, *http.Request)) {
 	http.HandleFunc(url,
 		func(w http.ResponseWriter, r *http.Request) {
-			// headers(w, "html", cGzip)
-			// gz := gzip.NewWriter(w)
-			// defer gz.Close()
-			// gzw := gzipResponseWriter{Writer: gz, ResponseWriter: w}
-
 			//Don't accept post or put requests
 			if r.Method != get {
 				http.Redirect(w, r, url, http.StatusSeeOther)
@@ -145,11 +128,6 @@ func getParameter(url string, pageFunc func(http.ResponseWriter, *http.Request, 
 	var parameters, lowerParams string
 	http.HandleFunc(url,
 		func(w http.ResponseWriter, r *http.Request) {
-			// headers(w, "html", cGzip)
-			// gz := gzip.NewWriter(w)
-			// defer gz.Close()
-			// gzw := gzipResponseWriter{Writer: gz, ResponseWriter: w}
-
 			//Don't accept post or put requests
 			if r.Method != get {
 				http.Redirect(w, r, url, http.StatusSeeOther)
@@ -165,10 +143,6 @@ func getParameter(url string, pageFunc func(http.ResponseWriter, *http.Request, 
 			}
 
 			if regex.MatchString(lowerParams) {
-
-				//Start gzip
-				//gz := gzip.NewWriter(w)
-				//defer gz.Close()
 				pageFunc(w, r, lowerParams)
 				return
 			}
@@ -185,11 +159,6 @@ func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request,
 	var ids []string
 	http.HandleFunc(url,
 		func(w http.ResponseWriter, r *http.Request) {
-			// headers(w, "html", cGzip)
-			// gz := gzip.NewWriter(w)
-			// defer gz.Close()
-			// gzw := gzipResponseWriter{Writer: gz, ResponseWriter: w}
-
 			//Don't accept post or put requests
 			if r.Method != get {
 				http.Redirect(w, r, url, http.StatusSeeOther)
@@ -206,10 +175,6 @@ func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request,
 
 			if regex.MatchString(lowerParams) {
 				ids = strings.Split(lowerParams, "/")
-
-				//Start gzip
-				//gz := gzip.NewWriter(w)
-				//defer gz.Close()
 				pageFunc(w, r, ids[0], ids[1])
 				return
 			}
@@ -225,11 +190,6 @@ func errorHandler(w http.ResponseWriter, r *http.Request, status int, errorType 
 	//func errorHandler(gzw gzipResponseWriter, r *http.Request, status int, errorType string) {
 	//All EventBucket page urls and ids are lowercase
 	lowerURL := strings.ToLower(r.URL.Path)
-
-	// headers(w, "html", cGzip)
-	// gz := gzip.NewWriter(w)
-	// defer gz.Close()
-	// gzw := gzipResponseWriter{Writer: gz, ResponseWriter: w}
 
 	//Redirect if url contains any uppercase letters.
 	if r.URL.Path != lowerURL {
@@ -257,9 +217,9 @@ func errorHandler(w http.ResponseWriter, r *http.Request, status int, errorType 
 	})
 }
 
-func formError(w http.ResponseWriter, submittedForm form, redirect func(), err error) {
-	submittedForm.Error = err
-	setSession(w, submittedForm)
+func formError(w http.ResponseWriter, f form, redirect func(), err error) {
+	f.Error = err
+	setSession(w, f)
 	redirect()
 }
 
