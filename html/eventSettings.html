@@ -45,28 +45,23 @@
 
 	{{if and (not $.Event.Closed) .Event.Ranges}}
 		<template>
-			<td></td>
-{{/* Are closing td tags required? */}}
+			<td>
 			<td>
 				<input required name=n maxlength=64 list=r type=search placeholder="Range name" form=editRow>
 				<span onclick=moveRange class="^arrows^ ^desc^" title="Move Up"></span>
 				<span onclick=moveRange class="^arrows^ ^asc^" title="Move Down"></span>
-			</td>
 			<td>
 				<select size={{len .Ranges}} required name=R multiple form=editRow>
 					{{template "optionList" .Ranges}}
 				</select>
-			</td>
 			<td>
 				<input name=k type=checkbox form=editRow>
-			</td>
 			<td>
 				<form method=post action=/20 id=editRow>
 					<button name=I>Save</button>
 					<input type=hidden name=E value={{.Event.ID}}>
 					<input type=hidden name=o>
 				</form>
-			</td>
 		</template>
 		<script defer src=/j/eventRanges></script>
 		<script defer src=/j/editRow></script>
