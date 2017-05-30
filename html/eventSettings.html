@@ -7,7 +7,7 @@
 		{{with.RangeDataList}}
 			<datalist id=r>
 				{{range.}}
-					<option>{{.Name}}
+					<option>{{.}}
 				{{end}}
 			</datalist>
 		{{end}}
@@ -18,7 +18,7 @@
 	{{range.UpdateErrors}}<samp>{{.}}</samp>{{end}}
 	{{with.Event.Ranges}}
 		<p>Total Ranges: {{len .}}
-        <table{{attr " data-s" (not $.Event.Closed)}}>
+        <table{{a " data-s" (not $.Event.Closed)}}>
 			<thead>
 				<th class=asc>ID
 				<th>Range
@@ -28,16 +28,16 @@
 					<td>Edit
 				{{end}}
 			<tbody>
-			{{range.}}
-				<tr>
-					<td>{{.ID}}
-					<td>{{.Name}}
-					<td>{{range.Aggs}}{{(findRange . $.Event.Ranges).Name}}, {{end}}
-                    <td{{attr " class=tick" (and .Locked (not .IsAgg))}}>
-					{{if not $.Event.Closed}}
-						<td>
-					{{end}}
-			{{end}}
+				{{range.}}
+					<tr>
+						<td>{{.ID}}
+						<td>{{.Name}}
+						<td>{{range.Aggs}}{{(findRange . $.Event.Ranges).Name}}, {{end}}
+						<td{{a " class=tick" (and .Locked (not .IsAgg))}}>
+						{{if not $.Event.Closed}}
+							<td>
+						{{end}}
+				{{end}}
 		</table>
 	{{else}}
 		<samp>This event has no ranges.</samp>

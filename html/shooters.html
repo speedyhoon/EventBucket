@@ -25,7 +25,7 @@
 						<td>{{.Club}}
 						<td>{{range.Grade}}{{(grade .).Name}}, {{end}}
 						<td>{{ageGroup .AgeGroup}}
-						<td{{attr " class=tick" .Ladies}}>
+						<td{{a " class=tick" .Ladies}}>
 						<td>
 				{{end}}
 		</table>
@@ -40,7 +40,7 @@
 				<input type=search name=C required maxlength=64 form=editRow list=C>
 			<td>
 				<select name=g multiple required size={{len $.Grades}} form=editRow>
-				{{template "optionList" $.Grades}}
+				    {{template "optionList" $.Grades}}
 				</select>
 			<td>
 				<select name=r form=editRow>
