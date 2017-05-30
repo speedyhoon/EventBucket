@@ -107,7 +107,7 @@ var (
 			}
 			return nil
 		},
-		"attr": func(attribute string, value interface{}) template.HTMLAttr {
+		"a": func(attribute string, value interface{}) template.HTMLAttr {
 			var output string
 			switch value.(type) {
 			case bool:

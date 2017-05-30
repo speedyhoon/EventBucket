@@ -26,11 +26,11 @@
 								<td>{{.FirstName}} {{.Surname}}
 								{{$disc := (index $.Disciplines (grade .Grade).ClassID)}}
 								<td>
-									<input{{attr " value" $score.Total}} id={{.ID}} name=t max={{$disc.TopTotal}} min=0 step=1 placeholder={{$score.Total}} type=number required autocomplete=off>
+									<input{{a " value" $score.Total}} id={{.ID}} name=t max={{$disc.TopTotal}} min=0 step=1 placeholder={{$score.Total}} type=number required autocomplete=off>
 								<td>
-									<input{{attr " value" $score.Centers}} name=c max={{$disc.QtyShots}} data-max={{$disc.QtyShots}} min=0 step=1 placeholder={{$score.Centers}} type=number autocomplete=off data-top={{$disc.TopShot}}>
+									<input{{a " value" $score.Centers}} name=c max={{$disc.QtyShots}} data-max={{$disc.QtyShots}} min=0 step=1 placeholder={{$score.Centers}} type=number autocomplete=off data-top={{$disc.TopShot}}>
 								<td>
-									<input{{attr " value" $score.ShootOff}} name=h max=100 min=0 step=1 placeholder={{$score.ShootOff}} type=number autocomplete=off>
+									<input{{a " value" $score.ShootOff}} name=h max=100 min=0 step=1 placeholder={{$score.ShootOff}} type=number autocomplete=off>
 						{{end}}
 					{{end}}
 				{{end}}

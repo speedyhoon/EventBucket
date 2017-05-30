@@ -58,7 +58,6 @@ var (
 		dirJS:   {contentType, "text/javascript"},
 		dirSVG:  {contentType, "image/svg+xml"},
 		dirWEBP: {contentType, "image/webp"},
-		//dirGIF:  {contentType, "image/gif"},
 	}
 	//Used for every HTTP request with cache headers set.
 	cacheExpires = time.Now().UTC().AddDate(1, 0, 0).Format(formatGMT)
