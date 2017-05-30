@@ -34,7 +34,9 @@
 
 {{define "optionList"}}
 	{{range.}}
-		<option{{a " value" .Value}}{{a " selected" .Selected}}>{{.Label}}
+			{{$v := .Value}}
+			{{$s := .Selected}}
+			<option{{a " value" .Value}}{{a " selected" $s}}>{{.Label}}
 	{{end}}
 {{end}}
 
