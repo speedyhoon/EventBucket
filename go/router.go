@@ -12,7 +12,7 @@ import (
 
 const (
 	get         = "GET"
-	post         = "POST"
+	post        = "POST"
 	dirCSS      = `/c/`
 	dirJS       = `/j/`
 	dirSVG      = `/v/`

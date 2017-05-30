@@ -1,5 +1,3 @@
 {{define "master"}}
-	{{range.Page.Data.ListShooters}}
-		<option{{attr " value" .Value}}>{{.Label}}
-	{{end}}
+	{{template "optionList" .Page.Data.ListShooters}}
 {{end}}
