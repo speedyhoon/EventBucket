@@ -36,7 +36,7 @@
 	{{range.}}
 			{{$v := .Value}}
 			{{$s := .Selected}}
-			<option{{a " value" .Value}}{{a " selected" $s}}>{{.Label}}
+			<option{{a " value" $v}}{{a " selected" $s}}>{{.Label}}
 	{{end}}
 {{end}}
 
