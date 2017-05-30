@@ -7,6 +7,10 @@
 	</form>
 {{end}}
 
+{{define "error"}}
+	{{if.}}<samp>{{.}}</samp>{{end}}
+{{end}}
+
 {{define "incompleteShooters"}}
 	{{if.ShowAll}}
 		<a href=/{{.URL}}/{{.Event.ID}}/{{.Range.ID}}>View Incomplete Shooters</a>
@@ -28,6 +32,12 @@
 	{{end}}
 {{end}}
 
+{{define "optionList"}}
+	{{range.}}
+		<option{{attr " value" .Value}}{{attr " selected" .Selected}}>{{.Label}}
+	{{end}}
+{{end}}
+
 {{define "networkAdapters"}}
 	{{if or .hostname .ipAddresses}}
 		<p>To access EventBucket from multiple devices within your local network, the following links might be available:
@@ -43,3 +53,5 @@
 		<samp>Range is locked, no changes can be made. Go to <a href=/event-settings/{{.Event.ID}}>Event Settings</a> to unlock this range.</samp>
 	{{end}}
 {{end}}
+
+{{define "shortcut"}} title='Focus on this form by pressing Alt + {{.}} or Alt + Shift + {{.}}'{{end}}
