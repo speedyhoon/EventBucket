@@ -39,16 +39,14 @@
 	{{end}}
 
 	<template>
-		<td></td>
+		<td>
 		<td>
 			<form method=post action=/19 id=editRow>
 				<input name=n required placeholder="Mound name" accesskey=m maxlength=64>
 				<input type=hidden name=I>
 			</form>
-		</td>
 		<td>
 			<button name=C value={{.Club.ID}} form=editRow>Save</button>
-		</td>
 	</template>
 	{{template "NewShootingMound" .ClubMound}}
 {{end}}

@@ -43,36 +43,29 @@
 	{{end}}
 	{{if not .Event.Closed}}
 		<template>
-			<td></td>
+			<td>
 			<td>
 				<form method=post action=/22 id=editRow>
 					<input name=f required placeholder="First name" accesskey=d maxlength=64>
 					<input name=s required placeholder=Surname maxlength=64>
 					<input type=hidden name=E value={{.Event.ID}}>
 				</form>
-			</td>
 			<td>
 				<input type=search name=C required maxlength=64 form=editRow list=C placeholder="Club name">
-			</td>
 			<td>
 				<select name=g required form=editRow>
 					{{template "optionList" .AvailableGrades}}
 				</select>
-			</td>
 			<td>
 				<select name=r form=editRow>
 					{{template "optionList" .AgeGroups}}
 				</select>
-			</td>
 			<td>
 				<input name=k type=checkbox form=editRow>
-			</td>
 			<td>
 				<input name=x type=checkbox form=editRow>
-			</td>
 			<td>
 				<button name=S form=editRow>Save</button>
-			</td>
 		</template>
 		{{template "GradesAvailable" .GradesAvailable}}
 		<script defer src=/j/shooterSearch></script>
