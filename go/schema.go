@@ -110,7 +110,7 @@ type EventShooter struct {
 	LinkedID       uint             `json:"l,omitempty"` //For duplicating shooters that are in different classes with the same score
 	EID            string           `json:"M,omitempty"` //Points to EventBucket Shooter ID
 	Disabled       bool             `json:"d,omitempty"`
-	Ladies         bool             `json:"x,omitempty"`
+	Sex            bool             `json:"x,omitempty"`
 	GradeSeparator bool             `json:"-"` //Used for enterShots and enterRangeTotals only.
 	//position  string           `json:"-"` //Used for scoreboard only.
 	//warning   uint8            `json:"-"` //Used for scoreboard only.
@@ -141,7 +141,7 @@ type Shooter struct {
 	MergedSID int       `json:"m,omitempty"`
 	Modified  time.Time `json:"o,omitempty"`
 	AgeGroup  uint      `json:"r,omitempty"`
-	Ladies    bool      `json:"l,omitempty"`
+	Sex       bool      `json:"l,omitempty"`
 	Grade     []uint    `json:"G,omitempty"`
 }
 
@@ -163,7 +163,8 @@ type field struct {
 	Required, Disable, AutoFocus, Checked bool
 	Options                               []option
 	maxLen, minLen                        int
-	min, max, step, valueFloat32          float32
+	min, max                              int
+	step, valueFloat32                    float32
 	size                                  uint8
 	regex                                 *regexp.Regexp
 	v8                                    func(*field, ...string)
