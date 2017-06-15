@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io"
 	"net/http"
 	"path/filepath"
 	"regexp"
@@ -19,7 +18,21 @@ const (
 	br             = "br"
 	acceptEncoding = "Accept-Encoding"
 	csp            = "Content-Security-Policy"
-	formatGMT      = "Mon, 02 Jan 2006 15:04:05 GMT" //Date format
+)
+
+var (
+	//Used for every HTTP request with cache headers set.
+	cacheExpires string
+
+	headerOptions = map[string][2]string{
+		cGzip:   {"Content-Encoding", cGzip},
+		br:      {"Content-Encoding", br},
+		"html":  {contentType, "text/html; charset=utf-8"},
+		dirCSS:  {contentType, "text/css; charset=utf-8"},
+		dirJS:   {contentType, "text/javascript"},
+		dirSVG:  {contentType, "image/svg+xml"},
+		dirWEBP: {contentType, "image/webp"},
+	}
 )
 
 func serveFile(fileName string) {
@@ -49,21 +62,7 @@ func serveDir(contentType string, compress bool) {
 		}))
 }
 
-var (
-	headerOptions = map[string][2]string{
-		cGzip:   {"Content-Encoding", "gzip"},
-		br:      {"Content-Encoding", "br"},
-		"html":  {contentType, "text/html; charset=utf-8"},
-		dirCSS:  {contentType, "text/css; charset=utf-8"},
-		dirJS:   {contentType, "text/javascript"},
-		dirSVG:  {contentType, "image/svg+xml"},
-		dirWEBP: {contentType, "image/webp"},
-	}
-	//Used for every HTTP request with cache headers set.
-	cacheExpires = time.Now().UTC().AddDate(1, 0, 0).Format(formatGMT)
-)
-
-//security add Access-Control-Allow-Origin //net.tutsplus.com/tutorials/client-side-security-best-practices/
+//TODO security add Access-Control-Allow-Origin //net.tutsplus.com/tutorials/client-side-security-best-practices/
 func headers(w http.ResponseWriter, setHeaders ...string) {
 	//The page cannot be displayed in a frame, regardless of the site attempting to do so. //developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options
 	w.Header().Set("X-Frame-Options", "DENY")
@@ -88,15 +87,6 @@ func headers(w http.ResponseWriter, setHeaders ...string) {
 	}
 }
 
-type gzipResponseWriter struct {
-	io.Writer
-	http.ResponseWriter
-}
-
-func (w gzipResponseWriter) Write(b []byte) (int, error) {
-	return w.Writer.Write(b)
-}
-
 func get404(url string, pageFunc func(http.ResponseWriter, *http.Request)) {
 	http.HandleFunc(url,
 		func(w http.ResponseWriter, r *http.Request) {
@@ -113,7 +103,8 @@ func getRedirectPermanent(url string, pageFunc func(http.ResponseWriter, *http.R
 		func(w http.ResponseWriter, r *http.Request) {
 			//Don't accept post or put requests
 			if r.Method != get {
-				http.Redirect(w, r, url, http.StatusSeeOther)
+				http.Redirect(w, r, url, http.StatusMethodNotAllowed)
+				return
 			}
 
 			pageFunc(w, r)
@@ -129,7 +120,8 @@ func getParameter(url string, pageFunc func(http.ResponseWriter, *http.Request, 
 		func(w http.ResponseWriter, r *http.Request) {
 			//Don't accept post or put requests
 			if r.Method != get {
-				http.Redirect(w, r, url, http.StatusSeeOther)
+				http.Redirect(w, r, url, http.StatusMethodNotAllowed)
+				return
 			}
 
 			parameters = strings.TrimPrefix(r.URL.Path, url)
@@ -161,6 +153,7 @@ func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request,
 			//Don't accept post or put requests
 			if r.Method != get {
 				http.Redirect(w, r, url, http.StatusSeeOther)
+				return
 			}
 
 			parameters = strings.TrimPrefix(r.URL.Path, url)
@@ -186,7 +179,6 @@ func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request,
 }
 
 func errorHandler(w http.ResponseWriter, r *http.Request, status int, errorType string) {
-	//func errorHandler(gzw gzipResponseWriter, r *http.Request, status int, errorType string) {
 	//All EventBucket page urls and ids are lowercase
 	lowerURL := strings.ToLower(r.URL.Path)
 
@@ -222,10 +214,10 @@ func formError(w http.ResponseWriter, r *http.Request, f form, err error) {
 	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 }
 
-/*//Update the expires http header time, every 15 minutes rather than recalculating it on every http request.
-func maintainExpiresTime() {
-	ticker := time.NewTicker(time.Minute * 15)
-	for range ticker.C {
+//Update the expires http header time, every 15 minutes rather than recalculating it on every http request.
+func maintainExpires() {
+	setExpiresTime()
+	for range time.NewTicker(time.Hour * 23).C {
 		//Can't directly change global variables in a go routine, so call an external function.
 		setExpiresTime()
 	}
@@ -234,6 +226,6 @@ func maintainExpiresTime() {
 //Set expiry date 1 year, 0 months & 0 days in the future.
 func setExpiresTime() {
 	//Date format is the same as Go`s time.RFC1123 but uses "GMT" timezone instead of "UTC" time standard.
-	cacheExpires = time.Now().UTC().AddDate(1, 0, 0).Format(formatGMT)
+	cacheExpires = time.Now().UTC().AddDate(1, 0, 0).Format("Mon, 02 Jan 2006 15:04:05 GMT")
 	//w3.org: "All HTTP date/time stamps MUST be represented in Greenwich Mean Time" under 3.3.1 Full Date //www.w3.org/Protocols/rfc2616/rfc2616-sec3.html
-}*/
+}

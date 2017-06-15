@@ -81,10 +81,10 @@ func nextID(bucket *bolt.Bucket) (string, []byte) {
 	return strconv.FormatUint(num, 36), b
 }
 
-func insertEvent(event Event) (string, error) {
+func insertDocument(tblName []byte, document interface{}, assignID func(interface{}, string) interface{}) (string, error) {
 	var b36 string
 	err := db.Update(func(tx *bolt.Tx) error {
-		bucket, err := tx.CreateBucketIfNotExists(tblEvent)
+		bucket, err := tx.CreateBucketIfNotExists(tblName)
 		if err != nil {
 			return err
 		}
@@ -93,10 +93,9 @@ func insertEvent(event Event) (string, error) {
 		//Generate ID for the user.
 		//This returns an error only if the Tx is closed or not writable.
 		//That can't happen in an Update() call so I ignore the error check.
-		event.ID = b36
 
 		//Marshal user data into bytes.
-		buf, err := json.Marshal(event)
+		buf, err := json.Marshal(assignID(document, b36))
 		if err != nil {
 			return err
 		}
@@ -105,54 +104,43 @@ func insertEvent(event Event) (string, error) {
 	return b36, err
 }
 
-func insertClub(club Club) (string, error) {
+func (event Event) insert() (string, error) {
+	return insertDocument(
+		tblEvent,
+		event,
+		func(i interface{}, b36 string) interface{} {
+			o := i.(Event)
+			o.ID = b36
+			return o
+		},
+	)
+}
+
+func (club Club) insert() (string, error) {
 	if !club.IsDefault && !hasDefaultClub() {
 		club.IsDefault = true
 	}
-
-	var b36 string
-	err := db.Update(func(tx *bolt.Tx) error {
-		bucket, err := tx.CreateBucketIfNotExists(tblClub)
-		if err != nil {
-			return err
-		}
-		var id []byte
-		b36, id = nextID(bucket)
-		//Generate ID for the user.
-		//This returns an error only if the Tx is closed or not writable.
-		//That can't happen in an Update() call so I ignore the error check.
-		club.ID = b36
-		//Marshal user data into bytes.
-		buf, err := json.Marshal(club)
-		if err != nil {
-			return err
-		}
-		return bucket.Put(id, buf)
-	})
-	return b36, err
+	return insertDocument(
+		tblClub,
+		club,
+		func(i interface{}, b36 string) interface{} {
+			o := i.(Club)
+			o.ID = b36
+			return o
+		},
+	)
 }
 
-func insertShooter(shooter Shooter) (string, error) {
-	var b36 string
-	err := db.Update(func(tx *bolt.Tx) error {
-		bucket, err := tx.CreateBucketIfNotExists(tblShooter)
-		if err != nil {
-			return err
-		}
-		var id []byte
-		b36, id = nextID(bucket)
-		//Generate ID for the user.
-		//This returns an error only if the Tx is closed or not writable.
-		//That can't happen in an Update() call so I ignore the error check.
-		shooter.ID = b36
-		//Marshal user data into bytes.
-		buf, err := json.Marshal(shooter)
-		if err != nil {
-			return err
-		}
-		return bucket.Put(id, buf)
-	})
-	return b36, err
+func (shooter Shooter) insert() (string, error) {
+	return insertDocument(
+		tblShooter,
+		shooter,
+		func(i interface{}, b36 string) interface{} {
+			o := i.(Shooter)
+			o.ID = b36
+			return o
+		},
+	)
 }
 
 func updateDocument(bucketName []byte, b36ID string, update interface{}, decode interface{}, function func(interface{}, interface{}) interface{}) error {
@@ -195,7 +183,7 @@ func updateShooterDetails(decode interface{}, contents interface{}) interface{} 
 	shooter.Club = update.Club
 	shooter.Grade = update.Grade
 	shooter.AgeGroup = update.AgeGroup
-	shooter.Ladies = update.Ladies
+	shooter.Sex = update.Sex
 	return shooter
 }
 
@@ -263,9 +251,6 @@ func editRange(decode interface{}, contents interface{}) interface{} {
 	event := decode.(*Event)
 	rangeDetails := contents.(*Range)
 	for i, r := range event.Ranges {
-		/*if r.ID != rangeDetails.ID {
-			continue
-		}*/
 		if r.ID == rangeDetails.ID {
 			r.Name = rangeDetails.Name
 			if r.IsAgg {
@@ -418,7 +403,7 @@ func getCalendarEvents() ([]CalendarEvent, error) {
 }
 
 func hasDefaultClub() bool {
-	return getDefaultClub().Name != ""
+	return defaultClubName() != ""
 }
 
 func defaultClubName() string {
@@ -459,7 +444,7 @@ func eventShooterInsertDB(decode interface{}, contents interface{}) interface{} 
 		Club:      newShooter.Club,
 		ClubID:    newShooter.ClubID,
 		AgeGroup:  newShooter.AgeGroup,
-		Ladies:    newShooter.Ladies,
+		Sex:       newShooter.Sex,
 	}
 
 SearchNextGrade:
@@ -513,7 +498,7 @@ func eventShooterUpdater(decode interface{}, contents interface{}) interface{} {
 	event.Shooters[shooter.ID].Club = shooter.Club
 	event.Shooters[shooter.ID].Grade = shooter.Grade
 	event.Shooters[shooter.ID].AgeGroup = shooter.AgeGroup
-	event.Shooters[shooter.ID].Ladies = shooter.Ladies
+	event.Shooters[shooter.ID].Sex = shooter.Sex
 	event.Shooters[shooter.ID].Disabled = shooter.Disabled
 	return event
 }
@@ -655,6 +640,7 @@ func getClubByName(clubName string) (Club, error) {
 			return nil
 		})
 	})
+	//TODO this is quite dodgy
 	if err != nil && err.Error() == success {
 		return club, nil
 	}

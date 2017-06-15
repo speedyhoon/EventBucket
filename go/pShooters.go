@@ -40,7 +40,7 @@ func shooterUpdate(w http.ResponseWriter, r *http.Request, submittedForm form) {
 		Club:      submittedForm.Fields[2].Value,
 		Grade:     submittedForm.Fields[3].valueUintSlice,
 		AgeGroup:  submittedForm.Fields[4].valueUint,
-		Ladies:    submittedForm.Fields[5].Checked,
+		Sex:       submittedForm.Fields[5].Checked,
 	}, &Shooter{}, updateShooterDetails)
 	//Display any insert errors onscreen.
 	if err != nil {
@@ -69,15 +69,15 @@ func shooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	}
 
 	//Insert new shooter
-	_, err = insertShooter(Shooter{
+	_, err = Shooter{
 		FirstName: submittedForm.Fields[0].Value,
 		Surname:   submittedForm.Fields[1].Value,
 		Club:      submittedForm.Fields[2].Value,
 		ClubID:    clubID,
 		Grade:     submittedForm.Fields[3].valueUintSlice,
 		AgeGroup:  submittedForm.Fields[4].valueUint,
-		Ladies:    submittedForm.Fields[5].Checked,
-	})
+		Sex:       submittedForm.Fields[5].Checked,
+	}.insert()
 	if err != nil {
 		formError(w, r, submittedForm, err)
 		return
@@ -120,7 +120,7 @@ func importShooters(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		if _, err = insertShooter(shooter); err != nil {
+		if _, err = shooter.insert(); err != nil {
 			warn.Println(err)
 		}
 	}
@@ -132,8 +132,20 @@ func clubInsertIfMissing(clubName string) (string, error) {
 	club, err := getClubByName(clubName)
 	//Club doesn't exist so try to insert it.
 	if err != nil {
-		return insertClub(Club{Name: clubName})
+		return Club{Name: clubName}.insert()
 	}
 	//return existing club
 	return club.ID, err
+}
+
+//TODO move into a config file or database?
+func dataListAgeGroup() []option {
+	//TODO would changing option.Value to an interface reduce the amount of code to convert types?
+	return []option{
+		{Value: "0", Label: "None"},
+		{Value: "1", Label: "U21"},
+		{Value: "2", Label: "U25"},
+		{Value: "3", Label: "Veteran"},
+		{Value: "4", Label: "Super Veteran"},
+	}
 }
