@@ -60,7 +60,7 @@ func eventInsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	}
 
 	//Insert new event into database.
-	ID, err := insertEvent(Event{
+	ID, err := Event{
 		Club:    submittedForm.Fields[0].Value,
 		ClubID:  clubID,
 		Name:    submittedForm.Fields[1].Value,
@@ -68,7 +68,7 @@ func eventInsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
 		Time:    submittedForm.Fields[3].Value,
 		Closed:  false,
 		AutoInc: AutoInc{Range: 1}, //The next incremental range id to use.
-	})
+	}.insert()
 
 	//Display any insert errors onscreen.
 	if err != nil {
@@ -104,11 +104,11 @@ func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm fo
 		Club:      submittedForm.Fields[2].Value,
 		ClubID:    clubID,
 		AgeGroup:  submittedForm.Fields[4].valueUint,
-		Ladies:    submittedForm.Fields[5].Checked,
+		Sex:       submittedForm.Fields[5].Checked,
 		Grade:     submittedForm.Fields[6].valueUintSlice,
 	}
 	//Insert shooter into Shooter Bucket
-	shooterID, err := insertShooter(shooter)
+	shooterID, err := shooter.insert()
 	if err != nil {
 		formError(w, r, submittedForm, err)
 		return
@@ -139,7 +139,7 @@ func eventShooterExistingInsert(w http.ResponseWriter, r *http.Request, submitte
 		Club:      shooter.Club,
 		Grade:     submittedForm.Fields[1].valueUintSlice,
 		AgeGroup:  submittedForm.Fields[2].valueUint,
-		Ladies:    shooter.Ladies,
+		Sex:       shooter.Sex,
 	}, &Event{}, eventShooterInsertDB)
 	if err != nil {
 		formError(w, r, submittedForm, err)
@@ -157,7 +157,7 @@ func eventShooterUpdate(w http.ResponseWriter, r *http.Request, submittedForm fo
 		Club:      submittedForm.Fields[4].Value,
 		Grade:     submittedForm.Fields[5].valueUint,
 		AgeGroup:  submittedForm.Fields[6].valueUint,
-		Ladies:    submittedForm.Fields[7].Checked,
+		Sex:       submittedForm.Fields[7].Checked,
 		Disabled:  submittedForm.Fields[8].Checked,
 	}, &Event{}, eventShooterUpdater)
 

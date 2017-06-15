@@ -32,14 +32,16 @@ var (
 )
 
 func init() {
-	//go maintainExpiresTime()
+	go maintainSessions()
+	go maintainExpires()
+
 	var err error
 	runDir, err = os.Executable()
 	if err == nil {
 		runDir = filepath.Dir(runDir)
 		htmlDirectory = filepath.Join(runDir, "h")
 	}
-	masterTemplatePath = filepath.Join(htmlDirectory, "master")
+	masterTemplatePath = filepath.Join(htmlDirectory, "!")
 	masterScoreboard = filepath.Join(htmlDirectory, "masterscoreboard")
 	formsTemplatePath = filepath.Join(htmlDirectory, "forms")
 	reusablesTemplatePath = filepath.Join(htmlDirectory, "reusables")
@@ -86,13 +88,9 @@ func init() {
 	if *port != 80 {
 		portAddr = fmt.Sprintf(":%d", *port)
 	}
-
-	//setExpiresTime()
 }
 
 func main() {
-	go maintainSessions()
-
 	//Database save location
 	dbPath = filepath.Join(dbPath, "EventBucket.db")
 	info.Println("Opening database...", dbPath)
@@ -110,9 +108,9 @@ func main() {
 
 	pages()
 	info.Print("Starting EventBucket HTTP server...")
-	//Open the default browser
+
 	if !debug {
-		openBrowser("http://localhost" + portAddr)
+		openBrowser(portAddr)
 	}
 	warn.Printf("ListenAndServe: %v", http.ListenAndServe(portAddr, nil))
 	info.Println("EvenBucket server stopped.")

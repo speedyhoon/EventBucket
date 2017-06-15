@@ -89,7 +89,7 @@ func pages() {
 	//endpoint(post, eventTotalScores, eventTotalUpsert)
 	endpoint(post, eventAvailableGrades, eventAvailableGradesUpsert)
 	//endpoint(post, eventUpdateShotScore, updateShotScores)
-	http.HandleFunc("/17", importShooters) //Don't use normal form validation because a reusable file upload validation function hasn't been written yet.
+	http.HandleFunc("/16", importShooters) //TODO file upload validation function hasn't been written yet.
 	endpoint(get, mapResults, mapClubs)
 	endpoint(post, clubMoundEdit, editClubMound)
 	endpoint(post, eventUpdateRange, updateRange)
@@ -98,7 +98,7 @@ func pages() {
 
 	gt(urlShooters, shooterSearch, shooters)
 
-	//BUG any url breaks when appending "&*((&*%"
+	//TODO BUG any url breaks when appending "&*((&*%"
 	get404(urlEvents, events)
 }
 
@@ -112,7 +112,7 @@ func endpoint(method string, formID uint8, runner func(http.ResponseWriter, *htt
 			http.Redirect(w, r, r.Referer(), http.StatusMethodNotAllowed)
 			return
 		}
-		form, ok := validPost(r, getForm(formID))
+		form, ok := validPost(r, formID)
 		if !ok && method != get {
 			setSession(w, form)
 			http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
@@ -133,7 +133,7 @@ func gt(url string, formID uint8, runner func(http.ResponseWriter, *http.Request
 			http.Redirect(w, r, r.Referer(), http.StatusMethodNotAllowed)
 			return
 		}
-		form, ok := validGet(r, getForm(formID))
+		form, ok := validGet(r, formID)
 		runner(w, r, form, ok)
 	})
 }

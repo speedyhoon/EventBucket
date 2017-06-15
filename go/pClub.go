@@ -112,22 +112,21 @@ type MapClub struct {
 func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	name := submittedForm.Fields[0].Value
 	var ID string
-	defaultClub := getDefaultClub()
 
 	//Check if a club with that name already exists.
-	club, err := getClubByName(name)
+	_, err := getClubByName(name)
 	if err != nil {
-		ID, err = insertClub(Club{Name: name, IsDefault: defaultClub.ID == ""}) //Set this club to default if no other clubs are the defualt
+		ID, err = Club{
+			Name:      name,
+			IsDefault: getDefaultClub().ID == "", //Set this club to default if no other clubs are the default
+		}.insert()
 		if err != nil {
 			formError(w, r, submittedForm, err)
 			return
 		}
 	} else {
-		/*Use a generic pageError form to pass the error message to the Club Settings page.
-		TODO investigate if there is a simpler way to pass error messages between different pages. Maybe use a slice []string so several messages could be displayed if needed?
-		It would also be handy to have success, warning and error statuses */
-		setSession(w, form{action: pageError, Error: fmt.Errorf("A club with name '%v' already exists.", name)})
-		ID = club.ID
+		formError(w, r, submittedForm, fmt.Errorf("A club with name '%v' already exists.\n%v", name, err))
+		return
 	}
 	http.Redirect(w, r, urlClub+ID+"#edit", http.StatusSeeOther)
 }

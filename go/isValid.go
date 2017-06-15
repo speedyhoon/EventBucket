@@ -7,7 +7,9 @@ import (
 	"strings"
 )
 
-func listUint(f *field, inp ...string) {
+const maxLen int = 64
+
+func v8UintList(f *field, inp ...string) {
 	if len(inp) < f.minLen {
 		f.Error = fmt.Sprintf("Not enough items selected. At least %v item%s needed.", f.minLen, plural(len(inp), " is", "s are"))
 		return
@@ -17,7 +19,7 @@ func listUint(f *field, inp ...string) {
 	var list []uint
 
 	for _, in := range inp {
-		isValidUint(f, in)
+		v8Uint(f, in)
 		if f.Error != "" {
 			return
 		}
@@ -34,13 +36,7 @@ func listUint(f *field, inp ...string) {
 	f.valueUintSlice = list
 }
 
-func isValidUint(f *field, inp ...string) {
-	if debug {
-		if f.max == 0 {
-			warn.Println("Are you sure about max == 0? isValidUint", f.name)
-		}
-	}
-
+func v8Uint(f *field, inp ...string) {
 	var err error
 	f.Value = inp[0]
 	f.valueUint, err = stoU(f.Value)
@@ -69,14 +65,12 @@ func isValidUint(f *field, inp ...string) {
 	}
 }
 
-func isValidFloat32(f *field, inp ...string) {
-	if f.step == 0 {
-		warn.Println("Are you sure about step == 0? isValidFloat32", f.name)
-	}
-	if f.max == 0 {
-		warn.Println("Are you sure about max == 0? isValidFloat32", f.name)
-	}
+func v8UintReq(f *field, inp ...string) {
+	f.Required = true
+	v8Uint(f, inp...)
+}
 
+func v8Float32(f *field, inp ...string) {
 	f64, err := strconv.ParseFloat(strings.TrimSpace(inp[0]), 32)
 	if err != nil {
 		//Return error if input string failed to convert.
@@ -89,7 +83,7 @@ func isValidFloat32(f *field, inp ...string) {
 		//f.ValueFloat32 is zero by default so assigning zero isn't required
 		return
 	}
-	if num < f.min || num > f.max {
+	if num < float32(f.min) || num > float32(f.max) {
 		f.Error = fmt.Sprintf("Must be between %v and %v.", f.min, f.max)
 		return
 	}
@@ -108,7 +102,7 @@ func toFixed(num /*, precision*/ float64) float32 {
 	return float32(int(num*1000000)) / 1000000
 }
 
-func isValidStr(f *field, inp ...string) {
+func v8Str(f *field, inp ...string) {
 	f.Value = strings.TrimSpace(inp[0])
 
 	//Check value matches regex
@@ -150,14 +144,27 @@ func isValidStr(f *field, inp ...string) {
 	}*/
 }
 
-func isValidRegex(f *field, inp ...string) {
+func v8StrReq(f *field, inp ...string) {
+	f.Required = true
+	v8Str(f, inp...)
+}
+
+func v8Regex(f *field, inp ...string) {
 	f.Value = strings.TrimSpace(inp[0])
 	if !f.regex.MatchString(f.Value) {
 		f.Error = "ID supplied is incorrect."
 	}
 }
 
-func isValidBool(f *field, inp ...string) {
+func v8RegexReq(f *field, inp ...string) {
+	f.Required = true
+	if inp[0] != "" {
+		v8Str(f, inp...)
+	}
+	f.Error = "Empty ID supplied."
+}
+
+func v8Bool(f *field, inp ...string) {
 	f.Checked = len(strings.TrimSpace(inp[0])) >= 1
 	if f.Required && !f.Checked {
 		f.Error = "Please check this field."
