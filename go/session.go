@@ -9,12 +9,7 @@ import (
 
 const (
 	sessionToken      = "s"
-	sessionIDLength   = 24                                                                                            //Recommended to be at least 16 characters long.
-	letterBytes       = "!#$%&'()*+,-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~" //string generated from validCookieValueByte golang source code net/http/cookie.go
-	letterIdxBits     = 6                                                                                             //6 bits to represent a letter index
-	letterIdxMask     = 1<<letterIdxBits - 1                                                                          //All 1-bits, as many as letterIdxBits
-	letterIdxMax      = 63 / letterIdxBits                                                                            //# of letter indices fitting in 63 bits
-	sessionExpiryTime = 2 * time.Minute
+	sessionExpiryTime = time.Minute * 2
 )
 
 var (
@@ -25,22 +20,31 @@ var (
 	}{m: make(map[string]form)}
 )
 
-func setSession(w http.ResponseWriter, returns form) {
+func setSession(w http.ResponseWriter, f form) {
+	f.expiry = time.Now().Add(sessionExpiryTime)
 	cookie := http.Cookie{
 		Name:     sessionToken,
-		Value:    sessionID(sessionIDLength),
+		Value:    sessionID(),
 		HttpOnly: true,
-		Expires:  time.Now().Add(sessionExpiryTime),
+		Expires:  f.expiry,
 	}
-	returns.expiry = cookie.Expires
+
 	//Start mutex write lock.
 	globalSessions.Lock()
-	globalSessions.m[cookie.Value] = returns
+	globalSessions.m[cookie.Value] = f
 	globalSessions.Unlock()
 	http.SetCookie(w, &cookie)
 }
 
-func sessionID(n int) string {
+func sessionID() string {
+	const (
+		//string generated from validCookieValueByte golang source code net/http/cookie.go
+		letterBytes   = "!#$%&'()*+,-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+		n             = 24                   //Session ID length is recommended to be at least 16 characters long.
+		letterIdxBits = 6                    //6 bits to represent a letter index
+		letterIdxMask = 1<<letterIdxBits - 1 //All 1-bits, as many as letterIdxBits
+		letterIdxMax  = 63 / letterIdxBits   //# of letter indices fitting in 63 bits
+	)
 	//author: icza, stackoverflow.com/questions/22892120/how-to-generate-a-random-string-of-a-fixed-length-in-golang
 	b := make([]byte, n)
 	//A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
@@ -58,17 +62,17 @@ func sessionID(n int) string {
 	return string(b)
 }
 
-//Update the expires http header time, every 15 minutes rather than recalculating it on every http request.
+//maintainSessions periodically deletes expired sessions
 func maintainSessions() {
 	ticker := time.NewTicker(sessionExpiryTime)
 	for range ticker.C {
 		//Can't directly change global variables in a go routine, so call an external function.
-		purgeOldSessions()
+		purgeSessions()
 	}
 }
 
 //Delete sessions where the expiry datetime has already lapsed.
-func purgeOldSessions() {
+func purgeSessions() {
 	globalSessions.RLock()
 	qty := len(globalSessions.m)
 	globalSessions.RUnlock()
@@ -88,8 +92,8 @@ func purgeOldSessions() {
 }
 
 func sessionForms(w http.ResponseWriter, r *http.Request, formActions ...uint8) (uint8, []form) {
-	//Add generic unpopulated form "pageError" for passing page errors from post requests to the next page served that doesn't isn't specific to a particular form.
-	formActions = append(formActions, pageError)
+	//Add generic unpopulated form for passing page errors from post requests to the next page served that isn't specific to a particular form.
+	formActions = append(formActions, 255)
 
 	//Get users session id from request cookie header
 	cookie, err := r.Cookie(sessionToken)
