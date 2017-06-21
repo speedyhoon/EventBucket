@@ -1,0 +1,200 @@
+- title:  New Club
+  inputs:
+  - label: Club Name
+    name: n
+    accesskey: N
+    required: true
+    v8: isValidStr
+    maxlen: 32
+    minlen: 1
+  - label: Save
+    type: submit
+- title: Club Details
+  id: edit
+  hidden: true
+  inputs:
+  - label: Club Name
+    name: n
+    accesskey: C
+    required: true
+    v8: isValidStr
+    maxlen: 32
+    minlen: 1
+  - label: Address
+    name: a
+    maxlen: 32
+    v8: isValidStr
+  - label: Town
+    name: w
+    maxlen: 32
+    v8: isValidStr
+  - label: Postcode
+    name: p
+    maxlen: 4
+    v8: isValidStr
+  - label: Latitude
+    name: x
+    type: number
+    max: 90
+    min: -90
+    step: .000001
+    v8: isValidFloat32
+    help: Entering your clubs Latitude &amp; Longitide will generate a map with your clubs location (requires an internet connection).
+  - label: Longitude
+    name: y
+    type: number
+    min: -180
+    max: 180
+    step: .000001
+    v8: isValidFloat32
+    help: Entering your clubs Latitude &amp; Longitide will generate a map with your clubs location (requires an internet connection).
+  - label: Default Club
+    name: b
+    type: checkbox
+    v8: isValidBool
+    help: "{{with hasindex .Fields 6}}{{if.Checked}}To change the default club, open the club you want to be the default and tick 'Default Club'. There must only be one default club selected at a time.{{else}}Automatically inserts this Club Name when creating new events in future.{{end}}{{end}}"
+  - label: Website Address
+    name: u
+    type: url
+    maxlen: 32
+    v8: isValidStr
+  - label: Save
+    name: c
+    type: submit
+    v8: isValidRegex
+    regex: regexID
+- title: New Shooting Mound
+  inputs:
+  - label: Mound Name
+    name: n
+    accesskey: N
+    v8: isValidStr
+    required: true
+    maxlen: 32
+    minlen: 1
+    help: A list of club mounds will appear as a drop down menu for Range Name under Event Settings &gt; Add Range within an Event. This allows selecting range names from a list on the hosting Club, rather than typing.
+  - label: Save
+    name: c
+    type: submit
+    v8: isValidRegex
+    regex: regexID
+- title: New Event
+  inputs:
+  - label: Club Name
+    name: C
+    maxlen: 32
+    minlen: 1
+    type: search
+    v8: isValidStr
+    requiredd: hasDefaultClub()
+    options: clubsDataList()
+    value: defaultClubName()
+    help: The club who is hosting this event.
+  - label: Event Name
+    name: n
+    accesskey: N
+    required:  true
+    maxlen: 32
+    minlen: 1
+    v8: isValidStr
+  - label: Start date
+    name: d
+    type: date
+    v8: isValidStr
+    value: defaultDate()
+    placeholder: YYYY-MM-DD
+    maxlen: 10
+    help: The date that the event commences.
+  - label: Start time
+    name: t
+    type: time
+    v8: isValidStr
+    maxlen: 5
+    value: defaultTime()
+    placeholder: HH:MM
+  - label: Save
+    type: submit
+- title: Event Details
+  inputs:
+  - label: Club Name
+    type: search
+    name: C
+    required:  true
+    v8: isValidStr
+    minlen: 1
+    maxlen: 32
+    options: clubsDataList()
+  - label: Event Name
+    name: n
+    required: true
+    accesskey: v
+    v8: isValidStr
+    maxlen: 32
+    minlen: 1
+  - label: Date
+    type: date
+    name: d
+    maxlen: 10
+    minlen: 10
+    v8: isValidStr
+  - label: Time
+    type: time
+    name: t
+    maxlen: 5
+    minlen: 5
+    v8: isValidStr
+  - label: Close Event
+    type: checkbox
+    name: c
+    v8: isValidBool
+  # - label: Duplicate Shooters
+  #   type: checkbox
+  #   name: a
+  #   v8: isValidBool
+  #   help: Allows a shooter to enter an event twice or more with the same grade. Prize Meetings and Championship events don't allow duplicate entries within the same grade.
+  - label: Save
+    type: submit
+    name: E
+    v8: isValidRegex
+    regex: regexID
+- title: Add Range
+  inputs:
+  - label: Range Name
+    type: search
+    name: n
+    accesskey: R
+    required: true
+    v8: isValidStr
+    maxLen: 32
+    minLen: 1
+    dataList: r
+  - label: Save
+    type: submit
+    name: E
+    v8: isValidRegex
+    regex: regexID
+- title:  Add Aggregate Range
+  inputs:
+    - label: Aggregate Name
+      name: n
+      accessKey: a
+      minlen: 1
+      maxlen: 32
+      required: true
+      v8: isValidStr
+    - label: Sum up ranges
+      type: listBox
+      name: r
+      required: true
+      help: Select which ranges this Aggregate will add together and display a total on the scoreboard.
+      v8: listUint
+      step: 1
+      min: 1
+      max: 65535
+      minlen: 2
+      maxlen: 5
+    - label: Save
+      type: submit
+      name: E
+      v8: isValidRegex
+      regex: regexID
