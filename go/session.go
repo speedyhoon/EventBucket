@@ -7,18 +7,19 @@ import (
 	"time"
 )
 
+func init() {
+	go maintainSessions()
+}
+
 const (
 	sessionToken      = "s"
 	sessionExpiryTime = time.Minute * 2
 )
 
-var (
-	src            = rand.NewSource(time.Now().UnixNano())
-	globalSessions = struct {
-		sync.RWMutex
-		m map[string]form
-	}{m: make(map[string]form)}
-)
+var globalSessions = struct {
+	sync.RWMutex
+	m map[string]form
+}{m: make(map[string]form)}
 
 func setSession(w http.ResponseWriter, f form) {
 	f.expiry = time.Now().Add(sessionExpiryTime)
@@ -45,6 +46,7 @@ func sessionID() string {
 		letterIdxMask = 1<<letterIdxBits - 1 //All 1-bits, as many as letterIdxBits
 		letterIdxMax  = 63 / letterIdxBits   //# of letter indices fitting in 63 bits
 	)
+	src := rand.NewSource(time.Now().UnixNano())
 	//author: icza, stackoverflow.com/questions/22892120/how-to-generate-a-random-string-of-a-fixed-length-in-golang
 	b := make([]byte, n)
 	//A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
@@ -81,9 +83,10 @@ func purgeSessions() {
 	}
 
 	t.Println("About to purge sessions, qty", qty)
+	now := time.Now()
 	globalSessions.Lock()
 	for sessionID := range globalSessions.m {
-		if globalSessions.m[sessionID].expiry.Before(time.Now()) {
+		if globalSessions.m[sessionID].expiry.Before(now) {
 			delete(globalSessions.m, sessionID)
 		}
 	}
