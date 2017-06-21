@@ -18,7 +18,7 @@
 	{{range.UpdateErrors}}<samp>{{.}}</samp>{{end}}
 	{{with.Event.Ranges}}
 		<p>Total Ranges: {{len .}}
-        <table{{a " data-s" (not $.Event.Closed)}}>
+		<table{{a " data-s" (not $.Event.Closed)}}>
 			<thead>
 				<th class=asc>ID
 				<th>Range
