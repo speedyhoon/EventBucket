@@ -1,4 +1,4 @@
-{{define "page"}}
+{{define "entrylist"}}
 	{{$hasRanges := ge (len .Event.Ranges) 1}}
 	{{if not $hasRanges}}<samp>This event has no ranges</samp>{{end}}
 	{{with.Event.Shooters}}

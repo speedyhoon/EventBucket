@@ -30,16 +30,18 @@ func scoreboard(w http.ResponseWriter, r *http.Request, eventID, rangeId string)
 		Menu:     urlEvents,
 		MenuID:   eventID,
 		Heading:  event.Name,
-		template: templateScoreboard,
+		template: "scoreboard",
 		Data: map[string]interface{}{
 			"Event":       event,
 			"Ranges":      ranges,
 			"SortByRange": rangeId,
-			"Colspan":     5 + len(ranges),
+			"colspan":     5 + len(ranges),
+			"medalsLimit": 3,
 		},
 	})
 }
 
+//FindAggs expands any aggregates within the slice supplied
 func findAggs(rangeID uint, ranges []Range) (rs []Range) {
 	for _, r := range ranges {
 		if r.ID == rangeID {
