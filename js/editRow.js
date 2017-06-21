@@ -8,7 +8,7 @@ function editRow(editCell){
 		tds = row.children,
 		t = document.importNode(document.querySelector('template').content, true),
 		form = t.querySelector('form'),
-		outerFormFields = t.querySelectorAll('[form=editRow]'),
+		outerFormFields = t.querySelectorAll('input,select,button'),
 		i = outerFormFields.length;
 	form.id = '_' + tds[0].textContent;
 	while(i--){
