@@ -12,10 +12,13 @@ import (
 )
 
 var (
-	//Databse bucket (table) names
-	tblClub    = []byte("C")
-	tblEvent   = []byte("E")
-	tblShooter = []byte("S")
+	//Database connection.
+	db *bolt.DB
+
+	//Database bucket (table) names
+	tblClub    = []byte{0}
+	tblEvent   = []byte{1}
+	tblShooter = []byte{2}
 )
 
 const (
