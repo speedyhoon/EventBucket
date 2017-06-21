@@ -1,25 +1,37 @@
 //Colours
-$base-color: #888
-$valid: #474
-$invalid:  #744
-$bgGrey: #445
-$blue: #09f
+$base-color = #888
+$valid = #474
+$invalid = #744
+$bgGrey = #445
+$blue = #09f
 
-$background: darken($base-color, 100%)
-$text: lighten($base-color, 100%)
-$oddTableRowBackground: darken($base-color, 30%)
+$background = darken($base-color, 100%)
+$text = lighten($base-color, 100%)
+$oddTableRowBackground = darken($base-color, 30%)
+$liteGrey = lighten($base-color, 10%)
 
-@import "main"
+body
+    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+
+a
+    color: $blue
+
+a:not(:hover)
+	text-decoration: none
+
+//@import "main"
 
 @media not print
 	html
-		background-color: $background
-		color: $text
+        background: $background url(/v/a#9) bottom left no-repeat
+        background-attachment: fixed
+        background-size: 14em
+        color: $text
 
 	//Forms
 	input, select
 		background: $bgGrey
-		border-color: $grey
+		border-color: $base-color
 		color: $liteGrey
 
 	fieldset
