@@ -23,7 +23,8 @@
 							</a>
 						</p>
 						{{range.Ranges}}{{.Name}}, {{else}}No ranges added.{{end}}
-						<br>{{.Club}}
+						<br>
+						<a href=/entries/{{.ClubID}}>{{.Club}}</a>
 					</div>
 				{{end}}
 			{{end}}
