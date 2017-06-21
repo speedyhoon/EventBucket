@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"strconv"
 	"strings"
 )
@@ -25,4 +26,16 @@ func plural(length int, single, multiple string) string {
 		return single
 	}
 	return ""
+}
+
+//mkDir attempts to create the path supplied if it doesn't exist.
+func mkDir(path string) error {
+	info, err := os.Stat(path)
+	if err != nil || !info.IsDir() {
+		err = os.Mkdir(path, os.ModeDir)
+		if err != nil {
+			warn.Printf("Unable to create directory %v %v", path, err)
+		}
+	}
+	return err
 }
