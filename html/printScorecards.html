@@ -2,9 +2,10 @@
 	<table class=printCards>
 		{{range.Ranges}}
 			<tr>
-				{{$barcode := print $.EventID "/" .ID "#" $.Shooter.ID}}
+				{{$barcode := print $.EventID "/" $.Shooter.ID "#" .ID}}
 				<td rowspan=3 class=centerPadding>
-					<img class=barcode src=/q/{{urlquery $barcode}} alt={{$barcode}}>
+					<!-- TODO check that this added id=#shooterID can be focused on correctly -->
+					<img class=barcode src=/q/{{urlquery $barcode}} alt='{{.Name}} barcode' id=#{{.ID}}>
 					<br><b>{{$barcode}}</b>
 				<td>Event ID: {{$.EventID}}
 				<td>{{$.EventName}}
