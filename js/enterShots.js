@@ -188,7 +188,7 @@ function reconnect (){
 			document.getElementById(data.S).parentElement.children[4].className = '';
 			if(rangeID === data.R){
 				document.getElementById(data.S).parentElement.children[4].innerHTML = data.T;
-				//TODO status ok && html == same - GREEN    else    RED
+				//TODO status ok && html == same - GREEN	else	RED
 				setTimeout(function() {
 					document.getElementById(data.S).parentElement.children[4].className = '^save^';
 				}, 10);
