@@ -1,17 +1,17 @@
 //Colours
-$grey: #777
-$greyTransparent: rgba(99,99,99,.3)
-$liteGrey: #cdd
-$red: #c24
-$white: #fff
+$grey = #777
+$greyTransparent = rgba(99, 99, 99, 0.3)
+$liteGrey = #cdd
+$red = #c24
+$white = #000
 //menu
-$margin: 1.5em
-$halfMargin: $margin/2
-$menuPadding: $margin/6
-$bigPadding: $margin/3
-$fatWidth: 2px
-$fatBorder: $fatWidth solid
-$thinBorder: 1px solid
+$margin = 1.5em
+$halfMargin = $margin/2
+$menuPadding = $margin/6
+$bigPadding = $margin/3
+$fatWidth = 2px
+$fatBorder = $fatWidth solid
+$thinBorder = 1px solid
 body
 	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
 	margin-left: 1em
@@ -26,6 +26,21 @@ body
 
 a:hover
 	color: $text
+
+//TODO remove?
+a.edit
+	background: url(/v/edit)
+	display: inline-block;
+	height: 20px
+	width: 20px
+
+//TODO remove?
+table.edit tbody td:last-child
+	background: url("/v/edit")
+
+	a
+		width: 100%;
+		display: block;
 
 //Tables
 table
@@ -87,7 +102,7 @@ input, select
 	padding: $menuPadding
 
 [type=checkbox]
-	$size: 2.2em
+	$size = 2.2em
 	height: $size
 	margin: 0
 	width: $size
@@ -115,7 +130,7 @@ button
 	cursor: pointer
 	padding: $bigPadding
 
-\:focus
+:focus
 	box-shadow: .2em .2em .3em $blue
 
 input.dirty:not(:focus)
@@ -150,7 +165,7 @@ form#edit:target
 			list-style: none
 			margin: 0
 			padding: 0
-			width: calc(100% - #{$margin * 2} - 190px)
+			width: "calc(100% - %s - 190px)" % $margin*2
 
 		& > ul > li
 			display: inline-block
@@ -245,7 +260,7 @@ a, header li
 		margin: 0
 		padding: 0 $bigPadding
 
-#editRow tbody td:last-of-type:empty
+[data-s] tbody td:last-of-type:empty
 	background: url(/v/edit) center center no-repeat
 	cursor: pointer
 
@@ -270,10 +285,6 @@ abbr
 	nav
 		display: none
 
-	/*section
-		padding: 0
-		width: 100%*/
-
 	.printCards
 		tr
 			border: 0
@@ -281,7 +292,7 @@ abbr
 	.printCards tr:nth-child(3n):not(:last-child)
 		border-bottom-color: $bgGrey
 
-@import "enterShots"
+@require enterShots
 
 .arrows
 	cursor: pointer
