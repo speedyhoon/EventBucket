@@ -33,7 +33,7 @@
 						<td>{{(grade .Grade).Name}}
 						<td>{{ageGroup .AgeGroup}}
 						{{if.Disabled}}<td class=tick>{{else}}<td>{{end}}
-						{{if.Ladies}}<td class=tick>{{else}}<td>{{end}}
+						{{if.Sex}}<td class=tick>{{else}}<td>{{end}}
 						{{if not $.Event.Closed}}<td>{{end}}
 				{{end}}
 			{{end}}
@@ -45,27 +45,27 @@
 		<template>
 			<td>
 			<td>
-				<form method=post action=/22 id=editRow>
+				<form method=post action=/22>
 					<input name=f required placeholder="First name" accesskey=d maxlength=64>
 					<input name=s required placeholder=Surname maxlength=64>
 					<input type=hidden name=E value={{.Event.ID}}>
 				</form>
 			<td>
-				<input type=search name=C required maxlength=64 form=editRow list=C placeholder="Club name">
+				<input type=search name=C required maxlength=64 list=C placeholder="Club name">
 			<td>
-				<select name=g required form=editRow>
+				<select name=g required>
 					{{template "optionList" .AvailableGrades}}
 				</select>
 			<td>
-				<select name=r form=editRow>
+				<select name=r>
 					{{template "optionList" .AgeGroups}}
 				</select>
 			<td>
-				<input name=k type=checkbox form=editRow>
+				<input name=k type=checkbox>
 			<td>
-				<input name=x type=checkbox form=editRow>
+				<input name=x type=checkbox>
 			<td>
-				<button name=S form=editRow>Save</button>
+				<button name=S>Save</button>
 		</template>
 		{{template "GradesAvailable" .GradesAvailable}}
 		<script defer src=/j/shooterSearch></script>
