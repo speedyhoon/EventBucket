@@ -1,15 +1,15 @@
-$black: #000
-$blue: #08f
-$lightGrey: #ccc
-$rose: #fdd
-$white: #fff
-$solidBorder: solid $black
-$thinBorder: 1px
-=background-gradient($C1, $C2)
-	background: linear-gradient(to bottom, $C1 0%, $C2 25%, $C2 75%, $C1 100%) //W3C
+$black = #000
+$blue = #08f
+$lightGrey = #ccc
+$rose = #fdd
+$white = #fff
+$solidBorder = solid $black
+$thinBorder = 1px
+background-gradient($C1, $C2)
+	background: linear-gradient(to bottom, $C1 0%, $C2 25%, $C2 75%, $C1 100%)
 
 body
-	font: 700 small Arial,sans-serif
+	font: 700 small Arial, sans-serif
 
 body, h1
 	margin: 0
@@ -103,29 +103,33 @@ a
 
 //TODO add prefix to classes that ignore the class shortener
 //Awarded Postiions
-//.p8  //Badge Place
-	+background-gradient(#00f, #ff0079)
-//.p7  //Badge Place
-	+background-gradient(#faf, grey)
-//.p6  //Sixth
-	+background-gradient(green, lime)
-//.p5  //Fith
-	+background-gradient(aqua, #07f)
-//.p4  //Fourth
-	+background-gradient(#f70, red)
-.p3 //[class=p3]  //Third
-	+background-gradient(sienna, peru)
-.p2 //[class=p2]  //Second
-	+background-gradient(#888, silver)
-.p1 //[class=p1]  //First
-	+background-gradient(goldenrod, gold)
+//.p8	//Badge Place
+// +background-gradient(#00f, #ff0079)
+//.p7	//Badge Place
+// +background-gradient(#faf, grey)
+//.p6	//Sixth
+// +background-gradient(green, lime)
+//.p5	//Fith
+// +background-gradient(aqua, #07f)
+//.p4	//Fourth
+// +background-gradient(#f70, red)
+.p3
+	//[class=p3]	//Third
+	background-gradient(sienna, peru)
+.p2
+	//[class=p2]	//Second
+	background-gradient(#888, silver)
+.p1
+	//[class=p1]	//First
+	background-gradient(goldenrod, gold)
 
 //WARNINGS::
 .highestPossibleScore
 	background: #707
 	color: #faf
 
-.shootOff //used in position column
+//used in position column
+.shootOff
 	background: #900
 	color: $white
 
