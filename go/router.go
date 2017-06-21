@@ -47,7 +47,7 @@ var (
 	regexBarcode = regexp.MustCompile(`^[a-z0-9]+/[a-z0-9]+#[a-z0-9]+$`)
 )
 
-func pages() {
+func init() {
 	serveFile("/favicon.ico")
 	serveFile(urlLicence)
 	serveDir(dirCSS, true)
@@ -86,8 +86,10 @@ func pages() {
 	endpoint(get, eventShooterSearch, eventSearchShooters)
 	endpoint(post, shooterNew, shooterInsert)
 	endpoint(post, shooterDetails, shooterUpdate)
+	//TODO re-enable
 	//endpoint(post, eventTotalScores, eventTotalUpsert)
 	endpoint(post, eventAvailableGrades, eventAvailableGradesUpsert)
+	//TODO re-enable
 	//endpoint(post, eventUpdateShotScore, updateShotScores)
 	http.HandleFunc("/16", importShooters) //TODO file upload validation function hasn't been written yet.
 	endpoint(get, mapResults, mapClubs)
@@ -123,7 +125,7 @@ func endpoint(method string, formID uint8, runner func(http.ResponseWriter, *htt
 	http.HandleFunc(fmt.Sprintf("/%d", formID), h)
 }
 
-func gt(url string, formID uint8, runner func(http.ResponseWriter, *http.Request, form, bool)) {
+func gt(url string, formID uint8, runner func(http.ResponseWriter, *http.Request, form)) {
 	http.HandleFunc(url, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != get {
 			/*405 Method Not Allowed
@@ -133,8 +135,8 @@ func gt(url string, formID uint8, runner func(http.ResponseWriter, *http.Request
 			http.Redirect(w, r, r.Referer(), http.StatusMethodNotAllowed)
 			return
 		}
-		form, ok := validGet(r, formID)
-		runner(w, r, form, ok)
+		form, _ := validGet(r, formID)
+		runner(w, r, form)
 	})
 }
 
