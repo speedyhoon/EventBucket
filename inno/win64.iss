@@ -1,7 +1,8 @@
 #define MyAppName "EventBucket"
 #define MyAppVersion "3.04"
-#define MyAppURL "http://www.eventbucket.com.au/"
-#define MyAppExeName "EventBucket.exe"
+#define MyAppDomain "eventbucket.com.au"
+#define MyAppURL "http://{#MyAppDomain}/"
+#define MyAppExeName "{#MyAppName}.exe"
 #define Z "\\camtop\EventBucket"
 
 [Setup]
@@ -13,7 +14,7 @@ AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppName}
 AppPublisherURL={#MyAppURL}
-AppSupportURL={#MyAppURL}
+AppSupportURL="info@{#MyAppDomain}"
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf64}\{#MyAppName}
 DefaultGroupName={#MyAppName}
@@ -33,22 +34,23 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "{#Z}\EventBucket\EventBucket.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Z}\built\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#Z}\icon\favicon.ico"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#Z}\EventBucket\c\*"; DestDir: "{app}\c"; Flags: ignoreversion
-Source: "{#Z}\EventBucket\h\*"; DestDir: "{app}\h"; Flags: ignoreversion
-Source: "{#Z}\EventBucket\j\*"; DestDir: "{app}\j"; Flags: ignoreversion
-Source: "{#Z}\EventBucket\v\*"; DestDir: "{app}\v"; Flags: ignoreversion
-Source: "{#Z}\EventBucket\w\*"; DestDir: "{app}\w"; Flags: ignoreversion
+Source: "{#Z}\built\c\*"; DestDir: "{app}\c"; Flags: ignoreversion
+Source: "{#Z}\built\h"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Z}\built\j\*"; DestDir: "{app}\j"; Flags: ignoreversion
+Source: "{#Z}\built\v"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Z}\built\w\*"; DestDir: "{app}\w"; Flags: ignoreversion
 Source: "{#Z}\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
-Name: "{group}\{#MyAppName} dark"; Filename: "{app}\{#MyAppExeName}"; Parameters: "-dark"
+Name: "{group}\{#MyAppName} dark"; Filename: "{app}\{#MyAppExeName}"; Parameters: "-dark" IconIndex: 1
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
-Name: "{commondesktop}\{#MyAppName} dark"; Filename: "{app}\{#MyAppExeName}"; Parameters: "-dark"; Tasks: desktopicon
+Name: "{commondesktop}\{#MyAppName} dark"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon Parameters: "-dark"; IconIndex: 1
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: quicklaunchicon
+Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: quicklaunchicon Parameters: "-dark"; IconIndex: 1
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
