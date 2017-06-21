@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -21,6 +22,8 @@ const (
 )
 
 var (
+	runDir string
+
 	//Used for every HTTP request with cache headers set.
 	cacheExpires string
 
@@ -32,8 +35,20 @@ var (
 		dirJS:   {contentType, "text/javascript"},
 		dirSVG:  {contentType, "image/svg+xml"},
 		dirWEBP: {contentType, "image/webp"},
+		"open":  {csp, "style-src 'self'"},
+		"lock":  {csp, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src ws: 'self'; img-src 'self' data:"}, //font-src 'self'
 	}
 )
+
+func init() {
+	go maintainExpires()
+
+	var err error
+	runDir, err = os.Executable()
+	if err == nil {
+		runDir = filepath.Dir(runDir)
+	}
+}
 
 func serveFile(fileName string) {
 	http.HandleFunc(fileName, func(w http.ResponseWriter, r *http.Request) {
