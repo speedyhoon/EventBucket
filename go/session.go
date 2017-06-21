@@ -7,10 +7,6 @@ import (
 	"time"
 )
 
-func init() {
-	go maintainSessions()
-}
-
 const (
 	sessionToken      = "s"
 	sessionExpiryTime = time.Minute * 2
@@ -20,6 +16,19 @@ var globalSessions = struct {
 	sync.RWMutex
 	m map[string]form
 }{m: make(map[string]form)}
+
+func init() {
+	go maintainSessions()
+}
+
+//maintainSessions periodically deletes expired sessions
+func maintainSessions() {
+	ticker := time.NewTicker(sessionExpiryTime)
+	for range ticker.C {
+		//Can't directly change global variables in a go routine, so call an external function.
+		purgeSessions()
+	}
+}
 
 func setSession(w http.ResponseWriter, f form) {
 	f.expiry = time.Now().Add(sessionExpiryTime)
@@ -62,15 +71,6 @@ func sessionID() string {
 		remain--
 	}
 	return string(b)
-}
-
-//maintainSessions periodically deletes expired sessions
-func maintainSessions() {
-	ticker := time.NewTicker(sessionExpiryTime)
-	for range ticker.C {
-		//Can't directly change global variables in a go routine, so call an external function.
-		purgeSessions()
-	}
 }
 
 //Delete sessions where the expiry datetime has already lapsed.
