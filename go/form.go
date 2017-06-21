@@ -44,15 +44,15 @@ const (
 )
 
 func getForm(id uint8) form {
-	const formQty = 23
+	const formQty = 22
 	if id >= formQty {
 		return form{}
 	}
 	return form{
 		action: id,
-		Fields: [formQty][]field{{ //New Club
+		Fields: [formQty][]field{{ //0 New Club
 			{name: "n", v8: v8StrReq},
-		}, { //Club Details
+		}, { //1 Club Details
 			{name: "n", v8: v8StrReq},
 			{name: "a", v8: v8Str},
 			{name: "w", v8: v8Str},
@@ -64,29 +64,29 @@ func getForm(id uint8) form {
 			{name: "b", v8: v8Bool},
 			{name: "u", v8: v8Str},
 			{name: "C", v8: v8Regex, regex: regexID},
-		}, { //New Shooting Mound
+		}, { //2 New Shooting Mound
 			{name: "n", v8: v8StrReq},
 			{name: "C", v8: v8Regex, regex: regexID},
-		}, { //New Event
+		}, { //3 New Event
 			{name: "C", v8: v8Str, Value: defaultClubName(), Required: hasDefaultClub(), minLen: 1, Options: clubsDataList()},
 			{name: "n", v8: v8StrReq},
 			{name: "d", v8: v8Str, Value: time.Now().Format("2006-01-02"), maxLen: 10},
 			{name: "t", v8: v8Str, Value: time.Now().Format("15:04"), maxLen: 5},
-		}, { //Event Details
+		}, { //4 Event Details
 			{name: "C", v8: v8StrReq, Options: clubsDataList()},
 			{name: "n", v8: v8StrReq},
 			{name: "d", v8: v8Str, maxLen: 10, minLen: 1},
 			{name: "t", v8: v8Str, maxLen: 5, minLen: 5},
 			{name: "c", v8: v8Bool},
 			{name: "E", v8: v8Regex, regex: regexID},
-		}, { //Add Range
+		}, { //5 Add Range
 			{name: "n", v8: v8StrReq},
 			{name: "E", v8: v8Regex, regex: regexID},
-		}, { //Add Aggregate Range
+		}, { //6 Add Aggregate Range
 			{name: "n", v8: v8StrReq},
 			{name: "R", v8: v8UintList, Required: true, minLen: 2, min: 1, max: math.MaxInt8},
 			{name: "E", v8: v8Regex, regex: regexID},
-		}, { //Shooter Entry
+		}, { //7 Shooter Entry
 			{name: "f", v8: v8StrReq},
 			{name: "s", v8: v8StrReq},
 			{name: "C", v8: v8StrReq, Options: clubsDataList(), Placeholder: defaultClubName()},
@@ -95,16 +95,16 @@ func getForm(id uint8) form {
 			{name: "x", v8: v8Bool},
 			{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: globalGradesDataList},
 			{name: "E", v8: v8Regex, regex: regexID},
-		}, { //Existing Shooter Entry
+		}, { //7 Existing Shooter Entry
 			{name: "S", v8: v8RegexReq, regex: regexID},
 			{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: globalGradesDataList},
 			{name: "r", v8: v8Uint, max: 4, Options: dataListAgeGroup()},
 			{name: "E", v8: v8RegexReq, regex: regexID},
-		}, { //Shooter Search
+		}, { //8 Shooter Search
 			{name: "f", v8: v8Str},
 			{name: "s", v8: v8Str},
 			{name: "C", v8: v8Str},
-		}, { //New Shooter
+		}, { //9 New Shooter
 			{name: "f", v8: v8StrReq},
 			{name: "s", v8: v8StrReq},
 			//TODO change datalist functions to variables do that the number of database calls can be reduced? But this would use more RAM which is not good
@@ -112,7 +112,7 @@ func getForm(id uint8) form {
 			{name: "r", v8: v8Uint, max: 4, Options: dataListAgeGroup()},
 			{name: "x", v8: v8Bool},
 			{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: globalGradesDataList},
-		}, { //Shooter Details
+		}, { //10 Shooter Details
 			{name: "f", v8: v8StrReq},
 			{name: "s", v8: v8StrReq},
 			{name: "C", v8: v8StrReq},
@@ -120,47 +120,47 @@ func getForm(id uint8) form {
 			{name: "r", v8: v8Uint, max: 4, Options: dataListAgeGroup()},
 			{name: "x", v8: v8Bool},
 			{name: "I", v8: v8RegexReq, regex: regexID},
-		}, { //Shooter Search
+		}, { //11 Shooter Search
 			{name: "f", v8: v8Str},
 			{name: "s", v8: v8Str},
 			{name: "C", v8: v8Str},
-		}, { //Enter Range Totals
+		}, { //12 Enter Range Totals
 			{name: "t", v8: v8UintReq, max: 120},
 			{name: "c", v8: v8Uint, max: 20},
 			{name: "E", v8: v8RegexReq, regex: regexID},
 			{name: "R", v8: v8UintReq, min: 1, max: math.MaxInt8},
 			{name: "S", v8: v8UintReq, max: math.MaxInt8},
 			{name: "h", v8: v8Uint, max: 100},
-		}, { //Grades Available
+		}, { //13 Grades Available
 			{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: availableGrades([]uint{})},
 			{name: "I", v8: v8Regex, regex: regexID},
-		}, { //Update Shooter Shots (Scorecards)
+		}, { //14 Update Shooter Shots (Scorecards)
 			{name: "s", v8: v8StrReq, maxLen: 12, minLen: 1},
 			{name: "E", v8: v8RegexReq, regex: regexID},
 			{name: "R", v8: v8UintReq, min: 1, max: math.MaxInt8},
 			{name: "S", v8: v8UintReq, max: math.MaxInt8},
-		}, { //Import Shooters
+		}, { //15 Import Shooters
 			//TODO add file validation
 			{name: "f", Required: true},
-		}, { //Map Clubs
+		}, { //16 Map Clubs
 			{name: "C", v8: v8Regex, regex: regexID},
-		}, { //Edit Shooting Mound
+		}, { //17 Edit Shooting Mound
 			{name: "n", v8: v8StrReq},
 			{name: "I", v8: v8Uint, max: math.MaxInt8},
 			{name: "C", v8: v8Regex, regex: regexID},
-		}, { //Update Range
+		}, { //18 Update Range
 			{name: "E", v8: v8Regex, regex: regexID},
 			{name: "I", v8: v8UintReq, min: 1, max: math.MaxInt8},
 			{name: "n", v8: v8StrReq},
 			{name: "k", v8: v8Bool},
 			{name: "o", v8: v8UintReq, max: math.MaxInt8},
-		}, { //Update Agg
+		}, { //20 Update Agg
 			{name: "E", v8: v8Regex, regex: regexID},
 			{name: "I", v8: v8UintReq, min: 1, max: math.MaxInt8},
 			{name: "n", v8: v8StrReq},
 			{name: "R", v8: v8UintList, Required: true, minLen: 2, min: 1, max: math.MaxInt8},
 			{name: "o", v8: v8UintReq, max: math.MaxInt8},
-		}, { //Entries Edit Shooter Details
+		}, { //21 Entries Edit Shooter Details
 			{name: "S", v8: v8UintReq, max: math.MaxInt8},
 			{name: "E", v8: v8RegexReq, regex: regexID},
 			{name: "f", v8: v8StrReq},
