@@ -8,9 +8,9 @@ func settings(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
 		Title: "Settings",
 		Data: map[string]interface{}{
-			"Port":  portAddr, //TODO during save, redirect after post request to the new port address
+			"Port":  portAddr, //TODO during save, post redirect to new port address
 			"Theme": masterTemplate.Theme,
 		},
-		//TODO Add form 2 for shutting down the HTTP server
+		//TODO Form 2: shutdown http server
 	})
 }
