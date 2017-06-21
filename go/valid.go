@@ -6,7 +6,8 @@ import (
 	"strings"
 )
 
-func validPost(r *http.Request, f form) (form, bool) {
+func validPost(r *http.Request, formID uint8) (form, bool) {
+	f := getForm(formID)
 	if err := r.ParseForm(); err != nil {
 		warn.Println(err)
 		return f, false
@@ -14,7 +15,8 @@ func validPost(r *http.Request, f form) (form, bool) {
 	return isValid(r.Form, f)
 }
 
-func validGet(r *http.Request, f form) (form, bool) {
+func validGet(r *http.Request, formID uint8) (form, bool) {
+	f := getForm(formID)
 	u, err := url.Parse(r.RequestURI)
 	if err != nil {
 		warn.Println(err)
