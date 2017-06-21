@@ -52,12 +52,12 @@ function tableSort(th){
 }
 
 //Form help dialog popup
-var dialog = document.createElement('dialog'), formFocus;
+var dialog = document.createElement('dialog'), label;
 dialog.onclick = function(){
 	dialog.close();
-	if(formFocus){
-		formFocus.focus();
-		formFocus = false;
+	if(label){
+		label.click();
+		label = 0;
 	}
 };
 document.body.appendChild(dialog);
@@ -69,7 +69,8 @@ document.onclick = function(event){
 	//Help message pop-up
 	case 'ABBR':
 		dialog.textContent = target.title;
-		formFocus = target;
+		//Assuming the <abbr> element will always be the immediate child of a <label> element
+		label = target.parentElement;
 		dialog.showModal();
 		break;
 	//Table sort
