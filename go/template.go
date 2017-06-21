@@ -3,10 +3,13 @@ package main
 import (
 	"compress/gzip"
 	"fmt"
-	"html/template"
+	"io"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/speedyhoon/text/template"
 )
 
 type menu struct {
@@ -19,8 +22,17 @@ type page struct {
 	Title, Menu, MenuID, Heading string
 	Data                         map[string]interface{}
 	Error                        error
-	template                     uint8
+	template                     string
 	JS                           []string
+	Section                      string //Which template to load within the main template
+	skipCSP                      bool
+}
+
+func (p page) csp() string {
+	if p.skipCSP {
+		return "open"
+	}
+	return "lock"
 }
 
 type markupEnv struct {
@@ -29,21 +41,8 @@ type markupEnv struct {
 	Theme bool
 }
 
-const (
-	templateScoreboard = 1
-	templateNone       = 255
-)
-
 var (
-	htmlDirectory         = "./h"
-	masterTemplatePath    string
-	masterScoreboard      string
-	formsTemplatePath     string
-	reusablesTemplatePath string
-
-	masterStuff [][]string
-
-	templates      = make(map[string]*template.Template)
+	NewTemplates   *template.Template
 	masterTemplate = markupEnv{
 		Menu: []menu{{
 			Name: "Events",
@@ -98,9 +97,27 @@ var (
 			Link: urlLicence,
 		}},
 	}
+)
 
-	templateFuncMap = template.FuncMap{
-		"hasindex": func(inputs []field, index int) *field {
+type gzipResponseWriter struct {
+	io.Writer
+	http.ResponseWriter
+}
+
+func (w gzipResponseWriter) Write(b []byte) (int, error) {
+	return w.Writer.Write(b)
+}
+
+//TODO remove if !debug
+func init() {
+	if loader() != nil {
+		os.Exit(5)
+	}
+}
+
+func loader() (err error) {
+	NewTemplates, err = template.New("").Funcs(template.FuncMap{
+		"i": func(inputs []field, index int) *field {
 			//index will always be a positive integer so the check for index >= 0 is not required
 			if index < len(inputs) {
 				return &inputs[index]
@@ -129,6 +146,7 @@ var (
 			}
 			return template.HTMLAttr(output)
 		},
+		//TODO remove has
 		"has": func(t interface{}, value string) template.HTMLAttr {
 			var hasValue bool
 			switch t.(type) {
@@ -182,8 +200,11 @@ var (
 			}()
 			return
 		},
-	}
-)
+	}).ParseFiles(
+		filepath.Join(runDir, "h", "!"),
+	)
+	return
+}
 
 func templater(w http.ResponseWriter, page page) {
 	//Gzip response, even if requester doesn't support gzip
@@ -192,38 +213,22 @@ func templater(w http.ResponseWriter, page page) {
 	wz := gzipResponseWriter{Writer: gz, ResponseWriter: w}
 
 	//Add HTTP headers so browsers don't cache the HTML resource because it may contain different content every request.
-	headers(wz, "html", nocache, cGzip)
-	if page.template == 25 {
-		page.template = 0
-		wz.Header().Set(csp, "style-src 'self'")
-	} else {
-		wz.Header().Set(csp, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src ws: 'self'; img-src 'self' data:") //font-src 'self'
-	}
+	headers(wz, "html", nocache, cGzip, page.csp())
 
 	//Convert page.Title to the lowercase HTML template file name
-	fileName := filepath.Join(htmlDirectory, strings.Replace(strings.ToLower(page.Title), " ", "", -1))
-
-	htmlFileNames := []string{fileName}
-	if page.template != templateNone {
-		htmlFileNames = append(htmlFileNames, masterStuff[page.template]...)
-	}
+	page.Section = strings.Replace(strings.ToLower(page.Title), " ", "", -1)
 
 	//Add page content just generated to the default page environment (which has CSS and JS, etc).
 	masterTemplate.Page = page
 
-	var err error
-	html, ok := templates[fileName]
-	//debug is for dynamically re-parsing (reloading) templates on every request
-	if !ok || debug {
-		templates[fileName], err = template.New("!").Funcs(templateFuncMap).ParseFiles(htmlFileNames...)
-		if err != nil {
-			warn.Println(err, fileName)
-			return
-		}
-		html = templates[fileName]
+	//TODO optionally remove during build time if debug == true
+	if err := loader(); err != nil {
+		warn.Println(err)
+		http.Error(wz, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
-	if err = html.ExecuteTemplate(wz, "!", masterTemplate); err != nil {
+	if err := NewTemplates.ExecuteTemplate(wz, masterTemplate.Page.template, masterTemplate); err != nil {
 		warn.Println(err)
 		http.Error(wz, err.Error(), http.StatusInternalServerError)
 	}

@@ -35,12 +35,12 @@ func club(w http.ResponseWriter, r *http.Request, clubID string) {
 	forms[1].Fields[1].Value = club.ID
 
 	templater(w, page{
-		Title:    "Club",
-		MenuID:   clubID,
-		Menu:     urlClubs,
-		template: 25,
-		Error:    forms[2].Error,
-		JS:       []string{"main", "clubSettings", "editRow"},
+		Title:   "Club",
+		MenuID:  clubID,
+		Menu:    urlClubs,
+		skipCSP: true,
+		Error:   forms[2].Error,
+		JS:      []string{"main", "clubSettings", "editRow"},
 		Data: map[string]interface{}{
 			"Club":        club,
 			"debug":       debug,
@@ -57,9 +57,9 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 	}
 	_, forms := sessionForms(w, r, clubNew)
 	templater(w, page{
-		Title:    "Clubs",
-		template: 25,
-		JS:       []string{"main"},
+		Title:   "Clubs",
+		skipCSP: true,
+		JS:      []string{"main"},
 		Data: map[string]interface{}{
 			"NewClub":   forms[0],
 			"ListClubs": listClubs,
@@ -118,7 +118,7 @@ func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	if err != nil {
 		ID, err = Club{
 			Name:      name,
-			IsDefault: getDefaultClub().ID == "", //Set this club to default if no other clubs are the default
+			IsDefault: getDefaultClub().ID == "", //Set this club to the default if no other clubs are the default
 		}.insert()
 		if err != nil {
 			formError(w, r, submittedForm, err)

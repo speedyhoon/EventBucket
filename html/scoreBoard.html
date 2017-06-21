@@ -1,13 +1,40 @@
-{{define "page"}}
-	{{$medalsLimit := 3}}
+{{define "scoreboard"}}<!DOCTYPE html>
+<link rel=stylesheet href=/c/scoreboard>
+<title>EventBucket{{with.Page.Title}} - {{.}}{{end}}</title>
+{{with (index .Menu 0).SubMenu}}
+	<ul>
+		<li><a href=/>Events</a>
+		{{range.}}
+			{{if not (and .RangeMenu .Hidden)}}
+				<li><a href={{.Link}}{{$.Page.MenuID}}>{{.Name}}</a>
+			{{end}}
+			{{if and .RangeMenu $.Page.Data.Event}}
+				<!--Can't merge these two if statements because $.Page.Data.Event doesn't exist for clubs & club pages-->
+				{{if and $.Page.Data.Event.Ranges (gt (len $.Page.Data.Event.Shooters) 0)}}
+					<li>
+						<!-- TODO remove <a> tag wrapper here -->
+						<a href=#>{{.Name}}</a>
+						<ul>
+							{{$link := .Link}}
+							{{range $.Page.Data.Event.Ranges}}
+								{{if or (not .IsAgg) (eq $link "/scoreboard/")}}
+									<li><a href={{$link}}{{$.Page.MenuID}}/{{.ID}}>{{.Name}}</a>
+								{{end}}
+							{{end}}
+						</ul>
+				{{end}}
+			{{end}}
+		{{end}}
+	</ul>
+{{end}}
+{{with.Page.Data}}
 	<a class=floatRight href=//eventbucket.com.au target=_blank><img src=/v/logo alt=EventBucket height=16 width=140>.com.au</a>
 	<h1>{{.Event.Name}}</h1>
-	{{$colspan := 4}}
 	<table>
 		{{range.Event.Shooters}}
 			{{if.GradeSeparator}}
 				<tr class="^classHeadingRow^ ^separator^">
-					<td colspan={{$colspan}}>{{(grade .Grade).Name}}
+					<td colspan={{$.colspan}}>{{(grade .Grade).Name}}
 					{{range $.Ranges}}
 						<td>{{.Name}}
 					{{end}}
@@ -20,7 +47,7 @@
 				{{$shooter := .}}
 				{{range $.Ranges}}
 					{{$score := index $shooter.Scores .StrID}}
-					{{if and $score.Total (le $score.Position $medalsLimit)}}
+					{{if and $score.Total (le $score.Position $.medalsLimit)}}
 						<td class=p{{$score.Position}}>
 					{{else}}
 						<td>
@@ -34,4 +61,5 @@
 				{{end}}
 		{{end}}
 	</table>
+{{end}}
 {{end}}

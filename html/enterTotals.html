@@ -1,4 +1,4 @@
-{{define "page"}}
+{{define "entertotals"}}
 	{{if and (not .Event.Closed) (not .Range.Locked)}}
 		{{template "barcodeSearch"}}
 		{{template "incompleteShooters" .}}

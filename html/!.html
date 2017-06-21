@@ -1,4 +1,4 @@
-{{define "!"}}<!DOCTYPE html>
+{{define ""}}<!DOCTYPE html>
 <link rel=stylesheet href=/c/{{if.Theme}}dark{{else}}lite{{end}}>
 <title>EventBucket{{with.Page.Title}} - {{.}}{{end}}</title>
 <nav>
@@ -28,6 +28,7 @@
 									<!--Can't merge these two if statements because $.Page.Data.Event doesn't exist for clubs & club pages-->
 									{{if and $.Page.Data.Event.Ranges (gt (len $.Page.Data.Event.Shooters) 0)}}
 										<li>
+											<!-- TODO remove link to # here? -->
 											<a href=#>{{.Name}}</a>
 											<ul>
 												{{$link:=.Link}}
