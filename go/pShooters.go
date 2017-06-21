@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func shooters(w http.ResponseWriter, r *http.Request, submittedForm form, isValid bool) {
+func shooters(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	_, pageForms := sessionForms(w, r, shooterNew, importShooter)
 	shooters, shooterQty, err := getSearchShooters(submittedForm.Fields[0].Value, submittedForm.Fields[1].Value, submittedForm.Fields[2].Value)
 
@@ -53,7 +53,7 @@ func shooterUpdate(w http.ResponseWriter, r *http.Request, submittedForm form) {
 func eventSearchShooters(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	templater(w, page{
 		Title:    "Shooter Search",
-		template: templateNone,
+		template: "shootersearch",
 		Data: map[string]interface{}{
 			"ListShooters": searchShootersOptions(submittedForm.Fields[0].Value, submittedForm.Fields[1].Value, submittedForm.Fields[2].Value),
 		},
