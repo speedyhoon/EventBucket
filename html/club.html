@@ -1,7 +1,10 @@
 {{define "club"}}
 	<!--TODO add edit class to stylus default width=15px height=15px-->
 	<!--<h2>{{.Club.Name}}{{if.Club.IsDefault}} (default){{end}} <a href=#edit title="Edit club details" class=edit></a></h2>-->
-	<h2>{{.Club.Name}}{{if.Club.IsDefault}} (default){{end}} <a href=#edit title="Edit club details"><img src=/v/edit alt=pencil></a></h2>
+	<h2>{{.Club.Name}}{{if.Club.IsDefault}} (default){{end}} <a href=#edit title="Edit club details">
+			<img src=/v/edit alt=pencil>
+		</a>
+	</h2>
 
 	<p>
 		{{.Club.Address}}<br>
