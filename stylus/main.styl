@@ -165,7 +165,7 @@ form#edit:target
 			list-style: none
 			margin: 0
 			padding: 0
-			width: "calc(100% - %s - 190px)" % $margin*2
+			width: "calc(100% - %s - 190px)" % ($margin*2)
 
 		& > ul > li
 			display: inline-block
@@ -270,7 +270,7 @@ a, header li
 .popup
 	background: url(/v/speechBubble) no-repeat
 	color: $white
-	padding: $margin $margin/2 $margin/2
+	padding: $margin $halfMargin $halfMargin
 	position: absolute
 	right: 2*$margin
 	text-align: center
