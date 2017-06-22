@@ -79,7 +79,7 @@ func main() {
 	dbPath = filepath.Join(dbPath, "EventBucket.db")
 
 	var err error
-	db, err = bolt.Open(dbPath, 0644, &bolt.Options{Timeout: 8 * time.Second, InitialMmapSize: 1048576})
+	db, err = bolt.Open(dbPath, 0644, &bolt.Options{Timeout: time.Second * 8, InitialMmapSize: 1048576})
 	if err != nil {
 		warn.Println("Connection timeout. Unable to open", dbPath)
 		os.Exit(4)
@@ -89,13 +89,12 @@ func main() {
 	//Prepare database by creating all buckets (tables) needed. Otherwise view (read only) transactions will fail.
 	makeBuckets()
 
-	info.Print("Starting EventBucket HTTP server...")
-
 	h := http.Server{Addr: portAddr, Handler: nil}
 	go func() {
 		if err := h.ListenAndServe(); err != nil {
 			warn.Fatal(err)
 		} else if !debug {
+			info.Print("Started EventBucket HTTP server...")
 			openBrowser("http://localhost" + portAddr)
 		}
 	}()
