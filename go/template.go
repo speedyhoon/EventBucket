@@ -110,7 +110,8 @@ func (w gzipResponseWriter) Write(b []byte) (int, error) {
 
 //TODO remove if !debug
 func init() {
-	if loader() != nil {
+	if err := loader(); err != nil {
+		warn.Println(err)
 		os.Exit(5)
 	}
 }
@@ -124,7 +125,8 @@ func loader() (err error) {
 			}
 			return nil
 		},
-		"a": func(attribute string, value interface{}) template.HTMLAttr {
+		"a": func(attribute string, value interface{}) string { return "" },
+		/*"a": func(attribute string, value interface{}) template.HTMLAttr {
 			var output string
 			switch value.(type) {
 			case bool:
@@ -145,9 +147,10 @@ func loader() (err error) {
 				}
 			}
 			return template.HTMLAttr(output)
-		},
+		},*/
 		//TODO remove has
-		"has": func(t interface{}, value string) template.HTMLAttr {
+		"has": func(attribute string, value interface{}) string { return "" },
+		/*"has": func(t interface{}, value string) template.HTMLAttr {
 			var hasValue bool
 			switch t.(type) {
 			default:
@@ -163,7 +166,7 @@ func loader() (err error) {
 				return template.HTMLAttr(value)
 			}
 			return template.HTMLAttr("")
-		},
+		},*/
 		"grade": findGrade,
 		"ageGroup": func(index uint) string {
 			if index >= 1 && index < uint(len(dataListAgeGroup())) {
@@ -201,7 +204,7 @@ func loader() (err error) {
 			return
 		},
 	}).ParseFiles(
-		filepath.Join(runDir, "h", "!"),
+		filepath.Join(runDir, "h"),
 	)
 	return
 }
