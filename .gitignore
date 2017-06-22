@@ -1,5 +1,6 @@
 .dev/
 .idea/
+.old/
 _old/
 built/
 *.exe
