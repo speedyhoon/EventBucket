@@ -1,5 +1,6 @@
 {{define "eventreport"}}
-	{{range _, $b := .Event.Ranges}}
+	<!-- TODO can $a be removed? -->
+	{{range $a, $b := .Event.Ranges}}
 		<table>
 			<tr>
 				<th>Grade
