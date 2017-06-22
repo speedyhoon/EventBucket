@@ -13,10 +13,9 @@ import (
 const (
 	get         = "GET"
 	post        = "POST"
-	dirCSS      = `/c/`
-	dirJS       = `/j/`
-	dirSVG      = `/v/`
-	dirWEBP     = `/w/`
+	dirCSS      = "/c/"
+	dirJS       = "/j/"
+	dirWEBP     = "/w/"
 	urlEvents   = "/"
 	urlAbout    = "/about"
 	urlArchive  = "/archive"
@@ -24,6 +23,7 @@ const (
 	urlLicence  = "/license"
 	urlShooters = "/shooters"
 	urlSettings = "/settings"
+	urlSVG      = "/v"
 	//GET with PARAMETERS
 	urlClub            = "/club/"             //clubID
 	urlEntries         = "/entries/"          //eventID
@@ -48,11 +48,11 @@ var (
 )
 
 func init() {
-	serveFile("/favicon.ico")
-	serveFile(urlLicence)
+	serveFile("/favicon.ico", false)
+	serveFile(urlLicence, false)
+	serveFile(urlSVG, true)
 	serveDir(dirCSS, true)
 	serveDir(dirJS, true)
-	serveDir(dirSVG, true)
 	serveDir(dirWEBP, false)
 	http.Handle("/k/", websocket.Handler(processSocket))
 	getParameter("/q/", barcodeQR, regexBarcode)

@@ -33,7 +33,7 @@ var (
 		"html":  {contentType, "text/html; charset=utf-8"},
 		dirCSS:  {contentType, "text/css; charset=utf-8"},
 		dirJS:   {contentType, "text/javascript"},
-		dirSVG:  {contentType, "image/svg+xml"},
+		urlSVG:  {contentType, "image/svg+xml"},
 		dirWEBP: {contentType, "image/webp"},
 		"open":  {csp, "style-src 'self'"},
 		"lock":  {csp, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src ws: 'self'; img-src 'self' data:"}, //font-src 'self'
@@ -50,13 +50,17 @@ func init() {
 	}
 }
 
-func serveFile(fileName string) {
+func serveFile(fileName string, compress bool) {
 	http.HandleFunc(fileName, func(w http.ResponseWriter, r *http.Request) {
 		//Check if the request contains accept gzip encoding header & return the appropriate resource
 		//Unfortunately uncompressed responses may still be required even though all modern browsers support gzip
 		//webmasters.stackexchange.com/questions/22217/which-browsers-handle-content-encoding-gzip-and-which-of-them-has-any-special
 		//www.stevesouders.com/blog/2009/11/11/whos-not-getting-gzip/
-		headers(w, cache)
+		h := []string{cache, fileName}
+		if compress {
+			h = append(h, br)
+		}
+		headers(w, h...)
 		http.ServeFile(w, r, filepath.Join(runDir, fileName))
 	})
 }
@@ -95,8 +99,8 @@ func headers(w http.ResponseWriter, setHeaders ...string) {
 			break
 		default:
 			//Set resource content type header or set content encoding gzip header
-			if lookup == cGzip || lookup == br || headerOptions[lookup][0] == "Content-Type" {
-				w.Header().Set(headerOptions[lookup][0], headerOptions[lookup][1])
+			if h, ok := headerOptions[lookup]; ok {
+				w.Header().Set(h[0], h[1])
 			}
 		}
 	}
