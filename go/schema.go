@@ -158,6 +158,18 @@ type shooterScore struct {
 	score   Score
 }
 
+type form struct {
+	action uint8
+	Fields []field
+	Error  error
+	expiry time.Time
+}
+
+type option struct {
+	Label, Value string
+	Selected     bool
+}
+
 type field struct {
 	name, Error, Value, Placeholder       string
 	Required, Disable, AutoFocus, Checked bool

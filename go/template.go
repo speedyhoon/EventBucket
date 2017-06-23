@@ -125,8 +125,8 @@ func loader() (err error) {
 			}
 			return nil
 		},
-		"a": func(attribute string, value interface{}) string { return "" },
-		/*"a": func(attribute string, value interface{}) template.HTMLAttr {
+		"a": func(attribute string, value interface{}) string {
+			//"a": func(attribute string, value interface{}) template.HTMLAttr {
 			var output string
 			switch value.(type) {
 			case bool:
@@ -146,11 +146,14 @@ func loader() (err error) {
 					output = attribute + "=" + addQuotes(value)
 				}
 			}
-			return template.HTMLAttr(output)
-		},*/
-		//TODO remove has
-		"has": func(attribute string, value interface{}) string { return "" },
-		/*"has": func(t interface{}, value string) template.HTMLAttr {
+			//return template.HTMLAttr(output)
+			return output
+		},
+		"has": func(attribute string, value interface{}) string {
+			return "HAS"
+		},
+		/*TODO remove has
+		"has": func(t interface{}, value string) template.HTMLAttr {
 			var hasValue bool
 			switch t.(type) {
 			default:

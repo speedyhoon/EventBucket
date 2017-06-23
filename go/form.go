@@ -5,18 +5,6 @@ import (
 	"time"
 )
 
-type form struct {
-	action uint8
-	Fields []field
-	Error  error
-	expiry time.Time
-}
-
-type option struct {
-	Label, Value string
-	Selected     bool
-}
-
 //TODO when forms are changed to zero index, perform a check if action is not equal to "" instead of strconv != 0
 const (
 	clubNew              uint8 = 0

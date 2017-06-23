@@ -13,6 +13,7 @@ import (
 const (
 	get         = "GET"
 	post        = "POST"
+	put         = "PUT"
 	dirCSS      = "/c/"
 	dirJS       = "/j/"
 	dirWEBP     = "/w/"
