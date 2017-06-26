@@ -75,31 +75,6 @@ func init() {
 	getParameters(urlPrintScorecards, printScorecards, regexPath)
 	getParameters(urlEnterTotals, enterTotalsIncomplete, regexPath)
 	getParameters(urlEnterTotalsAll, enterTotalsAll, regexPath)
-	endpoint(post, clubNew, clubInsert)
-	endpoint(post, clubDetails, clubDetailsUpsert)
-	endpoint(post, clubMoundNew, clubMoundInsert)
-	endpoint(post, eventNew, eventInsert)
-	endpoint(post, eventDetails, eventDetailsUpsert)
-	endpoint(post, eventRangeNew, eventRangeInsert)
-	endpoint(post, eventAggNew, eventAggInsert)
-	endpoint(post, eventShooterNew, eventShooterInsert)
-	endpoint(post, eventShooterExisting, eventShooterExistingInsert)
-	endpoint(get, eventShooterSearch, eventSearchShooters)
-	endpoint(post, shooterNew, shooterInsert)
-	endpoint(post, shooterDetails, shooterUpdate)
-	//TODO re-enable
-	//endpoint(post, eventTotalScores, eventTotalUpsert)
-	endpoint(post, eventAvailableGrades, eventAvailableGradesUpsert)
-	//TODO re-enable
-	//endpoint(post, eventUpdateShotScore, updateShotScores)
-	http.HandleFunc("/16", importShooters) //TODO file upload validation function hasn't been written yet.
-	endpoint(get, mapResults, mapClubs)
-	endpoint(post, clubMoundEdit, editClubMound)
-	endpoint(post, eventUpdateRange, updateRange)
-	endpoint(post, eventUpdateAgg, updateAgg)
-	endpoint(post, eventEditShooter, eventShooterUpdate)
-
-	gt(urlShooters, shooterSearch, shooters)
 
 	//TODO BUG any url breaks when appending "&*((&*%"
 	get404(urlEvents, events)
