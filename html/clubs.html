@@ -13,7 +13,10 @@
 					<tr>
 						<td><a href=/club/{{.ID}}>{{.Name}}</a>
 						{{if.IsDefault}}<td class=tick>{{else}}<td>{{end}}
-						<td><a href=/club/{{.ID}}#edit></a>
+						<td class=center>
+							<a href=/club/{{.ID}}#edit>
+								<img src=/v/edit alt="Edit club">
+							</a>
 				{{end}}
 		</table>
 		{{if not $.debug}}
