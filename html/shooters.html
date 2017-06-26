@@ -1,9 +1,9 @@
 {{define "shooters"}}
 	<p>To add shooters to an event, first navigate to an <strong><a href=/>Event</a></strong>, then use the <strong>Shooter Entry</strong> form located on the <strong>Entries</strong> page.
 	<br>Use this page to search for shooters already entered into your database or add new shooters to the database.
-	{{template "NewShooter" .NewShooter}}
+	{{template "10" .NewShooter}}
 	{{if.QtyShooters}}
-		{{template "ShooterSearch" .ShooterSearch}}
+		{{template "9" .ShooterSearch}}
 	{{end}}
 	<p>Total Shooters: {{.QtyShooters}}{{with.ListShooters}}, Search returned {{len .}} shooter{{if ne (len .) 1}}s{{end}}.{{end}}
 	{{with.ListShooters}}
@@ -56,5 +56,5 @@
 	{{else}}
 		<samp>No shooters listed.</samp>
 	{{end}}
-	{{template "ImportShooters" .ImportShooters}}
+	{{template "16" .ImportShooters}}
 {{end}}

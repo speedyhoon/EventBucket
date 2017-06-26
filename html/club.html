@@ -11,7 +11,7 @@
 		{{.Club.Town}}{{with.Club.Postcode}}, {{.}}{{end}}
 		{{with.Club.URL}}<br><a href={{.}}>{{.}}</a>{{end}}
 
-	{{template "ClubDetails" .ClubDetails}}
+	{{template "1" .ClubDetails}}
 
 	{{if not .debug}}
 		<h2>Map</h2>
@@ -53,5 +53,5 @@
 		<td>
 			<button name=C value={{.Club.ID}}>Save</button>
 	</template>
-	{{template "NewShootingMound" .ClubMound}}
+	{{template "2" .ClubMound}}
 {{end}}
