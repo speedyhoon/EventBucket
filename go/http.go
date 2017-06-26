@@ -218,9 +218,10 @@ func errorHandler(w http.ResponseWriter, r *http.Request, status int, errorType 
 			}
 		}
 	}
-	w.WriteHeader(status)
+
 	templater(w, page{
-		Title: "Error",
+		Title: "Pageerror",
+		Status: status,
 		Data: map[string]interface{}{
 			"Type": errorType,
 		},
