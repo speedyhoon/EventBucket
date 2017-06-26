@@ -2,7 +2,7 @@
 	{{if.Event.Closed}}
 		<samp>Event is closed, no changes can be made.</samp>
 	{{else}}
-		{{template "ShooterEntry" .ShooterEntry}}
+		{{template "7" .ShooterEntry}}
 	{{end}}
 	{{$hasRanges := ge (len .Event.Ranges) 1}}
 	{{if not $hasRanges}}<samp>This event has no ranges</samp>{{end}}
@@ -67,7 +67,7 @@
 			<td>
 				<button name=S>Save</button>
 		</template>
-		{{template "GradesAvailable" .GradesAvailable}}
+		{{template "14" .GradesAvailable}}
 		<script defer src=/j/shooterSearch></script>
 		<script defer src=/j/entries></script>
 		<script defer src=/j/editRow></script>

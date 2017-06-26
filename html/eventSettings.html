@@ -1,9 +1,9 @@
 {{define "eventsettings"}}
-	{{template "EventDetails" .EventDetails}}
+	{{template "4" .EventDetails}}
 	{{if.Event.Closed}}
 		<samp>Event is closed, no changes can be made.</samp>
 	{{else}}
-		{{template "AddRange" .AddRange}}
+		{{template "5" .AddRange}}
 		{{with.RangeDataList}}
 			<datalist id=r>
 				{{range.}}
@@ -12,7 +12,7 @@
 			</datalist>
 		{{end}}
 		{{if ge (len .Ranges) 2}}
-			{{template "AddAggregateRange" .AddAgg}}
+			{{template "6" .AddAgg}}
 		{{end}}
 	{{end}}
 	{{range.UpdateErrors}}<samp>{{.}}</samp>{{end}}
