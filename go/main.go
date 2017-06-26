@@ -79,7 +79,10 @@ func main() {
 	dbPath = filepath.Join(dbPath, "EventBucket.db")
 
 	var err error
-	db, err = bolt.Open(dbPath, 0644, &bolt.Options{Timeout: time.Second * 8, InitialMmapSize: 1048576})
+	db, err = bolt.Open(dbPath, 0644, &bolt.Options{
+		Timeout:         time.Second * 8,
+		InitialMmapSize: 1048576, //Initial database size = 1MB
+	})
 	if err != nil {
 		warn.Println("Connection timeout. Unable to open", dbPath)
 		os.Exit(4)
