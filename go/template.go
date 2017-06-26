@@ -26,6 +26,7 @@ type page struct {
 	JS                           []string
 	Section                      string //Which template to load within the main template
 	skipCSP                      bool
+	Status                       int
 }
 
 func (p page) csp() string {
@@ -220,6 +221,10 @@ func templater(w http.ResponseWriter, page page) {
 
 	//Add HTTP headers so browsers don't cache the HTML resource because it may contain different content every request.
 	headers(wz, "html", nocache, cGzip, page.csp())
+
+	if page.Status != 0 {
+		wz.WriteHeader(page.Status)
+	}
 
 	//Convert page.Title to the lowercase HTML template file name
 	page.Section = strings.Replace(strings.ToLower(page.Title), " ", "", -1)
