@@ -119,15 +119,9 @@ func get404(url string, pageFunc func(http.ResponseWriter, *http.Request)) {
 
 func getRedirectPermanent(url string, pageFunc func(http.ResponseWriter, *http.Request)) {
 	http.HandleFunc(url,
-		func(w http.ResponseWriter, r *http.Request) {
-			//Don't accept post or put requests
-			if r.Method != get {
-				http.Redirect(w, r, url, http.StatusMethodNotAllowed)
-				return
-			}
-
+		isGetMethod(func(w http.ResponseWriter, r *http.Request) {
 			pageFunc(w, r)
-		})
+		}))
 	//Redirects back to subdirectory "url". Needed when url parameters are not wanted or needed.
 	//e.g. if url = "foobar" then "http://localhost/foobar/fdsa" will redirect to "http://localhost/foobar"
 	http.Handle(url+"/", http.RedirectHandler(url, http.StatusMovedPermanently))
@@ -136,13 +130,7 @@ func getRedirectPermanent(url string, pageFunc func(http.ResponseWriter, *http.R
 func getParameter(url string, pageFunc func(http.ResponseWriter, *http.Request, string), regex *regexp.Regexp) {
 	var parameters, lowerParams string
 	http.HandleFunc(url,
-		func(w http.ResponseWriter, r *http.Request) {
-			//Don't accept post or put requests
-			if r.Method != get {
-				http.Redirect(w, r, url, http.StatusMethodNotAllowed)
-				return
-			}
-
+		isGetMethod(func(w http.ResponseWriter, r *http.Request) {
 			parameters = strings.TrimPrefix(r.URL.Path, url)
 			lowerParams = strings.ToLower(parameters)
 
@@ -161,20 +149,14 @@ func getParameter(url string, pageFunc func(http.ResponseWriter, *http.Request, 
 				errorType = "club"
 			}
 			errorHandler(w, r, http.StatusNotFound, errorType)
-		})
+		}))
 }
 
 func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request, string, string), regex *regexp.Regexp) {
 	var parameters, lowerParams string
 	var ids []string
 	http.HandleFunc(url,
-		func(w http.ResponseWriter, r *http.Request) {
-			//Don't accept post or put requests
-			if r.Method != get {
-				http.Redirect(w, r, url, http.StatusSeeOther)
-				return
-			}
-
+		isGetMethod(func(w http.ResponseWriter, r *http.Request) {
 			parameters = strings.TrimPrefix(r.URL.Path, url)
 			lowerParams = strings.ToLower(parameters)
 
@@ -194,7 +176,19 @@ func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request,
 				errorType = "club"
 			}
 			errorHandler(w, r, http.StatusNotFound, errorType)
-		})
+		}))
+}
+
+func isGetMethod(h func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		//Don't accept post or put requests
+		if r.Method != get {
+			//http.Redirect(w, r, url, http.StatusSeeOther)
+			http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
+			return
+		}
+		h(w, r)
+	}
 }
 
 func errorHandler(w http.ResponseWriter, r *http.Request, status int, errorType string) {
@@ -220,7 +214,7 @@ func errorHandler(w http.ResponseWriter, r *http.Request, status int, errorType 
 	}
 
 	templater(w, page{
-		Title: "Pageerror",
+		Title:  "Error",
 		Status: status,
 		Data: map[string]interface{}{
 			"Type": errorType,
