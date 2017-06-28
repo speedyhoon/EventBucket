@@ -19,7 +19,8 @@
 					<td>{{.Club}}
 					<td>{{(grade .Grade).Name}}
 					<td>{{ageGroup .AgeGroup}}
-					<td{{a " class=tick" .Sex}}>
+					{{/*<td{{a " class=tick" .Sex}}>*/}}
+					{{if.Sex}}<td class=tick>{{else}}<td>{{end}}
 			{{end}}
 		</table>
 	{{else}}
