@@ -80,46 +80,33 @@ func init() {
 	get404(urlEvents, events)
 }
 
-func endpoint(method string, formID uint8, runner func(http.ResponseWriter, *http.Request, form)) {
-	h := func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != method {
-			/*405 Method Not Allowed
-			A request was made of a resource using a request method not supported by that resource; for example,
-			using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
-			//en.wikipedia.org/wiki/List_of_HTTP_status_codes*/
-			http.Redirect(w, r, r.Referer(), http.StatusMethodNotAllowed)
-			return
-		}
-		form, ok := validPost(r, formID)
-		if !ok && method != get {
-			setSession(w, form)
-			http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
-			return
-		}
-		runner(w, r, form)
-	}
-	http.HandleFunc(fmt.Sprintf("/%d", formID), h)
-}
-
-func gt(url string, formID uint8, runner func(http.ResponseWriter, *http.Request, form)) {
-	http.HandleFunc(url, func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != get {
-			/*405 Method Not Allowed
-			A request was made of a resource using a request method not supported by that resource; for example,
-			using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
-			//en.wikipedia.org/wiki/List_of_HTTP_status_codes*/
-			http.Redirect(w, r, r.Referer(), http.StatusMethodNotAllowed)
-			return
-		}
-		form, _ := validGet(r, formID)
-		runner(w, r, form)
-	})
+func endpoint(method, url string, formID uint8, runner func(http.ResponseWriter, *http.Request, form)) {
+	http.HandleFunc(
+		url,
+		func(w http.ResponseWriter, r *http.Request) {
+			if r.Method != method {
+				/*405 Method Not Allowed
+				A request was made of a resource using a request method not supported by that resource; for example,
+				using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
+				//en.wikipedia.org/wiki/List_of_HTTP_status_codes*/
+				http.Redirect(w, r, r.Referer(), http.StatusMethodNotAllowed)
+				return
+			}
+			form, ok := validBoth(r, formID)
+			if !ok && method != get {
+				setSession(w, form)
+				http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
+				return
+			}
+			runner(w, r, form)
+		},
+	)
 }
 
 //Start listening to each websocket client that connects.
 func processSocket(ws *websocket.Conn) {
 	var msg string
-	var command uint8
+	var formID uint8
 	var err error
 	//Start a loop to listen to incoming websocket traffic from all clients.
 	for {
@@ -128,9 +115,9 @@ func processSocket(ws *websocket.Conn) {
 			break
 		}
 		//The first character of the websocket message is used as a "router" to decide where to send the message.
-		command = uint8(msg[0])
+		formID = uint8(msg[0])
 		//Ignore any messages that do not have a case in this switch.
-		switch command {
+		switch formID {
 		case eventTotalScores:
 			var form url.Values
 			err = json.Unmarshal([]byte(msg[1:]), &form)
@@ -138,7 +125,7 @@ func processSocket(ws *websocket.Conn) {
 				warn.Println(err)
 				continue
 			}
-			if form, passed := isValid(form, getForm(command)); passed {
+			if form, passed := isValid(form, formID); passed {
 				websocket.Message.Send(ws, eventTotalUpsert(form.Fields))
 			} else {
 				websocket.Message.Send(ws, fmt.Sprintf("Unable to save %v.", msg))
@@ -151,7 +138,7 @@ func processSocket(ws *websocket.Conn) {
 				continue
 			}
 
-			if form, passed := isValid(form, getForm(command)); passed {
+			if form, passed := isValid(form, formID); passed {
 				websocket.Message.Send(ws, "!"+updateShotScores(form.Fields))
 			} else {
 				var response []byte

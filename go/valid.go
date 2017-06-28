@@ -6,27 +6,34 @@ import (
 	"strings"
 )
 
-func validPost(r *http.Request, formID uint8) (form, bool) {
-	f := getForm(formID)
-	if err := r.ParseForm(); err != nil {
-		warn.Println(err)
-		return f, false
-	}
-	return isValid(r.Form, f)
-}
+func validBoth(r *http.Request, formID uint8) (form, bool) {
+	var err error
+	var u *url.URL
 
-func validGet(r *http.Request, formID uint8) (form, bool) {
-	f := getForm(formID)
-	u, err := url.Parse(r.RequestURI)
+	if r.Method == get {
+		u, err = url.Parse(r.RequestURI)
+	} else {
+		err = r.ParseForm()
+	}
+
 	if err != nil {
 		warn.Println(err)
-		return f, false
+		return getForm(formID), false
 	}
-	return isValid(u.Query(), f)
+
+	var values url.Values
+	if r.Method == get {
+		values = u.Query()
+	} else {
+		values = r.Form
+	}
+
+	return isValid(values, formID)
 }
 
 //Is it worth while to auto add failed forms to session so it doesn't have to be done in each http handler?
-func isValid(urlValues url.Values, f form) (form, bool) {
+func isValid(urlValues url.Values, formID uint8) (form, bool) {
+	f := getForm(formID)
 	if len(urlValues) == 0 {
 		return f, false
 	}

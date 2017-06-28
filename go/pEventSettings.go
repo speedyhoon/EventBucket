@@ -20,7 +20,7 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 	}
 
 	//Retrieve any submitted form that failed to save.
-	action, forms := sessionForms(w, r, eventDetails, eventRangeNew, eventAggNew, eventUpdateRange, eventUpdateAgg)
+	action, forms := sessionForms(w, r, eventDetails, eventRangeNew, eventAggNew, eventRangeUpdate, eventAggUpdate)
 	if action != eventDetails {
 		forms[0].Fields[0].Value = event.Club
 		forms[0].Fields[1].Value = event.Name
@@ -35,11 +35,11 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 	forms[2].Fields[2].Value = eventID
 
 	var updateRangeErrors []string
-	if action == eventUpdateRange {
+	if action == eventRangeUpdate {
 		updateRangeErrors = listFormErrors(forms[3])
 	}
 	//It is not possible for action to equal both of these form ids.
-	if action == eventUpdateAgg {
+	if action == eventAggUpdate {
 		updateRangeErrors = listFormErrors(forms[4])
 	}
 
