@@ -2,7 +2,7 @@
 	{{if.Event.Closed}}
 		<samp>Event is closed, no changes can be made.</samp>
 	{{else}}
-		{{template "7" .ShooterEntry}}
+		{{form .shooterNew}}
 	{{end}}
 	{{$hasRanges := ge (len .Event.Ranges) 1}}
 	{{if not $hasRanges}}<samp>This event has no ranges</samp>{{end}}
@@ -46,12 +46,12 @@
 			<td>
 			<td>
 				<form method=post action=/22>
-					<input name=f required placeholder="First name" accesskey=d maxlength=64>
-					<input name=s required placeholder=Surname maxlength=64>
+					<input name=f required placeholder="First name" accesskey=d maxlength=MAXLEN>
+					<input name=s required placeholder=Surname maxlength=MAXLEN>
 					<input type=hidden name=E value={{.Event.ID}}>
 				</form>
 			<td>
-				<input type=search name=C required maxlength=64 list=C placeholder="Club name">
+				<input type=search name=C required maxlength=MAXLEN list=C placeholder="Club name">
 			<td>
 				<select name=g required>
 					{{template "optionList" .AvailableGrades}}

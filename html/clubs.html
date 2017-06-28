@@ -1,5 +1,5 @@
 {{define "clubs"}}
-	{{template "0" .NewClub}}
+	{{form .clubNew}}
 	{{with.ListClubs}}
 		Total Clubs: {{len .}}
 		<table class=edit>
@@ -13,9 +13,10 @@
 					<tr>
 						<td><a href=/club/{{.ID}}>{{.Name}}</a>
 						{{if.IsDefault}}<td class=tick>{{else}}<td>{{end}}
+						<!--td><a href=/club/{{.ID}}#edit></a-->
 						<td class=center>
 							<a href=/club/{{.ID}}#edit>
-								<img src=/v/edit alt="Edit club">
+								<img src=/v/edit alt="edit club" height=20 width=20>
 							</a>
 				{{end}}
 		</table>

@@ -1,9 +1,9 @@
 {{define "eventsettings"}}
-	{{template "4" .EventDetails}}
+	{{form .eventDetails}}
 	{{if.Event.Closed}}
 		<samp>Event is closed, no changes can be made.</samp>
 	{{else}}
-		{{template "5" .AddRange}}
+		{{form .eventRangeNew}}
 		{{with.RangeDataList}}
 			<datalist id=r>
 				{{range.}}
@@ -12,7 +12,7 @@
 			</datalist>
 		{{end}}
 		{{if ge (len .Ranges) 2}}
-			{{template "6" .AddAgg}}
+			{{form .eventAggNew}}
 		{{end}}
 	{{end}}
 	{{range.UpdateErrors}}<samp>{{.}}</samp>{{end}}
@@ -33,10 +33,9 @@
 						<td>{{.ID}}
 						<td>{{.Name}}
 						<td>{{range.Aggs}}{{(findRange . $.Event.Ranges).Name}}, {{end}}
-						<td{{a " class=tick" (and .Locked (not .IsAgg))}}>
-						{{if not $.Event.Closed}}
-							<td>
-						{{end}}
+						{{/*<td{{a " class=tick" (and .Locked (not .IsAgg))}}>*/}}
+						{{if and .Locked (not .IsAgg)}}<td class=tick>{{else}}<td>{{end}}
+						{{if not $.Event.Closed}}<td>{{end}}
 				{{end}}
 		</table>
 	{{else}}
@@ -47,7 +46,7 @@
 		<template>
 			<td>
 			<td>
-				<input required name=n maxlength=64 list=r type=search placeholder="Range name">
+				<input required name=n maxlength=MAXLEN list=r type=search placeholder="Range name">
 				<span onclick=moveRange class="^arrows^ ^desc^" title="Move Up"></span>
 				<span onclick=moveRange class="^arrows^ ^asc^" title="Move Down"></span>
 			<td>

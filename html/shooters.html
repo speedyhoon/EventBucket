@@ -1,9 +1,9 @@
 {{define "shooters"}}
 	<p>To add shooters to an event, first navigate to an <strong><a href=/>Event</a></strong>, then use the <strong>Shooter Entry</strong> form located on the <strong>Entries</strong> page.
 	<br>Use this page to search for shooters already entered into your database or add new shooters to the database.
-	{{template "10" .NewShooter}}
+	{{form .shooterNew}}
 	{{if.QtyShooters}}
-		{{template "9" .ShooterSearch}}
+		{{form .shooterSearch}}
 	{{end}}
 	<p>Total Shooters: {{.QtyShooters}}{{with.ListShooters}}, Search returned {{len .}} shooter{{if ne (len .) 1}}s{{end}}.{{end}}
 	{{with.ListShooters}}
@@ -25,7 +25,8 @@
 						<td>{{.Club}}
 						<td>{{range.Grade}}{{(grade .).Name}}, {{end}}
 						<td>{{ageGroup .AgeGroup}}
-						<td{{a " class=tick" .Sex}}>
+						{{/*<td{{a " class=tick" .Sex}}>*/}}
+						{{if.Sex}}<td class=tick>{{else}}<td>{{end}}
 						<td>
 				{{end}}
 		</table>
@@ -56,5 +57,5 @@
 	{{else}}
 		<samp>No shooters listed.</samp>
 	{{end}}
-	{{template "16" .ImportShooters}}
+	{{form .shootersImport}}
 {{end}}
