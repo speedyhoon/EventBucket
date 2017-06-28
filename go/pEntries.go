@@ -43,7 +43,7 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 		Heading: event.Name,
 		Data: map[string]interface{}{
 			"Event":           event,
-			"ShooterEntry":    shooterEntry,
+			"shooterNew":      shooterEntry,
 			"GradesAvailable": pageForms[2],
 			"AvailableGrades": grades,
 			"AgeGroups":       dataListAgeGroup(),

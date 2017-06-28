@@ -7,7 +7,7 @@ import (
 )
 
 func shooters(w http.ResponseWriter, r *http.Request, submittedForm form) {
-	_, pageForms := sessionForms(w, r, shooterNew, importShooter)
+	_, pageForms := sessionForms(w, r, shooterNew, shootersImport)
 	shooters, shooterQty, err := getSearchShooters(submittedForm.Fields[0].Value, submittedForm.Fields[1].Value, submittedForm.Fields[2].Value)
 
 	//Search for shooters in the default club if EventBucket was not started in debug mode & all values are empty.

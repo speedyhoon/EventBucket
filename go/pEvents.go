@@ -22,7 +22,7 @@ func events(w http.ResponseWriter, r *http.Request) {
 		Error: err,
 		JS:    []string{"main"},
 		Data: map[string]interface{}{
-			"NewEvent": forms[0],
+			"eventNew": forms[0],
 			"Events":   events,
 			"Network":  localIPs(),
 		},
