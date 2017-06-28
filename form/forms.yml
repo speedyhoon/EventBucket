@@ -1,6 +1,7 @@
 - title:  New Club
   handler: clubInsert
   accesskey: N
+  namespace: clubNew
   inputs:
   - label: Club Name
     name: n
@@ -12,6 +13,7 @@
     type: submit
 - title: Club Details
   handler: clubDetailsUpsert
+  namespace: clubDetails
   id: edit
   hidden: true
   method: put
@@ -67,6 +69,7 @@
     regex: regexID
 - title: New Shooting Mound
   handler: clubMoundInsert
+  namespace: clubMoundNew
   accesskey: N
   inputs:
   - label: Mound Name
@@ -84,6 +87,7 @@
     regex: regexID
 - title: New Event
   handler: eventInsert
+  namespace: eventNew
   accesskey: N
   inputs:
   - label: Club Name
@@ -92,7 +96,7 @@
     minlen: 1
     type: search
     v8: v8Str
-    required: hasDefaultClub()
+    required: "!hasDefaultClub()"
     options: clubsDataList()
     value: defaultClubName()
     help: The club who is hosting this event.
@@ -120,6 +124,7 @@
     type: submit
 - title: Event Details
   handler: eventDetailsUpsert
+  namespace: eventDetails
   method: put
   inputs:
   - label: Club Name
@@ -165,6 +170,7 @@
     regex: regexID
 - title: Add Range
   handler: eventRangeInsert
+  namespace: eventRangeNew
   inputs:
   - label: Range Name
     type: search
@@ -180,8 +186,33 @@
     name: E
     v8: v8Regex
     regex: regexID
+- title: Update Range
+  handler: updateRange
+  namespace: eventRangeUpdate
+  method: put
+  inputs:
+    - label: d
+      name: E
+      v8: v8Regex
+      regex: regexID
+    - label: d
+      name: I
+      v8: v8UintReq
+      min: 1
+      max: 65535
+    - label: d
+      name: n
+      v8: v8StrReq
+    - label: d
+      name: k
+      v8: v8Bool
+    - label: d
+      name: o
+      v8: v8UintReq
+      max: 65535
 - title:  Add Aggregate Range
   handler: eventAggInsert
+  namespace: eventAggNew
   inputs:
     - label: Aggregate Name
       name: n
@@ -205,8 +236,37 @@
       name: E
       v8: v8Regex
       regex: regexID
+- title: Update Agg
+  handler: updateAgg
+  namespace: eventAggUpdate
+  method: put
+  inputs:
+    - label: d
+      name: E
+      v8: v8Regex
+      regex: regexID
+    - label: d
+      name: I
+      v8: v8UintReq
+      min: 1
+      max: 65535
+    - label: d
+      name: n
+      v8: v8StrReq
+    - label: d
+      name: R
+      v8: v8UintList
+      required: true
+      minlen: 2
+      min: 1
+      max: 65535
+    - label: d
+      name: o
+      v8: v8UintReq
+      max: 65535
 - title:  Shooter Entry
   handler: eventShooterInsert
+  namespace: eventShooterNew
   inputs:
     - name: f
       label: F
@@ -243,6 +303,7 @@
       regex: regexID
 - title:  Existing Shooter Entry
   handler: eventShooterExistingInsert
+  namespace: eventShooterExisting
   action: 7
   inputs:
     - name: S
@@ -264,50 +325,6 @@
       label: d
       v8: v8RegexReq
       regex: regexID
-- title: Shooter Search
-  handler: shooters
-  method: get
-  attachtopage: true
-  inputs:
-    - name: f
-      label: d
-      v8: v8Str
-    - name: s
-      label: d
-      v8: v8Str
-    - name: C
-      label: d
-      v8: v8Str
-- title: New Shooter
-  handler: eventSearchShooters
-  method: get
-  inputs:
-    - name: f
-      label: d
-      v8: v8StrReq
-    - name: s
-      label: d
-      v8: v8StrReq
-    - name: C
-      label: d
-      v8: v8StrReq
-      value: defaultClubName()
-      options: clubsDataList()
-      placeholder: defaultClubName()
-    - label: d
-      name: r
-      v8: v8Uint
-      max: 4
-      options: dataListAgeGroup()
-    - label: d
-      name: x
-      v8: v8Bool
-    - label: d
-      name: g
-      v8: v8UintList
-      required: true
-      max: len(globalGrades) - 1
-      options: globalGradesDataList
 - title: Shooter Details
   handler: shooterInsert
   inputs:
@@ -352,6 +369,7 @@
       v8: v8Str
 - title: Enter Range Totals
   method: put
+  namespace: eventTotalScores
   inputs:
     - label: d
       name: t
@@ -380,6 +398,7 @@
       max: 100
 - title: Grades Available
   handler: eventAvailableGradesUpsert
+  namespace: eventAvailableGrades
   method: put
   inputs:
     - label: d
@@ -393,6 +412,7 @@
       v8: v8Regex
       regex: regexID
 - title: Update Shooter Shots (Scorecards)
+  namespace: eventUpdateShotScore
   method: put
   inputs:
     - label: d
@@ -413,11 +433,6 @@
       name: S
       v8: v8UintReq
       max: 65535
-- title: Import Shooters
-  inputs:
-    - label: d
-      name: f
-      required: true
 - title: Map Clubs
   handler: mapClubs
   method: get
@@ -441,56 +456,6 @@
       name: C
       v8: v8Regex
       regex: regexID
-- title: Update Range
-  handler: updateRange
-  method: put
-  inputs:
-    - label: d
-      name: E
-      v8: v8Regex
-      regex: regexID
-    - label: d
-      name: I
-      v8: v8UintReq
-      min: 1
-      max: 65535
-    - label: d
-      name: n
-      v8: v8StrReq
-    - label: d
-      name: k
-      v8: v8Bool
-    - label: d
-      name: o
-      v8: v8UintReq
-      max: 65535
-- title: Update Agg
-  handler: updateAgg
-  method: put
-  inputs:
-    - label: d
-      name: E
-      v8: v8Regex
-      regex: regexID
-    - label: d
-      name: I
-      v8: v8UintReq
-      min: 1
-      max: 65535
-    - label: d
-      name: n
-      v8: v8StrReq
-    - label: d
-      name: R
-      v8: v8UintList
-      required: true
-      minlen: 2
-      min: 1
-      max: 65535
-    - label: d
-      name: o
-      v8: v8UintReq
-      max: 65535
 - title: Entries Edit Shooter Details
   handler: eventShooterUpdate
   method: put
@@ -528,3 +493,55 @@
     - label: d
       name: k
       v8: v8Bool
+- title: New Shooter
+  handler: eventSearchShooters
+  namespace: shooterNew
+  method: get
+  inputs:
+    - name: f
+      label: d
+      v8: v8StrReq
+    - name: s
+      label: d
+      v8: v8StrReq
+    - name: C
+      label: d
+      v8: v8StrReq
+      value: defaultClubName()
+      options: clubsDataList()
+      placeholder: defaultClubName()
+    - label: d
+      name: r
+      v8: v8Uint
+      max: 4
+      options: dataListAgeGroup()
+    - label: d
+      name: x
+      v8: v8Bool
+    - label: d
+      name: g
+      v8: v8UintList
+      required: true
+      max: len(globalGrades) - 1
+      options: globalGradesDataList
+- title: Shooter Search
+  handler: shooters
+  namespace: shooterSearch
+  method: get
+  attachtopage: true
+  inputs:
+    - name: f
+      label: d
+      v8: v8Str
+    - name: s
+      label: d
+      v8: v8Str
+    - name: C
+      label: d
+      v8: v8Str
+- title: Import Shooters
+  namespace: shootersImport
+  inputs:
+    - label: d
+      name: f
+      required: true
