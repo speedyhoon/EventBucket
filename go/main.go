@@ -4,10 +4,9 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"io/ioutil"
 	"log"
-	"math"
+	"net"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -21,8 +20,10 @@ import (
 
 var (
 	//Command line flags.
-	portAddr, dbPath string
-	debug            bool
+	portAddr   = ":"
+	dbPath     = flag.String("dbpath", filepath.Join(os.Getenv("ProgramData"), "EventBucket"), "Directory for datafiles.")
+	debug      = flag.Bool("debug", false, "Turn on debugging and turn off club maps.")
+	httpListen = flag.String("http", "127.0.0.1:80", "host:port to listen on")
 
 	//Logging
 	//TODO add t & info when debug == true during build time
@@ -33,21 +34,17 @@ var (
 
 func init() {
 	//Command line flags
-	flag.StringVar(&dbPath, "dbpath", filepath.Join(os.Getenv("ProgramData"), `EventBucket`), "Directory for datafiles.")
-	flag.BoolVar(&debug, "debug", false, "Turn on debugging and turn off HTML file caching & club maps.")
 	flag.BoolVar(&masterTemplate.Theme, "dark", false, "Switch EventBucket to use a dark theme for night shooting")
 	gradesFilePath := flag.String("grades", "", "Load grade settings from a JSON file. If the file doesn't exist, EventBucket will try to create it & exit")
-	port := flag.Uint("port", 80, "Assign a differnet port number for the HTTP server. Range: 1 through 65535. Some port numbers may already be in use on this system.")
 	flag.Parse()
 
 	//Create database directory if needed.
-	err := mkDir(dbPath)
+	err := mkDir(*dbPath)
 	if err != nil {
-		warn.Println(err)
-		os.Exit(1)
+		warn.Fatal(err)
 	}
 
-	if debug {
+	if *debug {
 		t.SetOutput(os.Stdout)
 	}
 
@@ -60,45 +57,52 @@ func init() {
 			os.Exit(2)
 		}
 	}
-
-	//Check port number
-	if *port > math.MaxUint16 || *port < 1 {
-		warn.Println("Port number must be between 1 and 65535. (default 80)")
-		os.Exit(3)
-	}
-	if *port != 80 {
-		portAddr = fmt.Sprintf(":%d", *port)
-	}
 }
 
 func main() {
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt)
 
-	//Database save location
-	dbPath = filepath.Join(dbPath, "EventBucket.db")
+	//HTTP server host & port
+	host, port, err := net.SplitHostPort(*httpListen)
+	if err != nil {
+		warn.Fatal(err)
+	}
 
-	var err error
-	db, err = bolt.Open(dbPath, 0644, &bolt.Options{
+	//Database save location
+	path := filepath.Join(*dbPath, "EventBucket.db")
+
+	db, err = bolt.Open(path, 0644, &bolt.Options{
 		Timeout:         time.Second * 8,
 		InitialMmapSize: 1048576, //Initial database size = 1MB
 	})
 	if err != nil {
-		warn.Println("Connection timeout. Unable to open", dbPath)
-		os.Exit(4)
+		warn.Fatal("Connection timeout. Unable to open", path)
 	}
 	defer db.Close()
 
 	//Prepare database by creating all buckets (tables) needed. Otherwise view (read only) transactions will fail.
 	makeBuckets()
 
-	h := http.Server{Addr: portAddr, Handler: nil}
+	if host == "" {
+		host = "localhost"
+	}
+	if port != "80" {
+		portAddr = ":" + port
+	}
+	httpAddr := host + portAddr
+	h := http.Server{Addr: httpAddr, Handler: nil}
 	go func() {
 		if err := h.ListenAndServe(); err != nil {
 			warn.Fatal(err)
-		} else if !debug {
+		} else {
 			info.Print("Started EventBucket HTTP server...")
-			openBrowser("http://localhost" + portAddr)
+			url := "http://" + httpAddr
+			if !*debug && openBrowser(url) {
+				info.Printf("A browser window should open. If not, please visit %s", url)
+			} else {
+				info.Printf("Please open your web browser and visit %s", url)
+			}
 		}
 	}()
 
