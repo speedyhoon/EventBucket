@@ -1,4 +1,3 @@
-'use strict';
 //Prevent users from double/triple clicking on submit buttons that could cause a form to submit more than once with exactly the same data. If forms used a CSRF token this JavaScript would be redundant
 var submitted = false, n = document.forms.length;
 function stopDoubleSubmit(){

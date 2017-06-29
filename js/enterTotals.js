@@ -1,9 +1,9 @@
-'use strict';
 var eventID = window.location.pathname.split('/')[2],
 	rangeID = window.location.pathname.split('/')[3],
 	$inputs = document.querySelectorAll('table input'),
 	i = $inputs.length,
-	ws, intervalId; //intervalId global variable stops reconnect() snowballing into an infinite loop.
+	ws,
+	intervalId; //IntervalId global variable stops reconnect() snowballing into an infinite loop.
 while(i--){
 	$inputs[i].onchange = save;
 }
@@ -22,7 +22,8 @@ function reconnect (){
 	};*/
 	ws.onclose = function(){
 		if(!intervalId){
-			intervalId = setInterval(reconnect, 3000); //try to reconnect every 3 seconds after the connection is dropped.
+			//Try to reconnect every 3 seconds after the connection is dropped.
+			intervalId = setInterval(reconnect, 3000);
 		}
 	};
 }
@@ -61,14 +62,14 @@ function errorMessage(score, $total, $centre){
 	$centre.max = highestCentres;
 	switch(true){
 		//Using string attribute names here otherwise ClosureCompiler changes them.
-	case score['t'][0] < 0 || score['t'][0] > totalMax:
+	case score.t[0] < 0 || score.t[0] > totalMax:
 		errorMessage = 'Please enter a total between 0 and ' + totalMax + '.';
 		break;
-	case score['c'][0] < 0 || score['c'][0] > highestPossibleCentres:
+	case score.c[0] < 0 || score.c[0] > highestPossibleCentres:
 		errorMessage = 'Please enter centres between 0 and ' + highestPossibleCentres + '.';
 		break;
-	case score['c'][0] > highestCentres:
-		errorMessage = 'Score has too many centres for a total of ' + score['t'][0] + '.<br>Please decrease centres to ' + highestCentres + '<br><b>OR</b><br>increase total to ' + score['c'][0] * highestShot + '.';
+	case score.c[0] > highestCentres:
+		errorMessage = 'Score has too many centres for a total of ' + score.t[0] + '.<br>Please decrease centres to ' + highestCentres + '<br><b>OR</b><br>increase total to ' + score.c[0] * highestShot + '.';
 	}
 	if(errorMessage){
 		//Display error message
@@ -76,9 +77,9 @@ function errorMessage(score, $total, $centre){
 		//TODO get element exact position taking into account scrolling.
 		popup.style.top = $centre.getBoundingClientRect().top + $centre.clientHeight + 'px';
 		popup.removeAttribute('hidden');
-		return
+		return;
 	}
 	//No validation errors with total or centres
 	popup.setAttribute('hidden', '');
-	return 1;   //return true value
+	return 1;	//Return true value
 }

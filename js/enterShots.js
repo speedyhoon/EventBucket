@@ -1,4 +1,3 @@
-'use strict';
 var currentCell, currentRow, currentType, currentClass,
 	eventID = window.location.pathname.split('/')[2],
 	rangeID = window.location.pathname.split('/')[3],
@@ -42,7 +41,7 @@ function getShots(){
 			send += currentClass.marking.shots[value].shot;
 		}
 	}
-	return send.replace(/-+$/, '');  //trim training hyphens
+	return send.replace(/-+$/, ''); //Trim training hyphens
 }
 
 function highlightOnlyTheCell(cell){
@@ -59,7 +58,7 @@ function highlightOnlyTheCell(cell){
 
 function changeValue(value){
 	if(currentCell){
-		if(currentCell.textContent !== value){//prevents recalculating the score if it is the same value
+		if(currentCell.textContent !== value){	//Prevents recalculating the score if it is the same value
 			recalculateTotal(value);
 			var id = currentRow.children[0].textContent;
 			ws.send('\u0010' + JSON.stringify({E: [eventID], R: [rangeID], S: [id], s: [getShots()]}));
@@ -94,7 +93,7 @@ function generateButtons(){
 function moveHeader(){
 	//If currentRow is not the first row in tbody
 	if(Array.prototype.indexOf.call(currentRow.parentElement.children, currentRow)){
-		//move header row before currentRow
+		//Move header row before currentRow
 		currentRow.parentNode.insertBefore(document.getElementById('h'), currentRow);
 		//Make the header row visible
 		document.getElementById('h').removeAttribute('hidden');
@@ -102,7 +101,8 @@ function moveHeader(){
 		//Otherwise hide the header row if the currentRow is first in tbody
 		document.getElementById('h').setAttribute('hidden','');
 	}
-	currentRow.parentNode.insertBefore(document.getElementById('x'), currentRow.nextSibling);//equivalent to insertAfter!
+	//Equivalent to insertAfter!
+	currentRow.parentNode.insertBefore(document.getElementById('x'), currentRow.nextSibling);
 	generateButtons();
 	document.getElementById('x').removeAttribute('hidden');
 }
@@ -127,11 +127,13 @@ function setCurrentClass(){
 	}
 }
 
-function highlightCell(cell){//change the selected table cell (td) to the currentCell selected
+//Change the selected table cell (td) to the currentCell selected
+function highlightCell(cell){
 	if(cell !== currentCell){
 		highlightOnlyTheCell(cell);
 		if(currentRow !== currentCell.parentNode){
-			highlightRow(cell.parentNode);//used for clicking on a different shooters shot without clicking on a name first
+			//Used for clicking on a different shooters shot without clicking on a name first
+			highlightRow(cell.parentNode);
 		}
 	}
 }
@@ -140,7 +142,7 @@ function shooterNameOnclick(trElement){
 	return function shooterClick(){
 		highlightRow(trElement);
 
-		//if visited attribute is present it has already been processed
+		//If visited attribute is present it has already been processed
 		if(!currentRow.visited){
 			currentRow.onclick = function trClicker(tdElement){
 				return function trClick(event){
@@ -153,12 +155,13 @@ function shooterNameOnclick(trElement){
 			//TODO click on all td elements in the row.
 			//var trElement.getElementsByTagName('td')
 			currentRow.visited = 1;
-		}//else{console.log('already visited');}
+		}
 	};
 }
 
 var shooters = document.querySelectorAll('tbody :not(#h) th:nth-child(4)'), shooterQty = shooters.length;
-while(shooterQty--){		//assign onclick events to all shooters names
+//Assign onclick events to all shooters names
+while(shooterQty--){
 	shooters[shooterQty].onclick = shooterNameOnclick(shooters[shooterQty].parentNode);
 }
 
@@ -182,7 +185,6 @@ function reconnect (){
 			if(!passed){
 				setCurrentClass();
 			}
-			//console.log(classes);
 			break;
 		case'!':
 			document.getElementById(data.S).parentElement.children[4].className = '';
@@ -197,7 +199,8 @@ function reconnect (){
 	};
 	ws.onclose = function(){
 		if(!intervalId){
-			intervalId = setInterval(reconnect, 3000); //try to reconnect every 3 seconds after the connection is dropped.
+			//Try to reconnect every 3 seconds after the connection is dropped.
+			intervalId = setInterval(reconnect, 3000);
 		}
 	};
 }

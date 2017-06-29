@@ -1,9 +1,8 @@
-'use strict';
 function buildRow(t, tds, formID, row){
 	var R = t.querySelector('[name=R]');
 	if(tds[2].textContent){
 		findValues(R, tds[2].textContent.replace(/, $/, '').split(', '));
-		t.querySelector('form').setAttribute('action','/21')
+		t.querySelector('form').setAttribute('action','/21');
 	}else{
 		R.parentElement.removeChild(R);
 	}
@@ -37,7 +36,7 @@ function moveRange(event){
 	if(moveTo < 0){
 		moveTo = qty;
 	}else if(moveTo-1 > qty){
-		moveTo = 0
+		moveTo = 0;
 	}
 
 	tbody.insertBefore(currentRow, tbody.children[moveTo]);
