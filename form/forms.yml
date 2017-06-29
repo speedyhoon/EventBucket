@@ -6,7 +6,6 @@
   - label: Club Name
     name: n
     accesskey: N
-    required: true
     v8: v8StrReq
     minlen: 1
   - label: Save
@@ -21,17 +20,13 @@
   - label: Club Name
     name: n
     accesskey: C
-    required: true
     v8: v8StrReq
-    maxlen: 32
     minlen: 1
   - label: Address
     name: a
-    maxlen: 32
     v8: v8Str
   - label: Town
     name: w
-    maxlen: 32
     v8: v8Str
   - label: Postcode
     name: p
@@ -60,7 +55,6 @@
   - label: Website Address
     name: u
     type: url
-    maxlen: 32
     v8: v8Str
   - label: Save
     name: C
@@ -76,8 +70,6 @@
     name: n
     accesskey: N
     v8: v8StrReq
-    required: true
-    maxlen: 32
     minlen: 1
     help: A list of club mounds will appear as a drop down menu for Range Name under Event Settings &gt; Add Range within an Event. This allows selecting range names from a list on the hosting Club, rather than typing.
   - label: Save
@@ -92,7 +84,6 @@
   inputs:
   - label: Club Name
     name: C
-    maxlen: 32
     minlen: 1
     type: search
     v8: v8Str
@@ -103,8 +94,6 @@
   - label: Event Name
     name: n
     accesskey: N
-    required:  true
-    maxlen: 32
     minlen: 1
     v8: v8StrReq
   - label: Start date
@@ -130,17 +119,13 @@
   - label: Club Name
     type: search
     name: C
-    required:  true
     v8: v8StrReq
     minlen: 1
-    maxlen: 32
     options: clubsDataList()
   - label: Event Name
     name: n
-    required: true
     accesskey: v
     v8: v8StrReq
-    maxlen: 32
     minlen: 1
   - label: Date
     type: date
@@ -176,9 +161,7 @@
     type: search
     name: n
     accesskey: R
-    required: true
     v8: v8StrReq
-    maxlen: 32
     minlen: 1
     dataList: r
   - label: Save
@@ -218,7 +201,6 @@
       name: n
       accessKey: a
       minlen: 1
-      required: true
       v8: v8StrReq
     - label: Sum up ranges
       type: listBox
@@ -542,6 +524,7 @@
 - title: Import Shooters
   namespace: shootersImport
   inputs:
-    - label: d
+    - label: File
       name: f
+      v8: v8File
       required: true
