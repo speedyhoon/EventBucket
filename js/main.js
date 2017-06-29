@@ -27,11 +27,11 @@ function tableSort(th){
 		}
 		var input = cell.textContent;
 		switch(th.textContent){
-			case 'ID':
-				return ~~input;
+		case 'ID':
+			return ~~input;
 			//Used on the Shooters page
-			case 'Id':
-				return parseInt(input, 36);   //Id = base 36 string (0-9a-z) e.g. a2e = 13046
+		case 'Id':
+			return parseInt(input, 36);   //Id = base 36 string (0-9a-z) e.g. a2e = 13046
 		}
 		return input;
 	};
@@ -83,8 +83,8 @@ document.onclick = function(event){
 var inputs = document.querySelectorAll('input'), i = inputs.length, flagClass = function(evt){
 		evt.srcElement.classList.toggle('^dirty^', true);
 	};
-	while(i--){
-		inputs[i].addEventListener('blur', flagClass);
-		inputs[i].addEventListener('invalid', flagClass);
-		inputs[i].addEventListener('valid', flagClass);
+while(i--){
+	inputs[i].addEventListener('blur', flagClass);
+	inputs[i].addEventListener('invalid', flagClass);
+	inputs[i].addEventListener('valid', flagClass);
 }
