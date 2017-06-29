@@ -1,10 +1,10 @@
 {
 	"FixedFileInfo": {
 		"FileVersion": {
-			"Major": 3,
-			"Minor": 0,
-			"Patch": 4,
-			"Build": 5972
+			"Major": GitVersionMajor,
+			"Minor": GitVersionMinor,
+			"Patch": GitVersionPatch,
+			"Build": BuildVersion
 		}
 	},
 	"StringFileInfo": {
@@ -12,6 +12,6 @@
 		"FileDescription": "EventBucket",
 		"LegalCopyright": "EventBucket",
 		"ProductName": "EventBucket",
-		"ProductVersion": "3.04"
+		"ProductVersion": "GitVersionTag"
 	}
 }
