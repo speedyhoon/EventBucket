@@ -153,24 +153,6 @@ func loader() (err error) {
 		"has": func(attribute string, value interface{}) string {
 			return "HAS"
 		},
-		/*TODO remove has
-		"has": func(t interface{}, value string) template.HTMLAttr {
-			var hasValue bool
-			switch t.(type) {
-			default:
-				warn.Printf("unexpected type %T", t) //%T prints whatever type t has
-			case []option:
-				hasValue = len(t.([]option)) >= 1
-			case string:
-				hasValue = t != ""
-			case bool:
-				hasValue = t.(bool)
-			}
-			if hasValue {
-				return template.HTMLAttr(value)
-			}
-			return template.HTMLAttr("")
-		},*/
 		"grade": findGrade,
 		"ageGroup": func(index uint) string {
 			if index >= 1 && index < uint(len(dataListAgeGroup())) {
