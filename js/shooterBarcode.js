@@ -1,8 +1,6 @@
-'use strict';
-
 //Set shooter barcode form onsubmit because it's not allowed to be set directly in HTML with the current Content Security Policy.
 document.querySelector('#sb').onsubmit= function(){
-	shooterBarcode(this['B']);
+	shooterBarcode(this.B);
 	return false;
 };
 

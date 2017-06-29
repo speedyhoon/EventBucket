@@ -1,4 +1,3 @@
-'use strict';
 var button = document.querySelectorAll('[action="/8"] button'), i=button.length;
 while(i--){
 	button[i].onclick = function shooterEntry(){

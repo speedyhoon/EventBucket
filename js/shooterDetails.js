@@ -1,4 +1,3 @@
-'use strict';
 function buildRow(t, tds){
 	var surname = tds[1].querySelector('span');
 	t.querySelector('[name=s]').value = surname.textContent;

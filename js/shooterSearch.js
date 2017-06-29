@@ -1,4 +1,3 @@
-'use strict';
 var xhr = new XMLHttpRequest, f = '', s = '', c = document.querySelector('[action="/8"] [name=C]').value;
 document.querySelector('form[action="/8"]').oninput = function search(event){
 	var form = event.currentTarget;
