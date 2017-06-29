@@ -77,7 +77,7 @@ func mapClubs(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	searchClub := clubID != ""
 	var mapClubs []MapClub
 	for _, club := range clubs {
-		if searchClub && club.ID == clubID || (!searchClub && club.Latitude != 0 && club.Longitude != 0) {
+		if searchClub && club.ID == clubID || !searchClub && club.Latitude != 0 && club.Longitude != 0 {
 			mapClubs = append(mapClubs, MapClub{
 				Name:      club.Name,
 				Latitude:  club.Latitude,

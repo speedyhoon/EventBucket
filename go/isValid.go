@@ -59,7 +59,7 @@ func v8Uint(f *field, inp ...string) {
 		f.step = 1
 	}
 	if f.valueUint%uint(f.step) != 0 {
-		below := f.valueUint - (f.valueUint % uint(f.step))
+		below := f.valueUint - f.valueUint%uint(f.step)
 		f.Error = fmt.Sprintf("Please enter a valid value. The two nearest values are %d and %d.", below, below+uint(f.step))
 		return
 	}
@@ -169,4 +169,11 @@ func v8Bool(f *field, inp ...string) {
 	if f.Required && !f.Checked {
 		f.Error = "Please check this field."
 	}
+}
+
+func v8File(f *field, inp ...string) {
+	//TODO add validation chekcs
+	//maxlength < 2MB?
+	//Unmarshal??
+	//Return as interface{}??
 }
