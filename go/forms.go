@@ -169,7 +169,7 @@ func getForm(id uint8) form {
 			{name: "s", v8: v8Str},
 			{name: "C", v8: v8Str},
 		}, { //21 Import Shooters
-			{name: "f", Required: true},
+			{name: "f", v8: v8File, Required: true},
 		},
 		}[id],
 	}
