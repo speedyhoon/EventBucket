@@ -51,7 +51,7 @@ func isValid(urlValues url.Values, formID uint8) (form, bool) {
 		fieldValue, ok = urlValues[field.name]
 
 		//if fieldValue is empty and field is required
-		if !ok || len(fieldValue) == 0 || (len(fieldValue) == 1 && strings.TrimSpace(fieldValue[0]) == "") {
+		if !ok || len(fieldValue) == 0 || len(fieldValue) == 1 && strings.TrimSpace(fieldValue[0]) == "" {
 			if field.Required {
 				f.Fields[i].Error = "Please fill in this field."
 			}
