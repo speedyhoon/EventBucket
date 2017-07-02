@@ -15,7 +15,6 @@
   namespace: clubDetails
   id: edit
   hidden: true
-  method: put
   inputs:
   - label: Club Name
     name: n
@@ -114,7 +113,7 @@
 - title: Event Details
   handler: eventDetailsUpsert
   namespace: eventDetails
-  method: put
+  accesskey: D
   inputs:
   - label: Club Name
     type: search
@@ -172,7 +171,6 @@
 - title: Update Range
   handler: updateRange
   namespace: eventRangeUpdate
-  method: put
   inputs:
     - label: d
       name: E
@@ -221,7 +219,6 @@
 - title: Update Agg
   handler: updateAgg
   namespace: eventAggUpdate
-  method: put
   inputs:
     - label: d
       name: E
@@ -350,7 +347,6 @@
       name: C
       v8: v8Str
 - title: Enter Range Totals
-  method: put
   namespace: eventTotalScores
   inputs:
     - label: d
@@ -381,7 +377,6 @@
 - title: Grades Available
   handler: eventAvailableGradesUpsert
   namespace: eventAvailableGrades
-  method: put
   inputs:
     - label: d
       name: g
@@ -395,7 +390,6 @@
       regex: regexID
 - title: Update Shooter Shots (Scorecards)
   namespace: eventUpdateShotScore
-  method: put
   inputs:
     - label: d
       name: s
@@ -425,7 +419,6 @@
       regex: regexID
 - title: Edit Shooting Mound
   handler: editClubMound
-  method: put
   inputs:
     - label: d
       name: n
@@ -440,7 +433,6 @@
       regex: regexID
 - title: Entries Edit Shooter Details
   handler: eventShooterUpdate
-  method: put
   inputs:
     - label: d
       name: S
