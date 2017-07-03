@@ -4,6 +4,7 @@ $valid = #474
 $invalid = #744
 $bgGrey = #445
 $blue = #09f
+$red = #f04
 
 $background = darken($base-color, 100%)
 $text = lighten($base-color, 100%)
@@ -16,8 +17,22 @@ body
 a
     color: $blue
 
-a:not(:hover)
-	text-decoration: none
+samp
+	color: $red
+	display: block
+
+//menu
+nav
+	ul
+		margin: 0
+		padding: 0
+	li
+		display: inline-block
+	a
+		padding: .5em
+
+fieldset
+	border-color: $bgGrey
 
 //@import "main"
 
@@ -28,14 +43,14 @@ a:not(:hover)
         background-size: 14em
         color: $text
 
+	a:not(:hover)
+		text-decoration: none
+
 	//Forms
 	input, select
 		background: $bgGrey
 		border-color: $base-color
 		color: $liteGrey
-
-	fieldset
-		border-color: $bgGrey
 	
 	.dirty
 		background: $invalid
