@@ -1,4 +1,4 @@
-var button = document.querySelectorAll('[action="/8"] button'), i=button.length;
+var button = document.querySelectorAll('[action="/form.action.eventShooterNew"] button'), i=button.length;
 while(i--){
 	button[i].onclick = function shooterEntry(){
 		var isNew = !this.getAttribute('formAction');
