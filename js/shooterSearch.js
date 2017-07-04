@@ -1,5 +1,5 @@
-var xhr = new XMLHttpRequest, f = '', s = '', c = document.querySelector('[action="/form.action.eventShooterNew"] [name=C]').value;
-document.querySelector('form[action="/form.action.eventShooterNew"]').oninput = function search(event){
+var xhr = new XMLHttpRequest, f = '', s = '', c = document.querySelector('[action="/form.eventShooterNew.action"] [name=C]').value;
+document.querySelector('form[action="/form.eventShooterNew.action"]').oninput = function search(event){
 	var form = event.currentTarget;
 	//Ignore form inputs into other fields
 	if(f === form.f.value && s === form.s.value && c === form.C.value)return;
@@ -19,6 +19,6 @@ document.querySelector('form[action="/form.action.eventShooterNew"]').oninput = 
 	};
 	//TODO fix loading class
 	form.S.setAttribute('class', '^loading^');
-	xhr.open('GET', '/form.action.shooterSearch' + (f ? '?f=' + f : '') + (s ? '?s=' + s : '') + (c ? '?c=' + c : ''), true);
+	xhr.open('GET', '/form.shooterSearch.action' + (f ? '?f=' + f : '') + (s ? '?s=' + s : '') + (c ? '?c=' + c : ''), true);
 	xhr.send();
 };
