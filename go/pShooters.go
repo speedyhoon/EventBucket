@@ -22,8 +22,8 @@ func shooters(w http.ResponseWriter, r *http.Request, submittedForm form) {
 		Error: err,
 		JS:    []string{"main"},
 		Data: map[string]interface{}{
-			"NewShooter":     pageForms[0],
-			"ImportShooters": pageForms[1],
+			"shooterNew":     pageForms[0],
+			"shootersImport": pageForms[1],
 			"ListShooters":   shooters,
 			"ShooterSearch":  submittedForm,
 			"QtyShooters":    shooterQty,
