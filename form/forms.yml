@@ -509,7 +509,7 @@
   - name: s
     label: Surname
     v8: v8StrReq
-  - label: Club Name
+  - label: Club
     name: C
     type: search
     v8: v8Str
@@ -536,7 +536,8 @@
     required: true
     max: len(globalGrades) - 1
     options: globalGradesDataList
-  - label: Save
+    help: The grades that this shooter likes to shoot in. This can be one or more different grades. Hold down the Shift key or Ctrl key on your keyboard to select more than one item at a time.
+  - label: Add New Shooter
     name: E
     type: submit
     v8: v8Regex
@@ -567,5 +568,5 @@
     type: file
     v8: v8File
     accesskey: I
-  - label: Upload
+  - label: Save
     type: submit
