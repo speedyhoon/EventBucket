@@ -146,6 +146,10 @@ func loader() (err error) {
 				if value.(uint) > 0 {
 					output = attribute + "=" + addQuotes(value)
 				}
+			case []option:
+				if len(value.([]option)) > 0 {
+					output = attribute
+				}
 			}
 			//return template.HTMLAttr(output)
 			return output
