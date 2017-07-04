@@ -33,7 +33,7 @@
 						<td>{{.ID}}
 						<td>{{.Name}}
 						<td>{{range.Aggs}}{{(findRange . $.Event.Ranges).Name}}, {{end}}
-						{{/*<td{{a " class=tick" (and .Locked (not .IsAgg))}}>*/}}
+						<!--td{{/*a " class=tick" (and .Locked (not .IsAgg))*/}}-->
 						{{if and .Locked (not .IsAgg)}}<td class=tick>{{else}}<td>{{end}}
 						{{if not $.Event.Closed}}<td>{{end}}
 				{{end}}
