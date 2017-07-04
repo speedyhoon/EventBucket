@@ -25,7 +25,7 @@
 						<td>{{.Club}}
 						<td>{{range.Grade}}{{(grade .).Name}}, {{end}}
 						<td>{{ageGroup .AgeGroup}}
-						{{/*<td{{a " class=tick" .Sex}}>*/}}
+						<!--td{{/*a " class=tick" .Sex*/}}-->
 						{{if.Sex}}<td class=tick>{{else}}<td>{{end}}
 						<td>
 				{{end}}
@@ -54,8 +54,6 @@
 		</template>
 		<script defer src=/j/shooterDetails></script>
 		<script defer src=/j/editRow></script>
-	{{else}}
-		<samp>No shooters listed.</samp>
 	{{end}}
 	{{form .shootersImport}}
 {{end}}
