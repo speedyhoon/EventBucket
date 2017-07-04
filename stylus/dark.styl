@@ -4,10 +4,11 @@ $valid = #474
 $invalid = #744
 $bgGrey = #445
 $blue = #09f
-$red = #f04
+$red = #f05
 
 $background = darken($base-color, 100%)
-$text = lighten($base-color, 100%)
+$text = lighten($base-color, 10%)
+$heading = lighten($base-color, 100%)
 $oddTableRowBackground = darken($base-color, 30%)
 $liteGrey = lighten($base-color, 10%)
 
@@ -21,7 +22,7 @@ samp
 	color: $red
 	display: block
 
-//menu
+//Menu
 nav
 	ul
 		margin: 0
@@ -31,8 +32,34 @@ nav
 	a
 		padding: .5em
 
+//Forms
 fieldset
 	border-color: $bgGrey
+
+	label:not(:last-child), button:not(:last-child)
+		margin-right: 1em
+
+	label
+		display: block
+		float: left
+
+	input, select
+		display: block
+
+.center
+	text-align: center
+
+.tick
+	background: url(/v/tick) center center
+
+.builtWith
+    background: #fff
+    border-radius: 1em
+    display: inline-block
+	color: black
+	padding: 1em
+	img
+		margin: .5em
 
 //@import "main"
 
@@ -43,6 +70,12 @@ fieldset
         background-size: 14em
         color: $text
 
+	h1,h2,h3,h4,legend
+        color: $heading
+
+	legend u
+		font-weight: 900
+
 	a:not(:hover)
 		text-decoration: none
 
@@ -51,7 +84,7 @@ fieldset
 		background: $bgGrey
 		border-color: $base-color
 		color: $liteGrey
-	
+
 	.dirty
 		background: $invalid
 
