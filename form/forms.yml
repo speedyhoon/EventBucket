@@ -563,6 +563,7 @@
   accesskey: I
   inputs:
   - name: f
+    label: Browse&mldr;
     type: file
     v8: v8File
     accesskey: I
