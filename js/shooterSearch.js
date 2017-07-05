@@ -1,4 +1,6 @@
-var xhr = new XMLHttpRequest, f = '', s = '', c = document.querySelector('[action="/form.eventShooterNew.action"] [name=C]').value;
+var f = '',
+	s = '',
+	c = document.querySelector('[action="/form.eventShooterNew.action"] [name=C]').value;
 document.querySelector('form[action="/form.eventShooterNew.action"]').oninput = function search(event){
 	var form = event.currentTarget;
 	//Ignore form inputs into other fields
@@ -6,6 +8,7 @@ document.querySelector('form[action="/form.eventShooterNew.action"]').oninput = 
 	f = form.f.value;
 	s = form.s.value;
 	c = form.C.value;
+	var xhr = new XMLHttpRequest;
 	xhr.onreadystatechange = function(){
 		if(xhr.readyState == 4){
 			form.S.removeAttribute('class');
