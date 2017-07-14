@@ -15,7 +15,18 @@
 			{{form .eventAggNew}}
 		{{end}}
 	{{end}}
-	{{range.UpdateErrors}}<samp>{{.}}</samp>{{end}}
+	{{range.eventRangeUpdate.Fields}}
+		{{if ne .Error ""}}
+			<samp>{{.}}</samp>
+		{{end}}
+	{{end}}
+	
+	{{range.eventAggUpdate.Fields}}
+		{{if ne .Error ""}}
+			<samp>{{.}}</samp>
+		{{end}}
+	{{end}}
+	
 	{{with.Event.Ranges}}
 		<p>Total Ranges: {{len .}}
 		<table{{a " data-s" (not $.Event.Closed)}}>
