@@ -67,11 +67,11 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 }
 
 func mapClubs(w http.ResponseWriter, r *http.Request, f form) {
-	clubID := f.Fields[0].Value
 	clubs, err := getClubs()
 	if err != nil {
 		warn.Println(err)
 	}
+	clubID := f.Fields[0].Value
 	searchClub := clubID != ""
 	var mapClubs []MapClub
 	for _, club := range clubs {
