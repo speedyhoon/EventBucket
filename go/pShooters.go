@@ -6,15 +6,15 @@ import (
 	"net/http"
 )
 
-func shooters(w http.ResponseWriter, r *http.Request, submittedForm form) {
+func shooters(w http.ResponseWriter, r *http.Request, f form) {
 	_, pageForms := sessionForms(w, r, shooterNew, shootersImport)
-	shooters, shooterQty, err := getSearchShooters(submittedForm.Fields[0].Value, submittedForm.Fields[1].Value, submittedForm.Fields[2].Value)
+	shooters, shooterQty, err := getSearchShooters(f.Fields[0].Value, f.Fields[1].Value, f.Fields[2].Value)
 
 	//Search for shooters in the default club if EventBucket was not started in debug mode & all values are empty.
-	if submittedForm.Fields[0].Value == "" && submittedForm.Fields[1].Value == "" && submittedForm.Fields[2].Value == "" {
+	if f.Fields[0].Value == "" && f.Fields[1].Value == "" && f.Fields[2].Value == "" {
 		defaultClub := defaultClubName()
-		submittedForm.Fields[2].Value = defaultClub
-		submittedForm.Fields[2].Placeholder = defaultClub
+		f.Fields[2].Value = defaultClub
+		f.Fields[2].Placeholder = defaultClub
 	}
 
 	templater(w, page{
@@ -24,7 +24,7 @@ func shooters(w http.ResponseWriter, r *http.Request, submittedForm form) {
 			"shooterNew":     pageForms[0],
 			"shootersImport": pageForms[1],
 			"ListShooters":   shooters,
-			"ShooterSearch":  submittedForm,
+			"ShooterSearch":  f,
 			"QtyShooters":    shooterQty,
 			"Grades":         globalGradesDataList,
 			"AgeGroups":      dataListAgeGroup(),
@@ -32,53 +32,53 @@ func shooters(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	})
 }
 
-func shooterUpdate(w http.ResponseWriter, r *http.Request, submittedForm form) {
-	err := updateDocument(tblShooter, submittedForm.Fields[6].Value, &Shooter{
-		FirstName: submittedForm.Fields[0].Value,
-		Surname:   submittedForm.Fields[1].Value,
-		Club:      submittedForm.Fields[2].Value,
-		Grade:     submittedForm.Fields[3].valueUintSlice,
-		AgeGroup:  submittedForm.Fields[4].valueUint,
-		Sex:       submittedForm.Fields[5].Checked,
+func shooterUpdate(w http.ResponseWriter, r *http.Request, f form) {
+	err := updateDocument(tblShooter, f.Fields[6].Value, &Shooter{
+		FirstName: f.Fields[0].Value,
+		Surname:   f.Fields[1].Value,
+		Club:      f.Fields[2].Value,
+		Grade:     f.Fields[3].valueUintSlice,
+		AgeGroup:  f.Fields[4].valueUint,
+		Sex:       f.Fields[5].Checked,
 	}, &Shooter{}, updateShooterDetails)
 	//Display any insert errors onscreen.
 	if err != nil {
-		formError(w, r, submittedForm, err)
+		formError(w, r, f, err)
 		return
 	}
 	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 }
 
-func eventSearchShooters(w http.ResponseWriter, r *http.Request, submittedForm form) {
+func eventSearchShooters(w http.ResponseWriter, r *http.Request, f form) {
 	templater(w, page{
 		Title:    "Shooter Search",
 		template: "shootersearch",
 		Data: map[string]interface{}{
-			"ListShooters": searchShootersOptions(submittedForm.Fields[0].Value, submittedForm.Fields[1].Value, submittedForm.Fields[2].Value),
+			"ListShooters": searchShootersOptions(f.Fields[0].Value, f.Fields[1].Value, f.Fields[2].Value),
 		},
 	})
 }
 
-func shooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
+func shooterInsert(w http.ResponseWriter, r *http.Request, f form) {
 	//Add new club if there isn't already a club with that name
-	clubID, err := clubInsertIfMissing(submittedForm.Fields[2].Value)
+	clubID, err := clubInsertIfMissing(f.Fields[2].Value)
 	if err != nil {
-		formError(w, r, submittedForm, err)
+		formError(w, r, f, err)
 		return
 	}
 
 	//Insert new shooter
 	_, err = Shooter{
-		FirstName: submittedForm.Fields[0].Value,
-		Surname:   submittedForm.Fields[1].Value,
-		Club:      submittedForm.Fields[2].Value,
+		FirstName: f.Fields[0].Value,
+		Surname:   f.Fields[1].Value,
+		Club:      f.Fields[2].Value,
 		ClubID:    clubID,
-		Grade:     submittedForm.Fields[3].valueUintSlice,
-		AgeGroup:  submittedForm.Fields[4].valueUint,
-		Sex:       submittedForm.Fields[5].Checked,
+		Grade:     f.Fields[3].valueUintSlice,
+		AgeGroup:  f.Fields[4].valueUint,
+		Sex:       f.Fields[5].Checked,
 	}.insert()
 	if err != nil {
-		formError(w, r, submittedForm, err)
+		formError(w, r, f, err)
 		return
 	}
 	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)

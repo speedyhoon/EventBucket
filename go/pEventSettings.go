@@ -61,71 +61,71 @@ func dataListRanges(ranges []Range, selected bool) (options []option) {
 	return options
 }
 
-func eventDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
-	eventID := submittedForm.Fields[5].Value
+func eventDetailsUpsert(w http.ResponseWriter, r *http.Request, f form) {
+	eventID := f.Fields[5].Value
 	err := updateDocument(tblEvent, eventID, &Event{
-		Club:   submittedForm.Fields[0].Value,
-		Name:   submittedForm.Fields[1].Value,
-		Date:   submittedForm.Fields[2].Value,
-		Time:   submittedForm.Fields[3].Value,
-		Closed: submittedForm.Fields[4].Checked,
+		Club:   f.Fields[0].Value,
+		Name:   f.Fields[1].Value,
+		Date:   f.Fields[2].Value,
+		Time:   f.Fields[3].Value,
+		Closed: f.Fields[4].Checked,
 	}, &Event{}, updateEventDetails)
 	if err != nil {
-		formError(w, r, submittedForm, err)
+		formError(w, r, f, err)
 		return
 	}
 	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
 }
 
-func eventRangeInsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
-	eventID := submittedForm.Fields[1].Value
-	err := updateDocument(tblEvent, eventID, &Range{Name: submittedForm.Fields[0].Value}, &Event{}, eventAddRange)
+func eventRangeInsert(w http.ResponseWriter, r *http.Request, f form) {
+	eventID := f.Fields[1].Value
+	err := updateDocument(tblEvent, eventID, &Range{Name: f.Fields[0].Value}, &Event{}, eventAddRange)
 	if err != nil {
-		formError(w, r, submittedForm, err)
+		formError(w, r, f, err)
 		return
 	}
 	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
 }
 
-func updateRange(w http.ResponseWriter, r *http.Request, submittedForm form) {
-	eventID := submittedForm.Fields[0].Value
+func updateRange(w http.ResponseWriter, r *http.Request, f form) {
+	eventID := f.Fields[0].Value
 	err := updateDocument(tblEvent, eventID, &Range{
-		ID:     submittedForm.Fields[1].valueUint,
-		Name:   submittedForm.Fields[2].Value,
-		Locked: submittedForm.Fields[3].Checked,
-		Order:  submittedForm.Fields[4].valueUint,
+		ID:     f.Fields[1].valueUint,
+		Name:   f.Fields[2].Value,
+		Locked: f.Fields[3].Checked,
+		Order:  f.Fields[4].valueUint,
 	}, &Event{}, editRange)
 	if err != nil {
-		formError(w, r, submittedForm, err)
+		formError(w, r, f, err)
 		return
 	}
 	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
 }
 
-func updateAgg(w http.ResponseWriter, r *http.Request, submittedForm form) {
-	eventID := submittedForm.Fields[0].Value
+func updateAgg(w http.ResponseWriter, r *http.Request, f form) {
+	eventID := f.Fields[0].Value
 	err := updateDocument(tblEvent, eventID, &Range{
-		ID:    submittedForm.Fields[1].valueUint,
-		Name:  submittedForm.Fields[2].Value,
-		Aggs:  submittedForm.Fields[3].valueUintSlice,
-		Order: submittedForm.Fields[4].valueUint,
+		ID:    f.Fields[1].valueUint,
+		Name:  f.Fields[2].Value,
+		Aggs:  f.Fields[3].valueUintSlice,
+		Order: f.Fields[4].valueUint,
 	}, &Event{}, editRange)
 	if err != nil {
-		formError(w, r, submittedForm, err)
+		formError(w, r, f, err)
 		return
 	}
 	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
 }
 
-func eventAggInsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
-	eventID := submittedForm.Fields[2].Value
+func eventAggInsert(w http.ResponseWriter, r *http.Request, f form) {
+	eventID := f.Fields[2].Value
 	err := updateDocument(tblEvent, eventID, &Range{
-		Name:  submittedForm.Fields[0].Value,
-		Aggs:  submittedForm.Fields[1].valueUintSlice,
+		Name:  f.Fields[0].Value,
+		Aggs:  f.Fields[1].valueUintSlice,
 		IsAgg: true,
 	}, &Event{}, eventAddAgg)
 	if err != nil {
-		formError(w, r, submittedForm, err)
+		formError(w, r, f, err)
 		return
 	}
 	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
