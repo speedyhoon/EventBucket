@@ -1,9 +1,9 @@
-var eventID = window.location.pathname.split('/')[2],
-	rangeID = window.location.pathname.split('/')[3],
-	$inputs = document.querySelectorAll('table input'),
-	i = $inputs.length,
-	ws,
-	intervalId; //IntervalId global variable stops reconnect() snowballing into an infinite loop.
+var eventID = window.location.pathname.split('/')[2]
+	,rangeID = window.location.pathname.split('/')[3]
+	,$inputs = document.querySelectorAll('table input')
+	,i = $inputs.length
+	,ws
+	,intervalId; //IntervalId global variable stops reconnect() snowballing into an infinite loop.
 while(i--){
 	$inputs[i].onchange = save;
 }
