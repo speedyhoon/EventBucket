@@ -172,11 +172,6 @@
   handler: updateRange
   namespace: eventRangeUpdate
   inputs:
-  - label: Save
-    type: submit
-    name: E
-    v8: v8Regex
-    regex: regexID
   - label: d
     name: I
     v8: v8UintReq
@@ -192,6 +187,11 @@
     name: o
     v8: v8UintReq
     max: 65535
+  - label: Save
+    type: submit
+    name: E
+    v8: v8Regex
+    regex: regexID
 - title:  Add Aggregate Range
   handler: eventAggInsert
   namespace: eventAggNew
