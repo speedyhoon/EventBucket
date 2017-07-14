@@ -58,7 +58,6 @@ func printScorecards(w http.ResponseWriter, r *http.Request, eventID, shooterId 
 		Title:  "Print Scorecards",
 		Menu:   urlEvents,
 		MenuID: event.ID,
-		JS:     []string{"print"},
 		Data: map[string]interface{}{
 			"Ranges":    event.Ranges,
 			"Shooter":   event.Shooters[shooterID],

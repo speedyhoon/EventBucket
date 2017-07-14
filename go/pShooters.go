@@ -20,7 +20,6 @@ func shooters(w http.ResponseWriter, r *http.Request, submittedForm form) {
 	templater(w, page{
 		Title: "Shooters",
 		Error: err,
-		JS:    []string{"main"},
 		Data: map[string]interface{}{
 			"shooterNew":     pageForms[0],
 			"shootersImport": pageForms[1],

@@ -7,7 +7,6 @@ func eventArchive(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
 		Title: "Archive",
 		Error: err,
-		JS:    []string{"main"},
 		Data: map[string]interface{}{
 			"ListEvents": listEvents,
 		},

@@ -40,7 +40,6 @@ func club(w http.ResponseWriter, r *http.Request, clubID string) {
 		Menu:    urlClubs,
 		skipCSP: true,
 		Error:   forms[2].Error,
-		JS:      []string{"main", "clubSettings", "editRow"},
 		Data: map[string]interface{}{
 			"Club":        club,
 			"debug":       debug,
@@ -59,7 +58,6 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 	templater(w, page{
 		Title:   "Clubs",
 		skipCSP: true,
-		JS:      []string{"main"},
 		Data: map[string]interface{}{
 			"clubNew":   forms[0],
 			"ListClubs": listClubs,
