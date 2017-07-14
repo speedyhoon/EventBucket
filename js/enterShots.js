@@ -101,7 +101,7 @@ function moveHeader(){
 		//Otherwise hide the header row if the currentRow is first in tbody
 		document.getElementById('h').setAttribute('hidden','');
 	}
-	//Equivalent to insertAfter!
+	//Equivalent to insertAfter
 	currentRow.parentNode.insertBefore(document.getElementById('x'), currentRow.nextSibling);
 	generateButtons();
 	document.getElementById('x').removeAttribute('hidden');
@@ -146,7 +146,6 @@ function shooterNameOnclick(trElement){
 		if(!currentRow.visited){
 			currentRow.onclick = function trClicker(tdElement){
 				return function trClick(event){
-					//console.log('tdClicker');
 					if(event.target.nodeName === 'TD'){
 						highlightCell(tdElement);
 					}
@@ -187,12 +186,13 @@ function reconnect (){
 			}
 			break;
 		case'!':
-			document.getElementById(data.S).parentElement.children[4].className = '';
+			var element = document.getElementById(data.S).parentElement.children[4];
+			element.className = '';
 			if(rangeID === data.R){
-				document.getElementById(data.S).parentElement.children[4].innerHTML = data.T;
+				element.innerHTML = data.T;
 				//TODO status ok && html == same - GREEN	else	RED
 				setTimeout(function() {
-					document.getElementById(data.S).parentElement.children[4].className = '^save^';
+					element.className = '^save^';
 				}, 10);
 			}
 		}
