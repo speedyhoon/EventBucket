@@ -499,7 +499,6 @@
 - title: New Shooter
   handler: eventSearchShooters
   namespace: shooterNew
-  method: get
   accesskey: N
   inputs:
   - name: f
@@ -531,7 +530,7 @@
     v8: v8Bool
   - label: Grade
     name: g
-    type: select
+    type: listbox
     v8: v8UintList
     required: true
     max: len(globalGrades) - 1
