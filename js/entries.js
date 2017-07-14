@@ -1,11 +1,11 @@
 var button = document.querySelectorAll('[action="/form.eventShooterNew.action"] button'), i=button.length;
 while(i--){
-	button[i].onclick = function shooterEntry(){
-		var isNew = !this.getAttribute('formAction');
-		this.form.f.required = isNew;
-		this.form.s.required = isNew;
-		this.form.S.required = !isNew;
-		this.form.C.required = isNew;
+	button[i].onclick = function shooterEntry(event){
+		var isNew = !event.target.getAttribute('formAction');
+		event.target.form.f.required = isNew;
+		event.target.form.s.required = isNew;
+		event.target.form.S.required = !isNew;
+		event.target.form.C.required = isNew;
 	};
 }
 function buildRow(t, tds){
