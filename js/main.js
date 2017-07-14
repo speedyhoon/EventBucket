@@ -79,7 +79,7 @@ document.onclick = function(event){
 };
 
 //Start event listeners that add a class to form fields based on their valid/invalid values that changes the background colour.
-var inputs = document.querySelectorAll('input'), i = inputs.length, flagClass = function(event){
+var inputs = document.querySelectorAll('input,select'), i = inputs.length, flagClass = function(event){
 		event.srcElement.classList.toggle('^dirty^', !event.srcElement.validity.valid);
 	};
 while(i--){
