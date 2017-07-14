@@ -15,7 +15,6 @@ func entryList(w http.ResponseWriter, r *http.Request, eventID string) {
 		Menu:    urlEvents,
 		MenuID:  eventID,
 		Heading: event.Name,
-		JS:      []string{"print"},
 		Data: map[string]interface{}{
 			"Event": event,
 		},

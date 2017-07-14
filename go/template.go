@@ -23,7 +23,6 @@ type page struct {
 	Data                         map[string]interface{}
 	Error                        error
 	template                     string
-	JS                           []string
 	Section                      string //Which template to load within the main template
 	skipCSP                      bool
 	Status                       int
@@ -150,6 +149,8 @@ func loader() (err error) {
 				if len(value.([]option)) > 0 {
 					output = attribute
 				}
+			default:
+				warn.Printf("attribute type %T not defined\n%v %v\n", value, value, len(value.([]option)))
 			}
 			//return template.HTMLAttr(output)
 			return output
