@@ -34,15 +34,6 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 	forms[2].Fields[1].Options = dataListRanges(event.Ranges, true)
 	forms[2].Fields[2].Value = eventID
 
-	var updateRangeErrors []string
-	if action == eventRangeUpdate {
-		updateRangeErrors = listFormErrors(forms[3])
-	}
-	//It is not possible for action to equal both of these form ids.
-	if action == eventAggUpdate {
-		updateRangeErrors = listFormErrors(forms[4])
-	}
-
 	templater(w, page{
 		Title:   "Event Settings",
 		Menu:    urlEvents,
@@ -55,18 +46,10 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 			"AddRange":      forms[1],
 			"AddAgg":        forms[2],
 			"RangeDataList": club.Mounds,
-			"UpdateErrors":  updateRangeErrors,
+			"eventRangeUpdate": forms[3],
+			"eventAggUpdate": forms[4],
 		},
 	})
-}
-
-func listFormErrors(form form) (errorList []string) {
-	for _, f := range form.Fields {
-		if f.Error != "" {
-			errorList = append(errorList, f.Error)
-		}
-	}
-	return errorList
 }
 
 func dataListRanges(ranges []Range, selected bool) (options []option) {
