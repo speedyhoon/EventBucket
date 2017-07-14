@@ -51,85 +51,85 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 	})
 }
 
-func eventInsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
+func eventInsert(w http.ResponseWriter, r *http.Request, f form) {
 	//Try to find an existing club and insert and insert one if it doesn't exist.
-	clubID, err := clubInsertIfMissing(submittedForm.Fields[0].Value)
+	clubID, err := clubInsertIfMissing(f.Fields[0].Value)
 	if err != nil {
-		formError(w, r, submittedForm, err)
+		formError(w, r, f, err)
 		return
 	}
 
 	//Insert new event into database.
 	ID, err := Event{
-		Club:    submittedForm.Fields[0].Value,
+		Club:    f.Fields[0].Value,
 		ClubID:  clubID,
-		Name:    submittedForm.Fields[1].Value,
-		Date:    submittedForm.Fields[2].Value,
-		Time:    submittedForm.Fields[3].Value,
+		Name:    f.Fields[1].Value,
+		Date:    f.Fields[2].Value,
+		Time:    f.Fields[3].Value,
 		Closed:  false,
 		AutoInc: AutoInc{Range: 1}, //The next incremental range id to use.
 	}.insert()
 
 	//Display any insert errors onscreen.
 	if err != nil {
-		formError(w, r, submittedForm, err)
+		formError(w, r, f, err)
 		return
 	}
 	http.Redirect(w, r, urlEventSettings+ID, http.StatusSeeOther)
 }
 
-func eventAvailableGradesUpsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
-	eventID := submittedForm.Fields[1].Value
-	err := updateDocument(tblEvent, eventID, &submittedForm.Fields[0].valueUintSlice, &Event{}, updateEventGrades)
+func eventAvailableGradesUpsert(w http.ResponseWriter, r *http.Request, f form) {
+	eventID := f.Fields[1].Value
+	err := updateDocument(tblEvent, eventID, &f.Fields[0].valueUintSlice, &Event{}, updateEventGrades)
 
 	//Display any insert errors onscreen.
 	if err != nil {
-		formError(w, r, submittedForm, err)
+		formError(w, r, f, err)
 		return
 	}
 	http.Redirect(w, r, urlEntries+eventID, http.StatusSeeOther)
 }
 
-func eventShooterInsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
-	clubID, err := clubInsertIfMissing(submittedForm.Fields[2].Value)
+func eventShooterInsert(w http.ResponseWriter, r *http.Request, f form) {
+	clubID, err := clubInsertIfMissing(f.Fields[2].Value)
 	if err != nil {
-		formError(w, r, submittedForm, err)
+		formError(w, r, f, err)
 		return
 	}
 
 	shooter := Shooter{
-		FirstName: submittedForm.Fields[0].Value,
-		NickName:  submittedForm.Fields[0].Value,
-		Surname:   submittedForm.Fields[1].Value,
-		Club:      submittedForm.Fields[2].Value,
+		FirstName: f.Fields[0].Value,
+		NickName:  f.Fields[0].Value,
+		Surname:   f.Fields[1].Value,
+		Club:      f.Fields[2].Value,
 		ClubID:    clubID,
-		AgeGroup:  submittedForm.Fields[4].valueUint,
-		Sex:       submittedForm.Fields[5].Checked,
-		Grade:     submittedForm.Fields[6].valueUintSlice,
+		AgeGroup:  f.Fields[4].valueUint,
+		Sex:       f.Fields[5].Checked,
+		Grade:     f.Fields[6].valueUintSlice,
 	}
 	//Insert shooter into Shooter Bucket
 	shooterID, err := shooter.insert()
 	if err != nil {
-		formError(w, r, submittedForm, err)
+		formError(w, r, f, err)
 		return
 	}
 
 	//Insert shooter into event
-	eventID := submittedForm.Fields[7].Value
+	eventID := f.Fields[7].Value
 	shooter.ID = shooterID
 	err = updateDocument(tblEvent, eventID, &shooter, &Event{}, eventShooterInsertDB)
 	if err != nil {
-		formError(w, r, submittedForm, err)
+		formError(w, r, f, err)
 		return
 	}
 	http.Redirect(w, r, urlEntries+eventID, http.StatusSeeOther)
 }
 
-func eventShooterExistingInsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
-	eventID := submittedForm.Fields[3].Value
-	shooter, err := getShooter(submittedForm.Fields[0].Value)
+func eventShooterExistingInsert(w http.ResponseWriter, r *http.Request, f form) {
+	eventID := f.Fields[3].Value
+	shooter, err := getShooter(f.Fields[0].Value)
 	if err != nil {
-		formError(w, r, submittedForm, err)
+		formError(w, r, f, err)
 		return
 	}
 	err = updateDocument(tblEvent, eventID, &Shooter{
@@ -137,32 +137,32 @@ func eventShooterExistingInsert(w http.ResponseWriter, r *http.Request, submitte
 		FirstName: shooter.NickName,
 		Surname:   shooter.Surname,
 		Club:      shooter.Club,
-		Grade:     submittedForm.Fields[1].valueUintSlice,
-		AgeGroup:  submittedForm.Fields[2].valueUint,
+		Grade:     f.Fields[1].valueUintSlice,
+		AgeGroup:  f.Fields[2].valueUint,
 		Sex:       shooter.Sex,
 	}, &Event{}, eventShooterInsertDB)
 	if err != nil {
-		formError(w, r, submittedForm, err)
+		formError(w, r, f, err)
 		return
 	}
 	http.Redirect(w, r, urlEntries+eventID, http.StatusSeeOther)
 }
 
-func eventShooterUpdate(w http.ResponseWriter, r *http.Request, submittedForm form) {
-	eventID := submittedForm.Fields[1].Value
+func eventShooterUpdate(w http.ResponseWriter, r *http.Request, f form) {
+	eventID := f.Fields[1].Value
 	err := updateDocument(tblEvent, eventID, &EventShooter{
-		ID:        submittedForm.Fields[0].valueUint,
-		FirstName: submittedForm.Fields[2].Value,
-		Surname:   submittedForm.Fields[3].Value,
-		Club:      submittedForm.Fields[4].Value,
-		Grade:     submittedForm.Fields[5].valueUint,
-		AgeGroup:  submittedForm.Fields[6].valueUint,
-		Sex:       submittedForm.Fields[7].Checked,
-		Disabled:  submittedForm.Fields[8].Checked,
+		ID:        f.Fields[0].valueUint,
+		FirstName: f.Fields[2].Value,
+		Surname:   f.Fields[3].Value,
+		Club:      f.Fields[4].Value,
+		Grade:     f.Fields[5].valueUint,
+		AgeGroup:  f.Fields[6].valueUint,
+		Sex:       f.Fields[7].Checked,
+		Disabled:  f.Fields[8].Checked,
 	}, &Event{}, eventShooterUpdater)
 
 	if err != nil {
-		formError(w, r, submittedForm, err)
+		formError(w, r, f, err)
 		return
 	}
 	http.Redirect(w, r, urlEntries+eventID, http.StatusSeeOther)

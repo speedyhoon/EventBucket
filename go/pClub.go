@@ -66,8 +66,8 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func mapClubs(w http.ResponseWriter, r *http.Request, submittedForm form) {
-	clubID := submittedForm.Fields[0].Value
+func mapClubs(w http.ResponseWriter, r *http.Request, f form) {
+	clubID := f.Fields[0].Value
 	clubs, err := getClubs()
 	if err != nil {
 		warn.Println(err)
@@ -107,8 +107,8 @@ type MapClub struct {
 	Postcode  string  `json:"p,omitempty"`
 }
 
-func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
-	name := submittedForm.Fields[0].Value
+func clubInsert(w http.ResponseWriter, r *http.Request, f form) {
+	name := f.Fields[0].Value
 	var ID string
 
 	//Check if a club with that name already exists.
@@ -119,19 +119,19 @@ func clubInsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
 			IsDefault: getDefaultClub().ID == "", //Set this club to the default if no other clubs are the default
 		}.insert()
 		if err != nil {
-			formError(w, r, submittedForm, err)
+			formError(w, r, f, err)
 			return
 		}
 	} else {
-		formError(w, r, submittedForm, fmt.Errorf("A club with name '%v' already exists.\n%v", name, err))
+		formError(w, r, f, fmt.Errorf("A club with name '%v' already exists.\n%v", name, err))
 		return
 	}
 	http.Redirect(w, r, urlClub+ID+"#edit", http.StatusSeeOther)
 }
 
-func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
-	clubID := submittedForm.Fields[8].Value
-	isDefault := submittedForm.Fields[6].Checked
+func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, f form) {
+	clubID := f.Fields[8].Value
+	isDefault := f.Fields[6].Checked
 	defaultClub := getDefaultClub()
 	if isDefault && defaultClub.ID != clubID {
 		//need to remove isDefault for the default club so there is only one default at a time.
@@ -141,27 +141,27 @@ func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, submittedForm for
 		}
 	}
 	err := updateDocument(tblClub, clubID, &Club{
-		Name:      submittedForm.Fields[0].Value,
-		Address:   submittedForm.Fields[1].Value,
-		Town:      submittedForm.Fields[2].Value,
-		Postcode:  submittedForm.Fields[3].Value,
-		Latitude:  submittedForm.Fields[4].valueFloat32,
-		Longitude: submittedForm.Fields[5].valueFloat32,
+		Name:      f.Fields[0].Value,
+		Address:   f.Fields[1].Value,
+		Town:      f.Fields[2].Value,
+		Postcode:  f.Fields[3].Value,
+		Latitude:  f.Fields[4].valueFloat32,
+		Longitude: f.Fields[5].valueFloat32,
 		IsDefault: isDefault,
-		URL:       submittedForm.Fields[7].Value,
+		URL:       f.Fields[7].Value,
 	}, &Club{}, updateClubDetails)
 	if err != nil {
-		formError(w, r, submittedForm, err)
+		formError(w, r, f, err)
 		return
 	}
 	http.Redirect(w, r, urlClub+clubID, http.StatusSeeOther)
 }
 
-func clubMoundInsert(w http.ResponseWriter, r *http.Request, submittedForm form) {
-	clubID := submittedForm.Fields[1].Value
-	err := updateDocument(tblClub, clubID, submittedForm.Fields[0].Value, &Club{}, insertClubMound)
+func clubMoundInsert(w http.ResponseWriter, r *http.Request, f form) {
+	clubID := f.Fields[1].Value
+	err := updateDocument(tblClub, clubID, f.Fields[0].Value, &Club{}, insertClubMound)
 	if err != nil {
-		formError(w, r, submittedForm, err)
+		formError(w, r, f, err)
 		return
 	}
 	http.Redirect(w, r, urlClub+clubID, http.StatusSeeOther)
@@ -171,14 +171,14 @@ func trimFloat(num float32) string {
 	return strings.TrimRight(strings.TrimRight(fmt.Sprintf("%.6f", num), "0"), ".")
 }
 
-func editClubMound(w http.ResponseWriter, r *http.Request, submittedForm form) {
-	clubID := submittedForm.Fields[2].Value
+func editClubMound(w http.ResponseWriter, r *http.Request, f form) {
+	clubID := f.Fields[2].Value
 	err := updateDocument(tblClub, clubID, &Mound{
-		Name: submittedForm.Fields[0].Value,
-		ID:   submittedForm.Fields[1].valueUint,
+		Name: f.Fields[0].Value,
+		ID:   f.Fields[1].valueUint,
 	}, &Club{}, editMound)
 	if err != nil {
-		formError(w, r, submittedForm, err)
+		formError(w, r, f, err)
 		return
 	}
 	http.Redirect(w, r, urlClub+clubID, http.StatusSeeOther)
