@@ -12,6 +12,14 @@
 	{{if.}}<samp>{{.}}</samp>{{end}}
 {{end}}
 
+{{define "formErrors"}}
+	{{range.Fields}}
+		{{if ne .Error ""}}
+			<samp>{{.}}</samp>
+		{{end}}
+	{{end}}
+{{end}}
+
 {{define "incompleteShooters"}}
 	{{if.ShowAll}}
 		<a href=/{{.URL}}/{{.Event.ID}}/{{.Range.ID}}>View Incomplete Shooters</a>
