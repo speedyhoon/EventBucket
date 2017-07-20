@@ -113,7 +113,7 @@ func calcTotalCenters(shots string, classID uint) Score {
 	var total, centers uint
 	var countBack string
 	defaultClassSettings := defaultGlobalDisciplines()
-	if classID >= 0 && classID < uint(len(defaultClassSettings)) {
+	if classID < uint(len(defaultClassSettings)) {
 
 		//Ignore the first sighter shots from being added to the total score. Unused sighters should be still be present in the data passed
 		//for _, shot := range strings.Split(shots[defaultClassSettings[classID].QtySighters:], "") {

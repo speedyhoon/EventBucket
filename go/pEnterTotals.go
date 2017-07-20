@@ -90,7 +90,7 @@ func eventRange(ranges []Range, rID string, w http.ResponseWriter, r *http.Reque
 		if r.ID == rangeID {
 			//If range is an aggregate return an error message.
 			if r.IsAgg {
-				return Range{}, errors.New("Range is an aggregate and scores can't be entered directly.")
+				return Range{}, errors.New("Range is an aggregate and scores can't be entered directly")
 			}
 			//Return valid range.
 			return r, nil

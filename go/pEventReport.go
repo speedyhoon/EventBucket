@@ -33,7 +33,7 @@ func eventReportPage(w http.ResponseWriter, r *http.Request, eventID, title stri
 	}
 }
 
-func shooterReport(w http.ResponseWriter, r *http.Request, eventID, shooterId string) {
+func shooterReport(w http.ResponseWriter, r *http.Request, eventID, shooterID string) {
 	event, err := getEvent(eventID)
 	//If event not found in the database, return error event not found (404).
 	if err != nil {
@@ -41,9 +41,9 @@ func shooterReport(w http.ResponseWriter, r *http.Request, eventID, shooterId st
 		return
 	}
 
-	shooterID, err := strconv.Atoi(shooterId)
+	uShooterID, err := strconv.Atoi(shooterID)
 	//If shooter not available in the event, return error shooter not found (404).
-	if err != nil || shooterID >= len(event.Shooters) {
+	if err != nil || uShooterID >= len(event.Shooters) {
 		errorHandler(w, r, "shooter")
 		return
 	}
@@ -55,7 +55,7 @@ func shooterReport(w http.ResponseWriter, r *http.Request, eventID, shooterId st
 		Heading: event.Name,
 		Data: map[string]interface{}{
 			"Event":   event,
-			"Shooter": event.Shooters[shooterID],
+			"Shooter": event.Shooters[uShooterID],
 		},
 	})
 }

@@ -16,7 +16,7 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 
 	var club Club
 	if !event.Closed && event.Club != "" {
-		club, err = getClubByName(event.Club)
+		club, _ = getClubByName(event.Club)
 	}
 
 	//Retrieve any submitted form that failed to save.
