@@ -39,8 +39,7 @@ func isValid(urlValues url.Values, formID uint8) (form, bool) {
 	}
 	//Process the post request as normal if len(urlValues) >= len(fields).
 	var fieldValue []string
-	var ok bool
-	valid := true
+	var ok, hasError bool
 	for i, field := range f.Fields {
 		/*// Output warning if validation function is not set for this field in the submitted form.
 		if debug && field.v8 == nil {
@@ -61,13 +60,11 @@ func isValid(urlValues url.Values, formID uint8) (form, bool) {
 			field.v8(&f.Fields[i], fieldValue...)
 		}
 
-		if f.Fields[i].Error != "" {
-			//Set the first field with failed validation to have focus onscreen
-			if valid {
-				f.Fields[i].AutoFocus = true
-				valid = false
-			}
+		//Set the first field with failed validation to have focus onscreen
+		if f.Fields[i].Error != "" && !hasError {
+			f.Fields[i].AutoFocus = true
+			hasError = true
 		}
 	}
-	return f, valid
+	return f, hasError
 }
