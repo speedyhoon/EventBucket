@@ -30,9 +30,9 @@ type page struct {
 
 func (p page) csp() string {
 	if p.skipCSP {
-		return "open"
+		return open
 	}
-	return "lock"
+	return lock
 }
 
 type markupEnv struct {
@@ -42,7 +42,7 @@ type markupEnv struct {
 }
 
 var (
-	NewTemplates   *template.Template
+	templates      *template.Template
 	masterTemplate = markupEnv{
 		Menu: []menu{{
 			Name: "Events",
@@ -117,7 +117,7 @@ func init() {
 }
 
 func loader() (err error) {
-	NewTemplates, err = template.New("").Funcs(template.FuncMap{
+	templates, err = template.New("").Funcs(template.FuncMap{
 		"i": func(inputs []field, index int) *field {
 			//index will always be a positive integer so the check for index >= 0 is not required
 			if index < len(inputs) {
@@ -207,7 +207,7 @@ func templater(w http.ResponseWriter, page page) {
 	wz := gzipResponseWriter{Writer: gz, ResponseWriter: w}
 
 	//Add HTTP headers so browsers don't cache the HTML resource because it may contain different content every request.
-	headers(wz, "html", nocache, cGzip, page.csp())
+	headers(wz, html, nocache, cGzip, page.csp())
 
 	if page.Status != 0 {
 		wz.WriteHeader(page.Status)
@@ -226,7 +226,7 @@ func templater(w http.ResponseWriter, page page) {
 		return
 	}
 
-	if err := NewTemplates.ExecuteTemplate(wz, masterTemplate.Page.template, masterTemplate); err != nil {
+	if err := templates.ExecuteTemplate(wz, masterTemplate.Page.template, masterTemplate); err != nil {
 		warn.Println(err)
 		http.Error(wz, err.Error(), http.StatusInternalServerError)
 	}
