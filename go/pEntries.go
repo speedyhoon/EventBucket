@@ -61,8 +61,7 @@ func eventInsert(w http.ResponseWriter, r *http.Request, f form) {
 
 	//Insert new event into database.
 	ID, err := Event{
-		Club:    f.Fields[0].Value,
-		ClubID:  clubID,
+		Club:    clubID,
 		Name:    f.Fields[1].Value,
 		Date:    f.Fields[2].Value,
 		Time:    f.Fields[3].Value,
@@ -101,11 +100,10 @@ func eventShooterInsert(w http.ResponseWriter, r *http.Request, f form) {
 		FirstName: f.Fields[0].Value,
 		NickName:  f.Fields[0].Value,
 		Surname:   f.Fields[1].Value,
-		Club:      f.Fields[2].Value,
-		ClubID:    clubID,
+		Club:      clubID,
 		AgeGroup:  f.Fields[4].valueUint,
 		Sex:       f.Fields[5].Checked,
-		Grade:     f.Fields[6].valueUintSlice,
+		Grades:    f.Fields[6].valueUintSlice,
 	}
 	//Insert shooter into Shooter Bucket
 	shooterID, err := shooter.insert()
@@ -137,7 +135,7 @@ func eventShooterExistingInsert(w http.ResponseWriter, r *http.Request, f form) 
 		FirstName: shooter.NickName,
 		Surname:   shooter.Surname,
 		Club:      shooter.Club,
-		Grade:     f.Fields[1].valueUintSlice,
+		Grades:    f.Fields[1].valueUintSlice,
 		AgeGroup:  f.Fields[2].valueUint,
 		Sex:       shooter.Sex,
 	}, &Event{}, eventShooterInsertDB)

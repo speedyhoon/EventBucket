@@ -170,11 +170,11 @@ func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request,
 }
 
 func errorWrapper(w http.ResponseWriter, r *http.Request, url string) {
-			errorType := "event"
-			if url == urlClub {
-				errorType = "club"
-			}
-			errorHandler(w, r, errorType)
+	errorType := "event"
+	if url == urlClub {
+		errorType = "club"
+	}
+	errorHandler(w, r, errorType)
 }
 
 func isGetMethod(h func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {

@@ -51,14 +51,13 @@ type Event struct {
 	ID       string         `json:"I"`
 	Name     string         `json:"n"`
 	Club     string         `json:"C,omitempty"`
-	ClubID   string         `json:"c,omitempty"`
 	Date     string         `json:"d,omitempty"`
 	Time     string         `json:"t,omitempty"`
 	Ranges   []Range        `json:"R,omitempty"`
 	AutoInc  AutoInc        `json:"U,omitempty"`
 	Shooters []EventShooter `json:"S,omitempty"`
-	Closed   bool           `json:"z,omitempty"`
 	Grades   []uint         `json:"G,omitempty"`
+	Closed   bool           `json:"z,omitempty"`
 	/*TeamCats map[string]TeamCats `json:"M,omitempty"`
 	Teams    map[string]Team     `json:"T,omitempty"`*/
 }
@@ -81,9 +80,9 @@ type Range struct {
 	ID     uint   `json:"I"`
 	Name   string `json:"n"`
 	Aggs   []uint `json:"A,omitempty"`
-	Locked bool   `json:"l,omitempty"`
-	IsAgg  bool   `json:"i,omitempty"` //Prevents aggs switching to normal ranges
 	Order  uint   `json:"-"`
+	Locked bool   `json:"k,omitempty"`
+	IsAgg  bool   `json:"g,omitempty"` //Prevents aggs switching to normal ranges
 	//Status uint8  `json:"u,omitempty"` //ENUM change to 1 when the first shooter has recorded their first shot. Change to 2 when the range is finished.
 }
 
@@ -96,7 +95,7 @@ func (r Range) StrID() string {
 type Score struct {
 	Total      uint   `json:"t,omitempty"`
 	Centers    uint   `json:"c,omitempty"`
-	Centers2   uint   `json:"n,omitempty"`
+	Centers2   uint   `json:"2,omitempty"`
 	Shots      string `json:"s,omitempty"` //Don't include this in the scoreboard struct when using a different []EventShooter
 	Sighters   string `json:"i,omitempty"`
 	CountBack  string `json:"v,omitempty"`
@@ -113,35 +112,33 @@ type EventShooter struct {
 	FirstName      string           `json:"f"`
 	Surname        string           `json:"s"`
 	Club           string           `json:"C,omitempty"`
-	ClubID         string           `json:"c,omitempty"`
 	Grade          uint             `json:"G,omitempty"`
-	Hidden         bool             `json:"h,omitempty"`
 	AgeGroup       uint             `json:"r,omitempty"`
-	Scores         map[string]Score `json:"S,omitempty"` //Using string instead of uint as an index because JSON doesn't support map[uint]Score
+	Scores         map[string]Score `json:"O,omitempty"` //Using string instead of uint as an index because JSON doesn't support map[uint]Score
 	LinkedID       uint             `json:"l,omitempty"` //For duplicating shooters that are in different classes with the same score
-	EID            string           `json:"M,omitempty"` //Points to EventBucket Shooter ID
+	EID            string           `json:"V,omitempty"` //Points to EventBucket Shooter ID
+	Hidden         bool             `json:"h,omitempty"`
 	Disabled       bool             `json:"d,omitempty"`
 	Sex            bool             `json:"x,omitempty"`
 	GradeSeparator bool             `json:"-"` //Used for enterShots and enterRangeTotals only.
 	//position  string           `json:"-"` //Used for scoreboard only.
 	//warning   uint8            `json:"-"` //Used for scoreboard only.
 	//0 = nil
-	//1 = shoot off
+	//1 = highest possible score
 	//2 = no score
 	//3 = incomplete
-	//4 = highest possible score
+	//4 = shoot off
 }
 
 //Shooter is exported
 type Shooter struct {
 	ID        string           `json:"I"` //EventBucket shooters ID
-	SID       uint             `json:"M,omitempty"`
+	SID       uint             `json:"J,omitempty"`
 	NID       uint             `json:"N,omitempty"` //NRAA sequential integer id.
 	FirstName string           `json:"f,omitempty"`
 	Surname   string           `json:"s,omitempty"`
 	NickName  string           `json:"n,omitempty"`
 	Club      string           `json:"C,omitempty"`
-	ClubID    string           `json:"c,omitempty"`
 	Skill     map[string]Skill `json:"K,omitempty"` //Grading set by the NRAA for each class
 	Address   string           `json:"a,omitempty"`
 	Email     string           `json:"e,omitempty"`
@@ -152,8 +149,8 @@ type Shooter struct {
 	MergedSID int       `json:"m,omitempty"`
 	Modified  time.Time `json:"o,omitempty"`
 	AgeGroup  uint      `json:"r,omitempty"`
-	Sex       bool      `json:"l,omitempty"`
-	Grade     []uint    `json:"G,omitempty"`
+	Grades    []uint    `json:"G,omitempty"`
+	Sex       bool      `json:"x,omitempty"`
 }
 
 //Skill is used for importing shooters from JSON files
@@ -183,14 +180,14 @@ type option struct {
 
 type field struct {
 	name, Error, Value, Placeholder       string
-	Required, Disable, AutoFocus, Checked bool
 	Options                               []option
 	maxLen, minLen                        int
 	min, max                              int
 	step, valueFloat32                    float32
-	size                                  uint8
 	regex                                 *regexp.Regexp
 	v8                                    func(*field, ...string)
 	valueUint                             uint
 	valueUintSlice                        []uint
+	Required, Disable, AutoFocus, Checked bool
+	//size                                  uint8
 }
