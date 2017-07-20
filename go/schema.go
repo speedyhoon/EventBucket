@@ -37,6 +37,7 @@ type Mound struct {
 
 //MapClub is a subset of Club
 type MapClub struct {
+	ID        string  `json:"-"`
 	Name      string  `json:"n"`
 	Latitude  float32 `json:"x,omitempty"`
 	Longitude float32 `json:"y,omitempty"`
