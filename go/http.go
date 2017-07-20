@@ -110,10 +110,10 @@ func headers(w http.ResponseWriter, setHeaders ...string) {
 	}
 }
 
-func get404(url string, pageFunc func(http.ResponseWriter, *http.Request)) {
-	http.HandleFunc(url,
+func get404(pageFunc func(http.ResponseWriter, *http.Request)) {
+	http.HandleFunc(urlEvents,
 		func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Path != url {
+			if r.URL.Path != urlEvents {
 				errorHandler(w, r, http.StatusNotFound, "")
 				return
 			}
