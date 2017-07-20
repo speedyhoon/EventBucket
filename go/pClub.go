@@ -96,17 +96,6 @@ func mapClubs(w http.ResponseWriter, r *http.Request, f form) {
 	fmt.Fprintf(w, "%s", jsonList)
 }
 
-//MapClub is exported
-type MapClub struct {
-	Name      string  `json:"n"`
-	Latitude  float32 `json:"x,omitempty"`
-	Longitude float32 `json:"y,omitempty"`
-	URL       string  `json:"u,omitempty"`
-	Address   string  `json:"a,omitempty"`
-	Town      string  `json:"t,omitempty"`
-	Postcode  string  `json:"p,omitempty"`
-}
-
 func clubInsert(w http.ResponseWriter, r *http.Request, f form) {
 	name := f.Fields[0].Value
 	var ID string

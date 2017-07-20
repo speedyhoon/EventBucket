@@ -24,7 +24,7 @@ type Club struct {
 	Longitude float32  `json:"y,omitempty"`
 	URL       string   `json:"u,omitempty"`
 	Address   string   `json:"a,omitempty"`
-	Town      string   `json:"t,omitempty"`
+	Town      string   `json:"w,omitempty"`
 	Postcode  string   `json:"p,omitempty"`
 	AutoInc   AutoInc  `json:"U,omitempty"`
 }
@@ -33,6 +33,17 @@ type Club struct {
 type Mound struct {
 	Name string
 	ID   uint
+}
+
+//MapClub is a subset of Club
+type MapClub struct {
+	Name      string  `json:"n"`
+	Latitude  float32 `json:"x,omitempty"`
+	Longitude float32 `json:"y,omitempty"`
+	URL       string  `json:"u,omitempty"`
+	Address   string  `json:"a,omitempty"`
+	Town      string  `json:"w,omitempty"`
+	Postcode  string  `json:"p,omitempty"`
 }
 
 //Event is exported
