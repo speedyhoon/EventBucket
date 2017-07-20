@@ -56,10 +56,6 @@ func init() {
 
 func serveFile(fileName string, compress bool) {
 	http.HandleFunc(fileName, func(w http.ResponseWriter, r *http.Request) {
-		//Check if the request contains accept gzip encoding header & return the appropriate resource
-		//Unfortunately uncompressed responses may still be required even though all modern browsers support gzip
-		//webmasters.stackexchange.com/questions/22217/which-browsers-handle-content-encoding-gzip-and-which-of-them-has-any-special
-		//www.stevesouders.com/blog/2009/11/11/whos-not-getting-gzip/
 		h := []string{cache, fileName}
 		if compress {
 			h = append(h, brotli)
@@ -95,12 +91,10 @@ func headers(w http.ResponseWriter, setHeaders ...string) {
 			w.Header().Set(cacheControl, "public")
 			w.Header().Set(expires, cacheExpires)
 			w.Header().Set("Vary", acceptEncoding)
-			break
 		case nocache:
 			w.Header().Set(cacheControl, "no-cache, no-store, must-revalidate")
 			w.Header().Set(expires, "0")
 			w.Header().Set("Pragma", "no-cache")
-			break
 		default:
 			//Set resource content type header or set content encoding gzip header
 			if h, ok := headerOptions[lookup]; ok {
@@ -148,11 +142,7 @@ func getParameter(url string, pageFunc func(http.ResponseWriter, *http.Request, 
 				pageFunc(w, r, lowerParams)
 				return
 			}
-			errorType := "event"
-			if url == urlClub {
-				errorType = "club"
-			}
-			errorHandler(w, r, errorType)
+			errorWrapper(w, r, url)
 		}))
 }
 
@@ -175,12 +165,16 @@ func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request,
 				pageFunc(w, r, ids[0], ids[1])
 				return
 			}
+			errorWrapper(w, r, url)
+		}))
+}
+
+func errorWrapper(w http.ResponseWriter, r *http.Request, url string) {
 			errorType := "event"
 			if url == urlClub {
 				errorType = "club"
 			}
 			errorHandler(w, r, errorType)
-		}))
 }
 
 func isGetMethod(h func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {

@@ -70,6 +70,21 @@ func v8UintReq(f *field, inp ...string) {
 	v8Uint(f, inp...)
 }
 
+func v8UintOpt(f *field, inp ...string) {
+	v8Uint(f, inp...)
+
+	var found bool
+	for _, option := range f.Options {
+		if f.Value == option.Value {
+			found = true
+			break
+		}
+	}
+	if !found {
+		f.Error = "Please select from one of the options"
+	}
+}
+
 func v8Float32(f *field, inp ...string) {
 	f64, err := strconv.ParseFloat(strings.TrimSpace(inp[0]), 32)
 	if err != nil {
