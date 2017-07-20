@@ -9,7 +9,7 @@ func scoreboard(w http.ResponseWriter, r *http.Request, eventID, rangeId string)
 
 	//If event not found in the database return error event not found (404).
 	if err != nil {
-		errorHandler(w, r, http.StatusNotFound, "event")
+		errorHandler(w, r, "event")
 		return
 	}
 
@@ -19,7 +19,7 @@ func scoreboard(w http.ResponseWriter, r *http.Request, eventID, rangeId string)
 		ranges = findAggs(rangeIDstr, event.Ranges)
 	}
 	if len(ranges) < 1 {
-		errorHandler(w, r, http.StatusNotFound, "range")
+		errorHandler(w, r, "range")
 		return
 	}
 

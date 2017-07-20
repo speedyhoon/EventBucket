@@ -10,7 +10,7 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 
 	//If the event isn't found in the database, return error event not found (404).
 	if err != nil {
-		errorHandler(w, r, http.StatusNotFound, "event")
+		errorHandler(w, r, "event")
 		return
 	}
 

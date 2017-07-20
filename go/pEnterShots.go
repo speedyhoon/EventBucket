@@ -20,7 +20,7 @@ func enterShots(w http.ResponseWriter, r *http.Request, showAll bool, eventID, r
 
 	//If event not found in the database return error event not found (404).
 	if err != nil {
-		errorHandler(w, r, http.StatusNotFound, "event")
+		errorHandler(w, r, "event")
 		return
 	}
 
