@@ -165,7 +165,7 @@ func updateDocument(bucketName []byte, b36ID string, update interface{}, decode 
 
 		err = json.Unmarshal(document, &decode)
 		if err != nil {
-			return fmt.Errorf("'%v' Query club unmarshaling failed: \n%q\n%#v\n", ID, document, err)
+			return fmt.Errorf("'%v' Query club unmarshaling failed: \n%q\n%#v", ID, document, err)
 		}
 
 		document, err = json.Marshal(function(decode, update))
