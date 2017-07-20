@@ -323,9 +323,8 @@ func updateEventGrades(decode interface{}, contents interface{}) interface{} {
 	return event
 }
 
-func getClubs() ([]Club, error) {
-	var clubs []Club
-	err := db.View(func(tx *bolt.Tx) error {
+func getClubs() (clubs []Club, err error) {
+	return clubs, db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(tblClub)
 		if b == nil {
 			//Club Bucket isn't created yet
@@ -339,7 +338,23 @@ func getClubs() ([]Club, error) {
 			return nil
 		})
 	})
-	return clubs, err
+}
+
+func getMapClubs(clubID string) (clubs []MapClub, err error) {
+	return clubs, db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(tblClub)
+		if b == nil {
+			//Club Bucket isn't created yet
+			return nil
+		}
+		return b.ForEach(func(_, value []byte) error {
+			var club MapClub
+			if json.Unmarshal(value, &club) == nil && clubID != "" && club.ID == clubID || clubID == "" && club.Latitude != 0 && club.Longitude != 0 {
+				clubs = append(clubs, club)
+			}
+			return nil
+		})
+	})
 }
 
 func clubsDataList() []option {

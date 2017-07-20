@@ -67,33 +67,17 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 }
 
 func mapClubs(w http.ResponseWriter, r *http.Request, f form) {
-	clubs, err := getClubs()
+	clubs, err := getMapClubs(f.Fields[0].Value)
 	if err != nil {
 		warn.Println(err)
-	}
-	clubID := f.Fields[0].Value
-	searchClub := clubID != ""
-	var mapClubs []MapClub
-	for _, club := range clubs {
-		if searchClub && club.ID == clubID || !searchClub && club.Latitude != 0 && club.Longitude != 0 {
-			mapClubs = append(mapClubs, MapClub{
-				Name:      club.Name,
-				Latitude:  club.Latitude,
-				Longitude: club.Longitude,
-				URL:       club.URL,
-				Address:   club.Address,
-				Town:      club.Town,
-				Postcode:  club.Postcode,
-			})
-		}
 	}
 
-	var jsonList []byte
-	jsonList, err = json.Marshal(mapClubs)
+	var list []byte
+	list, err = json.Marshal(clubs)
 	if err != nil {
 		warn.Println(err)
 	}
-	fmt.Fprintf(w, "%s", jsonList)
+	fmt.Fprintf(w, "%s", list)
 }
 
 func clubInsert(w http.ResponseWriter, r *http.Request, f form) {
