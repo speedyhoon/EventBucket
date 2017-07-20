@@ -20,13 +20,13 @@ function editRow(editCell){
 		row.appendChild(t);
 	}
 }
-function findValues(element, labels){
+window['findValues'] = function(element, labels){
 	var i = labels.length;
 	while(i--){
 		findValue(element, labels[i]);
 	}
-}
-function findValue(element, label){
+};
+window['findValue'] = function(element, label){
 	var i = element.options.length;
 	while(i--){
 		//Select the option if its text = the label. Trim isn't required because the server outputs html without any wrapping whitespace.
@@ -35,9 +35,9 @@ function findValue(element, label){
 			return element.options[i].setAttribute('selected', '');
 		}
 	}
-}
-function checked(cell, element){
+};
+window['checked'] = function checked(cell, element){
 	if(cell.className === '^tick^'){
 		element.setAttribute('checked', '');
 	}
-}
+};
