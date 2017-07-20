@@ -11,14 +11,18 @@ import (
 
 const (
 	contentType    = "Content-Type"
+	contentEncode  = "Content-Encoding"
 	cacheControl   = "Cache-Control"
 	expires        = "Expires"
 	cache          = "cache"
 	nocache        = "nocache"
 	cGzip          = "gzip"
-	br             = "br"
+	brotli         = "br"
 	acceptEncoding = "Accept-Encoding"
 	csp            = "Content-Security-Policy"
+	open           = "o"
+	lock           = "l"
+	html           = "h"
 )
 
 var (
@@ -28,15 +32,15 @@ var (
 	cacheExpires string
 
 	headerOptions = map[string][2]string{
-		cGzip:   {"Content-Encoding", cGzip},
-		br:      {"Content-Encoding", br},
-		"html":  {contentType, "text/html; charset=utf-8"},
+		cGzip:   {contentEncode, cGzip},
+		brotli:  {contentEncode, brotli},
+		html:    {contentType, "text/html; charset=utf-8"},
 		dirCSS:  {contentType, "text/css; charset=utf-8"},
 		dirJS:   {contentType, "text/javascript"},
 		urlSVG:  {contentType, "image/svg+xml"},
 		dirWEBP: {contentType, "image/webp"},
-		"open":  {csp, "style-src 'self'"},
-		"lock":  {csp, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src ws: 'self'; img-src 'self' data:"}, //font-src 'self'
+		open:    {csp, "style-src 'self'"},
+		lock:    {csp, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src ws: 'self'; img-src 'self' data:"}, //font-src 'self'
 	}
 )
 
@@ -58,7 +62,7 @@ func serveFile(fileName string, compress bool) {
 		//www.stevesouders.com/blog/2009/11/11/whos-not-getting-gzip/
 		h := []string{cache, fileName}
 		if compress {
-			h = append(h, br)
+			h = append(h, brotli)
 		}
 		headers(w, h...)
 		http.ServeFile(w, r, filepath.Join(runDir, fileName))
@@ -75,7 +79,7 @@ func serveDir(contentType string, compress bool) {
 			}
 			headers(w, contentType, cache)
 			if compress {
-				headers(w, br)
+				headers(w, brotli)
 			}
 			http.FileServer(http.Dir(runDir)).ServeHTTP(w, r)
 		}))
