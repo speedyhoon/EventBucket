@@ -93,7 +93,7 @@ func main() {
 	httpAddr := host + portAddr
 	h := http.Server{Addr: httpAddr, Handler: nil}
 	go func() {
-		if err := h.ListenAndServe(); err != nil {
+		if err = h.ListenAndServe(); err != nil {
 			warn.Fatal(err)
 		} else {
 			info.Print("Started EventBucket HTTP server...")
@@ -108,6 +108,9 @@ func main() {
 
 	<-stop
 	info.Println("Shutting down the server...")
-	h.Shutdown(context.Background())
+	err = h.Shutdown(context.Background())
+	if err != nil{
+		warn.Println(err)
+	}
 	info.Println("EvenBucket server stopped.")
 }

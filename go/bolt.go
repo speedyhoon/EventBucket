@@ -27,7 +27,7 @@ const (
 )
 
 func makeBuckets() {
-	db.Update(func(tx *bolt.Tx) error {
+	err := db.Update(func(tx *bolt.Tx) error {
 		for index, bucketName := range [][]byte{tblClub, tblEvent, tblShooter} {
 			_, err := tx.CreateBucketIfNotExists(bucketName)
 			if err != nil {
@@ -36,6 +36,9 @@ func makeBuckets() {
 		}
 		return nil
 	})
+	if err != nil{
+		warn.Println(err)
+	}
 }
 
 func getDocument(bucketName []byte, ID string, result interface{}) error {
@@ -431,7 +434,7 @@ func defaultClubName() string {
 func getDefaultClub() Club {
 	var club Club
 	var found bool
-	db.View(func(tx *bolt.Tx) error {
+	err := db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(tblClub)
 		if b == nil {
 			//Club Bucket isn't created yet
@@ -445,6 +448,9 @@ func getDefaultClub() Club {
 			return nil
 		})
 	})
+	if err != nil{
+		warn.Println(err)
+	}
 	if found {
 		return club
 	}

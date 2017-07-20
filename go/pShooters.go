@@ -95,7 +95,10 @@ func importShooters(w http.ResponseWriter, r *http.Request) {
 
 	//Read file contents into bytes buffer.
 	buf := new(bytes.Buffer)
-	buf.ReadFrom(file)
+	_, err = buf.ReadFrom(file)
+	if err != nil{
+		warn.Println(err)
+	}
 
 	//Convert file source into structs.
 	var shooters []Shooter
