@@ -50,7 +50,7 @@
     name: b
     type: checkbox
     v8: v8Bool
-    help: "{{with i .Fields 6}}{{if.Checked}}To change the default club, open the club you want to be the default and tick 'Default Club'. There must only be one default club selected at a time.{{else}}Automatically inserts this Club Name when creating new events in future.{{end}}{{end}}"
+    help: "{{with i .Fields 6}}{{if.Checked}}To change the default club, open the club you want to be the default and tick 'Default Club'. There must only be one default club selected at a time.{{else}}Automatically inserts this Club Name when creating new events.{{end}}{{end}}"
   - label: Website Address
     name: u
     type: url
@@ -268,8 +268,7 @@
     options: searchShootersOptions("", "", defaultClubName())
   - name: r
     label: Age Group
-    v8: v8Uint
-    max: 4
+    v8: v8UintOpt
     options: dataListAgeGroup()
   - name: x
     label: Ladies
@@ -293,91 +292,91 @@
   action: 7
   inputs:
   - name: S
-    label: d
+    label: Shooter
     v8: v8RegexReq
     regex: regexID
-  - name: "g"
-    label: d
+  - name: g
+    label: Grade
     v8: v8UintList
     required: true
     max: len(globalGrades) - 1
     options: globalGradesDataList
-  - name: "r"
-    label: d
-    v8: v8Uint
-    max: 4
+  - name: r
+    label: Age Group
+    v8: v8UintOpt
     options: dataListAgeGroup()
-  - name: "E"
-    label: d
+  - name: E
+    type: submit
+    label: Save
     v8: v8RegexReq
     regex: regexID
 - title: Shooter Details
   handler: shooterInsert
   inputs:
-  - label: d
+  - label: First Name
     name: f
     v8: v8StrReq
-  - label: d
+  - label: Surname
     name: s
     v8: v8StrReq
-  - label: d
+  - label: Club
     name: C
     v8: v8StrReq
-  - label: d
+  - label: Grades
     name: g
     v8: v8UintList
     required: true
     max: len(globalGrades) - 1
     options: globalGradesDataList
-  - label: d
+  - label: Age Group
     name: r
-    v8: v8Uint
-    max: 4
+    v8: v8UintOpt
     options: dataListAgeGroup()
-  - label: d
+  - label: Ladies
     name: x
     v8: v8Bool
-  - label: d
+  - label: Save
+    type: submit
     name: I
     v8: v8RegexReq
     regex: regexID
 - title: Shooter Search
   handler: shooterUpdate
   inputs:
-  - label: d
+  - label: First Name
     name: f
     v8: v8Str
-  - label: d
+  - label: Surname
     name: s
     v8: v8Str
-  - label: d
+  - label: Club
     name: C
     v8: v8Str
 - title: Enter Range Totals
   namespace: eventTotalScores
   inputs:
-  - label: d
+  - label: Total
     name: t
     v8: v8UintReq
     max: 120
-  - label: d
+  - label: Centers
     name: c
     v8: v8Uint
     max: 20
-  - label: d
+  - label: Event
     name: E
     v8: v8RegexReq
     regex: regexID
-  - label: d
+  - label: Range
     name: R
     v8: v8UintReq
     min: 1
     max: 65535
-  - label: d
+  - label: Shooter
     name: S
     v8: v8UintReq
     max: 65535
-  - label: d
+  - label: Shoot Off
     name: h
     v8: v8Uint
     max: 100
@@ -386,7 +385,7 @@
   namespace: eventAvailableGrades
   accesskey: G
   inputs:
-  - label: d
+  - label: Grades
     name: g
     accesskey: G
     v8: v8UintList
@@ -432,7 +431,7 @@
   handler: mapClubs
   method: get
   inputs:
-  - label: d
+  - label: Club
     name: C
     v8: v8Regex
     regex: regexID
@@ -482,8 +481,7 @@
     options: globalGradesDataList
   - label: d
     name: r
-    v8: v8Uint
-    max: len(dataListAgeGroup()) - 1
+    v8: v8UintOpt
     options: dataListAgeGroup()
   - label: d
     name: x
@@ -521,8 +519,7 @@
   - label: Age Group
     name: r
     type: select
-    v8: v8Uint
-    max: 4
+    v8: v8UintOpt
     options: dataListAgeGroup()
   - label: Ladies
     name: x
