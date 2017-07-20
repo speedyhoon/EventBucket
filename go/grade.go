@@ -286,7 +286,7 @@ func loadGrades(filePath string) error {
 	return nil
 }
 
-func buildGradesFile(filePath string) error {
+func buildGradesFile(filePath string) {
 	//Generate JSON from globalDisciplines
 	src, err := json.MarshalIndent(globalDisciplines, "", "\t")
 	if err != nil {
@@ -300,10 +300,8 @@ func buildGradesFile(filePath string) error {
 	err = ioutil.WriteFile(filePath, src, 0777)
 	if err != nil {
 		warn.Println(err, "Unable to write to file", filePath)
-		return err
 	}
 	info.Println("Created grades settings file:", filePath)
-	return nil
 }
 
 //TODO Change the event to point to a certain grade revision with an id and save grades in a different database bucket (table)
