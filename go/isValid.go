@@ -36,18 +36,22 @@ func v8UintList(f *field, inp ...string) {
 	f.valueUintSlice = list
 }
 
-func v8Uint(f *field, inp ...string) {
+//v8UintBasic returns false upon validation failure
+func v8UintBasic(f *field, inp ...string) bool{
 	var err error
 	f.Value = inp[0]
 	f.valueUint, err = stoU(f.Value)
 	if err != nil {
 		//Return error if input string failed to convert.
 		f.Error = err.Error()
-		return
+		return false
 	}
 
-	if !f.Required && f.valueUint == 0 {
-		//f.valueUint is zero by default so assigning zero isn't required
+	return f.Required && f.valueUint != 0
+}
+
+func v8Uint(f *field, inp ...string) {
+	if !v8UintBasic(f, inp...) {
 		return
 	}
 	if f.valueUint < uint(f.min) || f.valueUint > uint(f.max) {
@@ -71,7 +75,9 @@ func v8UintReq(f *field, inp ...string) {
 }
 
 func v8UintOpt(f *field, inp ...string) {
-	v8Uint(f, inp...)
+	if !v8UintBasic(f, inp...) {
+		return
+	}
 
 	var found bool
 	for _, option := range f.Options {
