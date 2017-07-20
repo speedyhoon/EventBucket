@@ -37,7 +37,7 @@ func shooterUpdate(w http.ResponseWriter, r *http.Request, f form) {
 		FirstName: f.Fields[0].Value,
 		Surname:   f.Fields[1].Value,
 		Club:      f.Fields[2].Value,
-		Grade:     f.Fields[3].valueUintSlice,
+		Grades:    f.Fields[3].valueUintSlice,
 		AgeGroup:  f.Fields[4].valueUint,
 		Sex:       f.Fields[5].Checked,
 	}, &Shooter{}, updateShooterDetails)
@@ -71,9 +71,8 @@ func shooterInsert(w http.ResponseWriter, r *http.Request, f form) {
 	_, err = Shooter{
 		FirstName: f.Fields[0].Value,
 		Surname:   f.Fields[1].Value,
-		Club:      f.Fields[2].Value,
-		ClubID:    clubID,
-		Grade:     f.Fields[3].valueUintSlice,
+		Club:      clubID,
+		Grades:    f.Fields[3].valueUintSlice,
 		AgeGroup:  f.Fields[4].valueUint,
 		Sex:       f.Fields[5].Checked,
 	}.insert()
@@ -115,7 +114,7 @@ func importShooters(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				warn.Println(err)
 			} else {
-				shooter.ClubID = clubID
+				shooter.Club = clubID
 			}
 		}
 

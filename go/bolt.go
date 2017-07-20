@@ -184,7 +184,7 @@ func updateShooterDetails(decode interface{}, contents interface{}) interface{} 
 	shooter.FirstName = update.FirstName
 	shooter.Surname = update.Surname
 	shooter.Club = update.Club
-	shooter.Grade = update.Grade
+	shooter.Grades = update.Grades
 	shooter.AgeGroup = update.AgeGroup
 	shooter.Sex = update.Sex
 	return shooter
@@ -445,14 +445,13 @@ func eventShooterInsertDB(decode interface{}, contents interface{}) interface{} 
 		FirstName: newShooter.FirstName,
 		Surname:   newShooter.Surname,
 		Club:      newShooter.Club,
-		ClubID:    newShooter.ClubID,
 		AgeGroup:  newShooter.AgeGroup,
 		Sex:       newShooter.Sex,
 	}
 
 SearchNextGrade:
 	//Loop through the shooters selected grades & add a new shooter for each with a different grades.
-	for _, gradeID := range newShooter.Grade {
+	for _, gradeID := range newShooter.Grades {
 		for _, s := range event.Shooters {
 			if s.EID == shooter.EID && s.Grade == gradeID {
 				warn.Printf("Shooter %v %v is not allowed to enter into %v event twice with the same grade %v.\n", shooter.FirstName, shooter.Surname, event.Name, globalGrades[gradeID].Name)
@@ -471,7 +470,7 @@ SearchNextGrade:
 		//Some events shooters from grade X are automatically added to grade Y, e.g. Shooters in Match Reserve are able to win prizes in the higher grade Match Open.
 		for _, grade := range globalGrades[gradeID].DuplicateTo {
 			//Don't add the shooter because they have already selected to enter into the duplicate grade.
-			if !containsUint(newShooter.Grade, grade) {
+			if !containsUint(newShooter.Grades, grade) {
 				shooter.LinkedID = shooter.ID
 				shooter.ID = event.AutoInc.Shooter
 				shooter.Grade = grade
