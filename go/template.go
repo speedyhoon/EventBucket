@@ -149,14 +149,12 @@ func loader() (err error) {
 				if len(value.([]option)) > 0 {
 					output = attribute
 				}
+			//TODO remove default if !debug
 			default:
 				warn.Printf("attribute type %T not defined\n%v %v\n", value, value, len(value.([]option)))
 			}
 			//return template.HTMLAttr(output)
 			return output
-		},
-		"has": func(attribute string, value interface{}) string {
-			return "HAS"
 		},
 		"grade": findGrade,
 		"ageGroup": func(index uint) string {
@@ -186,7 +184,7 @@ func loader() (err error) {
 		"N": func(start, end uint) (stream chan uint) {
 			stream = make(chan uint)
 			go func() {
-				var i uint = start
+				i := start
 				for ; i <= end; i++ {
 					stream <- i
 				}
@@ -220,10 +218,12 @@ func templater(w http.ResponseWriter, page page) {
 	masterTemplate.Page = page
 
 	//TODO optionally remove during build time if debug == true
-	if err := loader(); err != nil {
-		warn.Println(err)
-		http.Error(wz, err.Error(), http.StatusInternalServerError)
-		return
+	if *debug {
+		if err := loader(); err != nil {
+			warn.Println(err)
+			http.Error(wz, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
 
 	if err := templates.ExecuteTemplate(wz, masterTemplate.Page.template, masterTemplate); err != nil {
