@@ -40,14 +40,14 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 		MenuID:  eventID,
 		Heading: event.Name,
 		Data: map[string]interface{}{
-			"Ranges":        dataListRanges(event.Ranges, false),
-			"Event":         event,
-			"EventDetails":  forms[0],
-			"AddRange":      forms[1],
-			"AddAgg":        forms[2],
-			"RangeDataList": club.Mounds,
+			"Ranges":           dataListRanges(event.Ranges, false),
+			"Event":            event,
+			"EventDetails":     forms[0],
+			"AddRange":         forms[1],
+			"AddAgg":           forms[2],
+			"RangeDataList":    club.Mounds,
 			"eventRangeUpdate": forms[3],
-			"eventAggUpdate": forms[4],
+			"eventAggUpdate":   forms[4],
 		},
 	})
 }
