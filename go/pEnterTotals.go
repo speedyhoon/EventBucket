@@ -19,7 +19,7 @@ func enterTotals(w http.ResponseWriter, r *http.Request, showAll bool, eventID, 
 
 	//If event not found in the database return error event not found (404).
 	if err != nil {
-		errorHandler(w, r, http.StatusNotFound, "event")
+		errorHandler(w, r, "event")
 		return
 	}
 
@@ -82,7 +82,7 @@ func eventRange(ranges []Range, rID string, w http.ResponseWriter, r *http.Reque
 	//If range id is not a number, return 404.
 	rangeID, err := stoU(rID)
 	if err != nil {
-		errorHandler(w, r, http.StatusNotFound, "range")
+		errorHandler(w, r, "range")
 		return Range{}, err
 	}
 
@@ -97,6 +97,6 @@ func eventRange(ranges []Range, rID string, w http.ResponseWriter, r *http.Reque
 		}
 	}
 	//Otherwise event doesn't contain a range with that id and return 404.
-	errorHandler(w, r, http.StatusNotFound, "range")
+	errorHandler(w, r, "range")
 	return Range{}, errors.New("Range with that ID doesn't exists in this event")
 }

@@ -114,7 +114,7 @@ func get404(pageFunc func(http.ResponseWriter, *http.Request)) {
 	http.HandleFunc(urlEvents,
 		func(w http.ResponseWriter, r *http.Request) {
 			if r.URL.Path != urlEvents {
-				errorHandler(w, r, http.StatusNotFound, "")
+				errorHandler(w, r, "")
 				return
 			}
 			pageFunc(w, r)
@@ -152,7 +152,7 @@ func getParameter(url string, pageFunc func(http.ResponseWriter, *http.Request, 
 			if url == urlClub {
 				errorType = "club"
 			}
-			errorHandler(w, r, http.StatusNotFound, errorType)
+			errorHandler(w, r, errorType)
 		}))
 }
 
@@ -179,7 +179,7 @@ func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request,
 			if url == urlClub {
 				errorType = "club"
 			}
-			errorHandler(w, r, http.StatusNotFound, errorType)
+			errorHandler(w, r, errorType)
 		}))
 }
 
@@ -195,7 +195,7 @@ func isGetMethod(h func(w http.ResponseWriter, r *http.Request)) func(w http.Res
 	}
 }
 
-func errorHandler(w http.ResponseWriter, r *http.Request, status int, errorType string) {
+func errorHandler(w http.ResponseWriter, r *http.Request, errorType string) {
 	//All EventBucket page urls and ids are lowercase
 	lowerURL := strings.ToLower(r.URL.Path)
 
@@ -219,7 +219,7 @@ func errorHandler(w http.ResponseWriter, r *http.Request, status int, errorType 
 
 	templater(w, page{
 		Title:  "Error",
-		Status: status,
+		Status: http.StatusNotFound,
 		Data: map[string]interface{}{
 			"Type": errorType,
 		},

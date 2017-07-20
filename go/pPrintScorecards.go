@@ -39,19 +39,19 @@ func barcode2D(w http.ResponseWriter, code barcode.Barcode, err error) {
 func printScorecards(w http.ResponseWriter, r *http.Request, eventID, shooterId string) {
 	event, err := getEvent(eventID)
 	if err != nil {
-		errorHandler(w, r, http.StatusNotFound, "event")
+		errorHandler(w, r, "event")
 		return
 	}
 
 	var shooterID uint
 	shooterID, err = stoU(shooterId)
 	if err != nil || shooterID >= uint(len(event.Shooters)) {
-		errorHandler(w, r, http.StatusNotFound, "shooter")
+		errorHandler(w, r, "shooter")
 		return
 	}
 
 	if len(event.Ranges) < 1 {
-		errorHandler(w, r, http.StatusNotFound, "range")
+		errorHandler(w, r, "range")
 		return
 	}
 	templater(w, page{

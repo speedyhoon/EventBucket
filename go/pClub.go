@@ -11,7 +11,7 @@ func club(w http.ResponseWriter, r *http.Request, clubID string) {
 	club, err := getClub(clubID)
 	//If club not found in the database return error club not found (404).
 	if err != nil {
-		errorHandler(w, r, http.StatusNotFound, "club")
+		errorHandler(w, r, "club")
 		return
 	}
 

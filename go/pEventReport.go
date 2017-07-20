@@ -18,7 +18,7 @@ func eventReportPage(w http.ResponseWriter, r *http.Request, eventID, title stri
 
 	//If event not found in the database return error event not found (404).
 	if err != nil {
-		errorHandler(w, r, http.StatusNotFound, "event")
+		errorHandler(w, r, "event")
 		return page{}
 	}
 
@@ -37,14 +37,14 @@ func shooterReport(w http.ResponseWriter, r *http.Request, eventID, shooterId st
 	event, err := getEvent(eventID)
 	//If event not found in the database, return error event not found (404).
 	if err != nil {
-		errorHandler(w, r, http.StatusNotFound, "event")
+		errorHandler(w, r, "event")
 		return
 	}
 
 	shooterID, err := strconv.Atoi(shooterId)
 	//If shooter not available in the event, return error shooter not found (404).
 	if err != nil || shooterID >= len(event.Shooters) {
-		errorHandler(w, r, http.StatusNotFound, "shooter")
+		errorHandler(w, r, "shooter")
 		return
 	}
 
