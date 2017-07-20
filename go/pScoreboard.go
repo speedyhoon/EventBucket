@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-func scoreboard(w http.ResponseWriter, r *http.Request, eventID, rangeId string) {
+func scoreboard(w http.ResponseWriter, r *http.Request, eventID, rangeID string) {
 	event, err := getEvent(eventID)
 
 	//If event not found in the database return error event not found (404).
@@ -13,17 +13,17 @@ func scoreboard(w http.ResponseWriter, r *http.Request, eventID, rangeId string)
 		return
 	}
 
-	rangeIDstr, err := stoU(rangeId)
+	uRangeID, err := stoU(rangeID)
 	var ranges []Range
 	if err == nil {
-		ranges = findAggs(rangeIDstr, event.Ranges)
+		ranges = findAggs(uRangeID, event.Ranges)
 	}
 	if len(ranges) < 1 {
 		errorHandler(w, r, "range")
 		return
 	}
 
-	sortShooters(rangeId).Sort(event.Shooters)
+	sortShooters(rangeID).Sort(event.Shooters)
 
 	templater(w, page{
 		Title:    "Scoreboard",
@@ -34,7 +34,7 @@ func scoreboard(w http.ResponseWriter, r *http.Request, eventID, rangeId string)
 		Data: map[string]interface{}{
 			"Event":       event,
 			"Ranges":      ranges,
-			"SortByRange": rangeId,
+			"SortByRange": rangeID,
 			"colspan":     5 + len(ranges),
 			"medalsLimit": 3,
 		},

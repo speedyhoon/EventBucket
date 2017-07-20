@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"image/png"
+	"io"
 	"net/http"
 	"strings"
 
@@ -22,7 +23,7 @@ func barcodeQR(w http.ResponseWriter, r *http.Request, parameters string) {
 	barcode2D(w, qrCode, err)
 }
 
-func barcode2D(w http.ResponseWriter, code barcode.Barcode, err error) {
+func barcode2D(w io.Writer, code barcode.Barcode, err error) {
 	if err != nil {
 		warn.Println(err)
 		return
@@ -36,16 +37,15 @@ func barcode2D(w http.ResponseWriter, code barcode.Barcode, err error) {
 	fmt.Fprint(w, buf.String())
 }
 
-func printScorecards(w http.ResponseWriter, r *http.Request, eventID, shooterId string) {
+func printScorecards(w http.ResponseWriter, r *http.Request, eventID, shooterID string) {
 	event, err := getEvent(eventID)
 	if err != nil {
 		errorHandler(w, r, "event")
 		return
 	}
 
-	var shooterID uint
-	shooterID, err = stoU(shooterId)
-	if err != nil || shooterID >= uint(len(event.Shooters)) {
+	uShooterID, err := stoU(shooterID)
+	if err != nil || uShooterID >= uint(len(event.Shooters)) {
 		errorHandler(w, r, "shooter")
 		return
 	}
@@ -60,7 +60,7 @@ func printScorecards(w http.ResponseWriter, r *http.Request, eventID, shooterId 
 		MenuID: event.ID,
 		Data: map[string]interface{}{
 			"Ranges":    event.Ranges,
-			"Shooter":   event.Shooters[shooterID],
+			"Shooter":   event.Shooters[uShooterID],
 			"EventID":   event.ID,
 			"EventName": event.Name,
 		},
