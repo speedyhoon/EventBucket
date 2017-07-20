@@ -23,7 +23,7 @@ type page struct {
 	Data                         map[string]interface{}
 	Error                        error
 	template                     string
-	Section                      string //Which template to load within the main template
+	SubTemplate                  string //Which template to load within the main template
 	skipCSP                      bool
 	Status                       int
 }
@@ -214,7 +214,7 @@ func templater(w http.ResponseWriter, page page) {
 	}
 
 	//Convert page.Title to the lowercase HTML template file name
-	page.Section = strings.Replace(strings.ToLower(page.Title), " ", "", -1)
+	page.SubTemplate = strings.Replace(strings.ToLower(page.Title), " ", "", -1)
 
 	//Add page content just generated to the default page environment (which has CSS and JS, etc).
 	masterTemplate.Page = page
