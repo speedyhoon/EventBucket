@@ -13,7 +13,6 @@ import (
 const (
 	get         = "GET"
 	post        = "POST"
-	put         = "PUT"
 	dirCSS      = "/c/"
 	dirJS       = "/j/"
 	dirWEBP     = "/w/"
@@ -77,7 +76,7 @@ func init() {
 	getParameters(urlEnterTotalsAll, enterTotalsAll, regexPath)
 
 	//TODO BUG any url breaks when appending "&*((&*%"
-	get404(urlEvents, events)
+	get404(events)
 }
 
 func endpoint(method, url string, formID uint8, runner func(http.ResponseWriter, *http.Request, form)) {
@@ -92,13 +91,13 @@ func endpoint(method, url string, formID uint8, runner func(http.ResponseWriter,
 				http.Redirect(w, r, r.Referer(), http.StatusMethodNotAllowed)
 				return
 			}
-			form, ok := validBoth(r, formID)
+			f, ok := validBoth(r, formID)
 			if !ok && method != get {
-				setSession(w, form)
+				setSession(w, f)
 				http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 				return
 			}
-			runner(w, r, form)
+			runner(w, r, f)
 		},
 	)
 }
@@ -115,7 +114,7 @@ func processSocket(ws *websocket.Conn) {
 			break
 		}
 		//The first character of the websocket message is used as a "router" to decide where to send the message.
-		formID = uint8(msg[0])
+		formID = msg[0]
 		//Ignore any messages that do not have a case in this switch.
 		switch formID {
 		case eventTotalScores:
