@@ -107,6 +107,12 @@ func processSocket(ws *websocket.Conn) {
 	var msg string
 	var formID uint8
 	var err error
+	send := func(str string){
+		err := websocket.Message.Send(ws, str)
+		if err != nil{
+			warn.Println(err)
+		}
+	}
 	//Start a loop to listen to incoming websocket traffic from all clients.
 	for {
 		//Ignore any empty messages.
@@ -125,9 +131,9 @@ func processSocket(ws *websocket.Conn) {
 				continue
 			}
 			if form, passed := isValid(form, formID); passed {
-				websocket.Message.Send(ws, eventTotalUpsert(form.Fields))
+				send(eventTotalUpsert(form.Fields))
 			} else {
-				websocket.Message.Send(ws, fmt.Sprintf("Unable to save %v.", msg))
+				send(fmt.Sprintf("Unable to save %v.", msg))
 			}
 		case eventUpdateShotScore:
 			var form url.Values
@@ -138,7 +144,7 @@ func processSocket(ws *websocket.Conn) {
 			}
 
 			if form, passed := isValid(form, formID); passed {
-				websocket.Message.Send(ws, "!"+updateShotScores(form.Fields))
+				send("!"+updateShotScores(form.Fields))
 			} else {
 				var response []byte
 				response, err = json.Marshal(form)
@@ -146,7 +152,7 @@ func processSocket(ws *websocket.Conn) {
 					warn.Println(err)
 					continue
 				}
-				websocket.Message.Send(ws, fmt.Sprintf("!%U%s", msg[0], response))
+				send(fmt.Sprintf("!%U%s", msg[0], response))
 			}
 		case 126: //getDisciplines:
 			var response []byte
@@ -155,7 +161,7 @@ func processSocket(ws *websocket.Conn) {
 				warn.Println(err)
 				continue
 			}
-			websocket.Message.Send(ws, fmt.Sprintf("~%s", response))
+			send(fmt.Sprintf("~%s", response))
 		}
 	}
 }
