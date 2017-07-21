@@ -73,11 +73,14 @@ func mapClubs(w http.ResponseWriter, r *http.Request, f form) {
 
 func clubInsert(w http.ResponseWriter, r *http.Request, f form) {
 	name := f.Fields[0].Value
-	var ID string
 
 	//Check if a club with that name already exists.
-	_, err := getClubByName(name)
-	if err != nil {
+	club, ok := getClubByName(name)
+	ID := club.ID
+	
+	//Club doesn't exist so try to insert it
+	if !ok {
+		var err error
 		ID, err = Club{
 			Name:      name,
 			IsDefault: getDefaultClub().ID == "", //Set this club to the default if no other clubs are the default
@@ -86,10 +89,9 @@ func clubInsert(w http.ResponseWriter, r *http.Request, f form) {
 			formError(w, r, f, err)
 			return
 		}
-	} else {
-		formError(w, r, f, fmt.Errorf("A club with name '%v' already exists.\n%v", name, err))
-		return
 	}
+	//Else if a club already exists with the same name, redirect to the existing club
+	
 	http.Redirect(w, r, urlClub+ID+"#edit", http.StatusSeeOther)
 }
 

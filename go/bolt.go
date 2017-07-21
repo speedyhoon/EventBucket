@@ -432,29 +432,35 @@ func defaultClubName() string {
 }
 
 func getDefaultClub() Club {
+	const success = "1"
 	var club Club
 	var found bool
-	err := db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(tblClub)
+	view(tblClub, &club, func(interface{})error{
+		if club.IsDefault {
+			found = true
+			return fmt.Errorf(success)
+		}
+		return nil
+	})
+	if found {
+		return club
+	}
+	return Club{}
+}
+func view(table []byte, club interface{}, myCall func(interface{})error)error{
+	return db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(table)
 		if b == nil {
 			//Club Bucket isn't created yet
 			return nil
 		}
 		return b.ForEach(func(_, value []byte) error {
-			if json.Unmarshal(value, &club) == nil && club.IsDefault {
-				found = true
-				return fmt.Errorf("no error")
+			if json.Unmarshal(value, club) == nil {
+				myCall(club)
 			}
 			return nil
 		})
 	})
-	if err != nil{
-		warn.Println(err)
-	}
-	if found {
-		return club
-	}
-	return Club{}
 }
 
 func eventShooterInsertDB(decode interface{}, contents interface{}) interface{} {
@@ -573,10 +579,7 @@ func b36toBy(id string) ([]byte, error) {
 	return b, nil
 }
 
-func getSearchShooters(firstName, surname, club string) ([]Shooter, uint, error) {
-	var shooters []Shooter
-	var totalQty uint
-
+func getSearchShooters(firstName, surname, club string) (shooters []Shooter, err error) {
 	//Search for shooters in the default club if all search values are empty.
 	if firstName == "" && surname == "" && club == "" {
 		club = defaultClubName()
@@ -586,12 +589,11 @@ func getSearchShooters(firstName, surname, club string) ([]Shooter, uint, error)
 	surname = strings.ToLower(surname)
 	club = strings.ToLower(club)
 
-	err := db.View(func(tx *bolt.Tx) error {
+	return shooters, db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(tblShooter)
 		if b == nil {
 			return fmt.Errorf(eNoBucket, tblShooter)
 		}
-		totalQty = uint(tx.Bucket(tblShooter).Stats().KeyN)
 		return b.ForEach(func(_, value []byte) error {
 			var shooter Shooter
 			//strings.Contains returns true when sub-string is "" (empty string)
@@ -601,7 +603,6 @@ func getSearchShooters(firstName, surname, club string) ([]Shooter, uint, error)
 			return nil
 		})
 	})
-	return shooters, totalQty, err
 }
 
 func searchShootersOptions(firstName, surname, club string) []option {
@@ -634,10 +635,10 @@ func searchShootersOptions(firstName, surname, club string) []option {
 	return shooters
 }
 
-func getClubByName(clubName string) (Club, error) {
-	var club Club
-	const success = "Found the club you were looking for"
+func getClubByName(clubName string) (Club, bool) {
 	clubName = strings.ToLower(clubName)
+	const success = "1"
+	var club Club
 
 	err := db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(tblClub)
@@ -652,9 +653,8 @@ func getClubByName(clubName string) (Club, error) {
 			return nil
 		})
 	})
-	//TODO this is quite dodgy
 	if err != nil && err.Error() == success {
-		return club, nil
+		return club, true
 	}
-	return Club{}, fmt.Errorf("Couldn't find club with name %v", clubName)
+	return Club{}, false
 }
