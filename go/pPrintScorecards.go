@@ -37,19 +37,7 @@ func barcode2D(w io.Writer, code barcode.Barcode, err error) {
 	fmt.Fprint(w, buf.String())
 }
 
-func printScorecards(w http.ResponseWriter, r *http.Request, eventID, shooterID string) {
-	event, err := getEvent(eventID)
-	if err != nil {
-		errorHandler(w, r, "event")
-		return
-	}
-
-	uShooterID, err := stoU(shooterID)
-	if err != nil || uShooterID >= uint(len(event.Shooters)) {
-		errorHandler(w, r, "shooter")
-		return
-	}
-
+func printScorecards(w http.ResponseWriter, r *http.Request, event Event, shooterID sID) {
 	if len(event.Ranges) < 1 {
 		errorHandler(w, r, "range")
 		return
@@ -60,7 +48,7 @@ func printScorecards(w http.ResponseWriter, r *http.Request, eventID, shooterID 
 		MenuID: event.ID,
 		Data: map[string]interface{}{
 			"Ranges":    event.Ranges,
-			"Shooter":   event.Shooters[uShooterID],
+			"Shooter":   event.Shooters[shooterID],
 			"EventID":   event.ID,
 			"EventName": event.Name,
 		},

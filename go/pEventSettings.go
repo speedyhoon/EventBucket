@@ -5,15 +5,7 @@ import (
 	"net/http"
 )
 
-func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
-	event, err := getEvent(eventID)
-
-	//If the event isn't found in the database, return error event not found (404).
-	if err != nil {
-		errorHandler(w, r, "event")
-		return
-	}
-
+func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
 	var club Club
 	if !event.Closed && event.Club != "" {
 		club, _ = getClubByName(event.Club)
@@ -29,15 +21,15 @@ func eventSettings(w http.ResponseWriter, r *http.Request, eventID string) {
 		forms[0].Fields[4].Checked = event.Closed
 		forms[0].Fields[5].Value = event.ID
 	}
-	forms[1].Fields[1].Value = eventID
+	forms[1].Fields[1].Value = event.ID
 
 	forms[2].Fields[1].Options = dataListRanges(event.Ranges, true)
-	forms[2].Fields[2].Value = eventID
+	forms[2].Fields[2].Value = event.ID
 
 	templater(w, page{
 		Title:   "Event Settings",
 		Menu:    urlEvents,
-		MenuID:  eventID,
+		MenuID:  event.ID,
 		Heading: event.Name,
 		Data: map[string]interface{}{
 			"Ranges":           dataListRanges(event.Ranges, false),

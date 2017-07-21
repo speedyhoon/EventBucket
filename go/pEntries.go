@@ -2,14 +2,7 @@ package main
 
 import "net/http"
 
-func entries(w http.ResponseWriter, r *http.Request, eventID string) {
-	event, err := getEvent(eventID)
-	//If event not found in the database return error event not found (404).
-	if err != nil {
-		errorHandler(w, r, "event")
-		return
-	}
-
+func entries(w http.ResponseWriter, r *http.Request, event Event) {
 	action, pageForms := sessionForms(w, r, eventShooterNew, eventShooterExisting, eventAvailableGrades)
 	shooterEntry := pageForms[0]
 	if action == eventShooterExisting {
@@ -28,18 +21,18 @@ func entries(w http.ResponseWriter, r *http.Request, eventID string) {
 
 	grades := eventGrades(event.Grades)
 	shooterEntry.Fields[6].Options = grades
-	shooterEntry.Fields[6].Value = eventID
-	shooterEntry.Fields[7].Value = eventID
-	shooterEntry.Fields = append(shooterEntry.Fields, field{Value: eventID})
+	shooterEntry.Fields[6].Value = event.ID
+	shooterEntry.Fields[7].Value = event.ID
+	shooterEntry.Fields = append(shooterEntry.Fields, field{Value: event.ID})
 
 	//AvailableGrades
 	pageForms[2].Fields[0].Options = availableGrades(event.Grades)
-	pageForms[2].Fields[1].Value = eventID
+	pageForms[2].Fields[1].Value = event.ID
 
 	templater(w, page{
 		Title:   "Entries",
 		Menu:    urlEvents,
-		MenuID:  eventID,
+		MenuID:  event.ID,
 		Heading: event.Name,
 		Data: map[string]interface{}{
 			"Event":           event,

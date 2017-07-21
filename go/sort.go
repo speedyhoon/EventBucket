@@ -50,11 +50,8 @@ func sorterShootOff(rangeID string, c1, c2 *EventShooter) bool {
 	return c1.Scores[rangeID].ShootOff > c2.Scores[rangeID].ShootOff
 }
 
-func sortShooters(rangeID string) *multiEventShooterSorter {
-	if rangeID != "" {
-		return orderShooters(rangeID, sorterGrade, sorterTotal, sorterCenters, sorterCountBack, sorterCountBack2, sorterShootOff)
-	}
-	return &multiEventShooterSorter{}
+func sortShooters(rangeID rID) *multiEventShooterSorter {
+	return orderShooters(fmt.Sprintf("%v", rangeID), sorterGrade, sorterTotal, sorterCenters, sorterCountBack, sorterCountBack2, sorterShootOff)
 }
 
 func orderShooters(rangeID string, sort ...sortEventShooter) *multiEventShooterSorter {
@@ -131,7 +128,7 @@ func addGradeSeparatorToShooterObjectAndPositions(eventShooters []EventShooter, 
 		score.Position = position
 		score.Ordinal = ordinal(position, shooterTie)
 		if eventShooters[shooterID].Scores == nil {
-			eventShooters[shooterID].Scores = make(map[string]Score, 1)
+			eventShooters[shooterID].Scores = make(ScoreMap, 1)
 		}
 		eventShooters[shooterID].Scores[rangeID] = score
 		previousShooter = shooterID

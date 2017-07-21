@@ -125,7 +125,7 @@ func getRedirectPermanent(url string, pageFunc func(http.ResponseWriter, *http.R
 	http.Handle(url+"/", http.RedirectHandler(url, http.StatusMovedPermanently))
 }
 
-func getParameter(url string, pageFunc func(http.ResponseWriter, *http.Request, string), regex *regexp.Regexp) {
+func getParameters(url string, pageFunc interface{}, regex *regexp.Regexp) {
 	var parameters, lowerParams string
 	http.HandleFunc(url,
 		isGetMethod(func(w http.ResponseWriter, r *http.Request) {
@@ -139,34 +139,72 @@ func getParameter(url string, pageFunc func(http.ResponseWriter, *http.Request, 
 			}
 
 			if regex.MatchString(lowerParams) {
-				pageFunc(w, r, lowerParams)
+				findHandler(pageFunc, w, r, lowerParams)
 				return
 			}
 			errorWrapper(w, r, url)
 		}))
 }
 
-func getParameters(url string, pageFunc func(http.ResponseWriter, *http.Request, string, string), regex *regexp.Regexp) {
-	var parameters, lowerParams string
-	var ids []string
-	http.HandleFunc(url,
-		isGetMethod(func(w http.ResponseWriter, r *http.Request) {
-			parameters = strings.TrimPrefix(r.URL.Path, url)
-			lowerParams = strings.ToLower(parameters)
+type sID uint	//shooterID
+type rID uint	//rangeID
 
-			if parameters != lowerParams {
-				//Redirect to page with lowercase parameters.
-				http.Redirect(w, r, url+lowerParams, http.StatusSeeOther)
+func findHandler(pageFunc interface{}, w http.ResponseWriter, r *http.Request, lowerParams string) {
+	ids := strings.Split(lowerParams, "/")
+	switch pageFunc.(type) {
+	//pPrintScorecards.go
+	case func(http.ResponseWriter, *http.Request, string):
+		pageFunc.(func(http.ResponseWriter, *http.Request, string))(w, r, lowerParams)
+
+	case func(http.ResponseWriter, *http.Request, string, string):
+		pageFunc.(func(http.ResponseWriter, *http.Request, string, string))(w, r, ids[0], ids[1])
+
+	//pEntries.go
+	case func(http.ResponseWriter, *http.Request, Event):
+		event, err := getEvent(ids[0])
+		if err != nil {
+			errorHandler(w, r, "event")
 				return
 			}
+		pageFunc.(func(http.ResponseWriter, *http.Request, Event))(w, r, event)
 
-			if regex.MatchString(lowerParams) {
-				ids = strings.Split(lowerParams, "/")
-				pageFunc(w, r, ids[0], ids[1])
+	//pClub.go
+	case func(http.ResponseWriter, *http.Request, Club):
+		club, err := getClub(ids[0])
+		//If club not found in the database return error club not found (404).
+		if err != nil {
+			errorHandler(w, r, "club")
 				return
 			}
-			errorWrapper(w, r, url)
-		}))
+		pageFunc.(func(http.ResponseWriter, *http.Request, Club))(w, r, club)
+
+	case func(http.ResponseWriter, *http.Request, Event, sID):
+		event, err := getEvent(ids[0])
+		if err != nil {
+			errorHandler(w, r, "event")
+			return
+		}
+		shooterID, err := stoU(ids[1])
+		if err != nil || shooterID >= uint(len(event.Shooters)) {
+			errorHandler(w, r, "shooter")
+			return
+		}
+		pageFunc.(func(http.ResponseWriter, *http.Request, Event, sID))(w, r, event, sID(shooterID))
+	
+	//pScoreboard.go
+	case func(http.ResponseWriter, *http.Request, Event, rID):
+		event, err := getEvent(ids[0])
+		if err != nil {
+			errorHandler(w, r, "event")
+			return
+		}
+		rangeID, err := stoU(ids[1])
+		if err != nil {
+			errorHandler(w, r, "range")
+			return
+		}
+		pageFunc.(func(http.ResponseWriter, *http.Request, Event, rID))(w, r, event, rID(rangeID))
+	}
 }
 
 func errorWrapper(w http.ResponseWriter, r *http.Request, url string) {

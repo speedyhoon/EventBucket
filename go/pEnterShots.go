@@ -7,25 +7,16 @@ import (
 	"strings"
 )
 
-func enterShotsAll(w http.ResponseWriter, r *http.Request, eventID, rangeID string) {
-	enterShots(w, r, true, eventID, rangeID)
+func enterShotsAll(w http.ResponseWriter, r *http.Request, event Event, rangeID rID) {
+	enterShots(w, r, true, event, rangeID)
 }
 
-func enterShotsIncomplete(w http.ResponseWriter, r *http.Request, eventID, rangeID string) {
-	enterShots(w, r, false, eventID, rangeID)
+func enterShotsIncomplete(w http.ResponseWriter, r *http.Request, event Event, rangeID rID) {
+	enterShots(w, r, false, event, rangeID)
 }
 
-func enterShots(w http.ResponseWriter, r *http.Request, showAll bool, eventID, rangeID string) {
-	event, err := getEvent(eventID)
-
-	//If event not found in the database return error event not found (404).
-	if err != nil {
-		errorHandler(w, r, "event")
-		return
-	}
-
-	var currentRange Range
-	currentRange, err = eventRange(event.Ranges, rangeID, w, r)
+func enterShots(w http.ResponseWriter, r *http.Request, showAll bool, event Event, rangeID rID) {
+	currentRange, err := eventRange(event.Ranges, rangeID, w, r)
 	if err != nil {
 		return
 	}
@@ -54,7 +45,7 @@ func enterShots(w http.ResponseWriter, r *http.Request, showAll bool, eventID, r
 	})
 }
 
-func updateShotScores( /*w http.ResponseWriter, r *http.Request,*/ fields []field /*, redirect func()*/) string {
+func updateShotScores(fields []field) string {
 	event, err := getEvent(fields[1].Value)
 	if err != nil {
 		return fmt.Sprintf("Event with id %v doesn't exist", fields[1].Value)

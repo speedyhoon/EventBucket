@@ -55,19 +55,19 @@ func init() {
 	serveDir(dirJS, true)
 	serveDir(dirWEBP, false)
 	http.Handle("/k/", websocket.Handler(processSocket))
-	getParameter("/q/", barcodeQR, regexBarcode)
-	getParameter("/x/", barcodeDM, regexBarcode)
+	getParameters("/q/", barcodeQR, regexBarcode)
+	getParameters("/x/", barcodeDM, regexBarcode)
 	getRedirectPermanent(urlAbout, about)
 	getRedirectPermanent(urlSettings, settings)
 	getRedirectPermanent(urlArchive, eventArchive)
 	getRedirectPermanent(urlClubs, clubs)
-	getParameter(urlClub, club, regexID)
-	getParameter(urlEntries, entries, regexID)
-	getParameter(urlEntryList, entryList, regexID)
-	getParameter(urlEventSettings, eventSettings, regexID)
-	getParameter(urlEventReport, eventReport, regexID)
+	getParameters(urlClub, club, regexID)
+	getParameters(urlEntries, entries, regexID)
+	getParameters(urlEntryList, entryList, regexID)
+	getParameters(urlEventSettings, eventSettings, regexID)
+	getParameters(urlEventReport, eventReport, regexID)
 	getParameters(urlShooterReport, shooterReport, regexPath)
-	getParameter(urlShootersReport, shootersReport, regexID)
+	getParameters(urlShootersReport, shootersReport, regexID)
 	getParameters(urlScoreboard, scoreboard, regexPath)
 	getParameters(urlEnterShots, enterShotsIncomplete, regexPath)
 	getParameters(urlEnterShotsAll, enterShotsAll, regexPath)
@@ -98,8 +98,7 @@ func endpoint(method, url string, formID uint8, runner func(http.ResponseWriter,
 				return
 			}
 			runner(w, r, f)
-		},
-	)
+		})
 }
 
 //Start listening to each websocket client that connects.
