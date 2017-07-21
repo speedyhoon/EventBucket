@@ -6,25 +6,16 @@ import (
 	"net/http"
 )
 
-func enterTotalsAll(w http.ResponseWriter, r *http.Request, eventID, rangeID string) {
-	enterTotals(w, r, true, eventID, rangeID)
+func enterTotalsAll(w http.ResponseWriter, r *http.Request, event Event, rangeID rID) {
+	enterTotals(w, r, true, event, rangeID)
 }
 
-func enterTotalsIncomplete(w http.ResponseWriter, r *http.Request, eventID, rangeID string) {
-	enterTotals(w, r, false, eventID, rangeID)
+func enterTotalsIncomplete(w http.ResponseWriter, r *http.Request, event Event, rangeID rID) {
+	enterTotals(w, r, false, event, rangeID)
 }
 
-func enterTotals(w http.ResponseWriter, r *http.Request, showAll bool, eventID, rangeID string) {
-	event, err := getEvent(eventID)
-
-	//If event not found in the database return error event not found (404).
-	if err != nil {
-		errorHandler(w, r, "event")
-		return
-	}
-
-	var currentRange Range
-	currentRange, err = eventRange(event.Ranges, rangeID, w, r)
+func enterTotals(w http.ResponseWriter, r *http.Request, showAll bool, event Event, rangeID rID) {
+	currentRange, err := eventRange(event.Ranges, rangeID, w, r)
 	if err != nil {
 		return
 	}
@@ -78,16 +69,9 @@ func eventTotalUpsert(fields []field) string {
 	return fmt.Sprintf("Saved %v.%v for shooter %v on range %v in event %v.", fields[0].valueUint, fields[1].valueUint, fields[4].valueUint, fields[3].Value, fields[2].Value)
 }
 
-func eventRange(ranges []Range, rID string, w http.ResponseWriter, r *http.Request) (Range, error) {
-	//If range id is not a number, return 404.
-	rangeID, err := stoU(rID)
-	if err != nil {
-		errorHandler(w, r, "range")
-		return Range{}, err
-	}
-
+func eventRange(ranges []Range, rangeID rID, w http.ResponseWriter, r *http.Request) (Range, error) {
 	for _, r := range ranges {
-		if r.ID == rangeID {
+		if r.ID == uint(rangeID) {
 			//If range is an aggregate return an error message.
 			if r.IsAgg {
 				return Range{}, errors.New("Range is an aggregate and scores can't be entered directly")

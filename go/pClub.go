@@ -7,17 +7,10 @@ import (
 	"strings"
 )
 
-func club(w http.ResponseWriter, r *http.Request, clubID string) {
-	club, err := getClub(clubID)
-	//If club not found in the database return error club not found (404).
-	if err != nil {
-		errorHandler(w, r, "club")
-		return
-	}
-
+func club(w http.ResponseWriter, r *http.Request, club Club) {
 	action, forms := sessionForms(w, r, clubDetails, clubMoundNew)
 
-	//Club Details Form
+	//Club Details form
 	if action != clubDetails {
 		forms[0].Fields[0].Value = club.Name
 		forms[0].Fields[1].Value = club.Address
@@ -36,7 +29,7 @@ func club(w http.ResponseWriter, r *http.Request, clubID string) {
 
 	templater(w, page{
 		Title:   "Club",
-		MenuID:  clubID,
+		MenuID:  club.ID,
 		Menu:    urlClubs,
 		skipCSP: true,
 		Error:   forms[2].Error,
@@ -51,13 +44,11 @@ func club(w http.ResponseWriter, r *http.Request, clubID string) {
 
 func clubs(w http.ResponseWriter, r *http.Request) {
 	listClubs, err := getClubs()
-	if err != nil {
-		warn.Println(err)
-	}
 	_, forms := sessionForms(w, r, clubNew)
 	templater(w, page{
 		Title:   "Clubs",
 		skipCSP: true,
+		Error:   err,
 		Data: map[string]interface{}{
 			"clubNew":   forms[0],
 			"ListClubs": listClubs,

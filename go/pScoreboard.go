@@ -4,20 +4,8 @@ import (
 	"net/http"
 )
 
-func scoreboard(w http.ResponseWriter, r *http.Request, eventID, rangeID string) {
-	event, err := getEvent(eventID)
-
-	//If event not found in the database return error event not found (404).
-	if err != nil {
-		errorHandler(w, r, "event")
-		return
-	}
-
-	uRangeID, err := stoU(rangeID)
-	var ranges []Range
-	if err == nil {
-		ranges = findAggs(uRangeID, event.Ranges)
-	}
+func scoreboard(w http.ResponseWriter, r *http.Request, event Event, rangeID rID) {
+	ranges := findAggs(uint(rangeID), event.Ranges)
 	if len(ranges) < 1 {
 		errorHandler(w, r, "range")
 		return
@@ -28,7 +16,7 @@ func scoreboard(w http.ResponseWriter, r *http.Request, eventID, rangeID string)
 	templater(w, page{
 		Title:    "Scoreboard",
 		Menu:     urlEvents,
-		MenuID:   eventID,
+		MenuID:   event.ID,
 		Heading:  event.Name,
 		template: "scoreboard",
 		Data: map[string]interface{}{
@@ -41,7 +29,7 @@ func scoreboard(w http.ResponseWriter, r *http.Request, eventID, rangeID string)
 	})
 }
 
-//FindAggs expands any aggregates within the slice supplied
+//findAggs expands any aggregates within the slice supplied
 func findAggs(rangeID uint, ranges []Range) (rs []Range) {
 	for _, r := range ranges {
 		if r.ID == rangeID {
