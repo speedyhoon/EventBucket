@@ -156,7 +156,6 @@ func loader() (err error) {
 			//return template.HTMLAttr(output)
 			return output
 		},
-		"grade": findGrade,
 		"ageGroup": func(index uint) string {
 			if index >= 1 && index < uint(len(dataListAgeGroup())) {
 				return dataListAgeGroup()[index].Label
@@ -166,31 +165,13 @@ func loader() (err error) {
 		"ordinal": func(x int) string {
 			return ordinal(uint(x), false)
 		},
-		"findRange": func(id interface{}, ranges []Range) Range {
-			var rangeID uint
-			switch id.(type) {
-			case uint:
-				rangeID = id.(uint)
-			case string:
-				rangeID, _ = stoU(id.(string))
-			}
+		"findRange": func(rangeID uint, ranges []Range)Range{
 			for _, r := range ranges {
 				if rangeID == r.ID {
 					return r
 				}
 			}
 			return Range{}
-		},
-		"N": func(start, end uint) (stream chan uint) {
-			stream = make(chan uint)
-			go func() {
-				i := start
-				for ; i <= end; i++ {
-					stream <- i
-				}
-				close(stream)
-			}()
-			return
 		},
 	}).ParseFiles(
 		filepath.Join(runDir, "h"),
