@@ -107,6 +107,13 @@ type Score struct {
 	//Warning    uint8  `json:"w,omitempty"`
 }
 
+type ScoreMap map[string]Score
+
+func (s ScoreMap)get(id uint)(sc Score, ok bool){
+	sc, ok = s[fmt.Sprintf("%d", id)]
+	return
+}
+
 //EventShooter is exported
 type EventShooter struct {
 	ID             uint             `json:"I"`
@@ -115,7 +122,7 @@ type EventShooter struct {
 	Club           string           `json:"C,omitempty"`
 	Grade          uint             `json:"G,omitempty"`
 	AgeGroup       uint             `json:"r,omitempty"`
-	Scores         map[string]Score `json:"O,omitempty"` //Using string instead of uint as an index because JSON doesn't support map[uint]Score
+	Scores         ScoreMap         `json:"O,omitempty"` //Using string instead of uint as an index because JSON doesn't support map[uint]Score
 	LinkedID       uint             `json:"l,omitempty"` //For duplicating shooters that are in different classes with the same score
 	EID            string           `json:"V,omitempty"` //Points to EventBucket Shooter ID
 	Hidden         bool             `json:"h,omitempty"`
