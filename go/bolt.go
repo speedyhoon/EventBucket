@@ -247,7 +247,7 @@ func eventAddAgg(decode interface{}, contents interface{}) interface{} {
 	rangeID := aggRange.StrID()
 	for sID, shooter := range event.Shooters {
 		if shooter.Scores != nil {
-			event.Shooters[sID].Scores[rangeID] = calcShooterAgg(aggRange.Aggs, shooter.Scores)
+			event.Shooters[sID].Scores[rangeID] = shooter.Scores.calcAgg(aggRange.Aggs)
 		}
 	}
 	return event
@@ -531,47 +531,36 @@ func upsertScore(decode interface{}, contents interface{}) interface{} {
 	shooter := *contents.(*shooterScore)
 
 	if event.Shooters[shooter.id].Scores == nil {
-		event.Shooters[shooter.id].Scores = make(map[string]Score)
+		event.Shooters[shooter.id].Scores = make(ScoreMap)
 	}
 	event.Shooters[shooter.id].Scores[shooter.rangeID] = shooter.score
 
-	event.Shooters[shooter.id].Scores = calcShooterAggs(event.Ranges, event.Shooters[shooter.id].Scores)
+	event.Shooters[shooter.id].Scores.calcShooterAggs(event.Ranges)
 	return event
 }
 
-func calcShooterAggs(ranges []Range, shooterScores map[string]Score) map[string]Score {
+func (shooterScores ScoreMap)calcShooterAggs(ranges []Range) ScoreMap {
 	for _, r := range ranges {
 		if r.IsAgg {
-			shooterScores[r.StrID()] = calcShooterAgg(r.Aggs, shooterScores)
+			shooterScores[r.StrID()] = shooterScores.calcAgg(r.Aggs)
 		}
 	}
 	return shooterScores
 }
 
-func calcShooterAgg(aggRangeIDs []uint, shooterScores map[string]Score) Score {
-	var total, centers, centers2, shootOff uint
-	var countBack, countBack2 string
+func (shooterScores ScoreMap)calcAgg(aggRangeIDs []uint) (total Score) {
 	for _, id := range aggRangeIDs {
-		aggID := fmt.Sprintf("%d", id)
-		score, ok := shooterScores[aggID]
-		if ok {
-			total += score.Total
-			centers += score.Centers
-			centers2 += score.Centers2
-			countBack = score.CountBack
-			countBack2 = score.CountBack2
-			shootOff = score.ShootOff
+		if score, ok := shooterScores.get(id); ok {
+			total.Total += score.Total
+			total.Centers += score.Centers
+			total.Centers2 += score.Centers2
+			total.CountBack = score.CountBack
+			total.CountBack2 = score.CountBack2
+			total.ShootOff = score.ShootOff
 		}
 	}
-	return Score{
-		Total:      total,
-		Centers:    centers,
-		Centers2:   centers2,
-		CountBack:  countBack,
-		CountBack2: countBack2,
-		ShootOff:   shootOff,
+	return total
 	}
-}
 
 //Converts base36 string to []byte used for bolt maps
 func b36toBy(id string) ([]byte, error) {
