@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
+	//"bytes"
+	//"encoding/json"
 	"net/http"
 )
 
@@ -22,16 +22,16 @@ func shooters(w http.ResponseWriter, r *http.Request, f form) {
 		Data: map[string]interface{}{
 			"shooterNew":     forms[0],
 			"shootersImport": forms[1],
-			"shooterList":    shooters,
-			"ShooterSearch":  f,
+			"shooterSearch":  f,
+			"Shooters":       shooters,
 			"Grades":         globalGradesDataList,
 			"AgeGroups":      dataListAgeGroup(),
 		},
 	})
 }
 
-func shooterUpdate(w http.ResponseWriter, r *http.Request, f form) {
-	err := updateDocument(tblShooter, f.Fields[6].Value, &Shooter{
+func shooterUpdate(f form) (string, error) {
+	return "", updateDocument(tblShooter, f.Fields[6].Value, &Shooter{
 		FirstName: f.Fields[0].Value,
 		Surname:   f.Fields[1].Value,
 		Club:      f.Fields[2].Value,
@@ -39,29 +39,26 @@ func shooterUpdate(w http.ResponseWriter, r *http.Request, f form) {
 		AgeGroup:  f.Fields[4].valueUint,
 		Sex:       f.Fields[5].Checked,
 	}, &Shooter{}, updateShooterDetails)
-	//Display any insert errors onscreen.
-	if err != nil {
-		formError(w, r, f, err)
-		return
-	}
-	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 }
 
 func eventSearchShooters(w http.ResponseWriter, r *http.Request, f form) {
+	shooters, err := getSearchShooters(f.Fields[0].Value, f.Fields[1].Value, f.Fields[2].Value)
+	if err != nil {
+		warn.Println(err)
+	}
 	templater(w, page{
 		template: "shooterSearch",
 		Data: map[string]interface{}{
-			"shooterList": searchShootersOptions(f.Fields[0].Value, f.Fields[1].Value, f.Fields[2].Value),
+			"shooters": shooters,
 		},
 	})
 }
 
-func shooterInsert(w http.ResponseWriter, r *http.Request, f form) {
+func shooterInsert(f form) (string, error) {
 	//Add new club if there isn't already a club with that name
 	clubID, err := clubInsertIfMissing(f.Fields[2].Value)
 	if err != nil {
-		formError(w, r, f, err)
-		return
+		return "", err
 	}
 
 	//Insert new shooter
@@ -73,20 +70,15 @@ func shooterInsert(w http.ResponseWriter, r *http.Request, f form) {
 		AgeGroup:  f.Fields[4].valueUint,
 		Sex:       f.Fields[5].Checked,
 	}.insert()
-	if err != nil {
-		formError(w, r, f, err)
-		return
-	}
-	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
+	return "", err
 }
 
-func importShooters(w http.ResponseWriter, r *http.Request, f form) {
+/*func importShooters(f form) (string, error) {
 	//Form validation doesn't yet have a
 	file, _, err := r.FormFile("f")
 	if err != nil {
 		warn.Println(err)
-		http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
-		return
+		return "", err
 	}
 	defer file.Close()
 
@@ -102,8 +94,7 @@ func importShooters(w http.ResponseWriter, r *http.Request, f form) {
 	err = json.Unmarshal(buf.Bytes(), &shooters)
 	if err != nil {
 		warn.Println(err)
-		http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
-		return
+		return "", err
 	}
 
 	var clubID string
@@ -122,8 +113,8 @@ func importShooters(w http.ResponseWriter, r *http.Request, f form) {
 			warn.Println(err)
 		}
 	}
-	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
-}
+	return "", err
+}*/
 
 //Add new club if there isn't already a club with that name
 func clubInsertIfMissing(clubName string) (string, error) {
@@ -140,7 +131,7 @@ func clubInsertIfMissing(clubName string) (string, error) {
 func dataListAgeGroup() []option {
 	//TODO would changing option.Value to an interface reduce the amount of code to convert types?
 	return []option{
-		{Value: "0", Label: "None"},
+		{}, //None = 0
 		{Value: "1", Label: "U21"},
 		{Value: "2", Label: "U25"},
 		{Value: "3", Label: "Veteran"},
