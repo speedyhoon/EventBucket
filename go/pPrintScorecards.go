@@ -47,10 +47,8 @@ func printScorecards(w http.ResponseWriter, r *http.Request, event Event, shoote
 		Menu:   urlEvents,
 		MenuID: event.ID,
 		Data: map[string]interface{}{
-			"Ranges":    event.Ranges,
-			"Shooter":   event.Shooters[shooterID],
-			"EventID":   event.ID,
-			"EventName": event.Name,
+			"Event":   event,
+			"Shooter": event.Shooters[shooterID],
 		},
 	})
 }

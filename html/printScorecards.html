@@ -1,14 +1,14 @@
 {{define "printscorecards"}}
 	<table class=printCards>
-		{{range.Ranges}}
+		{{range.Event.Ranges}}
 			<tr>
-				{{$barcode := print $.EventID "/" $.Shooter.ID "#" .ID}}
+				{{$barcode := print $.Event.ID "/" $.Shooter.ID "#" .ID}}
 				<td rowspan=3 class=centerPadding>
 					<!-- TODO check that this added id=#shooterID can be focused on correctly -->
 					<img class=barcode src=/q/{{urlquery $barcode}} alt='{{.Name}} barcode' id=#{{.ID}}>
 					<br><b>{{$barcode}}</b>
-				<td>Event ID: {{$.EventID}}
-				<td>{{$.EventName}}
+				<td>Event ID: {{$.Event.ID}}
+				<td>{{$.Event.Name}}
 			<tr>
 				<td>Shooter ID: {{$.Shooter.ID}}
 				<td>{{$.Shooter.FirstName}} {{$.Shooter.Surname}}
