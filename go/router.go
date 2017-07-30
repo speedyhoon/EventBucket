@@ -11,8 +11,6 @@ import (
 )
 
 const (
-	get         = "GET"
-	post        = "POST"
 	dirCSS      = "/c/"
 	dirJS       = "/j/"
 	dirWEBP     = "/w/"
@@ -79,11 +77,11 @@ func init() {
 	get404(events)
 }
 
-func endpoint(method, url string, formID uint8, runner func(http.ResponseWriter, *http.Request, form)) {
+func post(url string, formID uint8, page func(f form) (string, error)) {
 	http.HandleFunc(
 		url,
 		func(w http.ResponseWriter, r *http.Request) {
-			if r.Method != method {
+			if r.Method != "POST" {
 				/*405 Method Not Allowed
 				A request was made of a resource using a request method not supported by that resource; for example,
 				using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
@@ -92,13 +90,32 @@ func endpoint(method, url string, formID uint8, runner func(http.ResponseWriter,
 				return
 			}
 			f, ok := validBoth(r, formID)
-			if !ok && method != get {
+			if !ok {
 				setSession(w, f)
 				http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 				return
 			}
-			runner(w, r, f)
-		})
+			redirect, err := page(f)
+			//Display any insert errors onscreen.
+			if err != nil {
+				formError(w, r, f, err)
+				return
+			}
+			if redirect == "" {
+				redirect = r.Referer()
+			}
+			http.Redirect(w, r, redirect, http.StatusSeeOther)
+		},
+	)
+}
+
+func get(url string, formID uint8, page func(http.ResponseWriter, *http.Request, form)) {
+	http.HandleFunc(
+		url,
+		isGetMethod(func(w http.ResponseWriter, r *http.Request) {
+			f, _ := validBoth(r, formID)
+			page(w, r, f)
+		}))
 }
 
 //Start listening to each websocket client that connects.

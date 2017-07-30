@@ -1,3 +1,5 @@
 {{define "shooterSearch"}}
-	{{template "optionList" .Page.Data.shooterList}}
+	{{range.Page.Data.Shooters}}
+		<option value={{.ID}}>{{.FirstName}} {{.Surname}}, {{.Club}}
+	{{end}}
 {{end}}

@@ -146,8 +146,8 @@ func getParameters(url string, pageFunc interface{}, regex *regexp.Regexp) {
 		}))
 }
 
-type sID uint	//shooterID
-type rID uint	//rangeID
+type sID uint //shooterID
+type rID uint //rangeID
 
 func findHandler(pageFunc interface{}, w http.ResponseWriter, r *http.Request, lowerParams string) {
 	ids := strings.Split(lowerParams, "/")
@@ -164,8 +164,8 @@ func findHandler(pageFunc interface{}, w http.ResponseWriter, r *http.Request, l
 		event, err := getEvent(ids[0])
 		if err != nil {
 			errorHandler(w, r, "event")
-				return
-			}
+			return
+		}
 		pageFunc.(func(http.ResponseWriter, *http.Request, Event))(w, r, event)
 
 	//pClub.go
@@ -174,8 +174,8 @@ func findHandler(pageFunc interface{}, w http.ResponseWriter, r *http.Request, l
 		//If club not found in the database return error club not found (404).
 		if err != nil {
 			errorHandler(w, r, "club")
-				return
-			}
+			return
+		}
 		pageFunc.(func(http.ResponseWriter, *http.Request, Club))(w, r, club)
 
 	case func(http.ResponseWriter, *http.Request, Event, sID):
@@ -190,7 +190,7 @@ func findHandler(pageFunc interface{}, w http.ResponseWriter, r *http.Request, l
 			return
 		}
 		pageFunc.(func(http.ResponseWriter, *http.Request, Event, sID))(w, r, event, sID(shooterID))
-	
+
 	//pScoreboard.go
 	case func(http.ResponseWriter, *http.Request, Event, rID):
 		event, err := getEvent(ids[0])
@@ -218,7 +218,7 @@ func errorWrapper(w http.ResponseWriter, r *http.Request, url string) {
 func isGetMethod(h func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//Don't accept post or put requests
-		if r.Method != get {
+		if r.Method != "GET" {
 			//http.Redirect(w, r, url, http.StatusSeeOther)
 			http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 			return

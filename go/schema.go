@@ -35,18 +35,6 @@ type Mound struct {
 	ID   uint
 }
 
-//MapClub is a subset of Club
-type MapClub struct {
-	ID        string  `json:"-"`
-	Name      string  `json:"n"`
-	Latitude  float32 `json:"x,omitempty"`
-	Longitude float32 `json:"y,omitempty"`
-	URL       string  `json:"u,omitempty"`
-	Address   string  `json:"a,omitempty"`
-	Town      string  `json:"w,omitempty"`
-	Postcode  string  `json:"p,omitempty"`
-}
-
 //Event is exported
 type Event struct {
 	ID       string         `json:"I"`
@@ -54,6 +42,7 @@ type Event struct {
 	Club     string         `json:"C,omitempty"`
 	Date     string         `json:"d,omitempty"`
 	Time     string         `json:"t,omitempty"`
+	ISO      time.Time      `json:"-"`
 	Ranges   []Range        `json:"R,omitempty"`
 	AutoInc  AutoInc        `json:"U,omitempty"`
 	Shooters []EventShooter `json:"S,omitempty"`

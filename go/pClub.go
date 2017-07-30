@@ -4,14 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strings"
 )
 
 func club(w http.ResponseWriter, r *http.Request, club Club) {
-	action, forms := sessionForms(w, r, clubDetails, clubMoundNew)
+	action, forms := sessionForms(w, r, clubEdit, clubMoundNew)
 
-	//Club Details form
-	if action != clubDetails {
+	//Club Details Form
+	if action != clubEdit {
 		forms[0].Fields[0].Value = club.Name
 		forms[0].Fields[1].Value = club.Address
 		forms[0].Fields[2].Value = club.Town
@@ -42,21 +41,21 @@ func club(w http.ResponseWriter, r *http.Request, club Club) {
 }
 
 func clubs(w http.ResponseWriter, r *http.Request) {
-	listClubs, err := getClubs()
+	clubs, err := getClubs()
 	_, forms := sessionForms(w, r, clubNew)
 	templater(w, page{
 		Title:   "Clubs",
 		skipCSP: true,
 		Error:   err,
 		Data: map[string]interface{}{
-			"clubNew":   forms[0],
-			"ListClubs": listClubs,
-			"debug":     debug,
+			"clubNew": forms[0],
+			"Clubs":   clubs,
+			"showMap": !*debug,
 		},
 	})
 }
 
-func mapClubs(w http.ResponseWriter, r *http.Request, f form) {
+func clubsMap(w http.ResponseWriter, r *http.Request, f form) {
 	clubs, err := getMapClubs(f.Fields[0].Value)
 	if err != nil {
 		warn.Println(err)
@@ -67,17 +66,16 @@ func mapClubs(w http.ResponseWriter, r *http.Request, f form) {
 	if err != nil {
 		warn.Println(err)
 	}
-	fmt.Fprintf(w, "%s", list)
+	fmt.Fprint(w, list)
 }
 
-func clubInsert(w http.ResponseWriter, r *http.Request, f form) {
+func clubInsert(f form) (string, error) {
 	name := f.Fields[0].Value
 
 	//Check if a club with that name already exists.
 	club, ok := getClubByName(name)
 	ID := club.ID
 
-	//Club doesn't exist so try to insert it
 	if !ok {
 		var err error
 		ID, err = Club{
@@ -85,16 +83,13 @@ func clubInsert(w http.ResponseWriter, r *http.Request, f form) {
 			IsDefault: getDefaultClub().ID == "", //Set this club to the default if no other clubs are the default
 		}.insert()
 		if err != nil {
-			formError(w, r, f, err)
-			return
+			return "", err
 		}
 	}
-	//Else if a club already exists with the same name, redirect to the existing club
-
-	http.Redirect(w, r, urlClub+ID+"#edit", http.StatusSeeOther)
+	return urlClub + ID + "#edit", nil
 }
 
-func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, f form) {
+func clubDetailsUpsert(f form) (string, error) {
 	clubID := f.Fields[8].Value
 	isDefault := f.Fields[6].Checked
 	defaultClub := getDefaultClub()
@@ -105,46 +100,30 @@ func clubDetailsUpsert(w http.ResponseWriter, r *http.Request, f form) {
 			warn.Println(err)
 		}
 	}
-	err := updateDocument(tblClub, clubID, &Club{
-		Name:      f.Fields[0].Value,
-		Address:   f.Fields[1].Value,
-		Town:      f.Fields[2].Value,
-		Postcode:  f.Fields[3].Value,
-		Latitude:  f.Fields[4].valueFloat32,
-		Longitude: f.Fields[5].valueFloat32,
-		IsDefault: isDefault,
-		URL:       f.Fields[7].Value,
-	}, &Club{}, updateClubDetails)
-	if err != nil {
-		formError(w, r, f, err)
-		return
-	}
-	http.Redirect(w, r, urlClub+clubID, http.StatusSeeOther)
+	return urlClub + clubID,
+		updateDocument(tblClub, clubID, &Club{
+			Name:      f.Fields[0].Value,
+			Address:   f.Fields[1].Value,
+			Town:      f.Fields[2].Value,
+			Postcode:  f.Fields[3].Value,
+			Latitude:  f.Fields[4].valueFloat32,
+			Longitude: f.Fields[5].valueFloat32,
+			IsDefault: isDefault,
+			URL:       f.Fields[7].Value,
+		}, &Club{}, updateClubDetails)
 }
 
-func clubMoundInsert(w http.ResponseWriter, r *http.Request, f form) {
+func clubMoundInsert(f form) (string, error) {
 	clubID := f.Fields[1].Value
-	err := updateDocument(tblClub, clubID, f.Fields[0].Value, &Club{}, insertClubMound)
-	if err != nil {
-		formError(w, r, f, err)
-		return
-	}
-	http.Redirect(w, r, urlClub+clubID, http.StatusSeeOther)
+	return urlClub + clubID,
+		updateDocument(tblClub, clubID, f.Fields[0].Value, &Club{}, insertClubMound)
 }
 
-func trimFloat(num float32) string {
-	return strings.TrimRight(strings.TrimRight(fmt.Sprintf("%.6f", num), "0"), ".")
-}
-
-func editClubMound(w http.ResponseWriter, r *http.Request, f form) {
+func clubMoundUpsert(f form) (string, error) {
 	clubID := f.Fields[2].Value
-	err := updateDocument(tblClub, clubID, &Mound{
-		Name: f.Fields[0].Value,
-		ID:   f.Fields[1].valueUint,
-	}, &Club{}, editMound)
-	if err != nil {
-		formError(w, r, f, err)
-		return
-	}
-	http.Redirect(w, r, urlClub+clubID, http.StatusSeeOther)
+	return urlClub + clubID,
+		updateDocument(tblClub, clubID, &Mound{
+			Name: f.Fields[0].Value,
+			ID:   f.Fields[1].valueUint,
+		}, &Club{}, editMound)
 }

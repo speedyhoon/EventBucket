@@ -8,12 +8,12 @@ import (
 func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
 	var club Club
 	if !event.Closed && event.Club != "" {
-		club, _ = getClubByName(event.Club)
+		club, _ = getClub(event.Club)
 	}
 
 	//Retrieve any submitted form that failed to save.
-	action, forms := sessionForms(w, r, eventDetails, eventRangeNew, eventAggNew, eventRangeUpdate, eventAggUpdate)
-	if action != eventDetails {
+	action, forms := sessionForms(w, r, eventEdit, eventRangeNew, eventAggNew, eventRangeEdit, eventAggEdit)
+	if action != eventEdit {
 		forms[0].Fields[0].Value = event.Club
 		forms[0].Fields[1].Value = event.Name
 		forms[0].Fields[2].Value = event.Date
@@ -53,72 +53,52 @@ func dataListRanges(ranges []Range, selected bool) (options []option) {
 	return options
 }
 
-func eventDetailsUpsert(w http.ResponseWriter, r *http.Request, f form) {
+func eventDetailsUpsert(f form) (string, error) {
 	eventID := f.Fields[5].Value
-	err := updateDocument(tblEvent, eventID, &Event{
-		Club:   f.Fields[0].Value,
-		Name:   f.Fields[1].Value,
-		Date:   f.Fields[2].Value,
-		Time:   f.Fields[3].Value,
-		Closed: f.Fields[4].Checked,
-	}, &Event{}, updateEventDetails)
-	if err != nil {
-		formError(w, r, f, err)
-		return
-	}
-	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
+	return urlEventSettings + eventID,
+		updateDocument(tblEvent, eventID, &Event{
+			Club:   f.Fields[0].Value,
+			Name:   f.Fields[1].Value,
+			Date:   f.Fields[2].Value,
+			Time:   f.Fields[3].Value,
+			Closed: f.Fields[4].Checked,
+		}, &Event{}, updateEventDetails)
 }
 
-func eventRangeInsert(w http.ResponseWriter, r *http.Request, f form) {
+func eventRangeInsert(f form) (string, error) {
 	eventID := f.Fields[1].Value
-	err := updateDocument(tblEvent, eventID, &Range{Name: f.Fields[0].Value}, &Event{}, eventAddRange)
-	if err != nil {
-		formError(w, r, f, err)
-		return
-	}
-	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
+	return urlEventSettings + eventID,
+		updateDocument(tblEvent, eventID, &Range{Name: f.Fields[0].Value}, &Event{}, eventAddRange)
 }
 
-func updateRange(w http.ResponseWriter, r *http.Request, f form) {
+func eventRangeUpdate(f form) (string, error) {
 	eventID := f.Fields[0].Value
-	err := updateDocument(tblEvent, eventID, &Range{
-		ID:     f.Fields[1].valueUint,
-		Name:   f.Fields[2].Value,
-		Locked: f.Fields[3].Checked,
-		Order:  f.Fields[4].valueUint,
-	}, &Event{}, editRange)
-	if err != nil {
-		formError(w, r, f, err)
-		return
-	}
-	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
+	return urlEventSettings + eventID,
+		updateDocument(tblEvent, eventID, &Range{
+			ID:     f.Fields[1].valueUint,
+			Name:   f.Fields[2].Value,
+			Locked: f.Fields[3].Checked,
+			Order:  f.Fields[4].valueUint,
+		}, &Event{}, editRange)
 }
 
-func updateAgg(w http.ResponseWriter, r *http.Request, f form) {
+func eventAggUpdate(f form) (string, error) {
 	eventID := f.Fields[0].Value
-	err := updateDocument(tblEvent, eventID, &Range{
-		ID:    f.Fields[1].valueUint,
-		Name:  f.Fields[2].Value,
-		Aggs:  f.Fields[3].valueUintSlice,
-		Order: f.Fields[4].valueUint,
-	}, &Event{}, editRange)
-	if err != nil {
-		formError(w, r, f, err)
-		return
-	}
-	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
+	return urlEventSettings + eventID,
+		updateDocument(tblEvent, eventID, &Range{
+			ID:    f.Fields[1].valueUint,
+			Name:  f.Fields[2].Value,
+			Aggs:  f.Fields[3].valueUintSlice,
+			Order: f.Fields[4].valueUint,
+		}, &Event{}, editRange)
 }
 
-func eventAggInsert(w http.ResponseWriter, r *http.Request, f form) {
+func eventAggInsert(f form) (string, error) {
 	eventID := f.Fields[2].Value
-	err := updateDocument(tblEvent, eventID, &Range{
-		Name:  f.Fields[0].Value,
-		Aggs:  f.Fields[1].valueUintSlice,
-		IsAgg: true,
-	}, &Event{}, eventAddAgg)
-	if err != nil {
-		formError(w, r, f, err)
-		return
-	}
-	http.Redirect(w, r, urlEventSettings+eventID, http.StatusSeeOther)
+	return urlEventSettings + eventID,
+		updateDocument(tblEvent, eventID, &Range{
+			Name:  f.Fields[0].Value,
+			Aggs:  f.Fields[1].valueUintSlice,
+			IsAgg: true,
+		}, &Event{}, eventAddAgg)
 }

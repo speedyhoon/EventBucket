@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"runtime"
@@ -57,4 +58,8 @@ func openBrowser(url string) bool {
 	}
 	cmd := exec.Command(args[0], append(args[1:], url)...)
 	return cmd.Start() == nil
+}
+
+func trimFloat(num float32) string {
+	return strings.TrimRight(strings.TrimRight(fmt.Sprintf("%.6f", num), "0"), ".")
 }

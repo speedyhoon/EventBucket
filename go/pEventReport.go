@@ -1,8 +1,6 @@
 package main
 
-import (
-	"net/http"
-)
+import "net/http"
 
 func eventReport(w http.ResponseWriter, r *http.Request, event Event) {
 	templater(w, page{
