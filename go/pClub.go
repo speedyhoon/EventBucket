@@ -32,7 +32,6 @@ func club(w http.ResponseWriter, r *http.Request, club Club) {
 		MenuID:  club.ID,
 		Menu:    urlClubs,
 		skipCSP: true,
-		Error:   forms[2].Error,
 		Data: map[string]interface{}{
 			"Club":        club,
 			"debug":       debug,

@@ -94,15 +94,14 @@ func purgeSessions() {
 	globalSessions.Unlock()
 }
 
-func sessionForms(w http.ResponseWriter, r *http.Request, formActions ...uint8) (uint8, []form) {
-	//Add generic unpopulated form for passing page errors from post requests to the next page served that isn't specific to a particular form.
-	formActions = append(formActions, 255)
+func sessionForms(w http.ResponseWriter, r *http.Request, actions ...uint8) (uint8, []form) {
+	const noAction = 255
 
 	//Get users session id from request cookie header
 	cookie, err := r.Cookie(sessionToken)
 	if err != nil || cookie == nil || cookie.Value == "" {
 		//No session found. Return default forms.
-		return 0, getForms(formActions...)
+		return noAction, getForms(actions...)
 	}
 
 	http.SetCookie(w, &http.Cookie{
@@ -116,28 +115,28 @@ func sessionForms(w http.ResponseWriter, r *http.Request, formActions ...uint8) 
 	globalSessions.RLock()
 	contents, ok := globalSessions.m[cookie.Value]
 	globalSessions.RUnlock()
-	if ok {
-		//Clear the session contents as it has been returned to the user.
-		globalSessions.Lock()
-		delete(globalSessions.m, cookie.Value)
-		globalSessions.Unlock()
-
-		var forms []form
-		for _, action := range formActions {
-			if contents.action == action {
-				forms = append(forms, contents)
-			} else {
-				forms = append(forms, getForm(action))
-			}
-		}
-		return contents.action, forms
+	if !ok {
+		return noAction, getForms(actions...)
 	}
-	return 0, getForms(formActions...)
+	//Clear the session contents as it has been returned to the user.
+	globalSessions.Lock()
+	delete(globalSessions.m, cookie.Value)
+	globalSessions.Unlock()
+
+	var forms []form
+	for _, id := range actions {
+		if contents.action == id {
+			forms = append(forms, contents)
+		} else {
+			forms = append(forms, getForm(id))
+		}
+	}
+	return contents.action, forms
 }
 
-func getForms(formActions ...uint8) (forms []form) {
-	for _, action := range formActions {
-		forms = append(forms, getForm(action))
+func getForms(actions ...uint8) (forms []form) {
+	for _, id := range actions {
+		forms = append(forms, getForm(id))
 	}
 	return forms
 }
