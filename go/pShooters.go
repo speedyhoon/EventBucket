@@ -80,7 +80,7 @@ func shooterInsert(w http.ResponseWriter, r *http.Request, f form) {
 	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 }
 
-func importShooters(w http.ResponseWriter, r *http.Request) {
+func importShooters(w http.ResponseWriter, r *http.Request, f form) {
 	//Form validation doesn't yet have a
 	file, _, err := r.FormFile("f")
 	if err != nil {
