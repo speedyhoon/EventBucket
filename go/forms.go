@@ -6,171 +6,216 @@ import "time"
 
 const (
 	clubNew              uint8 = 0
-	clubDetails          uint8 = 1
+	clubEdit             uint8 = 1
 	clubMoundNew         uint8 = 2
 	eventNew             uint8 = 3
-	eventDetails         uint8 = 4
+	eventEdit            uint8 = 4
 	eventRangeNew        uint8 = 5
-	eventRangeUpdate     uint8 = 6
+	eventRangeEdit       uint8 = 6
 	eventAggNew          uint8 = 7
-	eventAggUpdate       uint8 = 8
+	eventAggEdit         uint8 = 8
 	eventShooterNew      uint8 = 9
 	eventShooterExisting uint8 = 10
+	shooterNew           uint8 = 12
 	eventTotalScores     uint8 = 13
 	eventAvailableGrades uint8 = 14
 	eventUpdateShotScore uint8 = 15
-	shooterNew           uint8 = 19
-	shooterSearch        uint8 = 20
 	shootersImport       uint8 = 21
 )
 
 //TODO when forms are changed to zero index, perform a check if action is not equal to "" instead of strconv != 0
 func init() {
-	endpoint(post, "/0", 0, clubInsert)
-	endpoint(post, "/1", 1, clubDetailsUpsert)
-	endpoint(post, "/2", 2, clubMoundInsert)
-	endpoint(post, "/3", 3, eventInsert)
-	endpoint(post, "/4", 4, eventDetailsUpsert)
-	endpoint(post, "/5", 5, eventRangeInsert)
-	endpoint(post, "/6", 6, updateRange)
-	endpoint(post, "/7", 7, eventAggInsert)
-	endpoint(post, "/8", 8, updateAgg)
-	endpoint(post, "/9", 9, eventShooterInsert)
-	endpoint(post, "/10", 10, eventShooterExistingInsert)
-	endpoint(post, "/11", 11, shooterInsert)
-	endpoint(post, "/12", 12, shooterUpdate)
-	endpoint(post, "/14", 14, eventAvailableGradesUpsert)
-	endpoint(get, "/16", 16, mapClubs)
-	endpoint(post, "/17", 17, editClubMound)
-	endpoint(post, "/18", 18, eventShooterUpdate)
-	endpoint(get, "/19", 19, eventSearchShooters)
-	endpoint(get, urlShooters, 20, shooters)
+	post("/0", 0, clubInsert)
+	post("/1", 1, clubDetailsUpsert)
+	post("/2", 2, clubMoundInsert)
+	post("/17", 17, clubMoundUpsert)
+	get("/16", 16, clubsMap)
+	post("/3", 3, eventInsert)
+	post("/4", 4, eventDetailsUpsert)
+	post("/5", 5, eventRangeInsert)
+	post("/6", 6, eventRangeUpdate)
+	post("/7", 7, eventAggInsert)
+	post("/8", 8, eventAggUpdate)
+	post("/9", 9, eventShooterInsert)
+	post("/18", 18, eventShooterUpdate)
+	post("/10", 10, eventShooterExistingInsert)
+	post("/14", 14, eventAvailableGradesUpsert)
+	get("/19", 19, eventSearchShooters)
+	post("/11", 11, shooterInsert)
+	post("/12", 12, shooterUpdate)
+	get(urlShooters, 20, shooters)
+	//post("/21", 21, importShooters)
 }
 
 func getForm(id uint8) form {
-	const formQty = 22
-	if id >= formQty {
-		return form{}
-	}
 	return form{
 		action: id,
-		Fields: [formQty][]field{{ //0 New Club
-			{name: "n", v8: v8StrReq},
-		}, { //1 Club Details
-			{name: "n", v8: v8StrReq},
-			{name: "a", v8: v8Str},
-			{name: "w", v8: v8Str},
-			{name: "p", v8: v8Str},
-			{name: "x", v8: v8Float32, min: -90, max: 90, step: .000001},
-			{name: "y", v8: v8Float32, min: -180, max: 180, step: .000001},
-			{name: "b", v8: v8Bool},
-			{name: "u", v8: v8Str},
-			{name: "C", v8: v8Regex, regex: regexID},
-		}, { //2 New Shooting Mound
-			{name: "n", v8: v8StrReq},
-			{name: "C", v8: v8Regex, regex: regexID},
-		}, { //3 New Event
-			{name: "C", v8: v8Str, Value: defaultClubName(), Required: !hasDefaultClub(), minLen: 1, Options: clubsDataList()},
-			{name: "n", v8: v8StrReq},
-			{name: "d", v8: v8Str, Value: time.Now().Format("2006-01-02"), maxLen: 10},
-			{name: "t", v8: v8Str, Value: time.Now().Format("15:04"), maxLen: 5},
-		}, { //4 Event Details
-			{name: "C", v8: v8StrReq, Options: clubsDataList()},
-			{name: "n", v8: v8StrReq},
-			{name: "d", v8: v8Str, maxLen: 10, minLen: 1},
-			{name: "t", v8: v8Str, maxLen: 5, minLen: 5},
-			{name: "c", v8: v8Bool},
-			{name: "E", v8: v8Regex, regex: regexID},
-		}, { //5 Add Range
-			{name: "n", v8: v8StrReq},
-			{name: "E", v8: v8Regex, regex: regexID},
-		}, { //6 Update Range
-			{name: "E", v8: v8Regex, regex: regexID},
-			{name: "I", v8: v8UintReq, min: 1, max: 65535},
-			{name: "n", v8: v8StrReq},
-			{name: "k", v8: v8Bool},
-			{name: "o", v8: v8UintReq, max: 65535},
-		}, { //7 Add Aggregate Range
-			{name: "n", v8: v8StrReq},
-			{name: "R", v8: v8UintList, Required: true, maxLen: 5, minLen: 2, min: 1, max: 65535},
-			{name: "E", v8: v8Regex, regex: regexID},
-		}, { //8 Update Agg
-			{name: "E", v8: v8Regex, regex: regexID},
-			{name: "I", v8: v8UintReq, min: 1, max: 65535},
-			{name: "n", v8: v8StrReq},
-			{name: "R", v8: v8UintList, Required: true, minLen: 2, min: 1, max: 65535},
-			{name: "o", v8: v8UintReq, max: 65535},
-		}, { //9 Shooter Entry
-			{name: "f", v8: v8StrReq},
-			{name: "s", v8: v8StrReq},
-			{name: "C", v8: v8StrReq, Options: clubsDataList()},
-			{name: "S", v8: v8Str, Options: searchShootersOptions("", "", defaultClubName())},
-			{name: "r", v8: v8Uint, max: 4, Options: dataListAgeGroup()},
-			{name: "x", v8: v8Bool},
-			{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: globalGradesDataList},
-			{name: "E", v8: v8Regex, regex: regexID},
-		}, { //10 Existing Shooter Entry
-			{name: "S", v8: v8RegexReq, regex: regexID},
-			{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: globalGradesDataList},
-			{name: "r", v8: v8Uint, max: 4, Options: dataListAgeGroup()},
-			{name: "E", v8: v8RegexReq, regex: regexID},
-		}, { //11 Shooter Details
-			{name: "f", v8: v8StrReq},
-			{name: "s", v8: v8StrReq},
-			{name: "C", v8: v8StrReq},
-			{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: globalGradesDataList},
-			{name: "r", v8: v8Uint, max: 4, Options: dataListAgeGroup()},
-			{name: "x", v8: v8Bool},
-			{name: "I", v8: v8RegexReq, regex: regexID},
-		}, { //12 Shooter Search
-			{name: "f", v8: v8Str},
-			{name: "s", v8: v8Str},
-			{name: "C", v8: v8Str},
-		}, { //13 Enter Range Totals
-			{name: "t", v8: v8UintReq, max: 120},
-			{name: "c", v8: v8Uint, max: 20},
-			{name: "E", v8: v8RegexReq, regex: regexID},
-			{name: "R", v8: v8UintReq, min: 1, max: 65535},
-			{name: "S", v8: v8UintReq, max: 65535},
-			{name: "h", v8: v8Uint, max: 100},
-		}, { //14 Grades Available
-			{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: availableGrades([]uint{})},
-			{name: "I", v8: v8Regex, regex: regexID},
-		}, { //15 Update Shooter Shots (Scorecards)
-			{name: "s", v8: v8StrReq, maxLen: 12},
-			{name: "E", v8: v8RegexReq, regex: regexID},
-			{name: "R", v8: v8UintReq, min: 1, max: 65535},
-			{name: "S", v8: v8UintReq, max: 65535},
-		}, { //16 Map Clubs
-			{name: "C", v8: v8Regex, regex: regexID},
-		}, { //17 Edit Shooting Mound
-			{name: "n", v8: v8StrReq},
-			{name: "I", v8: v8Uint, max: 65535},
-			{name: "C", v8: v8Regex, regex: regexID},
-		}, { //18 Entries Edit Shooter Details
-			{name: "S", v8: v8UintReq, max: 65535},
-			{name: "E", v8: v8RegexReq, regex: regexID},
-			{name: "f", v8: v8StrReq},
-			{name: "s", v8: v8StrReq},
-			{name: "C", v8: v8StrReq},
-			{name: "g", v8: v8UintReq, max: len(globalGrades) - 1, Options: globalGradesDataList},
-			{name: "r", v8: v8Uint, max: len(dataListAgeGroup()) - 1, Options: dataListAgeGroup()},
-			{name: "x", v8: v8Bool},
-			{name: "k", v8: v8Bool},
-		}, { //19 New Shooter
-			{name: "f", v8: v8StrReq},
-			{name: "s", v8: v8StrReq},
-			{name: "C", v8: v8StrReq, Value: defaultClubName(), Options: clubsDataList()},
-			{name: "r", v8: v8Uint, max: 4, Options: dataListAgeGroup()},
-			{name: "x", v8: v8Bool},
-			{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: globalGradesDataList},
-		}, { //20 Shooter Search
-			{name: "f", v8: v8Str},
-			{name: "s", v8: v8Str},
-			{name: "C", v8: v8Str},
-		}, { //21 Import Shooters
-			{name: "f", v8: v8File, Required: true},
-		},
-		}[id],
+		Fields: func(id uint8) []field {
+			switch id {
+			case 0: // New Club
+				return []field{
+					{name: "n", v8: v8StrReq},
+				}
+			case 1: //Club Details
+				return []field{
+					{name: "n", v8: v8StrReq},
+					{name: "a", v8: v8Str},
+					{name: "w", v8: v8Str},
+					{name: "p", v8: v8Str},
+					{name: "x", v8: v8Float32, min: -90, max: 90, step: .000001},
+					{name: "y", v8: v8Float32, min: -180, max: 180, step: .000001},
+					{name: "b", v8: v8Bool},
+					{name: "u", v8: v8Str},
+					{name: "C", v8: v8Regex, regex: regexID},
+				}
+			case 2: //New Shooting Mound
+				return []field{
+					{name: "n", v8: v8StrReq},
+					{name: "C", v8: v8Regex, regex: regexID},
+				}
+			case 3: //New Event
+				return []field{
+					{name: "C", v8: v8Str, Value: defaultClubName(), Required: !hasDefaultClub(), minLen: 1, Options: clubsDataList()},
+					{name: "n", v8: v8StrReq},
+					{name: "d", v8: v8Str, Value: time.Now().Format("2006-01-02"), maxLen: 10},
+					{name: "t", v8: v8Str, Value: time.Now().Format("15:04"), maxLen: 5},
+				}
+			case 4: //Event Details
+				return []field{
+					{name: "C", v8: v8StrReq, Options: clubsDataList()},
+					{name: "n", v8: v8StrReq},
+					{name: "d", v8: v8Str, maxLen: 10, minLen: 1},
+					{name: "t", v8: v8Str, maxLen: 5, minLen: 5},
+					{name: "c", v8: v8Bool},
+					{name: "E", v8: v8Regex, regex: regexID},
+				}
+			case 5: //Add Range
+				return []field{
+					{name: "n", v8: v8StrReq},
+					{name: "E", v8: v8Regex, regex: regexID},
+				}
+			case 6: //Update Range
+				return []field{
+					{name: "E", v8: v8Regex, regex: regexID},
+					{name: "I", v8: v8UintReq, min: 1, max: 65535},
+					{name: "n", v8: v8StrReq},
+					{name: "k", v8: v8Bool},
+					{name: "o", v8: v8UintReq, max: 65535},
+				}
+			case 7: //Add Aggregate Range
+				return []field{
+					{name: "n", v8: v8StrReq},
+					{name: "R", v8: v8UintList, Required: true, maxLen: 5, minLen: 2, min: 1, max: 65535},
+					{name: "E", v8: v8Regex, regex: regexID},
+				}
+			case 8: //Update Agg
+				return []field{
+					{name: "E", v8: v8Regex, regex: regexID},
+					{name: "I", v8: v8UintReq, min: 1, max: 65535},
+					{name: "n", v8: v8StrReq},
+					{name: "R", v8: v8UintList, Required: true, minLen: 2, min: 1, max: 65535},
+					{name: "o", v8: v8UintReq, max: 65535},
+				}
+			case 9: //Shooter Entry
+				return []field{
+					{name: "f", v8: v8StrReq},
+					{name: "s", v8: v8StrReq},
+					{name: "C", v8: v8StrReq, Options: clubsDataList()},
+					{name: "S", v8: v8Str, Options: searchShootersOptions("", "", defaultClubName())},
+					{name: "r", v8: v8Uint, max: 4, Options: dataListAgeGroup()},
+					{name: "x", v8: v8Bool},
+					{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: globalGradesDataList},
+					{name: "E", v8: v8Regex, regex: regexID},
+				}
+			case 10: //Existing Shooter Entry
+				return []field{
+					{name: "S", v8: v8RegexReq, regex: regexID},
+					{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: globalGradesDataList},
+					{name: "r", v8: v8Uint, max: 4, Options: dataListAgeGroup()},
+					{name: "E", v8: v8RegexReq, regex: regexID},
+				}
+			case 11: //Shooter Details
+				return []field{
+					{name: "f", v8: v8StrReq},
+					{name: "s", v8: v8StrReq},
+					{name: "C", v8: v8StrReq},
+					{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: globalGradesDataList},
+					{name: "r", v8: v8Uint, max: 4, Options: dataListAgeGroup()},
+					{name: "x", v8: v8Bool},
+					{name: "I", v8: v8RegexReq, regex: regexID},
+				}
+			case 12: //Shooter Search
+				return []field{
+					{name: "f", v8: v8Str},
+					{name: "s", v8: v8Str},
+					{name: "C", v8: v8Str},
+				}
+			case 13: //Enter Range Totals
+				return []field{
+					{name: "t", v8: v8UintReq, max: 120},
+					{name: "c", v8: v8Uint, max: 20},
+					{name: "E", v8: v8RegexReq, regex: regexID},
+					{name: "R", v8: v8UintReq, min: 1, max: 65535},
+					{name: "S", v8: v8UintReq, max: 65535},
+					{name: "h", v8: v8Uint, max: 100},
+				}
+			case 14: //Grades Available
+				return []field{
+					{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: availableGrades([]uint{})},
+					{name: "E", v8: v8Regex, regex: regexID},
+				}
+			case 15: //Update Shooter Shots (Scorecards)
+				return []field{
+					{name: "s", v8: v8StrReq, maxLen: 12},
+					{name: "E", v8: v8RegexReq, regex: regexID},
+					{name: "R", v8: v8UintReq, min: 1, max: 65535},
+					{name: "S", v8: v8UintReq, max: 65535},
+				}
+			case 16: //Map Clubs
+				return []field{
+					{name: "C", v8: v8Regex, regex: regexID},
+				}
+			case 17: //Edit Shooting Mound
+				return []field{
+					{name: "n", v8: v8StrReq},
+					{name: "I", v8: v8Uint, max: 65535},
+					{name: "C", v8: v8Regex, regex: regexID},
+				}
+			case 18: //Entries Edit Shooter Details
+				ageGroups := dataListAgeGroup()
+				return []field{
+					{name: "S", v8: v8UintReq, max: 65535},
+					{name: "E", v8: v8RegexReq, regex: regexID},
+					{name: "f", v8: v8StrReq},
+					{name: "s", v8: v8StrReq},
+					{name: "C", v8: v8Regex, regex: regexID},
+					{name: "g", v8: v8UintReq, max: len(globalGrades) - 1, Options: globalGradesDataList},
+					{name: "r", v8: v8Uint, max: len(ageGroups) - 1, Options: ageGroups},
+					{name: "x", v8: v8Bool},
+					{name: "k", v8: v8Bool},
+				}
+			case 19: //New Shooter
+				return []field{
+					{name: "f", v8: v8StrReq},
+					{name: "s", v8: v8StrReq},
+					{name: "C", v8: v8Str, Value: defaultClubName(), Required: !hasDefaultClub(), minLen: 1, Options: clubsDataList()},
+					{name: "r", v8: v8Uint, max: 4, Options: dataListAgeGroup()},
+					{name: "x", v8: v8Bool},
+					{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: globalGradesDataList},
+					{name: "E", v8: v8Regex, regex: regexID},
+				}
+			case 20: //Shooter Search
+				return []field{
+					{name: "f", v8: v8Str},
+					{name: "s", v8: v8Str},
+					{name: "C", v8: v8Str},
+				}
+			case 21: //Import Shooters
+				return []field{
+					{name: "f", v8: v8File, Required: true},
+				}
+			}
+			return []field{}
+		}(id),
 	}
 }
