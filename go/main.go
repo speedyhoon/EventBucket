@@ -109,7 +109,7 @@ func main() {
 	<-stop
 	info.Println("Shutting down the server...")
 	err = h.Shutdown(context.Background())
-	if err != nil{
+	if err != nil {
 		warn.Println(err)
 	}
 	info.Println("EvenBucket server stopped.")

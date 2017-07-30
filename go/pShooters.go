@@ -93,7 +93,7 @@ func importShooters(w http.ResponseWriter, r *http.Request, f form) {
 	//Read file contents into bytes buffer.
 	buf := new(bytes.Buffer)
 	_, err = buf.ReadFrom(file)
-	if err != nil{
+	if err != nil {
 		warn.Println(err)
 	}
 
@@ -128,12 +128,12 @@ func importShooters(w http.ResponseWriter, r *http.Request, f form) {
 //Add new club if there isn't already a club with that name
 func clubInsertIfMissing(clubName string) (string, error) {
 	club, ok := getClubByName(clubName)
-	if ok{
+	if ok {
 		//return existing club
 		return club.ID, nil
-	}	
+	}
 	//Club doesn't exist so try to insert it.
-		return Club{Name: clubName}.insert()
+	return Club{Name: clubName}.insert()
 }
 
 //TODO move into a config file or database?

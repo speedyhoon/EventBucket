@@ -36,7 +36,7 @@ func makeBuckets() {
 		}
 		return nil
 	})
-	if err != nil{
+	if err != nil {
 		warn.Println(err)
 	}
 }
@@ -435,7 +435,7 @@ func getDefaultClub() Club {
 	const success = "1"
 	var club Club
 	var found bool
-	view(tblClub, &club, func(interface{})error{
+	view(tblClub, &club, func(interface{}) error {
 		if club.IsDefault {
 			found = true
 			return fmt.Errorf(success)
@@ -447,7 +447,7 @@ func getDefaultClub() Club {
 	}
 	return Club{}
 }
-func view(table []byte, club interface{}, myCall func(interface{})error)error{
+func view(table []byte, club interface{}, myCall func(interface{}) error) error {
 	return db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(table)
 		if b == nil {
@@ -545,7 +545,7 @@ func upsertScore(decode interface{}, contents interface{}) interface{} {
 	return event
 }
 
-func (shooterScores ScoreMap)calcShooterAggs(ranges []Range) ScoreMap {
+func (shooterScores ScoreMap) calcShooterAggs(ranges []Range) ScoreMap {
 	for _, r := range ranges {
 		if r.IsAgg {
 			shooterScores[r.StrID()] = shooterScores.calcAgg(r.Aggs)
@@ -554,7 +554,7 @@ func (shooterScores ScoreMap)calcShooterAggs(ranges []Range) ScoreMap {
 	return shooterScores
 }
 
-func (shooterScores ScoreMap)calcAgg(aggRangeIDs []uint) (total Score) {
+func (shooterScores ScoreMap) calcAgg(aggRangeIDs []uint) (total Score) {
 	for _, id := range aggRangeIDs {
 		if score, ok := shooterScores.get(id); ok {
 			total.Total += score.Total
@@ -566,7 +566,7 @@ func (shooterScores ScoreMap)calcAgg(aggRangeIDs []uint) (total Score) {
 		}
 	}
 	return total
-	}
+}
 
 //Converts base36 string to []byte used for bolt maps
 func b36toBy(id string) ([]byte, error) {

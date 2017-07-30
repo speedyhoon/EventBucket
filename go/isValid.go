@@ -37,7 +37,7 @@ func v8UintList(f *field, inp ...string) {
 }
 
 //v8UintBasic returns false upon validation failure
-func v8UintBasic(f *field, inp ...string) bool{
+func v8UintBasic(f *field, inp ...string) bool {
 	var err error
 	f.Value = inp[0]
 	f.valueUint, err = stoU(f.Value)
