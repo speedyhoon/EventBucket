@@ -3,12 +3,12 @@ package main
 import "net/http"
 
 func eventArchive(w http.ResponseWriter, r *http.Request) {
-	listEvents, err := getEvents(onlyClosed)
+	events, err := getEvents(onlyClosed)
 	templater(w, page{
 		Title: "Archive",
 		Error: err,
 		Data: map[string]interface{}{
-			"ListEvents": listEvents,
+			"Events": events,
 		},
 	})
 }
