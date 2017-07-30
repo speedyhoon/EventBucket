@@ -74,8 +74,9 @@ func getForm(id uint8) form {
 					{name: "C", v8: v8Regex, regex: regexID},
 				}
 			case 3: //New Event
+				clubName := defaultClubName()
 				return []field{
-					{name: "C", v8: v8Str, Value: defaultClubName(), Required: !hasDefaultClub(), minLen: 1, Options: clubsDataList()},
+					{name: "C", v8: v8Str, Value: clubName, Required: clubName == "", minLen: 1, Options: clubsDataList()},
 					{name: "n", v8: v8StrReq},
 					{name: "d", v8: v8Str, Value: time.Now().Format("2006-01-02"), maxLen: 10},
 					{name: "t", v8: v8Str, Value: time.Now().Format("15:04"), maxLen: 5},
@@ -121,7 +122,7 @@ func getForm(id uint8) form {
 					{name: "f", v8: v8StrReq},
 					{name: "s", v8: v8StrReq},
 					{name: "C", v8: v8StrReq, Options: clubsDataList()},
-					{name: "S", v8: v8Str, Options: searchShootersOptions("", "", defaultClubName())},
+					{name: "S", v8: v8Str, Options: searchShootersOptions("", "", "")},
 					{name: "r", v8: v8Uint, max: 4, Options: dataListAgeGroup()},
 					{name: "x", v8: v8Bool},
 					{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: globalGradesDataList},
@@ -195,10 +196,11 @@ func getForm(id uint8) form {
 					{name: "k", v8: v8Bool},
 				}
 			case 19: //New Shooter
+				clubName := defaultClubName()
 				return []field{
 					{name: "f", v8: v8StrReq},
 					{name: "s", v8: v8StrReq},
-					{name: "C", v8: v8Str, Value: defaultClubName(), Required: !hasDefaultClub(), minLen: 1, Options: clubsDataList()},
+					{name: "C", v8: v8Str, Value: clubName, Required: clubName == "", minLen: 1, Options: clubsDataList()},
 					{name: "r", v8: v8Uint, max: 4, Options: dataListAgeGroup()},
 					{name: "x", v8: v8Bool},
 					{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: globalGradesDataList},
