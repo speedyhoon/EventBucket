@@ -106,9 +106,9 @@ func processSocket(ws *websocket.Conn) {
 	var msg string
 	var formID uint8
 	var err error
-	send := func(str string){
+	send := func(str string) {
 		err := websocket.Message.Send(ws, str)
-		if err != nil{
+		if err != nil {
 			warn.Println(err)
 		}
 	}
@@ -143,7 +143,7 @@ func processSocket(ws *websocket.Conn) {
 			}
 
 			if form, passed := isValid(form, formID); passed {
-				send("!"+updateShotScores(form.Fields))
+				send("!" + updateShotScores(form.Fields))
 			} else {
 				var response []byte
 				response, err = json.Marshal(form)

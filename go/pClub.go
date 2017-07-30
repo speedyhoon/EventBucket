@@ -76,7 +76,7 @@ func clubInsert(w http.ResponseWriter, r *http.Request, f form) {
 	//Check if a club with that name already exists.
 	club, ok := getClubByName(name)
 	ID := club.ID
-	
+
 	//Club doesn't exist so try to insert it
 	if !ok {
 		var err error
@@ -90,7 +90,7 @@ func clubInsert(w http.ResponseWriter, r *http.Request, f form) {
 		}
 	}
 	//Else if a club already exists with the same name, redirect to the existing club
-	
+
 	http.Redirect(w, r, urlClub+ID+"#edit", http.StatusSeeOther)
 }
 

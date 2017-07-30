@@ -26,7 +26,7 @@ func shootersReport(w http.ResponseWriter, r *http.Request, event Event) {
 			"Event": event,
 		},
 	})
-	}
+}
 
 func shooterReport(w http.ResponseWriter, r *http.Request, event Event, shooterID sID) {
 	templater(w, page{

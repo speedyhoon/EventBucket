@@ -109,26 +109,26 @@ type Score struct {
 
 type ScoreMap map[string]Score
 
-func (s ScoreMap)get(id uint)(sc Score, ok bool){
+func (s ScoreMap) get(id uint) (sc Score, ok bool) {
 	sc, ok = s[fmt.Sprintf("%d", id)]
 	return
 }
 
 //EventShooter is exported
 type EventShooter struct {
-	ID             uint             `json:"I"`
-	FirstName      string           `json:"f"`
-	Surname        string           `json:"s"`
-	Club           string           `json:"C,omitempty"`
-	Grade          uint             `json:"G,omitempty"`
-	AgeGroup       uint             `json:"r,omitempty"`
-	Scores         ScoreMap         `json:"O,omitempty"` //Using string instead of uint as an index because JSON doesn't support map[uint]Score
-	LinkedID       uint             `json:"l,omitempty"` //For duplicating shooters that are in different classes with the same score
-	EID            string           `json:"V,omitempty"` //Points to EventBucket Shooter ID
-	Hidden         bool             `json:"h,omitempty"`
-	Disabled       bool             `json:"d,omitempty"`
-	Sex            bool             `json:"x,omitempty"`
-	GradeSeparator bool             `json:"-"` //Used for enterShots and enterRangeTotals only.
+	ID             uint     `json:"I"`
+	FirstName      string   `json:"f"`
+	Surname        string   `json:"s"`
+	Club           string   `json:"C,omitempty"`
+	Grade          uint     `json:"G,omitempty"`
+	AgeGroup       uint     `json:"r,omitempty"`
+	Scores         ScoreMap `json:"O,omitempty"` //Using string instead of uint as an index because JSON doesn't support map[uint]Score
+	LinkedID       uint     `json:"l,omitempty"` //For duplicating shooters that are in different classes with the same score
+	EID            string   `json:"V,omitempty"` //Points to EventBucket Shooter ID
+	Hidden         bool     `json:"h,omitempty"`
+	Disabled       bool     `json:"d,omitempty"`
+	Sex            bool     `json:"x,omitempty"`
+	GradeSeparator bool     `json:"-"` //Used for enterShots and enterRangeTotals only.
 	//position  string           `json:"-"` //Used for scoreboard only.
 	//warning   uint8            `json:"-"` //Used for scoreboard only.
 	//0 = nil
