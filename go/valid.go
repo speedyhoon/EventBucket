@@ -10,7 +10,7 @@ func validBoth(r *http.Request, formID uint8) (form, bool) {
 	var err error
 	var u *url.URL
 
-	if r.Method == get {
+	if r.Method == "GET" {
 		u, err = url.Parse(r.RequestURI)
 	} else {
 		err = r.ParseForm()
@@ -22,7 +22,7 @@ func validBoth(r *http.Request, formID uint8) (form, bool) {
 	}
 
 	var values url.Values
-	if r.Method == get {
+	if r.Method == "GET" {
 		values = u.Query()
 	} else {
 		values = r.Form

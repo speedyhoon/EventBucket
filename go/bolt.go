@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/boltdb/bolt"
 )
@@ -343,7 +342,7 @@ func getClubs() (clubs []Club, err error) {
 	})
 }
 
-func getMapClubs(clubID string) (clubs []MapClub, err error) {
+func getMapClubs(clubID string) (clubs []Club, err error) {
 	return clubs, db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(tblClub)
 		if b == nil {
@@ -351,7 +350,7 @@ func getMapClubs(clubID string) (clubs []MapClub, err error) {
 			return nil
 		}
 		return b.ForEach(func(_, value []byte) error {
-			var club MapClub
+			var club Club
 			if json.Unmarshal(value, &club) == nil && clubID != "" && club.ID == clubID || clubID == "" && club.Latitude != 0 && club.Longitude != 0 {
 				clubs = append(clubs, club)
 			}
@@ -393,28 +392,6 @@ func getEvents(query func(Event) bool) ([]Event, error) {
 		return b.ForEach(func(_, value []byte) error {
 			var event Event
 			if json.Unmarshal(value, &event) == nil && query(event) {
-				events = append(events, event)
-			}
-			return nil
-		})
-	})
-	return events, err
-}
-
-func getCalendarEvents() ([]CalendarEvent, error) {
-	var events []CalendarEvent
-	err := db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(tblEvent)
-		if b == nil {
-			//Event Bucket isn't created yet
-			return nil
-		}
-		return b.ForEach(func(_, value []byte) error {
-			var event CalendarEvent
-			if json.Unmarshal(value, &event) == nil && !event.Closed {
-				if event.Date != "" {
-					event.ISO, _ = time.Parse("2006-01-02", event.Date)
-				}
 				events = append(events, event)
 			}
 			return nil
@@ -605,34 +582,15 @@ func getSearchShooters(firstName, surname, club string) (shooters []Shooter, err
 	})
 }
 
-func searchShootersOptions(firstName, surname, club string) []option {
-	if firstName == "" && surname == "" && club == "" {
-		club = defaultClubName()
-	}
-
-	firstName = strings.ToLower(firstName)
-	surname = strings.ToLower(surname)
-	club = strings.ToLower(club)
-
-	shooters := []option{{}}
-	err := db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(tblShooter)
-		if b == nil {
-			return fmt.Errorf(eNoBucket, tblShooter)
-		}
-		return b.ForEach(func(_, value []byte) error {
-			var shooter Shooter
-			//strings.Contains returns true when sub-string is "" (empty string)
-			if json.Unmarshal(value, &shooter) == nil && strings.Contains(strings.ToLower(shooter.FirstName), firstName) && strings.Contains(strings.ToLower(shooter.Surname), surname) && strings.Contains(strings.ToLower(shooter.Club), club) {
-				shooters = append(shooters, option{Value: shooter.ID, Label: shooter.FirstName + " " + shooter.Surname + ", " + shooter.Club})
-			}
-			return nil
-		})
-	})
+func searchShootersOptions(firstName, surname, club string) (shooters []option) {
+	list, err := getSearchShooters(firstName, surname, club)
 	if err != nil {
-		warn.Println(err)
+		return
 	}
-	return shooters
+	for _, s := range list {
+		shooters = append(shooters, option{Value: s.ID, Label: s.FirstName + " " + s.Surname + ", " + s.Club})
+	}
+	return
 }
 
 func getClubByName(clubName string) (Club, bool) {
@@ -653,8 +611,5 @@ func getClubByName(clubName string) (Club, bool) {
 			return nil
 		})
 	})
-	if err != nil && err.Error() == success {
-		return club, true
-	}
-	return Club{}, false
+	return club, err == nil || err != nil && err.Error() == success
 }

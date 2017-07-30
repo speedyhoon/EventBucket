@@ -1,8 +1,8 @@
 {{define "clubs"}}
 	{{form .clubNew}}
-	{{with.ListClubs}}
+	{{with.clubs}}
 		Total Clubs: {{len .}}
-		<table class=edit>
+		<table>
 			<thead>
 				<tr>
 					<th>Club Name
@@ -20,7 +20,7 @@
 							</a>
 				{{end}}
 		</table>
-		{{if not $.debug}}
+		{{if $.showMap}}
 			<div id=map></div>
 			<script defer src=/j/map></script>
 		{{end}}
