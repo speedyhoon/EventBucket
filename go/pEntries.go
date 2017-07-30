@@ -3,19 +3,19 @@ package main
 import "net/http"
 
 func entries(w http.ResponseWriter, r *http.Request, event Event) {
-	action, pageForms := sessionForms(w, r, eventShooterNew, eventShooterExisting, eventAvailableGrades)
-	shooterEntry := pageForms[0]
+	action, forms := sessionForms(w, r, eventShooterNew, eventShooterExisting, eventAvailableGrades)
+	shooterEntry := forms[0]
 	if action == eventShooterExisting {
 		//Existing shooter select box
-		shooterEntry.Fields[3].Error = pageForms[1].Fields[0].Error
+		shooterEntry.Fields[3].Error = forms[1].Fields[0].Error
 		//Grade
-		shooterEntry.Fields[6].Error = pageForms[1].Fields[1].Error
-		shooterEntry.Fields[6].Value = pageForms[1].Fields[1].Value
+		shooterEntry.Fields[6].Error = forms[1].Fields[1].Error
+		shooterEntry.Fields[6].Value = forms[1].Fields[1].Value
 		//Age Group
-		shooterEntry.Fields[4].Error = pageForms[1].Fields[2].Error
-		shooterEntry.Fields[4].Value = pageForms[1].Fields[2].Value
+		shooterEntry.Fields[4].Error = forms[1].Fields[2].Error
+		shooterEntry.Fields[4].Value = forms[1].Fields[2].Value
 		//Existing Shooter button
-		shooterEntry.Fields[7].Error = pageForms[1].Fields[3].Error
+		shooterEntry.Fields[7].Error = forms[1].Fields[3].Error
 	}
 	shooterEntry.Fields[2].Options = clubsDataList()
 
@@ -26,8 +26,8 @@ func entries(w http.ResponseWriter, r *http.Request, event Event) {
 	shooterEntry.Fields = append(shooterEntry.Fields, field{Value: event.ID})
 
 	//AvailableGrades
-	pageForms[2].Fields[0].Options = availableGrades(event.Grades)
-	pageForms[2].Fields[1].Value = event.ID
+	forms[2].Fields[0].Options = availableGrades(event.Grades)
+	forms[2].Fields[1].Value = event.ID
 
 	templater(w, page{
 		Title:   "Entries",
@@ -37,7 +37,7 @@ func entries(w http.ResponseWriter, r *http.Request, event Event) {
 		Data: map[string]interface{}{
 			"Event":           event,
 			"eventShooterNew": shooterEntry,
-			"GradesAvailable": pageForms[2],
+			"GradesAvailable": forms[2],
 			"AvailableGrades": grades,
 			"AgeGroups":       dataListAgeGroup(),
 		},
