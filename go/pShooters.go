@@ -8,7 +8,6 @@ import (
 
 func shooters(w http.ResponseWriter, r *http.Request, f form) {
 	_, forms := sessionForms(w, r, shooterNew, shootersImport)
-	shooters, err := getSearchShooters(f.Fields[0].Value, f.Fields[1].Value, f.Fields[2].Value)
 
 	//Search for shooters in the default club if EventBucket was not started in debug mode & all values are empty.
 	if f.Fields[0].Value == "" && f.Fields[1].Value == "" && f.Fields[2].Value == "" {
@@ -18,12 +17,11 @@ func shooters(w http.ResponseWriter, r *http.Request, f form) {
 
 	templater(w, page{
 		Title: "Shooters",
-		Error: err,
 		Data: map[string]interface{}{
 			"shooterNew":     forms[0],
 			"shootersImport": forms[1],
 			"shooterSearch":  f,
-			"Shooters":       shooters,
+			"Shooters":       searchShooters(f.Fields[0].Value, f.Fields[1].Value, f.Fields[2].Value),
 			"Grades":         globalGradesDataList,
 			"AgeGroups":      dataListAgeGroup(),
 		},
@@ -42,14 +40,10 @@ func shooterUpdate(f form) (string, error) {
 }
 
 func eventSearchShooters(w http.ResponseWriter, r *http.Request, f form) {
-	shooters, err := getSearchShooters(f.Fields[0].Value, f.Fields[1].Value, f.Fields[2].Value)
-	if err != nil {
-		warn.Println(err)
-	}
 	templater(w, page{
 		template: "shooterSearch",
 		Data: map[string]interface{}{
-			"shooters": shooters,
+			"shooters": searchShooters(f.Fields[0].Value, f.Fields[1].Value, f.Fields[2].Value),
 		},
 	})
 }
