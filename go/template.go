@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"path/filepath"
 	"strings"
 
@@ -36,9 +35,9 @@ func (p page) csp() string {
 }
 
 type markupEnv struct {
-	Page  page
-	Menu  []menu
-	Theme bool
+	Page        page
+	Menu        []menu
+	IsDarkTheme bool
 }
 
 var (
@@ -99,20 +98,10 @@ var (
 	}
 )
 
-type gzipResponseWriter struct {
-	io.Writer
-	http.ResponseWriter
-}
-
-func (w gzipResponseWriter) Write(b []byte) (int, error) {
-	return w.Writer.Write(b)
-}
-
 //TODO remove if !debug
 func init() {
 	if err := loader(); err != nil {
-		warn.Println(err)
-		os.Exit(5)
+		warn.Fatal(err)
 	}
 }
 
@@ -199,7 +188,7 @@ func templater(w http.ResponseWriter, page page) {
 	masterTemplate.Page = page
 
 	//TODO optionally remove during build time if debug == true
-	if *debug {
+	if debug {
 		if err := loader(); err != nil {
 			warn.Println(err)
 			http.Error(wz, err.Error(), http.StatusInternalServerError)
@@ -226,4 +215,13 @@ func addQuotes(in interface{}) string {
 		return `'` + strings.Replace(value, `'`, "&#39;", -1) + `'`
 	}
 	return value
+}
+
+type gzipResponseWriter struct {
+	io.Writer
+	http.ResponseWriter
+}
+
+func (w gzipResponseWriter) Write(b []byte) (int, error) {
+	return w.Writer.Write(b)
 }
