@@ -33,7 +33,7 @@ func club(w http.ResponseWriter, r *http.Request, club Club) {
 		skipCSP: true,
 		Data: map[string]interface{}{
 			"Club":        club,
-			"debug":       debug,
+			"showMap":     !debug,
 			"clubDetails": forms[0],
 			"clubMound":   forms[1],
 		},
@@ -50,7 +50,7 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 		Data: map[string]interface{}{
 			"clubNew": forms[0],
 			"Clubs":   clubs,
-			"showMap": !*debug,
+			"showMap": !debug,
 		},
 	})
 }
