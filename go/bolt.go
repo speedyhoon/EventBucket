@@ -21,7 +21,6 @@ var (
 )
 
 const (
-	eNoBucket   = "Bucket %q not found!"
 	eNoDocument = "'%v' document is empty / doesn't exist %q"
 )
 
@@ -40,17 +39,36 @@ func makeBuckets() {
 	}
 }
 
+//view checks if a bucket exists before executing the provided function myCall
+func view(bucketName []byte, myCall func(*bolt.Bucket) error) error {
+	return db.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(bucketName)
+		if bucket == nil {
+			return fmt.Errorf("Bucket %q not found!", bucketName)
+		}
+		return myCall(bucket)
+	})
+}
+
+//search checks if each item can be unmarshalled before executing the provided function myCall
+func search(table []byte, object interface{}, myCall func(interface{}) error) error {
+	return view(table, func(b *bolt.Bucket) error {
+		return b.ForEach(func(_, value []byte) error {
+			if err := json.Unmarshal(value, object); err != nil {
+				return err
+			}
+			return myCall(object)
+		})
+	})
+}
+
 func getDocument(bucketName []byte, ID string, result interface{}) error {
 	byteID, err := b36toBy(ID)
 	if err != nil {
 		return err
 	}
-	err = db.View(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(bucketName)
-		if bucket == nil {
-			return fmt.Errorf(eNoBucket, bucketName)
-		}
 
+	return view(bucketName, func(bucket *bolt.Bucket) error {
 		document := bucket.Get(byteID)
 		if len(document) == 0 {
 			return fmt.Errorf(eNoDocument, ID, document)
@@ -61,7 +79,6 @@ func getDocument(bucketName []byte, ID string, result interface{}) error {
 		}
 		return err
 	})
-	return err
 }
 
 func getEvent(ID string) (event Event, err error) {
@@ -86,9 +103,8 @@ func nextID(bucket *bolt.Bucket) (string, []byte) {
 	return strconv.FormatUint(num, 36), b
 }
 
-func insertDocument(tblName []byte, document interface{}, assignID func(interface{}, string) interface{}) (string, error) {
-	var b36 string
-	err := db.Update(func(tx *bolt.Tx) error {
+func insertDocument(tblName []byte, document interface{}, assignID func(interface{}, string) interface{}) (b36 string, err error) {
+	return b36, db.Update(func(tx *bolt.Tx) error {
 		bucket, err := tx.CreateBucketIfNotExists(tblName)
 		if err != nil {
 			return err
@@ -106,7 +122,6 @@ func insertDocument(tblName []byte, document interface{}, assignID func(interfac
 		}
 		return bucket.Put(id, buf)
 	})
-	return b36, err
 }
 
 func (event Event) insert() (string, error) {
@@ -326,54 +341,28 @@ func updateEventGrades(decode interface{}, contents interface{}) interface{} {
 }
 
 func getClubs() (clubs []Club, err error) {
-	return clubs, db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(tblClub)
-		if b == nil {
-			//Club Bucket isn't created yet
-			return nil
-		}
-		return b.ForEach(func(_, value []byte) error {
-			var club Club
-			if json.Unmarshal(value, &club) == nil {
-				clubs = append(clubs, club)
-			}
-			return nil
-		})
+	return clubs, search(tblClub, &Club{}, func(c interface{}) error {
+		clubs = append(clubs, c.(Club))
+		return nil
 	})
 }
 
 func getMapClubs(clubID string) (clubs []Club, err error) {
-	return clubs, db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(tblClub)
-		if b == nil {
-			//Club Bucket isn't created yet
-			return nil
+	return clubs, search(tblClub, &Club{}, func(c interface{}) error {
+		club := c.(Club)
+		if clubID != "" && club.ID == clubID || clubID == "" && club.Latitude != 0 && club.Longitude != 0 {
+			clubs = append(clubs, club)
 		}
-		return b.ForEach(func(_, value []byte) error {
-			var club Club
-			if json.Unmarshal(value, &club) == nil && clubID != "" && club.ID == clubID || clubID == "" && club.Latitude != 0 && club.Longitude != 0 {
-				clubs = append(clubs, club)
-			}
-			return nil
-		})
+		return nil
 	})
 }
 
 func clubsDataList() []option {
 	var clubs []option
-	err := db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(tblClub)
-		if b == nil {
-			//Club Bucket isn't created yet
-			return nil
-		}
-		return b.ForEach(func(_, value []byte) error {
-			var club Club
-			if json.Unmarshal(value, &club) == nil {
-				clubs = append(clubs, option{Value: club.ID, Label: club.Name, Selected: club.IsDefault})
-			}
-			return nil
-		})
+	err := search(tblClub, &Club{}, func(c interface{}) error {
+		club := c.(Club)
+		clubs = append(clubs, option{Value: club.ID, Label: club.Name, Selected: club.IsDefault})
+		return nil
 	})
 	if err != nil {
 		warn.Println(err)
@@ -383,21 +372,13 @@ func clubsDataList() []option {
 
 func getEvents(query func(Event) bool) ([]Event, error) {
 	var events []Event
-	err := db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(tblEvent)
-		if b == nil {
-			//Event Bucket isn't created yet
-			return nil
+	return events, search(tblClub, &Event{}, func(e interface{}) error {
+		event := e.(Event)
+		if query(event) {
+			events = append(events, event)
 		}
-		return b.ForEach(func(_, value []byte) error {
-			var event Event
-			if json.Unmarshal(value, &event) == nil && query(event) {
-				events = append(events, event)
-			}
-			return nil
-		})
+		return nil
 	})
-	return events, err
 }
 
 func hasDefaultClub() bool {
@@ -412,7 +393,7 @@ func getDefaultClub() Club {
 	const success = "1"
 	var club Club
 	var found bool
-	view(tblClub, &club, func(interface{}) error {
+	search(tblClub, &club, func(interface{}) error {
 		if club.IsDefault {
 			found = true
 			return fmt.Errorf(success)
@@ -423,21 +404,6 @@ func getDefaultClub() Club {
 		return club
 	}
 	return Club{}
-}
-func view(table []byte, club interface{}, myCall func(interface{}) error) error {
-	return db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(table)
-		if b == nil {
-			//Club Bucket isn't created yet
-			return nil
-		}
-		return b.ForEach(func(_, value []byte) error {
-			if json.Unmarshal(value, club) == nil {
-				myCall(club)
-			}
-			return nil
-		})
-	})
 }
 
 func eventShooterInsertDB(decode interface{}, contents interface{}) interface{} {
@@ -556,7 +522,7 @@ func b36toBy(id string) ([]byte, error) {
 	return b, nil
 }
 
-func getSearchShooters(firstName, surname, club string) (shooters []Shooter, err error) {
+func searchShooters(firstName, surname, club string) (shooters []Shooter) {
 	//Search for shooters in the default club if all search values are empty.
 	if firstName == "" && surname == "" && club == "" {
 		club = defaultClubName()
@@ -566,29 +532,23 @@ func getSearchShooters(firstName, surname, club string) (shooters []Shooter, err
 	surname = strings.ToLower(surname)
 	club = strings.ToLower(club)
 
-	return shooters, db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(tblShooter)
-		if b == nil {
-			return fmt.Errorf(eNoBucket, tblShooter)
+	err := search(tblShooter, &Shooter{}, func(s interface{}) error {
+		shooter := s.(Shooter)
+		//strings.Contains returns true when sub-string is "" (empty string)
+		if strings.Contains(strings.ToLower(shooter.FirstName), firstName) && strings.Contains(strings.ToLower(shooter.Surname), surname) && strings.Contains(strings.ToLower(shooter.Club), club) {
+			shooters = append(shooters, shooter)
 		}
-		return b.ForEach(func(_, value []byte) error {
-			var shooter Shooter
-			//strings.Contains returns true when sub-string is "" (empty string)
-			if json.Unmarshal(value, &shooter) == nil && strings.Contains(strings.ToLower(shooter.FirstName), firstName) && strings.Contains(strings.ToLower(shooter.Surname), surname) && strings.Contains(strings.ToLower(shooter.Club), club) {
-				shooters = append(shooters, shooter)
-			}
-			return nil
-		})
+		return nil
 	})
+	if err != nil {
+		warn.Println(err)
+	}
+	return
 }
 
-func searchShootersOptions(firstName, surname, club string) (shooters []option) {
-	list, err := getSearchShooters(firstName, surname, club)
-	if err != nil {
-		return
-	}
-	for _, s := range list {
-		shooters = append(shooters, option{Value: s.ID, Label: s.FirstName + " " + s.Surname + ", " + s.Club})
+func searchShootersOptions(firstName, surname, club string) (options []option) {
+	for _, s := range searchShooters(firstName, surname, club) {
+		options = append(options, option{Value: s.ID, Label: s.FirstName + " " + s.Surname + ", " + s.Club})
 	}
 	return
 }
@@ -598,18 +558,12 @@ func getClubByName(clubName string) (Club, bool) {
 	const success = "1"
 	var club Club
 
-	err := db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(tblClub)
-		if b == nil {
-			return fmt.Errorf(eNoBucket, tblClub)
+	err := search(tblClub, &club, func(club interface{}) error {
+		//Case insensitive search
+		if strings.ToLower(club.(Club).Name) == clubName {
+			return fmt.Errorf(success)
 		}
-		return b.ForEach(func(_, value []byte) error {
-			//Case insensitive search
-			if json.Unmarshal(value, &club) == nil && strings.ToLower(club.Name) == clubName {
-				return fmt.Errorf(success)
-			}
-			return nil
-		})
+		return nil
 	})
-	return club, err == nil || err != nil && err.Error() == success
+	return club, err != nil && err.Error() == success
 }
