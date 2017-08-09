@@ -107,13 +107,6 @@ func init() {
 
 func loader() (err error) {
 	templates, err = template.New("").Funcs(template.FuncMap{
-		"i": func(inputs []field, index int) *field {
-			//index will always be a positive integer so the check for index >= 0 is not required
-			if index < len(inputs) {
-				return &inputs[index]
-			}
-			return nil
-		},
 		"a": func(attribute string, value interface{}) string {
 			//"a": func(attribute string, value interface{}) template.HTMLAttr {
 			var output string
@@ -146,7 +139,7 @@ func loader() (err error) {
 			return output
 		},
 		"ageGroup": func(index uint) string {
-			if index >= 1 && index < uint(len(dataListAgeGroup())) {
+			if index < uint(len(dataListAgeGroup())) {
 				return dataListAgeGroup()[index].Label
 			}
 			return ""
