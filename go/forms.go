@@ -201,11 +201,10 @@ func getForm(id uint8) form {
 				return []field{
 					{name: "f", v8: v8StrReq},
 					{name: "s", v8: v8StrReq},
-					{name: "C", v8: v8Str, Value: clubName, Required: clubName == "", minLen: 1, Options: clubsDataList()},
+					{name: "C", v8: v8Str, Value: clubName, Placeholder: clubName, Required: clubName == "", minLen: 1, Options: clubsDataList()},
 					{name: "r", v8: v8Uint, max: 4, Options: dataListAgeGroup()},
 					{name: "x", v8: v8Bool},
 					{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: globalGradesDataList},
-					{name: "E", v8: v8Regex, regex: regexID},
 				}
 			case 20: //Shooter Search
 				return []field{

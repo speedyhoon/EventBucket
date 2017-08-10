@@ -23,7 +23,7 @@
 						<td>{{.ID}}
 						<td>{{.FirstName}} <span>{{.Surname}}</span>
 						<td>{{.Club}}
-						<td>{{range.Grade}}{{(grade .).Name}}, {{end}}
+						<td>{{range.Grades}}{{(grade .).Name}}, {{end}}
 						<td>{{ageGroup .AgeGroup}}
 						<!--td{{/*a " class=tick" .Sex*/}}-->
 						{{if.Sex}}<td class=tick>{{else}}<td>{{end}}
