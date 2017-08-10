@@ -342,7 +342,7 @@ func updateEventGrades(decode interface{}, contents interface{}) interface{} {
 
 func getClubs() (clubs []Club, err error) {
 	return clubs, search(tblClub, &Club{}, func(c interface{}) error {
-		clubs = append(clubs, c.(Club))
+		clubs = append(clubs, *c.(*Club))
 		return nil
 	})
 }
@@ -360,7 +360,7 @@ func getMapClubs(clubID string) (clubs []Club, err error) {
 func clubsDataList() []option {
 	var clubs []option
 	err := search(tblClub, &Club{}, func(c interface{}) error {
-		club := c.(Club)
+		club := *c.(*Club)
 		clubs = append(clubs, option{Value: club.ID, Label: club.Name, Selected: club.IsDefault})
 		return nil
 	})
@@ -372,8 +372,8 @@ func clubsDataList() []option {
 
 func getEvents(query func(Event) bool) ([]Event, error) {
 	var events []Event
-	return events, search(tblClub, &Event{}, func(e interface{}) error {
-		event := e.(Event)
+	return events, search(tblEvent, &Event{}, func(e interface{}) error {
+		event := *e.(*Event)
 		if query(event) {
 			events = append(events, event)
 		}
