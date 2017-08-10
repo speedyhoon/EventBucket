@@ -532,10 +532,7 @@
     options: globalGradesDataList
     help: The grades that this shooter likes to shoot in. This can be one or more different grades. Hold down the Shift key or Ctrl key on your keyboard to select more than one item at a time.
   - label: Add Shooter
-    name: E
     type: submit
-    v8: v8Regex
-    regex: regexID
 - title: Shooter Search
   handler: shooters
   namespace: shooterSearch
