@@ -538,15 +538,17 @@
   namespace: shooterSearch
   method: get
   attachtopage: true
+  accesskey: S
   inputs:
   - name: f
-    label: d
+    label: First Name
     v8: v8Str
+    accesskey: S
   - name: s
-    label: d
+    label: Surname
     v8: v8Str
   - name: C
-    label: d
+    label: Club
     v8: v8Str
   - label: Search
     type: submit
