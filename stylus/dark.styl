@@ -2,7 +2,8 @@
 $base-color = #888
 $valid = #474
 $invalid = #744
-$bgGrey = #445
+//$bgGrey = #445
+$bgGrey = rgba(128, 128, 128, .5)
 $blue = #09f
 $red = #f05
 
@@ -13,14 +14,19 @@ $oddTableRowBackground = darken($base-color, 30%)
 $liteGrey = lighten($base-color, 10%)
 
 body
-    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
 
-a
-    color: $blue
+a, abbr, button
+	color: $blue
 
 samp
-	color: $red
+	color: $background
 	display: block
+	padding: .5em
+	background: $red
+	border-radius: .3em
+	font-weight: 600
+	margin: 1em 0
 
 //Menu
 nav
@@ -39,12 +45,24 @@ fieldset
 	label:not(:last-child), button:not(:last-child)
 		margin-right: 1em
 
-	label
+	label, input, select
 		display: block
+
+	label
 		float: left
 
-	input, select
-		display: block
+button
+	background: transparent
+	border: 0
+	border-radius: .5em
+	cursor: pointer
+	font-size: 1em
+
+button:hover
+	text-decoration: underline
+
+abbr
+	cursor: help
 
 .center
 	text-align: center
@@ -53,9 +71,9 @@ fieldset
 	background: url(/v/tick) center center
 
 .builtWith
-    background: #fff
-    border-radius: 1em
-    display: inline-block
+	background: #fff
+	border-radius: 1em
+	display: inline-block
 	color: black
 	padding: 1em
 	img
@@ -65,18 +83,18 @@ fieldset
 
 @media not print
 	html
-        background: $background url(/v/shooter) bottom left no-repeat
-        background-attachment: fixed
-        background-size: 14em
-        color: $text
+		background: $background url(/v/shooter) bottom left no-repeat
+		background-attachment: fixed
+		background-size: 14em
+		color: $text
 
 	h1,h2,h3,h4,legend
-        color: $heading
+		color: $heading
 
 	legend u
 		font-weight: 900
 
-	a:not(:hover)
+	a:not(:hover), abbr:not(:hover)
 		text-decoration: none
 
 	//Forms
