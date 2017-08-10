@@ -1,4 +1,5 @@
 {{define "archive"}}
+	Total Events: {{len .Events}}
 	{{with.Events}}
 		<table>
 			<thead>
@@ -29,8 +30,6 @@
 				{{end}}
 			{{end}}
 		</table>
-	{{else}}
-		<samp>No events archived.</samp>
 	{{end}}
 	<script defer src=/j/main></script>
 {{end}}

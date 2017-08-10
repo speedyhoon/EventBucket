@@ -22,6 +22,7 @@ var (
 	//Command line flags.
 	portAddr = ":"
 	debug    bool
+	isPrivate  bool
 
 	//Logging
 	//TODO add t & info when debug == true during build time
@@ -90,6 +91,10 @@ func main() {
 	if port != "80" {
 		portAddr += port
 	}
+
+	num, _ := stoU(port)
+	isPrivate = host != "127.0.0.1" && host != "localhost" || num > 1023
+
 	httpAddr := host + portAddr
 	h := http.Server{Addr: httpAddr, Handler: nil}
 	go func() {

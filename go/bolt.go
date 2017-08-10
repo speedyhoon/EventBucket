@@ -342,14 +342,14 @@ func updateEventGrades(decode interface{}, contents interface{}) interface{} {
 
 func getClubs() (clubs []Club, err error) {
 	return clubs, search(tblClub, &Club{}, func(c interface{}) error {
-		clubs = append(clubs, c.(Club))
+		clubs = append(clubs, *c.(*Club))
 		return nil
 	})
 }
 
 func getMapClubs(clubID string) (clubs []Club, err error) {
 	return clubs, search(tblClub, &Club{}, func(c interface{}) error {
-		club := c.(Club)
+		club := *c.(*Club)
 		if clubID != "" && club.ID == clubID || clubID == "" && club.Latitude != 0 && club.Longitude != 0 {
 			clubs = append(clubs, club)
 		}
@@ -360,7 +360,7 @@ func getMapClubs(clubID string) (clubs []Club, err error) {
 func clubsDataList() []option {
 	var clubs []option
 	err := search(tblClub, &Club{}, func(c interface{}) error {
-		club := c.(Club)
+		club := *c.(*Club)
 		clubs = append(clubs, option{Value: club.ID, Label: club.Name, Selected: club.IsDefault})
 		return nil
 	})
@@ -372,8 +372,8 @@ func clubsDataList() []option {
 
 func getEvents(query func(Event) bool) ([]Event, error) {
 	var events []Event
-	return events, search(tblClub, &Event{}, func(e interface{}) error {
-		event := e.(Event)
+	return events, search(tblEvent, &Event{}, func(e interface{}) error {
+		event := *e.(*Event)
 		if query(event) {
 			events = append(events, event)
 		}
@@ -533,7 +533,7 @@ func searchShooters(firstName, surname, club string) (shooters []Shooter) {
 	club = strings.ToLower(club)
 
 	err := search(tblShooter, &Shooter{}, func(s interface{}) error {
-		shooter := s.(Shooter)
+		shooter := *s.(*Shooter)
 		//strings.Contains returns true when sub-string is "" (empty string)
 		if strings.Contains(strings.ToLower(shooter.FirstName), firstName) && strings.Contains(strings.ToLower(shooter.Surname), surname) && strings.Contains(strings.ToLower(shooter.Club), club) {
 			shooters = append(shooters, shooter)
@@ -560,7 +560,8 @@ func getClubByName(clubName string) (Club, bool) {
 
 	err := search(tblClub, &club, func(club interface{}) error {
 		//Case insensitive search
-		if strings.ToLower(club.(Club).Name) == clubName {
+		if strings.ToLower(club.(*Club).Name) == clubName {
+			//Return a successful error to stop searching any further
 			return fmt.Errorf(success)
 		}
 		return nil

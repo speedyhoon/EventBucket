@@ -9,12 +9,6 @@ import (
 func shooters(w http.ResponseWriter, r *http.Request, f form) {
 	_, forms := sessionForms(w, r, shooterNew, shootersImport)
 
-	//Search for shooters in the default club if EventBucket was not started in debug mode & all values are empty.
-	if f.Fields[0].Value == "" && f.Fields[1].Value == "" && f.Fields[2].Value == "" {
-		f.Fields[2].Value = defaultClubName()
-		f.Fields[2].Placeholder = f.Fields[2].Value
-	}
-
 	templater(w, page{
 		Title: "Shooters",
 		Data: map[string]interface{}{

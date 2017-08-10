@@ -1,4 +1,4 @@
-var editRows = document.querySelectorAll('[data-s] tbody tr td:last-of-type'), i = editRows.length;
+var editRows = document.querySelectorAll('[data-e] tbody tr td:last-of-type'), i = editRows.length;
 while(i--){
 	editRows[i].onclick = editRow;
 }

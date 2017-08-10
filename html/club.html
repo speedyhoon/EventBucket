@@ -1,15 +1,9 @@
 {{define "club"}}
-	<!--TODO add edit class to stylus default width=15px height=15px-->
-	<!--<h2>{{.Club.Name}}{{if.Club.IsDefault}} (default){{end}} <a href=#edit title="Edit club details" class=edit></a></h2>-->
-	<h2>{{.Club.Name}}{{if.Club.IsDefault}} (default){{end}} <a href=#edit title="Edit club details">
-			<img src=/v/edit alt=pencil width=20 height=20>
-		</a>
+	<h2>
+		{{with.Club.URL}}<a href={{.}} target=_blank>{{end}}
+			{{.Club.Name}}{{if.Club.IsDefault}} (default){{end}}
+		{{if.Club.URL}}</a>{{end}}
 	</h2>
-
-	<p>
-		{{.Club.Address}}<br>
-		{{.Club.Town}}{{with.Club.Postcode}}, {{.}}{{end}}
-		{{with.Club.URL}}<br><a href={{.}}>{{.}}</a>{{end}}
 
 	{{form .clubDetails}}
 
@@ -19,28 +13,27 @@
 			<div id=map></div>
 			<script defer src=/j/map></script>
 		{{else}}
-			<samp>Club location not available.</samp>
+			<p>Club latitude and longitude are empty.
 		{{end}}
 	{{end}}
 
 	<h2>Mounds</h2>
+	<p>Total Mounds: {{len .Club.Mounds}}
 	{{with.Club.Mounds}}
-		<table data-s>
+		<table data-e>
 			<thead>
 				<tr>
 					<th>ID
 					<th>Name
 					<td>Edit
 			<tbody>
-				{{range $index, $mound := .}}
+				{{range $index, $name := .}}
 					<tr>
 						<td>{{$index}}
-						<td>{{.Name}}
+						<td>{{$name}}
 						<td>
 				{{end}}
 		</table>
-	{{else}}
-		<samp>No mounds available.</samp>
 	{{end}}
 
 	<template>
