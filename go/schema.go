@@ -42,7 +42,7 @@ type Event struct {
 	Club     string         `json:"C,omitempty"`
 	Date     string         `json:"d,omitempty"`
 	Time     string         `json:"t,omitempty"`
-	ISO      time.Time      `json:"-"`
+	ISO      time.Time      `json:"-"`	//TODO Change Date & Time to time.Time?
 	Ranges   []Range        `json:"R,omitempty"`
 	AutoInc  AutoInc        `json:"U,omitempty"`
 	Shooters []EventShooter `json:"S,omitempty"`
@@ -96,8 +96,10 @@ type Score struct {
 	//Warning    uint8  `json:"w,omitempty"`
 }
 
+//ScoreMap represents a list of Scores indexed by rangeIDs
 type ScoreMap map[string]Score
 
+//get returns a Score given a rangeID index
 func (s ScoreMap) get(id uint) (sc Score, ok bool) {
 	sc, ok = s[fmt.Sprintf("%d", id)]
 	return

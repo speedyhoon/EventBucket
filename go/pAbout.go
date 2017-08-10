@@ -16,6 +16,10 @@ func about(w http.ResponseWriter, r *http.Request) {
 
 //localIPs returns the non loopback local IPv4 of the host
 func localIPs() map[string]interface{} {
+	if isPrivate{
+		return map[string]interface{}{}
+	}
+
 	var localIPs []string
 	addrs, err := net.InterfaceAddrs()
 	if err == nil {

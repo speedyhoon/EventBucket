@@ -34,9 +34,9 @@ func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
 		Data: map[string]interface{}{
 			"Ranges":           dataListRanges(event.Ranges, false),
 			"Event":            event,
-			"EventDetails":     forms[0],
-			"AddRange":         forms[1],
-			"AddAgg":           forms[2],
+			"eventDetails":     forms[0],
+			"eventRangeNew":    forms[1],
+			"eventAggNew":      forms[2],
 			"RangeDataList":    club.Mounds,
 			"eventRangeUpdate": forms[3],
 			"eventAggUpdate":   forms[4],
@@ -57,7 +57,7 @@ func eventDetailsUpsert(f form) (string, error) {
 	eventID := f.Fields[5].Value
 	return urlEventSettings + eventID,
 		updateDocument(tblEvent, eventID, &Event{
-			Club:   f.Fields[0].Value,
+			Club: f.Fields[0].Value,
 			Name:   f.Fields[1].Value,
 			Date:   f.Fields[2].Value,
 			Time:   f.Fields[3].Value,

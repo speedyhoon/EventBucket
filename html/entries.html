@@ -5,11 +5,11 @@
 		{{form .eventShooterNew}}
 	{{end}}
 	{{$hasRanges := ge (len .Event.Ranges) 1}}
-	{{if not $hasRanges}}<samp>This event has no ranges</samp>{{end}}
+	<p>Total Entries: {{len .Event.Shooters}}
 	{{with.Event.Shooters}}
-		<p>Total Entries: {{len .}} <a href=/print-entry-list/{{$.Event.ID}}>Print Entry List</a>
+		<a href=/print-entry-list/{{$.Event.ID}}>Print Entry List</a>
 		{{if not $.Event.Closed}}
-			<table data-s>
+			<table data-e>
 		{{else}}
 			<table>
 		{{end}}
@@ -38,8 +38,6 @@
 				{{end}}
 			{{end}}
 		</table>
-	{{else}}
-		<samp>No shooters entered in event.</samp>
 	{{end}}
 	{{if not .Event.Closed}}
 		<template>

@@ -1,31 +1,23 @@
 {{define "clubs"}}
 	{{form .clubNew}}
+	<p>Total Clubs: {{len .clubs}}
 	{{with.clubs}}
-		Total Clubs: {{len .}}
 		<table>
 			<thead>
 				<tr>
 					<th>Club Name
 					<td>Default Club
-					<td>Edit
 			<tbody>
 				{{range.}}
 					<tr>
 						<td><a href=/club/{{.ID}}>{{.Name}}</a>
 						{{if.IsDefault}}<td class=tick>{{else}}<td>{{end}}
-						<!--td><a href=/club/{{.ID}}#edit></a-->
-						<td class=center>
-							<a href=/club/{{.ID}}#edit>
-								<img src=/v/edit alt="edit club" height=20 width=20>
-							</a>
 				{{end}}
 		</table>
 		{{if $.showMap}}
 			<div id=map></div>
 			<script defer src=/j/map></script>
 		{{end}}
-	{{else}}
-		<samp>No Clubs found.</samp>
 	{{end}}
 	<script defer src=/j/main></script>
 {{end}}

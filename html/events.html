@@ -1,6 +1,7 @@
 {{define "events"}}
 	{{form .eventNew}}
 	{{template "networkAdapters" .Network}}
+	<p>Total Events: {{len .Events}}
 	{{with.Events}}
 		<h2>Open Events</h2>
 		<div class=events>
@@ -18,20 +19,14 @@
 							{{else}}
 								{{.Name}}
 							{{end}} {{with.Time}}<span class=small>starts at</span> {{.}}{{end}}
-							<a href=/event-settings/{{.ID}} title="Edit event" class=right>
-								<img src=/v/edit alt="Edit event" height=15>
-							</a>
 						</p>
 						{{range.Ranges}}{{.Name}}, {{else}}No ranges added.{{end}}
 						<br>
-						<a href=/entries/{{.ClubID}}>{{.Club}}</a>
+						<a href=/entries/{{.Club}}>{{.Club}}</a>
 					</div>
 				{{end}}
 			{{end}}
 		</div>
-	{{else}}
-		<samp>No Events found.</samp>
-		<p>Please view <a href=/archive>Archive</a> too browse closed events.
 	{{end}}
 	<script defer src=/j/main></script>
 {{end}}

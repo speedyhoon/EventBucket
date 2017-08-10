@@ -2,12 +2,12 @@
 	<p>To add shooters to an event, first navigate to an <strong><a href=/>Event</a></strong>, then use the <strong>Shooter Entry</strong> form located on the <strong>Entries</strong> page.
 	<br>Use this page to search for shooters already entered into your database or add new shooters to the database.
 	{{form .shooterNew}}
-	{{if.shooterList}}
+	{{if.Shooters}}
 		{{form .shooterSearch}}
 	{{end}}
-	<p>Total Shooters: {{len .shooterSearch}}{{with.shooterList}}, Search returned {{len .}} shooter{{if ne (len .) 1}}s{{end}}.{{end}}
-	{{with.shooterList}}
-		<table data-s>
+	<p>Total Shooters: {{len .Shooters}}
+	{{with.Shooters}}, Search returned {{len .}} shooter{{if ne (len .) 1}}s{{end}}.
+		<table data-e>
 			<thead>
 				<tr>
 					<th class=asc>Id
@@ -23,7 +23,7 @@
 						<td>{{.ID}}
 						<td>{{.FirstName}} <span>{{.Surname}}</span>
 						<td>{{.Club}}
-						<td>{{range.Grade}}{{(grade .).Name}}, {{end}}
+						<td>{{range.Grades}}{{(grade .).Name}}, {{end}}
 						<td>{{ageGroup .AgeGroup}}
 						<!--td{{/*a " class=tick" .Sex*/}}-->
 						{{if.Sex}}<td class=tick>{{else}}<td>{{end}}
