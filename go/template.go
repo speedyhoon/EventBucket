@@ -110,13 +110,6 @@ func init() {
 
 func loader() (err error) {
 	templates, err = template.New("").Funcs(template.FuncMap{
-		"i": func(inputs []field, index int) *field {
-			//index will always be a positive integer so the check for index >= 0 is not required
-			if index < len(inputs) {
-				return &inputs[index]
-			}
-			return nil
-		},
 		"a": func(attribute string, value interface{}) string {
 			//"a": func(attribute string, value interface{}) template.HTMLAttr {
 			var output string
