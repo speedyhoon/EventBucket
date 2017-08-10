@@ -15,6 +15,7 @@
   namespace: clubDetails
   id: edit
   hidden: true
+  accesskey: C
   inputs:
   - label: Club Name
     name: n
