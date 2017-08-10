@@ -349,7 +349,7 @@ func getClubs() (clubs []Club, err error) {
 
 func getMapClubs(clubID string) (clubs []Club, err error) {
 	return clubs, search(tblClub, &Club{}, func(c interface{}) error {
-		club := c.(Club)
+		club := *c.(*Club)
 		if clubID != "" && club.ID == clubID || clubID == "" && club.Latitude != 0 && club.Longitude != 0 {
 			clubs = append(clubs, club)
 		}
@@ -533,7 +533,7 @@ func searchShooters(firstName, surname, club string) (shooters []Shooter) {
 	club = strings.ToLower(club)
 
 	err := search(tblShooter, &Shooter{}, func(s interface{}) error {
-		shooter := s.(Shooter)
+		shooter := *s.(*Shooter)
 		//strings.Contains returns true when sub-string is "" (empty string)
 		if strings.Contains(strings.ToLower(shooter.FirstName), firstName) && strings.Contains(strings.ToLower(shooter.Surname), surname) && strings.Contains(strings.ToLower(shooter.Club), club) {
 			shooters = append(shooters, shooter)
@@ -560,7 +560,8 @@ func getClubByName(clubName string) (Club, bool) {
 
 	err := search(tblClub, &club, func(club interface{}) error {
 		//Case insensitive search
-		if strings.ToLower(club.(Club).Name) == clubName {
+		if strings.ToLower(club.(*Club).Name) == clubName {
+			//Return a successful error to stop searching any further
 			return fmt.Errorf(success)
 		}
 		return nil
