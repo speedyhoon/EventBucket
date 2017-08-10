@@ -21,7 +21,7 @@
 
 	<p>Total Ranges: {{len .Event.Ranges}}
 	{{with.Event.Ranges}}
-		<table{{a " data-s" (not $.Event.Closed)}}>
+		<table{{a " data-e" (not $.Event.Closed)}}>
 			<thead>
 				<th class=asc>ID
 				<th>Range

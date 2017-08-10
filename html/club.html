@@ -20,17 +20,17 @@
 	<h2>Mounds</h2>
 	<p>Total Mounds: {{len .Club.Mounds}}
 	{{with.Club.Mounds}}
-		<table data-s>
+		<table data-e>
 			<thead>
 				<tr>
 					<th>ID
 					<th>Name
 					<td>Edit
 			<tbody>
-				{{range $index, $mound := .}}
+				{{range $index, $name := .}}
 					<tr>
 						<td>{{$index}}
-						<td>{{.Name}}
+						<td>{{$name}}
 						<td>
 				{{end}}
 		</table>
