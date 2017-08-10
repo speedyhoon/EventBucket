@@ -5,12 +5,16 @@ import (
 )
 
 func settings(w http.ResponseWriter, r *http.Request) {
+	_, forms := sessionForms(w, r, 22)
 	templater(w, page{
 		Title: "Settings",
 		Data: map[string]interface{}{
-			"port":  portAddr, //TODO during save, post redirect to new port address
-			"theme": masterTemplate.IsDarkTheme,
+			"settings": forms[0],
 		},
-		//TODO Form 2: shutdown http server
 	})
+}
+
+func settingsUpdate(f form) (string, error) {
+	masterTemplate.IsDarkTheme = f.Fields[0].Value == "Dark"
+	return "", nil
 }

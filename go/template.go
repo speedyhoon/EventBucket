@@ -92,6 +92,9 @@ var (
 			Name: "About",
 			Link: urlAbout,
 		}, {
+			Name: "Settings",
+			Link: urlSettings,
+		}, {
 			Name: "Licence",
 			Link: urlLicence,
 		}},
@@ -100,7 +103,7 @@ var (
 
 //TODO remove if !debug
 func init() {
-	if err := loader(); err != nil {
+	if err := loader(); !debug && err != nil {
 		warn.Fatal(err)
 	}
 }
