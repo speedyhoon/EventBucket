@@ -16,10 +16,10 @@ const (
 	eventAggEdit         uint8 = 8
 	eventShooterNew      uint8 = 9
 	eventShooterExisting uint8 = 10
-	shooterNew           uint8 = 12
 	eventTotalScores     uint8 = 13
 	eventAvailableGrades uint8 = 14
 	eventUpdateShotScore uint8 = 15
+	shooterNew           uint8 = 19
 	shootersImport       uint8 = 21
 )
 
@@ -40,11 +40,12 @@ func init() {
 	post("/18", 18, eventShooterUpdate)
 	post("/10", 10, eventShooterExistingInsert)
 	post("/14", 14, eventAvailableGradesUpsert)
-	get("/19", 19, eventSearchShooters)
-	post("/11", 11, shooterInsert)
+	get("/11", 11, eventSearchShooters)
 	post("/12", 12, shooterUpdate)
+	post("/19", 19, shooterInsert)
 	get(urlShooters, 20, shooters)
 	//post("/21", 21, importShooters)
+	post("/22", 22, settingsUpdate)
 }
 
 func getForm(id uint8) form {
@@ -215,6 +216,13 @@ func getForm(id uint8) form {
 			case 21: //Import Shooters
 				return []field{
 					{name: "f", v8: v8File, Required: true},
+				}
+			case 22: //Settings
+				return []field{
+					{name: "t", v8: v8StrReq, Options: []option{
+						{Label: "Lite", Selected: !masterTemplate.IsDarkTheme},
+						{Label: "Dark", Selected: masterTemplate.IsDarkTheme},
+					}},
 				}
 			}
 			return []field{}
