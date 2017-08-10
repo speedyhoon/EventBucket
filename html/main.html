@@ -1,5 +1,5 @@
 {{define ""}}<!DOCTYPE html>
-<link rel=stylesheet href=/c/{{if.Theme}}dark{{else}}lite{{end}}>
+<link rel=stylesheet href=/c/{{if.IsDarkTheme}}dark{{else}}lite{{end}}>
 <title>EventBucket{{with.Page.Title}} - {{.}}{{end}}</title>
 <nav>
 	<div>
@@ -51,6 +51,6 @@
 	{{with.Title}}<h4>{{.}}</h4>{{end}}
 	{{with.Heading}}<h2>{{.}}</h2>{{end}}
 	{{with.Error}}<samp>{{.}}</samp>{{end}}
-	{{template .Section .Data}}
+	{{template .SubTemplate .Data}}
 {{end}}
 {{end}}
