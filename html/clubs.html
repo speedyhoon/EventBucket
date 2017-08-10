@@ -1,7 +1,7 @@
 {{define "clubs"}}
 	{{form .clubNew}}
+	<p>Total Clubs: {{len .clubs}}
 	{{with.clubs}}
-		Total Clubs: {{len .}}
 		<table>
 			<thead>
 				<tr>
@@ -24,8 +24,6 @@
 			<div id=map></div>
 			<script defer src=/j/map></script>
 		{{end}}
-	{{else}}
-		<samp>No Clubs found.</samp>
 	{{end}}
 	<script defer src=/j/main></script>
 {{end}}

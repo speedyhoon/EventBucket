@@ -1,6 +1,7 @@
 {{define "events"}}
 	{{form .eventNew}}
 	{{template "networkAdapters" .Network}}
+	<p>Total Events: {{len .Events}}
 	{{with.Events}}
 		<h2>Open Events</h2>
 		<div class=events>
@@ -29,9 +30,6 @@
 				{{end}}
 			{{end}}
 		</div>
-	{{else}}
-		<samp>No Events found.</samp>
-		<p>Please view <a href=/archive>Archive</a> too browse closed events.
 	{{end}}
 	<script defer src=/j/main></script>
 {{end}}

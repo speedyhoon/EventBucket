@@ -19,11 +19,12 @@
 			<div id=map></div>
 			<script defer src=/j/map></script>
 		{{else}}
-			<samp>Club location not available.</samp>
+			<p>Club latitude and longitude are empty.
 		{{end}}
 	{{end}}
 
 	<h2>Mounds</h2>
+	<p>Total Mounds: {{len .Club.Mounds}}
 	{{with.Club.Mounds}}
 		<table data-s>
 			<thead>
@@ -39,8 +40,6 @@
 						<td>
 				{{end}}
 		</table>
-	{{else}}
-		<samp>No mounds available.</samp>
 	{{end}}
 
 	<template>

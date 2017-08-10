@@ -2,6 +2,7 @@
 	{{if and (not .Event.Closed) (not .Range.Locked)}}
 		{{template "incompleteShooters" .}}
 		<br>{{template "barcodeSearch"}}
+		<p>Total Shooters: {{len .Event.Shooters}}
 		{{with.Event.Shooters}}
 			<table class=enterShots data-eventID={{$.Event.ID}} data-rangeID={{$.Range.ID}}>
 				<thead>
@@ -59,8 +60,6 @@
 			<script defer src=/j/enterShots></script>
 			<script defer src=/j/shooterBarcode></script>
 			<script defer src=/j/main></script>
-		{{else}}
-			<samp>No shooters entered in this event.</samp>
 		{{end}}
 	{{else}}
 		{{template "rangeNotDisplayed" .}}
