@@ -19,8 +19,8 @@
 	{{template "formErrors" .eventRangeUpdate}}
 	{{template "formErrors" .eventAggUpdate}}
 
+	<p>Total Ranges: {{len .Event.Ranges}}
 	{{with.Event.Ranges}}
-		<p>Total Ranges: {{len .}}
 		<table{{a " data-s" (not $.Event.Closed)}}>
 			<thead>
 				<th class=asc>ID
@@ -64,8 +64,6 @@
 			<script defer src=/j/eventRanges></script>
 			<script defer src=/j/editRow></script>
 		{{end}}
-	{{else}}
-		<samp>This event has no ranges.</samp>
 	{{end}}
 	<script defer src=/j/main></script>
 {{end}}
