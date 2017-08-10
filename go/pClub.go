@@ -49,7 +49,7 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 		Error:   err,
 		Data: map[string]interface{}{
 			"clubNew": forms[0],
-			"Clubs":   clubs,
+			"clubs":   clubs,
 			"showMap": !debug,
 		},
 	})

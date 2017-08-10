@@ -3,6 +3,7 @@
 		{{template "barcodeSearch"}}
 		{{template "incompleteShooters" .}}
 		{{if and .Hidden (not .ShowAll)}}<samp>{{.Hidden}} Shooter{{.Plural}} finished.</samp>{{end}}
+		<p>Total Shooters: {{len .Event.Shooters}}
 		{{with.Event.Shooters}}
 			<table>
 				<thead>
@@ -39,8 +40,6 @@
 			<script defer src=/j/enterTotals></script>
 			<script defer src=/j/shooterBarcode></script>
 			<script defer src=/j/main></script>
-		{{else}}
-			<samp>No shooters entered in this event.</samp>
 		{{end}}
 	{{else}}
 		{{template "rangeNotDisplayed" .}}
