@@ -388,15 +388,12 @@
   inputs:
   - label: Grades
     name: g
+    type: listbox
     accesskey: G
     v8: v8UintList
     required: true
     max: len(globalGrades) - 1
     options: availableGrades([]uint{})
-  - label: d
-    name: I
-    v8: v8Regex
-    regex: regexID
   - label: Save
     name: E
     type: submit
