@@ -50,7 +50,7 @@
     name: b
     type: checkbox
     v8: v8Bool
-    help: "{{with i .Fields 6}}{{if.Checked}}To change the default club, open the club you want to be the default and tick 'Default Club'. There must only be one default club selected at a time.{{else}}Automatically inserts this Club Name when creating new events.{{end}}{{end}}"
+    help: "{{with index .Fields 6}}{{if.Checked}}To change the default club, open the club you want to be the default and tick 'Default Club'. There must only be one default club selected at a time.{{else}}Automatically inserts this Club Name when creating new events.{{end}}{{end}}"
   - label: Website Address
     name: u
     type: url
@@ -533,7 +533,7 @@
     max: len(globalGrades) - 1
     options: globalGradesDataList
     help: The grades that this shooter likes to shoot in. This can be one or more different grades. Hold down the Shift key or Ctrl key on your keyboard to select more than one item at a time.
-  - label: Add New Shooter
+  - label: Add Shooter
     name: E
     type: submit
     v8: v8Regex
@@ -564,5 +564,17 @@
     type: file
     v8: v8File
     accesskey: I
+  - label: Save
+    type: submit
+- title: Settings
+  namespace: settings
+  accesskey: S
+  inputs:
+  - label: Theme
+    name: t
+    type: select
+    v8: v8StrReq
+    options: "[]option{{Label: \"Lite\"},{Label: \"Dark\"}}"
+    accesskey: S
   - label: Save
     type: submit
