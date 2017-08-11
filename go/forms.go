@@ -207,10 +207,11 @@ func getForm(id uint8) form {
 					{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: globalGradesDataList},
 				}
 			case 20: //Shooter Search
+				clubName := defaultClubName()
 				return []field{
 					{name: "f", v8: v8Str},
 					{name: "s", v8: v8Str},
-					{name: "C", v8: v8Str},
+					{name: "C", v8: v8Str, Placeholder: clubName, Required: clubName == "", Options: clubsDataList()},
 				}
 			case 21: //Import Shooters
 				return []field{

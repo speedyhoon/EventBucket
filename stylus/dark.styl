@@ -16,7 +16,7 @@ $liteGrey = lighten($base-color, 10%)
 body
 	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
 
-a, abbr, button
+a, abbr, button, th
 	color: $blue
 
 samp
@@ -27,6 +27,26 @@ samp
 	border-radius: .3em
 	font-weight: 600
 	margin: 1em 0
+
+table
+	border-collapse: collapse
+
+//tbody tr:nth-child(odd)
+tbody tr:hover
+	background: rgba(128,128,128,.5)
+
+//[data-e] td
+//thead td
+th
+	cursor: pointer
+
+.asc
+	background: url(/w/sty) no-repeat
+	padding-left: 1em
+
+.desc
+	background: url(/w/can) no-repeat
+	padding-left: 1em
 
 //Menu
 nav
@@ -80,6 +100,10 @@ abbr
 		margin: .5em
 
 //@import "main"
+
+@media print
+	form, nav
+		display: none
 
 @media not print
 	html

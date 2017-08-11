@@ -142,7 +142,7 @@ func loader() (err error) {
 			return output
 		},
 		"ageGroup": func(index uint) string {
-			if index >= 1 && index < uint(len(dataListAgeGroup())) {
+			if index < uint(len(dataListAgeGroup())) {
 				return dataListAgeGroup()[index].Label
 			}
 			return ""
@@ -150,6 +150,7 @@ func loader() (err error) {
 		"ordinal": func(x int) string {
 			return ordinal(uint(x), false)
 		},
+		"grade": findGrade,
 		"findRange": func(rangeID uint, ranges []Range) Range {
 			for _, r := range ranges {
 				if rangeID == r.ID {
