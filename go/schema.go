@@ -39,7 +39,8 @@ type Mound struct {
 type Event struct {
 	ID       string         `json:"I"`
 	Name     string         `json:"n"`
-	Club     string         `json:"C,omitempty"`
+	ClubID   string         `json:"C,omitempty"`
+	Club     Club           `json:"-"`
 	Date     string         `json:"d,omitempty"`
 	Time     string         `json:"t,omitempty"`
 	ISO      time.Time      `json:"-"`	//TODO Change Date & Time to time.Time?
@@ -48,7 +49,7 @@ type Event struct {
 	Shooters []EventShooter `json:"S,omitempty"`
 	Grades   []uint         `json:"G,omitempty"`
 	Closed   bool           `json:"z,omitempty"`
-	/*TeamCats map[string]TeamCats `json:"M,omitempty"`
+	/*TeamCats map[string]TeamCats `json:"M,omitempty"` //TeamCategories
 	Teams    map[string]Team     `json:"T,omitempty"`*/
 }
 
@@ -61,7 +62,7 @@ type Championship struct {
 	AutoInc  AutoInc        `json:"U,omitempty"`
 	Grades   []uint         `json:"G,omitempty"`
 	Closed   bool           `json:"z,omitempty"`
-	TeamCats map[string]TeamCats `json:"M,omitempty"`
+	TeamCats map[string]TeamCats `json:"M,omitempty"` //TeamCategories
 	Teams    map[string]Team     `json:"T,omitempty"`
 }*/
 
