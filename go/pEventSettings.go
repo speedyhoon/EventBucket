@@ -6,15 +6,10 @@ import (
 )
 
 func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
-	var club Club
-	if !event.Closed && event.Club != "" {
-		club, _ = getClub(event.Club)
-	}
-
 	//Retrieve any submitted form that failed to save.
 	action, forms := sessionForms(w, r, eventEdit, eventRangeNew, eventAggNew, eventRangeEdit, eventAggEdit)
 	if action != eventEdit {
-		forms[0].Fields[0].Value = event.Club
+		forms[0].Fields[0].Value = event.ClubID
 		forms[0].Fields[1].Value = event.Name
 		forms[0].Fields[2].Value = event.Date
 		forms[0].Fields[3].Value = event.Time
@@ -37,7 +32,7 @@ func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
 			"eventDetails":     forms[0],
 			"eventRangeNew":    forms[1],
 			"eventAggNew":      forms[2],
-			"RangeDataList":    club.Mounds,
+			"RangeDataList":    event.Club.Mounds,
 			"eventRangeUpdate": forms[3],
 			"eventAggUpdate":   forms[4],
 		},
@@ -57,7 +52,7 @@ func eventDetailsUpsert(f form) (string, error) {
 	eventID := f.Fields[5].Value
 	return urlEventSettings + eventID,
 		updateDocument(tblEvent, eventID, &Event{
-			Club: f.Fields[0].Value,
+			ClubID: f.Fields[0].Value,
 			Name:   f.Fields[1].Value,
 			Date:   f.Fields[2].Value,
 			Time:   f.Fields[3].Value,

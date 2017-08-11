@@ -29,15 +29,13 @@ func entries(w http.ResponseWriter, r *http.Request, event Event) {
 	forms[2].Fields[0].Options = availableGrades(event.Grades)
 	forms[2].Fields[1].Value = event.ID
 
-	club, err := getClub(event.Club)
-	shooterEntry.Fields[3].Options = searchShootersOptions("", "", club.Name)
+	shooterEntry.Fields[3].Options = searchShootersOptions("", "", event.Club.Name)
 
 	templater(w, page{
 		Title:   "Entries",
 		Menu:    urlEvents,
 		MenuID:  event.ID,
 		Heading: event.Name,
-		Error:   err,
 		Data: map[string]interface{}{
 			"Event":                event,
 			"eventShooterNew":      shooterEntry,
@@ -57,7 +55,7 @@ func eventInsert(f form) (string, error) {
 
 	//Insert new event into database.
 	ID, err := Event{
-		Club:    clubID,
+		ClubID:  clubID,
 		Name:    f.Fields[1].Value,
 		Date:    f.Fields[2].Value,
 		Time:    f.Fields[3].Value,

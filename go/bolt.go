@@ -94,7 +94,12 @@ func getDocument(bucketName []byte, ID string, result interface{}) error {
 }
 
 func getEvent(ID string) (event Event, err error) {
-	return event, getDocument(tblEvent, ID, &event)
+	err = getDocument(tblEvent, ID, &event)
+	if err != nil {
+		return
+	}
+	event.Club, err = getClub(event.ClubID)
+	return
 }
 
 func getClub(ID string) (club Club, err error) {
@@ -387,6 +392,7 @@ func getEvents(query func(Event) bool) ([]Event, error) {
 	return events, search(tblEvent, &Event{}, func(e interface{}) error {
 		event := *e.(*Event)
 		if query(event) {
+			event.Club, _ = getClub(event.ClubID)
 			events = append(events, event)
 		}
 		return nil
@@ -547,8 +553,11 @@ func searchShooters(firstName, surname, club string) (shooters []Shooter) {
 	err := search(tblShooter, &Shooter{}, func(s interface{}) error {
 		shooter := *s.(*Shooter)
 		//strings.Contains returns true when sub-string is "" (empty string)
-		if strings.Contains(strings.ToLower(shooter.FirstName), firstName) && strings.Contains(strings.ToLower(shooter.Surname), surname) && strings.Contains(strings.ToLower(shooter.Club), club) {
-			shooters = append(shooters, shooter)
+		if strings.Contains(strings.ToLower(shooter.FirstName), firstName) && strings.Contains(strings.ToLower(shooter.Surname), surname) {
+			clubs, err := getClub(shooter.Club)
+			if err == nil && strings.Contains(strings.ToLower(clubs.Name), club){
+				shooters = append(shooters, shooter)
+			}
 		}
 		return nil
 	})
