@@ -141,6 +141,7 @@ func loader() (err error) {
 			//return template.HTMLAttr(output)
 			return output
 		},
+		"grade": findGrade,
 		"ageGroup": func(index uint) string {
 			if index < uint(len(dataListAgeGroup())) {
 				return dataListAgeGroup()[index].Label
@@ -158,6 +159,17 @@ func loader() (err error) {
 				}
 			}
 			return Range{}
+		},
+		"N": func(start, end uint) (stream chan uint) {
+			stream = make(chan uint)
+			go func() {
+				var i uint = start
+				for ; i <= end; i++ {
+					stream <- i
+				}
+				close(stream)
+			}()
+			return
 		},
 	}).ParseFiles(
 		filepath.Join(runDir, "h"),
