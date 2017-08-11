@@ -191,6 +191,8 @@ func findHandler(pageFunc interface{}, w http.ResponseWriter, r *http.Request, l
 		}
 		pageFunc.(func(http.ResponseWriter, *http.Request, Event, sID))(w, r, event, sID(shooterID))
 
+	//pEnterShots.go
+	//pEnterTotals.go
 	//pScoreboard.go
 	case func(http.ResponseWriter, *http.Request, Event, rID):
 		event, err := getEvent(ids[0])

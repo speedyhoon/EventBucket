@@ -62,6 +62,18 @@ func search(table []byte, object interface{}, myCall func(interface{}) error) er
 	})
 }
 
+//tblQty returns the total number of records contained in the bucket (table)
+func tblQty(bucketName []byte) (qty uint) {
+	db.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(bucketName)
+		if bucket != nil {
+			qty = uint(bucket.Stats().KeyN)
+		}
+		return nil
+	})
+	return
+}
+
 func getDocument(bucketName []byte, ID string, result interface{}) error {
 	byteID, err := b36toBy(ID)
 	if err != nil {

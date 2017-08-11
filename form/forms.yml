@@ -539,17 +539,24 @@
   method: get
   attachtopage: true
   accesskey: S
+  vars: "clubName := defaultClubName()"
   inputs:
   - name: f
     label: First Name
     v8: v8Str
+    type: search
     accesskey: S
   - name: s
     label: Surname
     v8: v8Str
+    type: search
   - name: C
     label: Club
+    type: search
     v8: v8Str
+    placeholder: clubName
+    required: clubName == ""
+    options: clubsDataList()
   - label: Search
     type: submit
 - title: Import Shooters

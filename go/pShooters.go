@@ -16,6 +16,7 @@ func shooters(w http.ResponseWriter, r *http.Request, f form) {
 			"shootersImport": forms[1],
 			"shooterSearch":  f,
 			"Shooters":       searchShooters(f.Fields[0].Value, f.Fields[1].Value, f.Fields[2].Value),
+			"qty":            tblQty(tblShooter),
 			"Grades":         globalGradesDataList,
 			"AgeGroups":      dataListAgeGroup(),
 		},
