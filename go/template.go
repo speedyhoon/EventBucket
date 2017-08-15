@@ -92,9 +92,6 @@ var (
 			Name: "About",
 			Link: urlAbout,
 		}, {
-			Name: "Settings",
-			Link: urlSettings,
-		}, {
 			Name: "Licence",
 			Link: urlLicence,
 		}},

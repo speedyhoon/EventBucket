@@ -20,7 +20,6 @@ const (
 	urlClubs    = "/clubs"
 	urlLicence  = "/license"
 	urlShooters = "/shooters"
-	urlSettings = "/settings"
 	urlSVG      = "/v"
 	//GET with PARAMETERS
 	urlClub            = "/club/"             //clubID
@@ -56,7 +55,6 @@ func init() {
 	getParameters("/q/", barcodeQR, regexBarcode)
 	getParameters("/x/", barcodeDM, regexBarcode)
 	getRedirectPermanent(urlAbout, about)
-	getRedirectPermanent(urlSettings, settings)
 	getRedirectPermanent(urlArchive, eventArchive)
 	getRedirectPermanent(urlClubs, clubs)
 	getParameters(urlClub, club, regexID)

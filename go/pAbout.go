@@ -8,10 +8,19 @@ import (
 )
 
 func about(w http.ResponseWriter, r *http.Request) {
+	_, forms := sessionForms(w, r, settings)
 	templater(w, page{
 		Title: "About",
-		Data:  localIPs(),
+		Data: map[string]interface{}{
+			"settings": forms[0],
+			"Network":  localIPs(),
+		},
 	})
+}
+
+func settingsUpdate(f form) (string, error) {
+	masterTemplate.IsDarkTheme = f.Fields[0].Value == "Dark"
+	return "", nil
 }
 
 //localIPs returns the non loopback local IPv4 of the host
