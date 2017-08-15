@@ -20,9 +20,9 @@ import (
 
 var (
 	//Command line flags.
-	portAddr = ":"
-	debug    bool
-	isPrivate  bool
+	portAddr  = ":"
+	debug     bool
+	isPrivate bool
 
 	//Logging
 	//TODO add t & info when debug == true during build time

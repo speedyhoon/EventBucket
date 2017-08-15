@@ -43,7 +43,7 @@ type Event struct {
 	Club     Club           `json:"-"`
 	Date     string         `json:"d,omitempty"`
 	Time     string         `json:"t,omitempty"`
-	ISO      time.Time      `json:"-"`	//TODO Change Date & Time to time.Time?
+	ISO      time.Time      `json:"-"` //TODO Change Date & Time to time.Time?
 	Ranges   []Range        `json:"R,omitempty"`
 	AutoInc  AutoInc        `json:"U,omitempty"`
 	Shooters []EventShooter `json:"S,omitempty"`
