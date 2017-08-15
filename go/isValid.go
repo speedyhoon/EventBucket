@@ -192,8 +192,8 @@ func v8Bool(f *field, inp ...string) {
 	}
 }
 
-func v8File(f *field, inp ...string) {
-	//TODO add validation chekcs
+func v8FileReq(f *field, inp ...string) {
+	//TODO add validation checks
 	//maxlength < 2MB?
 	//Unmarshal??
 	//Return as interface{}??
