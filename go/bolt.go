@@ -555,7 +555,7 @@ func searchShooters(firstName, surname, club string) (shooters []Shooter) {
 		//strings.Contains returns true when sub-string is "" (empty string)
 		if strings.Contains(strings.ToLower(shooter.FirstName), firstName) && strings.Contains(strings.ToLower(shooter.Surname), surname) {
 			clubs, err := getClub(shooter.Club)
-			if err == nil && strings.Contains(strings.ToLower(clubs.Name), club){
+			if err == nil && strings.Contains(strings.ToLower(clubs.Name), club) {
 				shooters = append(shooters, shooter)
 			}
 		}
