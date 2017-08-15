@@ -527,7 +527,7 @@
     v8: v8Str
 - title: Shooter Search
   handler: shooters
-  #namespace: shooterSearch
+  namespace: shooterSearch
   method: get
   attachtopage: true
   accesskey: S
