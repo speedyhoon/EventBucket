@@ -3,19 +3,15 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
 	"os"
-	"path/filepath"
-
-	"context"
 	"os/signal"
-	"time"
-
-	"github.com/boltdb/bolt"
+	"path/filepath"
 )
 
 var (
@@ -40,29 +36,6 @@ func main() {
 	dbPath := flag.String("dbpath", filepath.Join(os.Getenv("ProgramData"), "EventBucket", "EventBucket.db"), "Directory for datafiles.")
 	flag.Parse()
 
-	//Create database directory if needed.
-	err := mkDir(filepath.Base(*dbPath))
-	if err != nil {
-		warn.Fatal(err)
-	}
-
-	//Database save location
-	db, err = bolt.Open(*dbPath, 0644, &bolt.Options{
-		Timeout:         time.Second * 8,
-		InitialMmapSize: 1048576, //Initial database size = 1MB
-	})
-	if err != nil {
-		warn.Fatal("Connection timeout. Unable to open", *dbPath)
-	}
-	defer func() {
-		if err = db.Close(); err != nil {
-			warn.Println(err)
-		}
-	}()
-
-	//Prepare database by creating all buckets (tables) needed. Otherwise view (read only) transactions will fail.
-	makeBuckets()
-
 	//Turn on trace logging
 	if debug {
 		t.SetOutput(os.Stdout)
@@ -80,6 +53,13 @@ func main() {
 			os.Exit(2)
 		}
 	}
+
+	startDB(*dbPath)
+	defer func() {
+		if err := db.Close(); err != nil {
+			warn.Println(err)
+		}
+	}()
 
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt)
