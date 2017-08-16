@@ -70,10 +70,6 @@ var (
 			}, {
 				Name: "Shooters Report",
 				Link: urlShootersReport,
-			}, {
-				Name:   "Print Entry List",
-				Link:   urlEntryList,
-				Hidden: true,
 			}},
 		}, {
 			Name: "Clubs",

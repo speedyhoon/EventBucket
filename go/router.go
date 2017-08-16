@@ -24,7 +24,6 @@ const (
 	//GET with PARAMETERS
 	urlClub            = "/club/"             //clubID
 	urlEntries         = "/entries/"          //eventID
-	urlEntryList       = "/print-entry-list/" //eventID
 	urlEventSettings   = "/event-settings/"   //eventID
 	urlEventReport     = "/event-report/"     //eventID
 	urlShooterReport   = "/shooter-report/"   //eventID/shooterID
@@ -59,7 +58,6 @@ func init() {
 	getRedirectPermanent(urlClubs, clubs)
 	getParameters(urlClub, club, regexID)
 	getParameters(urlEntries, entries, regexID)
-	getParameters(urlEntryList, entryList, regexID)
 	getParameters(urlEventSettings, eventSettings, regexID)
 	getParameters(urlEventReport, eventReport, regexID)
 	getParameters(urlShooterReport, shooterReport, regexPath)
