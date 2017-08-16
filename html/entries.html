@@ -5,7 +5,7 @@
 		{{form .eventShooterNew}}
 	{{end}}
 	{{$hasRanges := ge (len .Event.Ranges) 1}}
-	<p>Total Entries: {{len .Event.Shooters}}
+	<small>Total Entries: {{len .Event.Shooters}}</small>
 	{{with.Event.Shooters}}
 		<a href=/print-entry-list/{{$.Event.ID}}>Print Entry List</a>
 		{{if not $.Event.Closed}}

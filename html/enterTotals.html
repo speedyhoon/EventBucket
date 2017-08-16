@@ -3,7 +3,7 @@
 		{{template "barcodeSearch"}}
 		{{template "incompleteShooters" .}}
 		{{if and .Hidden (not .ShowAll)}}<samp>{{.Hidden}} Shooter{{.Plural}} finished.</samp>{{end}}
-		<p>Total Shooters: {{len .Event.Shooters}}
+		<small>Total Shooters: {{len .Event.Shooters}}</small>
 		{{with.Event.Shooters}}
 			<table>
 				<thead>

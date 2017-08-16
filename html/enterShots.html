@@ -2,7 +2,7 @@
 	{{if and (not .Event.Closed) (not .Range.Locked)}}
 		{{template "incompleteShooters" .}}
 		<br>{{template "barcodeSearch"}}
-		<p>Total Shooters: {{len .Event.Shooters}}
+		<small>Total Shooters: {{len .Event.Shooters}}</small>
 		{{with.Event.Shooters}}
 			<table class=enterShots data-eventID={{$.Event.ID}} data-rangeID={{$.Range.ID}}>
 				<thead>

@@ -1,8 +1,8 @@
 {{define "entrylist"}}
 	{{$hasRanges := ge (len .Event.Ranges) 1}}
 	{{if not $hasRanges}}<samp>This event has no ranges</samp>{{end}}
+	<small>Total Entries: {{len .Event.Shooters}}</small>
 	{{with.Event.Shooters}}
-		<p>Total Entries: {{len .}}
 		<table>
 			<thead>
 				<th class=asc>ID

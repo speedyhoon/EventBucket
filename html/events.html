@@ -1,7 +1,7 @@
 {{define "events"}}
 	{{form .eventNew}}
 	{{template "networkAdapters" .Network}}
-	<p>Total Events: {{len .Events}}
+	<small>Total Events: {{len .Events}}</small>
 	{{with.Events}}
 		<h2>Open Events</h2>
 		<div class=events>
