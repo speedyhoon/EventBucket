@@ -9,7 +9,7 @@ func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
 	//Retrieve any submitted form that failed to save.
 	action, forms := sessionForms(w, r, eventEdit, eventRangeNew, eventAggNew, eventRangeEdit, eventAggEdit)
 	if action != eventEdit {
-		forms[0].Fields[0].Value = event.ClubID
+		forms[0].Fields[0].Value = event.Club.Name
 		forms[0].Fields[1].Value = event.Name
 		forms[0].Fields[2].Value = event.Date
 		forms[0].Fields[3].Value = event.Time
@@ -29,7 +29,7 @@ func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
 		Data: map[string]interface{}{
 			"Ranges":           dataListRanges(event.Ranges, false),
 			"Event":            event,
-			"eventDetails":     forms[0],
+			"eventEdit":        forms[0],
 			"eventRangeNew":    forms[1],
 			"eventAggNew":      forms[2],
 			"RangeDataList":    event.Club.Mounds,
