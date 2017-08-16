@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 )
 
@@ -22,8 +23,8 @@ func scoreboard(w http.ResponseWriter, r *http.Request, event Event, rangeID rID
 		Data: map[string]interface{}{
 			"Event":       event,
 			"Ranges":      ranges,
-			"SortByRange": rangeID,
-			"colspan":     5 + len(ranges),
+			"SortByRange": fmt.Sprintf("%d", rangeID),
+			"colspan":     5,
 			"medalsLimit": 3,
 		},
 	})
