@@ -64,6 +64,9 @@ func main() {
 	//Turn on trace logging
 	if debug {
 		t.SetOutput(os.Stdout)
+		t.SetPrefix("\x1b[33;1m" + t.Prefix())	//Yellow
+		info.SetPrefix("\x1b[36;1m" + info.Prefix())	//Blue
+		warn.SetPrefix("\x1b[31;1m" + warn.Prefix())	//Red
 	}
 
 	//Try to load the grades file if any are specified
