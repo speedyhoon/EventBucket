@@ -72,8 +72,10 @@ func eventAvailableGradesUpsert(f form) (string, error) {
 }
 
 func eventShooterInsert(f form) (string, error) {
-	clubID, err := clubInsertIfMissing(f.Fields[2].Value)
-	if err != nil {
+	//Populate club name if it is empty
+	if f.Fields[2].Value == "" {
+		f.Fields[2].Value = defaultClubName()
+	}else if _, err := clubInsertIfMissing(f.Fields[2].Value); err != nil {
 		return "", err
 	}
 
@@ -81,7 +83,7 @@ func eventShooterInsert(f form) (string, error) {
 		FirstName: f.Fields[0].Value,
 		NickName:  f.Fields[0].Value,
 		Surname:   f.Fields[1].Value,
-		Club:      clubID,
+		Club:      f.Fields[2].Value,
 		AgeGroup:  f.Fields[4].valueUint,
 		Sex:       f.Fields[5].Checked,
 		Grades:    f.Fields[6].valueUintSlice,
