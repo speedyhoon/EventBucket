@@ -75,7 +75,7 @@ func eventShooterInsert(f form) (string, error) {
 	//Populate club name if it is empty
 	if f.Fields[2].Value == "" {
 		f.Fields[2].Value = defaultClubName()
-	}else if _, err := clubInsertIfMissing(f.Fields[2].Value); err != nil {
+	} else if _, err := clubInsertIfMissing(f.Fields[2].Value); err != nil {
 		return "", err
 	}
 

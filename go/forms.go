@@ -134,7 +134,7 @@ func getForm(id uint8) form {
 				return []field{
 					{name: "f", v8: v8StrReq},
 					{name: "s", v8: v8StrReq},
-					{name: "C", v8: v8StrReq, Placeholder: clubName, Options: clubsDataList()},
+					{name: "C", v8: v8Str, Placeholder: clubName, Options: clubsDataList()},
 					{name: "S", v8: v8Str, Options: searchShootersOptions("", "", clubName)},
 					{name: "r", v8: v8UintOpt, Options: dataListAgeGroup()},
 					{name: "x", v8: v8Bool},
