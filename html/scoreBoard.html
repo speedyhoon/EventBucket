@@ -5,9 +5,6 @@
 	<ul>
 		<li><a href=/>Events</a>
 		{{range.}}
-			{{if not (and .RangeMenu .Hidden)}}
-				<li><a href={{.Link}}{{$.Page.MenuID}}>{{.Name}}</a>
-			{{end}}
 			{{if and .RangeMenu $.Page.Data.Event}}
 				<!--Can't merge these two if statements because $.Page.Data.Event doesn't exist for clubs & club pages-->
 				{{if and $.Page.Data.Event.Ranges (gt (len $.Page.Data.Event.Shooters) 0)}}
@@ -23,11 +20,13 @@
 							{{end}}
 						</ul>
 				{{end}}
+			{{else if not .Hidden}}
+				<li><a href={{.Link}}{{$.Page.MenuID}}>{{.Name}}</a>
 			{{end}}
 		{{end}}
 	</ul>
 {{end}}
-{{with.Page.Data}}
+{{block "row" .Page.Data}}
 	<a class=floatRight href=//eventbucket.com.au target=_blank><img src=/v/logo alt=EventBucket height=16 width=140>.com.au</a>
 	<h1>{{.Event.Name}}</h1>
 	<table>
@@ -44,6 +43,7 @@
 				<td>{{.FirstName}} {{.Surname}}
 				<td>{{.Club}}
 				<td>{{ageGroup .AgeGroup}}
+				<td{{a " class=tick" .Sex}}>
 				{{$shooter := .}}
 				{{range $.Ranges}}
 					{{$score := index $shooter.Scores .StrID}}
