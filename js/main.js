@@ -91,3 +91,10 @@ function tableSort($th){
 	}
 	$th.className = direction < 0 ? '^asc^' : '^desc^';
 }
+
+var headings = document.querySelectorAll('thead'), i = headings.length;
+while(i--){
+	if(!headings[i].querySelector('.asc,.dsc')){
+		headings.querySelector('th').classList.add("asc");
+	}
+}
