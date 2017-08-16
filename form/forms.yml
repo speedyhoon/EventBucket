@@ -464,10 +464,8 @@
     v8: v8Str
     minlen: 1
     required: clubName == ""
-    value: clubName
     options: clubsDataList()
     placeholder: clubName
-    value: clubName
   - label: Age Group
     name: r
     type: select
