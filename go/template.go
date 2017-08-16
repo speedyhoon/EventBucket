@@ -163,6 +163,9 @@ func loader() (err error) {
 			}()
 			return
 		},
+		"sub": func(a, b int) int {
+			return a - b
+		},
 	}).ParseFiles(
 		filepath.Join(runDir, "h"),
 	)
