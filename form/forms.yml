@@ -277,14 +277,17 @@
   inputs:
   - name: f
     label: First Name
+    type: search
     v8: v8StrReq
     accesskey: S
   - name: s
     label: Surname
+    type: search
     v8: v8StrReq
   - name: C
     label: Club
-    v8: v8StrReq
+    type: search
+    v8: v8Str
     options: clubsDataList()
     placeholder: clubName
   - name: S
@@ -294,6 +297,7 @@
     options: searchShootersOptions("", "", clubName)
   - name: r
     label: Age Group
+    type: select
     v8: v8UintOpt
     options: dataListAgeGroup()
   - name: x
