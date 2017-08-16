@@ -120,8 +120,7 @@ func processSocket(ws *websocket.Conn) {
 	var formID uint8
 	var err error
 	send := func(str string) {
-		err := websocket.Message.Send(ws, str)
-		if err != nil {
+		if err = websocket.Message.Send(ws, str); err != nil {
 			warn.Println(err)
 		}
 	}

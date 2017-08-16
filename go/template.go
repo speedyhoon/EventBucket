@@ -155,8 +155,7 @@ func loader() (err error) {
 		"N": func(start, end uint) (stream chan uint) {
 			stream = make(chan uint)
 			go func() {
-				var i uint = start
-				for ; i <= end; i++ {
+				for i := start; i <= end; i++ {
 					stream <- i
 				}
 				close(stream)
@@ -175,7 +174,11 @@ func loader() (err error) {
 func templater(w http.ResponseWriter, page page) {
 	//Gzip response, even if requester doesn't support gzip
 	gz := gzip.NewWriter(w)
-	defer gz.Close()
+	defer func() {
+		if err := gz.Close(); err != nil {
+			warn.Println(err)
+		}
+	}()
 	wz := gzipResponseWriter{Writer: gz, ResponseWriter: w}
 
 	//Add HTTP headers so browsers don't cache the HTML resource because it may contain different content every request.

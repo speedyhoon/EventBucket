@@ -37,26 +37,28 @@ func main() {
 	flag.BoolVar(&debug, "debug", false, "Turn on debugging and turn off club maps.")
 	gradesFilePath := flag.String("grades", "", "Load grade settings from a JSON file. If the file doesn't exist, EventBucket will try to create it & exit")
 	httpListen := flag.String("http", "127.0.0.1:80", "host:port to listen on")
-	dbPath := flag.String("dbpath", filepath.Join(os.Getenv("ProgramData"), "EventBucket"), "Directory for datafiles.")
+	dbPath := flag.String("dbpath", filepath.Join(os.Getenv("ProgramData"), "EventBucket", "EventBucket.db"), "Directory for datafiles.")
 	flag.Parse()
 
 	//Create database directory if needed.
-	err := mkDir(*dbPath)
+	err := mkDir(filepath.Base(*dbPath))
 	if err != nil {
 		warn.Fatal(err)
 	}
 
 	//Database save location
-	path := filepath.Join(*dbPath, "EventBucket.db")
-
-	db, err = bolt.Open(path, 0644, &bolt.Options{
+	db, err = bolt.Open(*dbPath, 0644, &bolt.Options{
 		Timeout:         time.Second * 8,
 		InitialMmapSize: 1048576, //Initial database size = 1MB
 	})
 	if err != nil {
-		warn.Fatal("Connection timeout. Unable to open", path)
+		warn.Fatal("Connection timeout. Unable to open", *dbPath)
 	}
-	defer db.Close()
+	defer func() {
+		if err = db.Close(); err != nil {
+			warn.Println(err)
+		}
+	}()
 
 	//Prepare database by creating all buckets (tables) needed. Otherwise view (read only) transactions will fail.
 	makeBuckets()
@@ -88,15 +90,16 @@ func main() {
 		warn.Fatal(err)
 	}
 
+	const localhost = "localhost"
 	if host == "" {
-		host = "localhost"
+		host = localhost
 	}
 	if port != "80" {
 		portAddr += port
 	}
 
 	num, _ := stoU(port)
-	isPrivate = host != "127.0.0.1" && host != "localhost" || num > 1023
+	isPrivate = host != "127.0.0.1" && host != localhost || num > 1023
 
 	httpAddr := host + portAddr
 	h := http.Server{Addr: httpAddr, Handler: nil}
