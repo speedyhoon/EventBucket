@@ -92,17 +92,7 @@ var (
 			Link: urlLicence,
 		}},
 	}
-)
-
-//TODO remove if !debug
-func init() {
-	if err := loader(); !debug && err != nil {
-		warn.Fatal(err)
-	}
-}
-
-func loader() (err error) {
-	templates, err = template.New("").Funcs(template.FuncMap{
+	tempFuncs = template.FuncMap{
 		"a": func(attribute string, value interface{}) string {
 			//"a": func(attribute string, value interface{}) template.HTMLAttr {
 			var output string
@@ -165,10 +155,17 @@ func loader() (err error) {
 		"sub": func(a, b int) int {
 			return a - b
 		},
-	}).ParseFiles(
+	}
+)
+
+func init() {
+	var err error
+	templates, err = template.New("").Funcs(tempFuncs).ParseFiles(
 		filepath.Join(runDir, "h"),
 	)
-	return
+	if err != nil {
+		warn.Fatal(err)
+	}
 }
 
 func templater(w http.ResponseWriter, page page) {
@@ -196,9 +193,13 @@ func templater(w http.ResponseWriter, page page) {
 	//Add page content just generated to the default page environment (which has CSS and JS, etc).
 	masterTemplate.Page = page
 
-	//TODO optionally remove during build time if debug == true
+	//TODO optionally remove during build time if debug == false
 	if debug {
-		if err := loader(); err != nil {
+		var err error
+		templates, err = template.New("").Funcs(tempFuncs).ParseFiles(
+			filepath.Join(runDir, "h"),
+		)
+		if err != nil {
 			warn.Println(err)
 			http.Error(wz, err.Error(), http.StatusInternalServerError)
 			return

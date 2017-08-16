@@ -4,8 +4,10 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
+	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/boltdb/bolt"
 )
@@ -24,10 +26,26 @@ const (
 	eNoDocument = "'%v' document is empty / doesn't exist %q"
 )
 
-func makeBuckets() {
-	err := db.Update(func(tx *bolt.Tx) error {
+func startDB(dbPath string) {
+	//Create database directory if needed.
+	err := mkDir(filepath.Base(dbPath))
+	if err != nil {
+		warn.Fatal(err)
+	}
+
+	//Database save location
+	db, err = bolt.Open(dbPath, 0644, &bolt.Options{
+		Timeout:         time.Second * 8,
+		InitialMmapSize: 1048576, //Initial database size = 1MB
+	})
+	if err != nil {
+		warn.Fatal("Connection timeout. Unable to open", dbPath)
+	}
+
+	//Prepare database by creating all buckets (tables) needed. Otherwise view (read only) transactions will fail.
+	err = db.Update(func(tx *bolt.Tx) error {
 		for index, bucketName := range [][]byte{tblClub, tblEvent, tblShooter} {
-			_, err := tx.CreateBucketIfNotExists(bucketName)
+			_, err = tx.CreateBucketIfNotExists(bucketName)
 			if err != nil {
 				warn.Printf("Unable to create table %v in database", []string{"club", "event", "shooter"}[index])
 			}
@@ -421,7 +439,7 @@ func getDefaultClub() Club {
 		}
 		return nil
 	})
-	if err != nil {
+	if err != nil && err.Error() != success {
 		warn.Println(err)
 	}
 	if found {
