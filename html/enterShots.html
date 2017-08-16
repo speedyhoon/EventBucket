@@ -1,4 +1,4 @@
-{{define "eventshots"}}
+{{define "entershots"}}
 	{{if and (not .Event.Closed) (not .Range.Locked)}}
 		{{template "incompleteShooters" .}}
 		<br>{{template "barcodeSearch"}}
