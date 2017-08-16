@@ -20,7 +20,6 @@ const (
 	eventAvailableGrades uint8 = 15
 	eventUpdateShotScore uint8 = 16
 	shooterNew           uint8 = 17
-	shooterSearch        uint8 = 20
 	shootersImport       uint8 = 21
 	settings             uint8 = 22
 )

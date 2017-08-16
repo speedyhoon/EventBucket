@@ -44,7 +44,7 @@ func view(bucketName []byte, myCall func(*bolt.Bucket) error) error {
 	return db.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(bucketName)
 		if bucket == nil {
-			return fmt.Errorf("Bucket %q not found!", bucketName)
+			return fmt.Errorf("Bucket %q not found", bucketName)
 		}
 		return myCall(bucket)
 	})
@@ -64,13 +64,16 @@ func search(table []byte, object interface{}, myCall func(interface{}) error) er
 
 //tblQty returns the total number of records contained in the bucket (table)
 func tblQty(bucketName []byte) (qty uint) {
-	db.View(func(tx *bolt.Tx) error {
+	err := db.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(bucketName)
 		if bucket != nil {
 			qty = uint(bucket.Stats().KeyN)
 		}
 		return nil
 	})
+	if err != nil {
+		warn.Println(err)
+	}
 	return
 }
 
@@ -411,13 +414,16 @@ func getDefaultClub() Club {
 	const success = "1"
 	var club Club
 	var found bool
-	search(tblClub, &club, func(interface{}) error {
+	err := search(tblClub, &club, func(interface{}) error {
 		if club.IsDefault {
 			found = true
 			return fmt.Errorf(success)
 		}
 		return nil
 	})
+	if err != nil {
+		warn.Println(err)
+	}
 	if found {
 		return club
 	}

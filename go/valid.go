@@ -10,7 +10,7 @@ func validBoth(r *http.Request, formID uint8) (form, bool) {
 	var err error
 	var u *url.URL
 
-	if r.Method == "GET" {
+	if r.Method == gt {
 		u, err = url.Parse(r.RequestURI)
 	} else {
 		err = r.ParseForm()
@@ -22,7 +22,7 @@ func validBoth(r *http.Request, formID uint8) (form, bool) {
 	}
 
 	var values url.Values
-	if r.Method == "GET" {
+	if r.Method == gt {
 		values = u.Query()
 	} else {
 		values = r.Form
@@ -39,7 +39,8 @@ func isValid(urlValues url.Values, formID uint8) (form, bool) {
 	}
 	//Process the post request as normal if len(urlValues) >= len(fields).
 	var fieldValue []string
-	ok, isValid := false, true
+	var ok bool
+	isValid := true
 	for i, field := range f.Fields {
 		/*// Output warning if validation function is not set for this field in the submitted form.
 		if debug && field.v8 == nil {
