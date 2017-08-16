@@ -21,20 +21,21 @@ func shootersReport(w http.ResponseWriter, r *http.Request, event Event) {
 		MenuID:  event.ID,
 		Heading: event.Name,
 		Data: map[string]interface{}{
-			"Event": event,
+			"EventID":  event,
+			"Shooters": event.Shooters,
 		},
 	})
 }
 
 func shooterReport(w http.ResponseWriter, r *http.Request, event Event, shooterID sID) {
 	templater(w, page{
-		Title:   "Shooter Report",
-		Menu:    urlEvents,
-		MenuID:  event.ID,
-		Heading: event.Name,
+		Title:       "Shooter Report",
+		Menu:        urlEvents,
+		MenuID:      event.ID,
+		Heading:     event.Name,
+		SubTemplate: "shootersreport",
 		Data: map[string]interface{}{
-			"Event":   event,
-			"Shooter": event.Shooters[shooterID],
+			"Shooters": []EventShooter{event.Shooters[shooterID]},
 		},
 	})
 }

@@ -1,28 +1,29 @@
 {{define "shootersreport"}}
-	{{range.Event.Shooters}}
+	{{range.Shooters}}
 		<table>
-			<tr>
-				<th>
-					{{if.Scores}}<a href=/shooter-report/{{$.Event.ID}}/{{.ID}}>{{end}}
-						{{(grade .Grade).Abbr}} {{.FirstName}} {{.Surname}} - {{.Club}}
-					{{if.Scores}}</a>{{end}}
-				<th>Shots
-				<th>Total
-			{{with.Scores}}
-				{{$scores := .}}
-				{{range $.Event.Ranges}}
-					{{$score := index $scores .StrID}}
-					{{if $score.Total}}
-						<tr>
-							<td>{{.Name}}
-							<td>{{$score.Shots}}
-							<td>{{$score.Total}}{{with $score.Centers}}<sup>{{.}}</sup>{{end}}
-					{{end}}
-				{{end}}
-			{{else}}
+			<thead>
 				<tr>
-					<td colspan=3><small>No scores recorded yet.</small>
-			{{end}}
+					<th>
+						{{if and $.EventID .Scores}}<a href=/shooter-report/{{$.EventID}}/{{.ID}}>{{end}}
+							{{(grade .Grade).Abbr}} {{.FirstName}} {{.Surname}} - {{.Club}}
+						{{if and $.EventID .Scores}}</a>{{end}}
+					<th>Shots
+					<th>Total
+			<tbody>
+				{{with.}}
+					{{$scores := .}}
+					{{range $.Event.Ranges}}
+						{{$score := index $scores .StrID}}
+						{{if $score.Total}}
+							<tr>
+								<td>{{.Name}}
+								<td>{{$score.Shots}}
+								<td>{{$score.Total}}{{with $score.Centers}}<sup>{{.}}</sup>{{end}}
+						{{end}}
+					{{end}}
+				{{else}}
+					<tr><td colspan=3><small>No scores recorded yet.</small>
+				{{end}}
 		</table>
 	{{end}}
 {{end}}
