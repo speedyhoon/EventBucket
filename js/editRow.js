@@ -1,6 +1,8 @@
-var editRows = document.querySelectorAll('[data-e] tbody tr td:last-of-type'), i = editRows.length;
+var editRows = document.querySelectorAll('[data-e] tbody tr'), i = editRows.length;
 while(i--){
-	editRows[i].onclick = editRow;
+	var td = document.createElement('td');
+	td.onclick = editRow;
+	editRows[i].appendChild(td);
 }
 function editRow(editCell){
 	var row = editCell.target.parentElement,
