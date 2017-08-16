@@ -16,7 +16,6 @@
 					<th>Grade
 					<th>Age Group
 					<th>Ladies
-					<td>Edit
 			<tbody>
 				{{range.}}
 					<tr>
@@ -25,9 +24,7 @@
 						<td>{{.Club}}
 						<td>{{range.Grades}}{{(grade .).Name}}, {{end}}
 						<td>{{ageGroup .AgeGroup}}
-						<!--td{{/*a " class=tick" .Sex*/}}-->
-						{{if.Sex}}<td class=tick>{{else}}<td>{{end}}
-						<td>
+						<td{{a " class=tick" .Sex}}>
 				{{end}}
 		</table>
 		<template>

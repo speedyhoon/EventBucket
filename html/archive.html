@@ -6,7 +6,6 @@
 				<tr>
 					<th>Event Name
 					<th>Club
-					<td>Edit
 			<tbody>
 			{{range.}}
 				{{if.Closed}}
@@ -23,10 +22,6 @@
 							{{else}}
 									{{.Club}}
 							{{end}}
-						<td>
-							<a href=/event-settings/{{.ID}}>
-								<img src=/v/edit alt="Edit event" height=15>
-							</a>
 				{{end}}
 			{{end}}
 		</table>

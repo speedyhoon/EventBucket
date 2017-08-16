@@ -27,18 +27,13 @@
 				<th>Range
 				<th>Aggs
 				<td>Locked
-				{{if not $.Event.Closed}}
-					<td>Edit
-				{{end}}
 			<tbody>
 				{{range.}}
 					<tr>
 						<td>{{.ID}}
 						<td>{{.Name}}
 						<td>{{range.Aggs}}{{(findRange . $.Event.Ranges).Name}}, {{end}}
-						<!--td{{/*a " class=tick" (and .Locked (not .IsAgg))*/}}-->
-						{{if and .Locked (not .IsAgg)}}<td class=tick>{{else}}<td>{{end}}
-						{{if not $.Event.Closed}}<td>{{end}}
+						<td{{a " class=tick" (and .Locked (not .IsAgg))}}>
 				{{end}}
 		</table>
 		{{if not $.Event.Closed}}
@@ -49,8 +44,8 @@
 					<span onclick=moveRange class="^arrows^ ^desc^" title="Move Up"></span>
 					<span onclick=moveRange class="^arrows^ ^asc^" title="Move Down"></span>
 				<td>
-					<select size={{len .Ranges}} required name=R multiple>
-							{{template "optionList" .}}
+					<select size={{len $.Ranges}} required name=R multiple>
+						{{template "optionList" $.Ranges}}
 					</select>
 				<td>
 					<input name=k type=checkbox>
