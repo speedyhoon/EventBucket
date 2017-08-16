@@ -34,7 +34,7 @@ func club(w http.ResponseWriter, r *http.Request, club Club) {
 		Data: map[string]interface{}{
 			"Club":         club,
 			"showMap":      !debug,
-			"clubDetails":  forms[0],
+			"clubEdit":  forms[0],
 			"clubMoundNew": forms[1],
 		},
 	})
