@@ -19,7 +19,7 @@
 	{{template "formErrors" .eventRangeUpdate}}
 	{{template "formErrors" .eventAggUpdate}}
 
-	<p>Total Ranges: {{len .Event.Ranges}}
+	<small>Total Ranges: {{len .Event.Ranges}}</small>
 	{{with.Event.Ranges}}
 		<table{{a " data-e" (not $.Event.Closed)}}>
 			<thead>
