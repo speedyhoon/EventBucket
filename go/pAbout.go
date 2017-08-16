@@ -9,6 +9,7 @@ import (
 
 func about(w http.ResponseWriter, r *http.Request) {
 	_, forms := sessionForms(w, r, settings)
+	forms[0].Fields[0].AutoFocus = true
 	templater(w, page{
 		Title: "About",
 		Data: map[string]interface{}{
