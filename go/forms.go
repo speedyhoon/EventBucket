@@ -24,7 +24,6 @@ const (
 	settings             uint8 = 22
 )
 
-//TODO when forms are changed to zero index, perform a check if action is not equal to "" instead of strconv != 0
 func init() {
 	post("/0", 0, clubInsert)
 	post("/1", 1, clubDetailsUpsert)
