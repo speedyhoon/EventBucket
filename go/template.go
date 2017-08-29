@@ -35,9 +35,9 @@ func (p page) csp() string {
 }
 
 type markupEnv struct {
-	Page        page
-	Menu        []menu
-	IsDarkTheme bool
+	Page  page
+	Menu  []menu
+	Theme uint8
 }
 
 var (

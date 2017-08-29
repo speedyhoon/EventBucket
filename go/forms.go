@@ -218,7 +218,7 @@ func getForm(id uint8) form {
 				}
 			case 22: //Settings
 				return []field{
-					{name: "t", v8: v8StrReq, Options: []option{{Label: "Lite", Selected: !masterTemplate.IsDarkTheme}, {Label: "Dark", Selected: masterTemplate.IsDarkTheme}}},
+					{name: "t", v8: v8Bool},
 				}
 			}
 			return []field{}

@@ -180,6 +180,7 @@
 - title: Add Range
   handler: eventRangeInsert
   namespace: eventRangeNew
+  accesskey: R
   inputs:
   - label: Range Name
     type: search
@@ -220,6 +221,7 @@
 - title:  Add Aggregate Range
   handler: eventAggInsert
   namespace: eventAggNew
+  accesskey: A
   inputs:
   - label: Aggregate Name
     name: n
@@ -569,11 +571,8 @@
   handler: settingsUpdate
   accesskey: S
   inputs:
-  - label: Theme
+  - label: Switch Theme
     name: t
-    type: select
-    v8: v8StrReq
-    options: "[]option{{Label: \"Lite\", Selected: !masterTemplate.IsDarkTheme},{Label: \"Dark\", Selected: masterTemplate.IsDarkTheme}}"
+    v8: v8Bool
     accesskey: S
-  - label: Save
     type: submit

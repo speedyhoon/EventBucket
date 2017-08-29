@@ -9,7 +9,6 @@ import (
 
 func about(w http.ResponseWriter, r *http.Request) {
 	_, forms := sessionForms(w, r, settings)
-	forms[0].Fields[0].AutoFocus = true
 	templater(w, page{
 		Title: "About",
 		Data: map[string]interface{}{
@@ -20,7 +19,10 @@ func about(w http.ResponseWriter, r *http.Request) {
 }
 
 func settingsUpdate(f form) (string, error) {
-	masterTemplate.IsDarkTheme = f.Fields[0].Value == "Dark"
+	masterTemplate.Theme++
+	if masterTemplate.Theme == 2 {
+		masterTemplate.Theme = 0
+	}
 	return "", nil
 }
 
