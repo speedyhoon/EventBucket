@@ -30,12 +30,12 @@
 		<template>
 			<td>
 			<td>
-				<form method=post action=/12>
-					<input name=f required placeholder="First name" accesskey=d maxlength=64>
-					<input name=s required placeholder=Surname maxlength=64>
+				<form method=post action=/form.shooterUpdate.action>
+					<input name=f required placeholder="First name" accesskey=d maxlength=MAXLEN>
+					<input name=s required placeholder=Surname maxlength=MAXLEN>
 				</form>
 			<td>
-				<input type=search name=C required maxlength=64 list=C>
+				<input type=search name=C required maxlength=MAXLEN list=C>
 			<td>
 				<select name=g multiple required size={{len $.Grades}}>
 					{{template "optionList" $.Grades}}

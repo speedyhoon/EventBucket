@@ -79,11 +79,13 @@
     regex: regexID
 - title: Edit Shooting Mound
   handler: clubMoundUpsert
+  skiprender: true
   inputs:
-  - label: d
+  - label: Mound Name
     name: n
     v8: v8StrReq
-  - label: d
+  - label: Mound ID
+    type: hidden
     name: I
     v8: v8Uint
     max: 65535
@@ -95,6 +97,7 @@
 - title: Map Clubs
   handler: clubsMap
   method: get
+  skiprender: true
   inputs:
   - label: Club
     name: C
@@ -197,6 +200,7 @@
 - title: Update Range
   handler: eventRangeUpdate
   namespace: eventRangeEdit
+  skiprender: true
   inputs:
   - label: d
     name: I
@@ -247,6 +251,7 @@
 - title: Update Agg
   handler: eventAggUpdate
   namespace: eventAggEdit
+  skiprender: true
   inputs:
   - label: d
     name: E
@@ -320,19 +325,22 @@
     regex: regexID
 - title: Entries Edit Shooter Details
   handler: eventShooterUpdate
+  skiprender: true
   inputs:
-  - label: d
+  - label: Shooter ID
+    type: hidden
     name: S
     v8: v8UintReq
     max: 65535
-  - label: d
+  - label: Event ID
     name: E
+    type: hidden
     v8: v8RegexReq
     regex: regexID
-  - label: d
+  - label: First Name
     name: f
     v8: v8StrReq
-  - label: d
+  - label: Surname
     name: s
     v8: v8StrReq
   - label: Save
@@ -340,47 +348,49 @@
     type: submit
     v8: v8Regex
     regex: regexID
-  - label: d
+  - label: Grade
     name: g
     v8: v8UintReq
     max: len(globalGrades) - 1
     options: globalGradesDataList
-  - label: d
+  - label: Age Group
     name: r
     v8: v8UintOpt
     options: dataListAgeGroup()
-  - label: d
+  - label: Sex
     name: x
     v8: v8Bool
-  - label: d
+  - label: Locked
     name: k
     v8: v8Bool
 - title:  Existing Shooter Entry
   handler: eventShooterExistingInsert
   namespace: eventShooterExisting
+  skiprender: true
   action: 7
   inputs:
-  - name: S
-    label: Shooter
+  - label: Shooter
+    name: S
     v8: v8RegexReq
     regex: regexID
-  - name: g
-    label: Grade
+  - label: Grade
+    name: g
     v8: v8UintList
     required: true
     max: len(globalGrades) - 1
     options: globalGradesDataList
-  - name: r
-    label: Age Group
+  - label: Age Group
+    name: r
     v8: v8UintOpt
     options: dataListAgeGroup()
-  - name: E
+  - label: Save
+    name: E
     type: submit
-    label: Save
     v8: v8RegexReq
     regex: regexID
 - title: Enter Range Totals
   namespace: eventTotalScores
+  skiprender: true
   inputs:
   - label: Total
     name: t
@@ -427,6 +437,7 @@
     regex: regexID
 - title: Update Shooter Shots (Scorecards)
   namespace: eventUpdateShotScore
+  skiprender: true
   inputs:
   - label: d
     name: s
@@ -489,6 +500,7 @@
     type: submit
 - title: Shooter Details
   handler: shooterInsert
+  skiprender: true
   inputs:
   - label: First Name
     name: f
