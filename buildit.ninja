@@ -1,0 +1,227 @@
+proxy:
+  port: 6161
+  url: 'http://localhost:3333'
+  inject: '<script async src=/zj/refresh.js></script><script async src=http://localhost:3000/browser-sync/browser-sync-client.js></script>'
+  reports:
+  - cmd: 'html-minifier -c \tools\html-minifier\config.json'
+    decoder: showDiff
+  - cmd: \tools\ab -n 100 -c 100 *
+    decoder: apacheBenchmark
+    save: true
+  - cmd: phantomjs.exe \tools\yslow\yslow.js -t 100 --cdns localhost *
+    decoder: yslow
+    save: true
+  - cmd: lighthouse --quiet --output json *
+    decoder: lh
+    save: true
+  - cmd: \tools\jPortable\bin\java -Xss512k -jar \tools\vnu\vnu.jar --errors-only --format text
+    decoder: vnu
+    save: true
+  - cmd: html5Elements
+    type: body
+    #Google Page Speed Insights can only access public sites
+  - cmd: psi * --nokey --strategy=mobile --threshold=100 --format=json
+    disable: true
+    decoder: pageSpeed
+    save: true
+replace:
+  GoVersion:
+  BuildDate:
+  GitVersionTag:
+  GitVersionMajor:
+  GitVersionMinor:
+  GitVersionPatch:
+  BuildVersion:
+  MAXLEN: 32
+  <strong: <b
+  strong>: b>
+jobs:
+- job: restartServer
+  one: |
+    restartCommand @\built\EventBucket.exe -debug -dark -port 3333
+- job: production
+  one: |
+    @\.dev ^go build -o=@\built\EventBucket.exe -ldflags="-H windowsgui"
+- job: bs
+  one: |
+    browser-sync start --config \config\bs-config.js
+watchers:
+- dir: svg
+  ext: .svg
+  startup: true
+  one: |
+    svgo --pretty --multipass --config \config\svgo.json -i -
+    trimWhiteSpace
+    write
+    replaceContents
+    svgo -q --multipass --config \config\svgo.json -p 3 -i -
+    minify
+    #inlineFileQuit fileByteSizeLimit=4096     #TODO Quit if svg is inserted into a css file, otherwise write it to /v/ folder. Don't write svg to disk if it is used in a css file because it will never be requested via http from the /dirSVG/ directory
+    cache @\.dev\v\*
+  all: |
+    svgStack @\.dev\v\
+    brotli
+    write @\built\v
+    refreshBrowser
+    #TODO validate svg files java -Xss512k -jar vnu\vnu.jar --format text -
+    #TODO openCamsSvgMinifier
+- dir: stylus
+  ext: .styl
+  startup: true
+  #TODO how can editing main.styl or enterShots.styl update dark and light, without writing main and enterShots to /c/?
+  one: |
+    replaceContents
+    stylus -c --disable-cache -I @\stylus
+    makeRenameMap --excluded-classes-from-renaming p1-p2-p3
+    minify css
+    #csso -u usage.json
+    #clean-css
+    removeWhiteSpace
+    brotli
+    #hashName
+    write @\built\c\*
+  all: |
+    refreshBrowser
+    # css lint
+    # css complexity reporter
+- dir: form
+  ext: .yml
+  startup: true
+  one: |
+    buildForms
+    minifyHTMLTemplate
+    replaceContents
+    shortenClasses
+    #TODO minify should strip all possible whitespace so removeWhiteSpace isn't needed
+    #minify html
+    removeWhiteSpace
+    cache @\built\h\*
+    buildStructs
+    \tools\go\goreturns -e
+    \tools\go\gofmt -s -r=(a)+->+a
+    write @\go\*.go
+  all: |
+    #TODO during startup these below jobs cat, write, refresh & access... don't need to be executed
+    concat @\built\h\
+    write @\built\h
+    @\go ^go build -o=@\built\EventBucket.exe -ldflags=-s+-w
+    restartCommand @\built\EventBucket.exe -debug -dark -http 127.1.1.5:3333
+    refreshBrowser
+    #accessibilityReporter
+- dir: html
+  ext: .html
+  startup: true
+  ignore: [background.html]
+  one: |
+    minifyHTMLTemplate
+    #TODO add feature to minify html to keep whitespace - then write to disk if changed
+    #checkAttrs
+    write
+    replaceContents
+    #TODO minify should strip all possible whitespace so replaceOnly isn't needed
+    shortenClasses
+    removeWhiteSpace
+    #minify
+    cache @\built\h\*
+  all: |
+    concat @\built\h\
+    write @\built\h
+    refreshBrowser
+    #accessibilityReporter
+- dir: go
+  ext: .go
+  startup: true
+  ignore: [forms.go, ^_test.go]
+  one: |
+    \tools\go\goreturns -e
+    \tools\go\gofmt -s -r=(a)+->+a
+    write
+  all: |
+    @\go ^go build -o=@\built\EventBucket.exe -ldflags=-s+-w
+    restartCommand @\built\EventBucket.exe -debug -dark -http 127.1.1.5:3333
+    incRevision
+    refreshBrowser
+    printExec \tools\go\gometalinter -t --deadline=5m --cyclo-over=25 --min-occurrences=2 --dupl-threshold=2 --enable=misspell --enable=unparam --sort=path --enable-gc --aggregate @\go
+- dir: js
+  ext: .js
+  startup: true
+  one: |
+    \config\ ^eslint-pretty
+    trimWhiteSpace
+    write
+    replaceContents
+    shortenClasses
+    #TODO dev mode output js in strict mode
+    #TODO prod code output as non strict
+    \tools\jPortable\bin\java -jar \tools\ClosureCompiler\closure-compiler.jar --compilation_level ADVANCED --formatting SINGLE_QUOTES
+    #TODO replace "window.my_func = function(" with "function my_func("
+    #TODO replace schema names with their coresponding letters
+    minify
+    brotli
+    #hashName
+    write @\built\j\*
+  all: |
+    refreshBrowser
+    #TODO add js complexity reporter & only display if different than last time
+- dir: icon
+  ext: .ico
+  one: |
+    #if resource.syso doesn't exist in .dev > run go generate
+    #go generate
+    write @\built\*.ico
+  all: |
+    refreshBrowser
+- dir: png
+  ext: .png
+  startup: true
+  one: |
+    #TODO would running png_gauntlet have any benefit to WEBP output?
+    \tools\webp\cwebp.exe -quiet -z 9 -o - -- -
+    write @\built\w\*
+  all: |
+    refreshBrowser
+#- task: test
+  #read @\go\*.go
+  # Production version of code without developer warning code
+  # stripDebug
+  #write @\.prod\*.go
+  #copy all dev files & tranform them into prod files
+  #build @\go -race -o=@\built\EventBucket.exe
+  # restartProdRaceServer
+  #RestartCommand @\built\EventBucket.exe
+  # startProdTests
+  # startBenchmark
+  #check there are no changes in the directory - additonal files written or any changes made to them.
+
+#- task - unused css selectors:
+  #on html save - or on startup
+  #go to /loop through that web page
+  #get a list of the css rules for that page
+  #get a list of selectors used - do a minus diff
+  #append lists together
+  #also search for rules used in JS & svg
+  #output a list of unused css selectors for the whole website
+  #if css rules are not used in the website auto comment them out?
+
+#TODO add tasks
+#- task: release
+#update versioninfo.json with git tags - major, minor, patch & ProductVersion
+#update versioninfo.json with build number
+#run task test - continue if it passes & no errors
+#copy all dev files & tranform them into prod files
+# cmd line build 32 bit windows installer - save installer into new directory
+# cmd line build 64 bit windows installer
+# cmd line build 32 bit linux tar
+# cmd line build 64 bit linux tar
+# cmd line build 32 bit arm linux tar
+# cmd line build 64 bit arm linux tar
+# cmd line build 32 bit mac tar
+# cmd line build 64 bit mac tar
+
+#ON REFRESH TASKS::
+# check for deprecated & obsolete html elements
+# Yslow report
+  # if the report contains different from the previous report generated for the current URL? -- reduces DB size by not saving identical reports
+    # save the report to bolt
+# lighthouse report
+# chrome audit
