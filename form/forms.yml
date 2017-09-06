@@ -529,8 +529,9 @@
     name: I
     v8: v8RegexReq
     regex: regexID
-- title: Shooter Search
+- title: Update Shooter
   handler: shooterUpdate
+  skiprender: true
   inputs:
   - label: First Name
     name: f
