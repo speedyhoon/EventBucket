@@ -16,7 +16,7 @@ $liteGrey = lighten($base-color, 10%)
 body
 	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
 
-a, abbr, button, th
+a, abbr, button, thead td
 	color: $blue
 
 samp
@@ -32,15 +32,13 @@ table
 	border-collapse: collapse
 	width: 100%
 
-//tbody tr:nth-child(odd)
 tbody tr:hover
 	background: rgba(128,128,128,.5)
 
 [data-e] td:last-child
     background: url("/v/edit") no-repeat center center
 
-//thead td
-th
+thead td
 	cursor: pointer
 
 .asc, .desc

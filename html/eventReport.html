@@ -3,10 +3,10 @@
 	{{range $a, $b := .Event.Ranges}}
 		<table>
 			<tr>
-				<th>Grade
-				<th>{{.Name}}
-				<th>Shots
-				<th>Scores
+				<td>Grade
+				<td>{{.Name}}
+				<td>Shots
+				<td>Scores
 			{{range $.Event.Shooters}}
 				<tr>
 					<td>{{(grade .Grade).Abbr}}

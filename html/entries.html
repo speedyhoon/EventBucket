@@ -10,13 +10,13 @@
 		<table{{a " data-e" (not $.Event.Closed)}}>
 			<thead>
 				<tr>
-					<th class=desc>ID
-					<th>Shooter
-					<th>Club
-					<th>Grade
-					<th>Age Group
-					<th>Locked
-					<th>Ladies
+					<td class=desc>ID
+					<td>Shooter
+					<td>Club
+					<td>Grade
+					<td>Age Group
+					<td>Locked
+					<td>Ladies
 			<tbody>
 			{{$qty := sub (len $.Event.Shooters) 1}}
 			{{range $i, $s := .}}
