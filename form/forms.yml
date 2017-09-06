@@ -79,7 +79,7 @@
     regex: regexID
 - title: Edit Shooting Mound
   handler: clubMoundUpsert
-  skiprender: true
+  nohtml: true
   inputs:
   - label: Mound Name
     name: n
@@ -97,7 +97,7 @@
 - title: Map Clubs
   handler: clubsMap
   method: get
-  skiprender: true
+  nohtml: true
   inputs:
   - label: Club
     name: C
@@ -200,7 +200,7 @@
 - title: Update Range
   handler: eventRangeUpdate
   namespace: eventRangeEdit
-  skiprender: true
+  nohtml: true
   inputs:
   - label: d
     name: I
@@ -251,7 +251,7 @@
 - title: Update Agg
   handler: eventAggUpdate
   namespace: eventAggEdit
-  skiprender: true
+  nohtml: true
   inputs:
   - label: d
     name: E
@@ -325,7 +325,7 @@
     regex: regexID
 - title: Entries Edit Shooter Details
   handler: eventShooterUpdate
-  skiprender: true
+  nohtml: true
   inputs:
   - label: Shooter ID
     type: hidden
@@ -366,7 +366,7 @@
 - title:  Existing Shooter Entry
   handler: eventShooterExistingInsert
   namespace: eventShooterExisting
-  skiprender: true
+  nohtml: true
   action: 7
   inputs:
   - label: Shooter
@@ -390,7 +390,7 @@
     regex: regexID
 - title: Enter Range Totals
   namespace: eventTotalScores
-  skiprender: true
+  nohtml: true
   inputs:
   - label: Total
     name: t
@@ -437,7 +437,7 @@
     regex: regexID
 - title: Update Shooter Shots (Scorecards)
   namespace: eventUpdateShotScore
-  skiprender: true
+  nohtml: true
   inputs:
   - label: d
     name: s
@@ -500,7 +500,7 @@
     type: submit
 - title: Shooter Details
   handler: shooterInsert
-  skiprender: true
+  nohtml: true
   inputs:
   - label: First Name
     name: f
@@ -531,7 +531,7 @@
     regex: regexID
 - title: Update Shooter
   handler: shooterUpdate
-  skiprender: true
+  nohtml: true
   inputs:
   - label: First Name
     name: f
