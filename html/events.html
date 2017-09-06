@@ -4,7 +4,7 @@
 	<small>Total Events: {{len .Events}}</small>
 	{{with.Events}}
 		<h2>Open Events</h2>
-		<div class=events>
+		<div class=calendar>
 			{{range.}}
 				{{if not .Closed}}
 					<div>
@@ -18,7 +18,7 @@
 								<a href=/entries/{{.ID}}>{{.Name}}</a>
 							{{else}}
 								{{.Name}}
-							{{end}} {{with.Time}}<span class=small>starts at</span> {{.}}{{end}}
+							{{end}} {{with.Time}}<small>starts at</small> {{.}}{{end}}
 						</p>
 						{{range.Ranges}}{{.Name}}, {{else}}No ranges added.{{end}}
 						<br>
