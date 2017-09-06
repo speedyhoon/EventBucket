@@ -36,7 +36,7 @@ document.onclick = function(event){
 		$dialog.open = 1;
 		break;
 	//Table sort
-	case 'TH':
+	case 'TD':
 		tableSort(event.target);
 	}
 };
@@ -52,7 +52,7 @@ while(i--){
 	inputs[i].addEventListener('input', flagClass);
 }
 
-//Add table sort to <th> elements within a <thead>
+//Add table sort to <td> elements within a <thead>
 function tableSort($th){
 	if($th.parentElement.parentElement.nodeName !== 'THEAD'){
 		return;

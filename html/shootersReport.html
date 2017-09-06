@@ -3,12 +3,12 @@
 		<table>
 			<thead>
 				<tr>
-					<th>
+					<td>
 						{{if and $.EventID .Scores}}<a href=/shooter-report/{{$.EventID}}/{{.ID}}>{{end}}
 							{{(grade .Grade).Abbr}} {{.FirstName}} {{.Surname}} - {{.Club}}
 						{{if and $.EventID .Scores}}</a>{{end}}
-					<th>Shots
-					<th>Total
+					<td>Shots
+					<td>Total
 			<tbody>
 				{{with.}}
 					{{$scores := .}}
