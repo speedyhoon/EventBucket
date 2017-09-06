@@ -529,7 +529,7 @@
     name: I
     v8: v8RegexReq
     regex: regexID
-- title: Update Shooter
+- title: Shooter Update
   handler: shooterUpdate
   nohtml: true
   inputs:

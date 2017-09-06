@@ -199,7 +199,7 @@ func getForm(id uint8) form {
 					{name: "x", v8: v8Bool},
 					{name: "I", v8: v8RegexReq, regex: regexID},
 				}
-			case 19: //Shooter Search
+			case 19: //Shooter Update
 				return []field{
 					{name: "f", v8: v8Str},
 					{name: "s", v8: v8Str},
