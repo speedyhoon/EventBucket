@@ -95,6 +95,6 @@ function tableSort($th){
 var headings = document.querySelectorAll('thead'), i = headings.length;
 while(i--){
 	if(!headings[i].querySelector('.asc,.dsc')){
-		headings.querySelector('th').classList.add("asc");
+		headings[i].querySelector('td').classList.add("asc");
 	}
 }
