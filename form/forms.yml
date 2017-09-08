@@ -584,7 +584,7 @@
   handler: settingsUpdate
   accesskey: S
   inputs:
-  - label: Switch Theme
+  - label: Toggle Theme
     name: t
     v8: v8Bool
     accesskey: S
