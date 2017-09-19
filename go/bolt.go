@@ -34,12 +34,9 @@ func startDB(dbPath string) {
 	}
 
 	//Database save location
-	db, err = bolt.Open(dbPath, 0644, &bolt.Options{
-		Timeout:         time.Second * 8,
-		InitialMmapSize: 1048576, //Initial database size = 1MB
-	})
+	db, err = bolt.Open(dbPath, 0644, &bolt.Options{Timeout: time.Second * 8})
 	if err != nil {
-		warn.Fatal("Connection timeout. Unable to open", dbPath)
+		warn.Fatalln("Connection timeout. Unable to open", dbPath)
 	}
 
 	//Prepare database by creating all buckets (tables) needed. Otherwise view (read only) transactions will fail.
