@@ -45,8 +45,6 @@ func mkDir(path string) error {
 
 // startBrowser tries to open the URL in a browser, and returns whether it succeed.
 func openBrowser(url string) bool {
-	info.Println("openBrowser")
-	// try to start the browser
 	var args []string
 	switch runtime.GOOS {
 	case "darwin":
@@ -56,8 +54,7 @@ func openBrowser(url string) bool {
 	default:
 		args = []string{"xdg-open"}
 	}
-	cmd := exec.Command(args[0], append(args[1:], url)...)
-	return cmd.Start() == nil
+	return exec.Command(args[0], append(args[1:], url)...).Start() == nil
 }
 
 func trimFloat(num float32) string {
