@@ -1,28 +1,29 @@
 proxy:
   port: 6161
-  url: 'http://localhost:3333'
+  url: 'http://127.1.1.5:3333'
   inject: '<script async src=/zj/refresh.js></script><script async src=http://localhost:3000/browser-sync/browser-sync-client.js></script>'
   reports:
-  - cmd: 'html-minifier -c \tools\html-minifier\config.json'
-    decoder: showDiff
-  - cmd: \tools\ab -n 100 -c 100 *
-    decoder: apacheBenchmark
+  - cmd: 'html-minifier -c \config\html-minifier.json'
+    decoder: ShowDiff
+  - cmd: \tools\apacheBenchmark\ab -n 100 -c 100 *
+    decoder: ApacheBenchmark
     save: true
-  - cmd: phantomjs.exe \tools\yslow\yslow.js -t 100 --cdns localhost *
-    decoder: yslow
+  - cmd: \tools\phantomjs-1.9.8-windows\phantomjs.exe \tools\yslow\yslow.js -t 100 --cdns localhost *
+    decoder: Yslow
     save: true
   - cmd: lighthouse --quiet --output json *
-    decoder: lh
+    decoder: LightHouse
     save: true
-  - cmd: \tools\jPortable\bin\java -Xss512k -jar \tools\vnu\vnu.jar --errors-only --format text
-    decoder: vnu
+  - cmd: \tools\jPortable\bin\java -Xss512k -jar \tools\vnu\vnu.jar --errors-only --format text *
+    decoder: VNU
     save: true
   - cmd: html5Elements
+    disable: true
     type: body
     #Google Page Speed Insights can only access public sites
   - cmd: psi * --nokey --strategy=mobile --threshold=100 --format=json
     disable: true
-    decoder: pageSpeed
+    decoder: PageSpeed
     save: true
 replace:
   GoVersion:
@@ -49,9 +50,10 @@ watchers:
 - dir: svg
   ext: .svg
   startup: true
+  ignore: [html_bucket_minified.svg, bucketDark.svg]
   one: |
     svgo --pretty --multipass --config \config\svgo.json -i -
-    trimWhiteSpace
+    trimSpace
     write
     replaceContents
     svgo -q --multipass --config \config\svgo.json -p 3 -i -
@@ -146,14 +148,14 @@ watchers:
   ext: .js
   startup: true
   one: |
-    \config\ ^eslint-pretty
-    trimWhiteSpace
+    \config\ ^eslint-fix
+    trimSpace
     write
     replaceContents
     shortenClasses
     #TODO dev mode output js in strict mode
     #TODO prod code output as non strict
-    \tools\jPortable\bin\java -jar \tools\ClosureCompiler\closure-compiler.jar --compilation_level ADVANCED --formatting SINGLE_QUOTES
+    \tools\jPortable\bin\java -jar \tools\ClosureCompiler\closure-compiler.jar --compilation_level ADVANCED --formatting SINGLE_QUOTES --language_in ECMASCRIPT6_STRICT --language_out ES5_STRICT
     #TODO replace "window.my_func = function(" with "function my_func("
     #TODO replace schema names with their coresponding letters
     minify
