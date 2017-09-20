@@ -7,7 +7,7 @@ import (
 )
 
 func shooters(w http.ResponseWriter, r *http.Request, f form) {
-	_, forms := sessionForms(w, r, shooterNew, shootersImport)
+	_, forms := sessionForms(w, r, shooterNew, shootersImport, shooterSearch)
 
 	templater(w, page{
 		Title: "Shooters",
