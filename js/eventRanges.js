@@ -2,7 +2,7 @@ function buildRow(t, tds, formID, row){
 	var R = t.querySelector('[name=R]');
 	if(tds[2].textContent){
 		findValues(R, tds[2].textContent.replace(/, $/, '').split(', '));
-		t.querySelector('form').setAttribute('action','/21');
+		t.querySelector('form').setAttribute('action', '/21');
 	}else{
 		R.parentElement.removeChild(R);
 	}
@@ -19,23 +19,24 @@ function buildRow(t, tds, formID, row){
 	t.querySelector('[name=o]').value = Array.prototype.indexOf.call(row.parentNode.children, row);
 
 
-	var aTags = t.querySelectorAll('span'), i = aTags.length;
+	var aTags = t.querySelectorAll('span')
+		,i = aTags.length;
 	while(i--){
 		aTags[i].onclick = moveRange;
 	}
 	return t;
 }
 function moveRange(event){
-	var currentRow = event.target.parentNode.parentNode,
-		tbody = currentRow.parentNode,
-		qty = tbody.children.length- 1,
-		index = Array.prototype.indexOf.call(tbody.children, currentRow);
+	var currentRow = event.target.parentNode.parentNode
+		,tbody = currentRow.parentNode
+		,qty = tbody.children.length - 1
+		,index = Array.prototype.indexOf.call(tbody.children, currentRow);
 
-	var direction = event.target.classList.contains('^asc^') ? 2 : -1,
-		moveTo = index + direction;
+	var direction = event.target.classList.contains('^asc^') ? 2 : -1
+		,moveTo = index + direction;
 	if(moveTo < 0){
 		moveTo = qty;
-	}else if(moveTo-1 > qty){
+	}else if(moveTo - 1 > qty){
 		moveTo = 0;
 	}
 

@@ -1,5 +1,5 @@
 //Set shooter barcode form onsubmit because it's not allowed to be set directly in HTML with the current Content Security Policy.
-document.querySelector('#sb').onsubmit= function(event){
+document.querySelector('#sb').onsubmit = function(event){
 	shooterBarcode(event.target.B);
 	return false;
 };
@@ -16,7 +16,7 @@ function shooterBarcode($search){
 	document.getElementById('searchErr').setAttribute('hidden', '');
 	document.getElementById('barcodeErr').setAttribute('hidden', '');
 	document.getElementById('shooterErr').setAttribute('hidden', '');
-	if(!$search||!$search.value){
+	if(!$search || !$search.value){
 		document.getElementById('searchErr').removeAttribute('hidden');
 		return;
 	}
@@ -30,15 +30,15 @@ function shooterBarcode($search){
 		$search.select();
 		return;
 	}
-	var barcodeEventID = $search.value.split('/')[0],
-		barcodeRangeID = $search.value.split('/')[1].split('#')[0],
-		shooterID = $search.value.split('#')[1],
-		pathName = window.location.pathname.split('/')[1];
+	var barcodeEventID = $search.value.split('/')[0]
+		,barcodeRangeID = $search.value.split('/')[1].split('#')[0]
+		,shooterID = $search.value.split('#')[1]
+		,pathName = window.location.pathname.split('/')[1];
 
 	if(eventID !== barcodeEventID){
 		//Go to a different event if user presses OK.
-		if(confirm('This barcode is for a different event. Do you want to go to event with id '+barcodeEventID+'?')){
-			window.location.href = '/' + pathName + '/' + barcodeEventID + '/' + barcodeRangeID + '#' + shooterID;
+		if(confirm(`This barcode is for a different event. Do you want to go to event with id ${barcodeEventID}?`)){
+			window.location.href = `/${pathName}/${barcodeEventID}/${barcodeRangeID}#${shooterID}`;
 		}
 		//Else do nothing.
 		$search.select();
@@ -46,8 +46,8 @@ function shooterBarcode($search){
 	}
 	if(rangeID !== barcodeRangeID){
 		//Go to a different range if user presses OK.
-		if(confirm('This barcode is for a different range. Do you want to go to range with id ' + barcodeRangeID + '?')){
-			window.location.href = '/' + pathName + '/' + barcodeEventID + '/' + barcodeRangeID + '#' + shooterID;
+		if(confirm(`This barcode is for a different range. Do you want to go to range with id ${barcodeRangeID}?`)){
+			window.location.href = `/${pathName}/${barcodeEventID}/${barcodeRangeID}#${shooterID}`;
 		}
 		//Else do nothing.
 		$search.select();
@@ -58,7 +58,8 @@ function shooterBarcode($search){
 
 function goToShooter(shooterID, search){
 	//If the shooter textbox exists in the DOM, set focus to their text box.
-	var d = document.getElementById(shooterID), pathName = window.location.pathname.split('/')[1];
+	var d = document.getElementById(shooterID)
+		,pathName = window.location.pathname.split('/')[1];
 	if(d){
 		search.value = '';
 		if(d.tagName === 'input'){
@@ -66,12 +67,12 @@ function goToShooter(shooterID, search){
 		}else{
 			d.click();
 		}
-		window.location.hash = '#' + shooterID;
+		window.location.hash = `#${shooterID}`;
 	}else if(pathName.indexOf('-all') >= 0){
 		//Display shooter not is this event error message.
 		document.getElementById('shooterErr').removeAttribute('hidden');
 	}else{
 		//If the shooter doesn't exist go to the scorecards-all OR total-scores-all page
-		window.location.href = '/' + pathName + '-all/' + eventID + '/' + rangeID + '#' + shooterID;
+		window.location.href = `/${pathName}-all/${eventID}/${rangeID}#${shooterID}`;
 	}
 }
