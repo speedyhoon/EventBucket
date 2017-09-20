@@ -392,8 +392,7 @@ func getMapClubs(clubID string) (clubs []Club, err error) {
 	})
 }
 
-func clubsDataList() []option {
-	var clubs []option
+func clubsDataList() (clubs []option) {
 	err := search(tblClub, &Club{}, func(c interface{}) error {
 		club := *c.(*Club)
 		clubs = append(clubs, option{Value: club.ID, Label: club.Name, Selected: club.IsDefault})
@@ -402,7 +401,7 @@ func clubsDataList() []option {
 	if err != nil {
 		warn.Println(err)
 	}
-	return clubs
+	return
 }
 
 func getEvents(query func(Event) bool) ([]Event, error) {
@@ -440,6 +439,7 @@ func getDefaultClub() Club {
 		warn.Println(err)
 	}
 	if found {
+		//TODO is found bool actually needed?
 		return club
 	}
 	return Club{}
@@ -595,10 +595,9 @@ func searchShootersOptions(firstName, surname, club string) (options []option) {
 	return
 }
 
-func getClubByName(clubName string) (Club, bool) {
+func getClubByName(clubName string) (club Club, ok bool) {
 	clubName = strings.ToLower(clubName)
 	const success = "1"
-	var club Club
 
 	err := search(tblClub, &club, func(club interface{}) error {
 		//Case insensitive search
