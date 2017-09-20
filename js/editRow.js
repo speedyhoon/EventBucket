@@ -1,17 +1,18 @@
-var editRows = document.querySelectorAll('[data-e] tbody tr'), i = editRows.length;
+var editRows = document.querySelectorAll('[data-e] tbody tr')
+	,i = editRows.length;
 while(i--){
 	var td = document.createElement('td');
 	td.onclick = editRow;
 	editRows[i].appendChild(td);
 }
 function editRow(editCell){
-	var row = editCell.target.parentElement,
-		tds = row.children,
-		t = document.importNode(document.querySelector('template').content, true),
-		form = t.querySelector('form'),
-		outerFormFields = t.querySelectorAll('input,select,button'),
-		i = outerFormFields.length;
-	form.id = '_' + tds[0].textContent;
+	var row = editCell.target.parentElement
+		,tds = row.children
+		,t = document.importNode(document.querySelector('template').content, true)
+		,form = t.querySelector('form')
+		,outerFormFields = t.querySelectorAll('input,select,button')
+		,i = outerFormFields.length;
+	form.id = `_${tds[0].textContent}`;
 	while(i--){
 		outerFormFields[i].setAttribute('form', form.id);
 	}
@@ -22,13 +23,13 @@ function editRow(editCell){
 		row.appendChild(t);
 	}
 }
-window['findValues'] = function(element, labels){
+window.findValues = function(element, labels){
 	var i = labels.length;
 	while(i--){
 		findValue(element, labels[i]);
 	}
 };
-window['findValue'] = function(element, label){
+window.findValue = function(element, label){
 	var i = element.options.length;
 	while(i--){
 		//Select the option if its text = the label. Trim isn't required because the server outputs html without any wrapping whitespace.
@@ -38,7 +39,7 @@ window['findValue'] = function(element, label){
 		}
 	}
 };
-window['checked'] = function checked(cell, element){
+window.checked = function checked(cell, element){
 	if(cell.className === '^tick^'){
 		element.setAttribute('checked', '');
 	}

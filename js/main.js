@@ -11,12 +11,13 @@ while(i--){
 	}
 }
 
-var $dialog, $label;
+var $dialog
+	,$label;
 
 document.onclick = function(event){
 	switch(event.target.nodeName){
-	//Help message pop-up
 	case 'ABBR':
+		//Help message pop-up
 		if(!$dialog){
 			//Form help dialog popup
 			$dialog = document.createElement('dialog');
@@ -35,14 +36,14 @@ document.onclick = function(event){
 		$label = event.target.parentElement;
 		$dialog.open = 1;
 		break;
-	//Table sort
 	case 'TD':
 		tableSort(event.target);
 	}
 };
 
 //Start event listeners that add a class to form fields based on their valid/invalid values that changes the background colour.
-var inputs = document.querySelectorAll('input,select'), flagClass = function(event){
+var inputs = document.querySelectorAll('input,select')
+	,flagClass = function(event){
 		event.srcElement.classList.toggle('^dirty^', !event.srcElement.validity.valid);
 	};
 i = inputs.length;
@@ -58,21 +59,19 @@ function tableSort($th){
 		return;
 	}
 	//If th.textContent == id compare using base36 else use textContent
-	var $tbody = $th.parentElement.parentElement.parentElement.querySelector('tbody'),
-		column = Array.prototype.indexOf.call($th.parentElement.children, $th),
-		direction = $th.className === '^asc^' ? 1 : -1,
-		$rows = Array.from($tbody.children);
+	var $tbody = $th.parentElement.parentElement.parentElement.querySelector('tbody')
+		,column = Array.prototype.indexOf.call($th.parentElement.children, $th)
+		,direction = $th.className === '^asc^' ? 1 : -1
+		,$rows = Array.from($tbody.children);
 	var sortBy = function($cell){
 		if(!$cell){
 			return '';
 		}
 		switch($th.textContent){
-			//Numeric integer identifier
-			case 'ID':
-				return ~~$cell.textContent;
-			//Base 36 [0-9a-z] identifier string e.g. a2e = 13046. Used on the Shooters page
-			case 'Id':
-				return parseInt($cell.textContent, 36);
+		case 'ID': //Numeric integer identifier
+			return ~~$cell.textContent;
+		case 'Id': //Base 36 [0-9a-z] identifier string e.g. a2e = 13046. Used on the Shooters page
+			return parseInt($cell.textContent, 36);
 		}
 		return $cell.textContent;
 	};
@@ -92,9 +91,10 @@ function tableSort($th){
 	$th.className = direction < 0 ? '^asc^' : '^desc^';
 }
 
-var headings = document.querySelectorAll('thead'), i = headings.length;
+var headings = document.querySelectorAll('thead');
+i = headings.length;
 while(i--){
 	if(!headings[i].querySelector('.asc,.dsc')){
-		headings[i].querySelector('td').classList.add("asc");
+		headings[i].querySelector('td').classList.add('asc');
 	}
 }
