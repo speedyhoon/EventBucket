@@ -167,6 +167,8 @@ watchers:
     #TODO add js complexity reporter & only display if different than last time
 - dir: icon
   ext: .ico
+  startup: true
+  ignore: [app.ico, "app+dark.ico", Bucket.png, Bucket256.png, bucketDark.png, bucketDark2.png, dark.ico, dark2.ico]
   one: |
     #if resource.syso doesn't exist in .dev > run go generate
     #go generate
