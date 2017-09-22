@@ -1,9 +1,6 @@
 package main
 
-import (
-	"fmt"
-	"net/http"
-)
+import "net/http"
 
 func scoreboard(w http.ResponseWriter, r *http.Request, event Event, rangeID rID) {
 	ranges := findAggs(uint(rangeID), event.Ranges)
@@ -23,7 +20,8 @@ func scoreboard(w http.ResponseWriter, r *http.Request, event Event, rangeID rID
 		Data: map[string]interface{}{
 			"Event":       event,
 			"Ranges":      ranges,
-			"SortByRange": fmt.Sprintf("%d", rangeID),
+			"RangeName":   event.Ranges[rangeID].Name,
+			"SortByRange": rangeID.StrID(),
 			"colspan":     5,
 			"medalsLimit": 3,
 		},

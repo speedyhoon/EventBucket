@@ -3,7 +3,6 @@
 	{{template "networkAdapters" .Network}}
 	<small>Total Events: {{len .Events}}</small>
 	{{with.Events}}
-		<h2>Open Events</h2>
 		<div class=calendar>
 			{{range.}}
 				{{if not .Closed}}
