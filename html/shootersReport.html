@@ -4,13 +4,13 @@
 			<thead>
 				<tr>
 					<td>
-						{{if and $.EventID .Scores}}<a href=/shooter-report/{{$.EventID}}/{{.ID}}>{{end}}
+						{{if and $.Event.ID .Scores}}<a href=/shooter-report/{{$.Event.ID}}/{{.ID}}>{{end}}
 							{{(grade .Grade).Abbr}} {{.FirstName}} {{.Surname}} - {{.Club}}
-						{{if and $.EventID .Scores}}</a>{{end}}
+						{{if and $.Event.ID .Scores}}</a>{{end}}
 					<td>Shots
 					<td>Total
 			<tbody>
-				{{with.}}
+				{{with.Scores}}
 					{{$scores := .}}
 					{{range $.Event.Ranges}}
 						{{$score := index $scores .StrID}}
