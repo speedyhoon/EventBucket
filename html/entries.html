@@ -12,6 +12,7 @@
 				<tr>
 					<td class=desc>ID
 					<td>Shooter
+					<td>
 					<td>Club
 					<td>Grade
 					<td>Age Group
@@ -23,8 +24,9 @@
 				{{if not .Hidden}}
 					{{with index $.Event.Shooters (sub $qty $i)}}
 						<tr>
-							<td>{{if $hasRanges}}<a href=/shooter-report/{{$.Event.ID}}/{{.ID}} title="{{.FirstName}}'s scores report">{{end}}{{.ID}}{{if $hasRanges}}</a>{{end}}
-							<td>{{if $hasRanges}}<a href=/print-scorecards/{{$.Event.ID}}/{{.ID}} title="Print scorecards for {{.FirstName}}">{{end}}{{.FirstName}} <span>{{.Surname}}</span>{{if $hasRanges}}</a>{{end}}
+							<td>{{.ID}}
+							<td>{{.FirstName}} <span>{{.Surname}}</span>
+							<td>{{if $hasRanges}}<a href=/print-scorecards/{{$.Event.ID}}/{{.ID}}>Print Scorecards</a>{{end}}
 							<td>{{.Club}}
 							<td>{{(grade .Grade).Name}}
 							<td>{{ageGroup .AgeGroup}}
@@ -61,7 +63,7 @@
 			<td>
 				<button name=S>Save</button>
 		</template>
-		{{form .eventAvailableGrades}}
+
 		<script defer src=/j/shooterSearch></script>
 		<script defer src=/j/entries></script>
 		<script defer src=/j/editRow></script>

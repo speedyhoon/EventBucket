@@ -312,7 +312,7 @@
     v8: v8Bool
     type: checkbox
   - name: g
-    label: Grades
+    label: 'Grades<a href=/event-settings/{{(index .Fields 6).Value}}#grades class=edit title="Edit available grades for this event"></a>'
     type: listbox
     v8: v8UintList
     required: true
@@ -421,6 +421,7 @@
   handler: eventAvailableGradesUpsert
   namespace: eventAvailableGrades
   accesskey: G
+  id: grades
   inputs:
   - label: Grades
     name: g

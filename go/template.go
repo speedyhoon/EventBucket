@@ -67,9 +67,6 @@ var (
 			}, {
 				Name: "Event Report",
 				Link: urlEventReport,
-			}, {
-				Name: "Shooters Report",
-				Link: urlShootersReport,
 			}},
 		}, {
 			Name: "Clubs",

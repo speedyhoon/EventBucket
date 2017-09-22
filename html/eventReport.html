@@ -1,20 +1,28 @@
 {{define "eventreport"}}
-	<!-- TODO can $a be removed? -->
-	{{range $a, $b := .Event.Ranges}}
-		<table>
+	<table>
+		<thead>
 			<tr>
+				<td>Id
 				<td>Grade
-				<td>{{.Name}}
+				<td>Shooter
+				<td>Club
+				<td class=asc>Range
 				<td>Shots
 				<td>Scores
+		<tbody>
+		{{range $a, $b := .Event.Ranges}}
 			{{range $.Event.Shooters}}
 				<tr>
+					<td>{{.ID}}
 					<td>{{(grade .Grade).Abbr}}
-					<td><a href=/shooter-report/{{$.Event.ID}}/{{.ID}}>{{.FirstName}} {{.Surname}} - {{.Club}}</a>
+					<td><a href=/shooter-report/{{$.Event.ID}}/{{.ID}}>{{.FirstName}} {{.Surname}}</a>
+					<td>{{.Club}}
 					{{$score := index .Scores $b.StrID}}
+					<td>{{$b.Name}}
 					<td>{{$score.Shots}}
 					<td>{{$score.Total}}{{with $score.Centers}}<sup>{{.}}</sup>{{end}}
+				{{end}}
 			{{end}}
-		</table>
-	{{end}}
+	</table>
+	<script defer src=/j/main></script>
 {{end}}
