@@ -21,7 +21,7 @@ func shootersReport(w http.ResponseWriter, r *http.Request, event Event) {
 		MenuID:  event.ID,
 		Heading: event.Name,
 		Data: map[string]interface{}{
-			"EventID":  event,
+			"Event":    event,
 			"Shooters": event.Shooters,
 		},
 	})
@@ -35,6 +35,7 @@ func shooterReport(w http.ResponseWriter, r *http.Request, event Event, shooterI
 		Heading:     event.Name,
 		SubTemplate: "shootersreport",
 		Data: map[string]interface{}{
+			"Event":    event,
 			"Shooters": []EventShooter{event.Shooters[shooterID]},
 		},
 	})
