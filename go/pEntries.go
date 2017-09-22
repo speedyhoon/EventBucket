@@ -3,7 +3,7 @@ package main
 import "net/http"
 
 func entries(w http.ResponseWriter, r *http.Request, event Event) {
-	action, forms := sessionForms(w, r, eventShooterNew, eventShooterExisting, eventAvailableGrades)
+	action, forms := sessionForms(w, r, eventShooterNew, eventShooterExisting)
 	shooterEntry := forms[0]
 	if action == eventShooterExisting {
 		//Existing shooter select box
@@ -25,11 +25,10 @@ func entries(w http.ResponseWriter, r *http.Request, event Event) {
 	shooterEntry.Fields[7].Value = event.ID
 	shooterEntry.Fields = append(shooterEntry.Fields, field{Value: event.ID})
 
-	//AvailableGrades
-	forms[2].Fields[0].Options = availableGrades(event.Grades)
-	forms[2].Fields[1].Value = event.ID
-
 	shooterEntry.Fields[3].Options = searchShootersOptions("", "", event.Club.Name)
+
+	//Provide event ID for link to change available grades in event settings
+	shooterEntry.Fields[6].Value = event.ID
 
 	templater(w, page{
 		Title:   "Entries",
@@ -37,11 +36,10 @@ func entries(w http.ResponseWriter, r *http.Request, event Event) {
 		MenuID:  event.ID,
 		Heading: event.Name,
 		Data: map[string]interface{}{
-			"Event":                event,
-			"eventShooterNew":      shooterEntry,
-			"eventAvailableGrades": forms[2],
-			"AvailableGrades":      grades,
-			"AgeGroups":            dataListAgeGroup(),
+			"Event":           event,
+			"eventShooterNew": shooterEntry,
+			"AvailableGrades": grades,
+			"AgeGroups":       dataListAgeGroup(),
 		},
 	})
 }

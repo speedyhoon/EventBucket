@@ -7,7 +7,7 @@ import (
 
 func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
 	//Retrieve any submitted form that failed to save.
-	action, forms := sessionForms(w, r, eventEdit, eventRangeNew, eventAggNew, eventRangeEdit, eventAggEdit)
+	action, forms := sessionForms(w, r, eventEdit, eventRangeNew, eventAggNew, eventRangeEdit, eventAggEdit, eventAvailableGrades)
 	if action != eventEdit {
 		forms[0].Fields[0].Value = event.Club.Name
 		forms[0].Fields[1].Value = event.Name
@@ -21,20 +21,25 @@ func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
 	forms[2].Fields[1].Options = dataListRanges(event.Ranges, true)
 	forms[2].Fields[2].Value = event.ID
 
+	//AvailableGrades
+	forms[5].Fields[0].Options = availableGrades(event.Grades)
+	forms[5].Fields[1].Value = event.ID
+
 	templater(w, page{
 		Title:   "Event Settings",
 		Menu:    urlEvents,
 		MenuID:  event.ID,
 		Heading: event.Name,
 		Data: map[string]interface{}{
-			"Ranges":           dataListRanges(event.Ranges, false),
-			"Event":            event,
-			"eventEdit":        forms[0],
-			"eventRangeNew":    forms[1],
-			"eventAggNew":      forms[2],
-			"RangeDataList":    event.Club.Mounds,
-			"eventRangeUpdate": forms[3],
-			"eventAggUpdate":   forms[4],
+			"Ranges":               dataListRanges(event.Ranges, false),
+			"Event":                event,
+			"eventEdit":            forms[0],
+			"eventRangeNew":        forms[1],
+			"eventAggNew":          forms[2],
+			"RangeDataList":        event.Club.Mounds,
+			"eventRangeUpdate":     forms[3],
+			"eventAggUpdate":       forms[4],
+			"eventAvailableGrades": forms[5],
 		},
 	})
 }
