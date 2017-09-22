@@ -82,6 +82,13 @@ func (r Range) StrID() string {
 	return fmt.Sprintf("%v", r.ID)
 }
 
+type rID uint //rangeID
+
+//StrID returns Range.ID as a string instead of an unsigned integer
+func (r rID) StrID() string {
+	return fmt.Sprintf("%d", r)
+}
+
 //Score is exported
 type Score struct {
 	Total      uint   `json:"t,omitempty"`
@@ -105,6 +112,8 @@ func (s ScoreMap) get(id uint) (sc Score, ok bool) {
 	sc, ok = s[fmt.Sprintf("%d", id)]
 	return
 }
+
+type sID uint //shooterID
 
 //EventShooter is exported
 type EventShooter struct {

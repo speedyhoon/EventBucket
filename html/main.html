@@ -1,4 +1,4 @@
-{{define ""}}<!DOCTYPE html>
+{{define ""}}<!doctype html>
 <link rel=stylesheet href=/c/{{.Theme}}>
 <title>EventBucket{{with.Page.Title}} - {{.}}{{end}}</title>
 <nav>
@@ -28,7 +28,11 @@
 									<!--Can't merge these two if statements because $.Page.Data.Event doesn't exist for clubs & club pages-->
 									{{if and $.Page.Data.Event.Ranges (gt (len $.Page.Data.Event.Shooters) 0)}}
 										<li>
-											<a>{{.Name}}</a>
+											{{if eq $.Page.Title .Name}}
+												{{.Name}}
+											{{else}}
+												<a>{{.Name}}</a>
+											{{end}}
 											<ul>
 												{{$link:=.Link}}
 												{{range $.Page.Data.Event.Ranges}}
@@ -47,7 +51,7 @@
 	</ul>
 </nav>
 {{with.Page}}
-	{{with.Title}}<h4>{{.}}</h4>{{end}}
+	{{with.Title}}<h1>{{.}}</h1>{{end}}
 	{{with.Heading}}<h2>{{.}}</h2>{{end}}
 	{{with.Error}}<samp>{{.}}</samp>{{end}}
 	{{template .SubTemplate .Data}}

@@ -1,4 +1,4 @@
-{{define "scoreboard"}}<!DOCTYPE html>
+{{define "scoreboard"}}<!doctype html>
 <link rel=stylesheet href=/c/scoreboard>
 <title>EventBucket{{with.Page.Title}} - {{.}}{{end}}</title>
 {{with (index .Menu 0).SubMenu}}
@@ -9,8 +9,7 @@
 				<!--Can't merge these two if statements because $.Page.Data.Event doesn't exist for clubs & club pages-->
 				{{if and $.Page.Data.Event.Ranges (gt (len $.Page.Data.Event.Shooters) 0)}}
 					<li>
-						<!-- TODO remove <a> tag wrapper here -->
-						<a href=#>{{.Name}}</a>
+						{{.Name}}
 						<ul>
 							{{$link := .Link}}
 							{{range $.Page.Data.Event.Ranges}}
@@ -28,7 +27,7 @@
 {{end}}
 {{block "row" .Page.Data}}
 	<a class=floatRight href=//eventbucket.com.au target=_blank><img src=/v/logo alt=EventBucket height=16 width=140>.com.au</a>
-	<h1>{{.Event.Name}}</h1>
+	<h1>{{.Event.Name}} - {{.RangeName}}</h1>
 	<table>
 		{{range.Event.Shooters}}
 			{{if.GradeSeparator}}

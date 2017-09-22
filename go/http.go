@@ -147,9 +147,6 @@ func getParameters(url string, pageFunc interface{}, regex *regexp.Regexp) {
 		}))
 }
 
-type sID uint //shooterID
-type rID uint //rangeID
-
 func findHandler(pageFunc interface{}, w http.ResponseWriter, r *http.Request, lowerParams string) {
 	ids := strings.Split(lowerParams, "/")
 	switch pageFunc.(type) {

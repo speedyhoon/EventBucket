@@ -1,3 +1,4 @@
+//Colours
 $black = #000
 $blue = #08f
 $lightGrey = #ccc
@@ -31,7 +32,7 @@ td
 	border-width: $thinBorder 0 0 $thinBorder
 	padding: 0
 
-a
+li, a
 	color: $blue
 	text-decoration: none
 
@@ -53,31 +54,28 @@ a
 		margin: 0
 		padding: 0
 
-	body > ul > li
-		display: inline-block
-		position: relative
-
-	ul
-		a
-			padding: 1em
-			text-align: center
-
 		ul a
 			display: block
 			padding: .3em 0
 
+	body > ul > li
+		display: inline-block
+		position: relative
+
 	li
+		padding: 0 1em
+
 		ul
 			background: $white
 			display: none
-			position: absolute
+			margin-left: -1em
 			min-width: 100%
-			z-index: 1
+			padding: .3em 0
+			position: absolute
 
 	li:hover
 		ul
 			display: block
-			padding: .3em 0
 
 .floatRight
 	float: right
@@ -113,14 +111,17 @@ a
 // +background-gradient(aqua, #07f)
 //.p4	//Fourth
 // +background-gradient(#f70, red)
+
+//Third
 .p3
-	//[class=p3]	//Third
 	background-gradient(sienna, peru)
+
+//Second
 .p2
-	//[class=p2]	//Second
 	background-gradient(#888, silver)
+
+//First
 .p1
-	//[class=p1]	//First
 	background-gradient(goldenrod, gold)
 
 //WARNINGS::
