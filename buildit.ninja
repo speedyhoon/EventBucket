@@ -52,6 +52,7 @@ watchers:
   startup: true
   ignore: [html_bucket_minified.svg, bucketDark.svg]
   one: |
+    printExec \tools\xmlstarlet-1.6.1\xml val *
     svgo --pretty --multipass --config \config\svgo.json -i -
     trimSpace
     write
