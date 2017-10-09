@@ -28,7 +28,7 @@ const (
 
 func startDB(dbPath string) {
 	//Create database directory if needed.
-	err := mkDir(filepath.Base(dbPath))
+	err := mkDir(filepath.Dir(dbPath))
 	if err != nil {
 		warn.Fatal(err)
 	}
