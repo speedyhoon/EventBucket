@@ -63,7 +63,7 @@ watchers:
     cache @\.dev\v\*
   all: |
     svgStack @\.dev\v\
-    brotli
+    \tools\brotli\brotli -cfZ
     write @\built\v
     refreshBrowser
     #TODO validate svg files java -Xss512k -jar vnu\vnu.jar --format text -
@@ -80,7 +80,7 @@ watchers:
     #csso -u usage.json
     #clean-css
     removeWhiteSpace
-    brotli
+    \tools\brotli\brotli -cfZ
     #hashName
     write @\built\c\*
   all: |
@@ -116,6 +116,7 @@ watchers:
   startup: true
   ignore: [background.html]
   one: |
+    \tools\replace\replace -yml="[{s: GitVersionTag, rc: git --git-dir @\.git describe --abbrev=0}]
     minifyHTMLTemplate
     #TODO add feature to minify html to keep whitespace - then write to disk if changed
     #checkAttrs
@@ -160,7 +161,7 @@ watchers:
     #TODO replace "window.my_func = function(" with "function my_func("
     #TODO replace schema names with their coresponding letters
     minify
-    brotli
+    \tools\brotli\brotli -cfZ
     #hashName
     write @\built\j\*
   all: |
