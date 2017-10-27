@@ -7,21 +7,15 @@
 			{{range.}}
 				{{if not .Closed}}
 					<div>
-						<div>
+						<time>
 							{{.ISO.Weekday}}
 							<b>{{ordinal .ISO.Day}}</b>
-							{{.ISO.Month}} {{.ISO.Year}}
-						</div>
-						<p>
-							{{if.ID}}
-								<a href=/entries/{{.ID}}>{{.Name}}</a>
-							{{else}}
-								{{.Name}}
-							{{end}} {{with.Time}}<small>starts at</small> {{.}}{{end}}
-						</p>
-						{{range.Ranges}}{{.Name}}, {{else}}No ranges added.{{end}}
-						<br>
-						<a href=/entries/{{.ClubID}}>{{.Club.Name}}</a>
+							{{.ISO.Month}}
+						</time>
+						<h3><a href=/entries/{{.ID}}>{{.Name}}</a></h3>
+						{{with.Time}}<span>{{.}}</span>{{end}}
+						<p>{{with.RangeNames}}{{.}}{{else}}No ranges added.{{end}}</p>
+						<a href=/club/{{.ClubID}}>{{.Club.Name}}</a>
 					</div>
 				{{end}}
 			{{end}}

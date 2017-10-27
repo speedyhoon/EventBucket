@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -51,6 +52,17 @@ type Event struct {
 	Closed   bool           `json:"z,omitempty"`
 	/*TeamCats map[string]TeamCats `json:"M,omitempty"` //TeamCategories
 	Teams    map[string]Team     `json:"T,omitempty"`*/
+}
+
+//RangeNames returns a string of comma separated event range names excluding aggregate ranges
+func (e Event) RangeNames() string {
+	var names []string
+	for _, r := range e.Ranges {
+		if !r.IsAgg {
+			names = append(names, r.Name)
+		}
+	}
+	return strings.Join(names, ", ")
 }
 
 /*Championship is exported
