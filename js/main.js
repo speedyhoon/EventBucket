@@ -97,3 +97,4 @@ while(i--){
 	if(!headings[i].querySelector('.^asc^,.^desc^')){
 		headings[i].querySelector('td').classList.add('^asc^');
 	}
+}
