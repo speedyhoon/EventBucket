@@ -1,18 +1,21 @@
 proxy:
   port: 6161
   url: 'http://127.1.1.5:3333'
-  inject: '<script async src=/zj/refresh.js></script><script async src=http://localhost:3000/browser-sync/browser-sync-client.js></script>'
+  inject: '<script async src=/bj/refresh></script><script async src=http://localhost:3000/browser-sync/browser-sync-client.js></script>'
   reports:
   - cmd: 'html-minifier -c \config\html-minifier.json'
     decoder: ShowDiff
   - cmd: \tools\apacheBenchmark\ab -n 100 -c 100 *
+    disable: true
     decoder: ApacheBenchmark
     save: true
   - cmd: \tools\phantomjs-1.9.8-windows\phantomjs.exe \tools\yslow\yslow.js -t 100 --cdns localhost *
+    disable: true
     decoder: Yslow
     save: true
   - cmd: lighthouse --quiet --output json *
     decoder: LightHouse
+    disable: true
     save: true
   - cmd: \tools\jPortable\bin\java -Xss512k -jar \tools\vnu\vnu.jar --errors-only --format text *
     decoder: VNU
@@ -33,9 +36,6 @@ replace:
   GitVersionMinor:
   GitVersionPatch:
   BuildVersion:
-  MAXLEN: 32
-  <strong: <b
-  strong>: b>
 jobs:
 - job: restartServer
   one: |
@@ -52,11 +52,11 @@ watchers:
   startup: true
   ignore: [html_bucket_minified.svg, bucketDark.svg]
   one: |
-    printExec \tools\xmlstarlet-1.6.1\xml val *
+    #printExec \tools\xmlstarlet-1.6.1\xml val *
     svgo --pretty --multipass --config \config\svgo.json -i -
     trimSpace
     write
-    replaceContents
+    #\tools\replace\replace -file \config\replace.yml
     svgo -q --multipass --config \config\svgo.json -p 3 -i -
     minify
     #inlineFileQuit fileByteSizeLimit=4096     #TODO Quit if svg is inserted into a css file, otherwise write it to /v/ folder. Don't write svg to disk if it is used in a css file because it will never be requested via http from the /dirSVG/ directory
@@ -67,13 +67,15 @@ watchers:
     write @\built\v
     refreshBrowser
     #TODO validate svg files java -Xss512k -jar vnu\vnu.jar --format text -
+    #TODO inline SVG into CSS
+    #TODO inline SVG into HTML
     #TODO openCamsSvgMinifier
 - dir: stylus
   ext: .styl
   startup: true
   #TODO how can editing main.styl or enterShots.styl update dark and light, without writing main and enterShots to /c/?
   one: |
-    replaceContents
+    #\tools\replace\replace -file \config\replace.yml
     stylus -c --disable-cache -I @\stylus
     makeRenameMap --excluded-classes-from-renaming p1-p2-p3
     minify css
@@ -92,8 +94,7 @@ watchers:
   startup: true
   one: |
     buildForms
-    minifyHTMLTemplate
-    replaceContents
+    #\tools\replace\replace -file \config\replace.yml
     shortenClasses
     #TODO minify should strip all possible whitespace so removeWhiteSpace isn't needed
     #minify html
@@ -116,12 +117,11 @@ watchers:
   startup: true
   ignore: [background.html]
   one: |
-    \tools\replace\replace -yml="[{s: GitVersionTag, rc: git --git-dir @\.git describe --abbrev=0}]
-    minifyHTMLTemplate
+    #\tools\replace\replace -file \config\replace.yml
+    #\tools\replace\replace -yml "[{s: GitVersionTag, rc: git --git-dir @\.git describe --abbrev=0}]" -file \config\replace.yml
     #TODO add feature to minify html to keep whitespace - then write to disk if changed
     #checkAttrs
     write
-    replaceContents
     #TODO minify should strip all possible whitespace so replaceOnly isn't needed
     shortenClasses
     removeWhiteSpace
@@ -153,7 +153,7 @@ watchers:
     \config\ ^eslint-fix
     trimSpace
     write
-    replaceContents
+    #\tools\replace\replace -file \config\replace.yml
     shortenClasses
     #TODO dev mode output js in strict mode
     #TODO prod code output as non strict
