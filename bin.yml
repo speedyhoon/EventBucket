@@ -60,9 +60,9 @@ watchers:
     svgo -q --multipass --config \config\svgo.json -p 3 -i -
     minify
     #inlineFileQuit fileByteSizeLimit=4096     #TODO Quit if svg is inserted into a css file, otherwise write it to /v/ folder. Don't write svg to disk if it is used in a css file because it will never be requested via http from the /dirSVG/ directory
-    cache @\.dev\v\*
+    cache @\v\*
   all: |
-    svgStack @\.dev\v\
+    svgStack @\v\
     \tools\brotli\brotli -cfZ
     write @\built\v
     refreshBrowser
