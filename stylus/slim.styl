@@ -1,0 +1,188 @@
+$grey = #888
+$background = #000
+$white = #fff
+$blue = #09f
+$charcoal = #445
+
+//E
+$color = 6.5
+//D
+$color2 = 13.5
+//C
+$color3 = 24
+
+$thead = lighten($grey, $color)
+$head = darken($white, $color2)
+
+html
+	font-family: helvetica
+
+a, abbr, legend u, button
+	color: $blue
+	cursor: pointer
+
+a, abbr
+	text-decoration: none
+
+h1, h2, h3, h4, h5, h6, legend
+	margin-bottom: 0
+
+.asc, thead td:not(.asc):not(:empty):hover
+	background: url("/v/asc")
+	//padding-left: .8em
+
+.desc, .asc:hover
+	background: url("/v/desc")
+
+[src="/v/logo"]
+	width: 210px
+	height: 25px
+
+table:not(.printCards)
+	border-collapse: collapse
+	margin-bottom: 1em
+	width: 100%
+
+thead td
+	text-align: center
+
+thead
+	font-weight: 600
+	border-bottom: 1px solid
+
+	td:not(:empty)
+		cursor pointer
+
+.center
+	text-align: center
+
+.builtWith
+	background: #fff
+	border-radius: 1em
+	color: black
+	display: inline-block
+	padding: .5em
+	img
+		margin: .5em
+
+.tick
+	background: url("/v/tick") center center
+
+.small
+	font-size: smaller
+
+.printCards
+	img
+		display: block
+		image-rendering: pixelated
+		height: 150px
+		padding: 1em
+		width: 150px
+
+	tr:nth-child(3n+1) td:first-child
+		font-weight: 900
+		text-align: center
+
+table[data-e] tbody td:last-child:empty
+	background: url("/v/edit") center center
+	cursor: pointer
+	min-width: .5em
+
+.edit
+	background: url("/v/edit") center center
+	display: inline-block
+	float: right
+	min-height: 1em
+	min-width: 1em
+
+.calendar
+	div
+		float: left
+		padding: 0 .5em .5em 5em
+	time
+		float: left
+		text-align: center
+		border: 1px solid
+		padding: .5em
+		margin-left: -5em
+	b
+		display: block
+		font-size: x-large
+	span:before
+		content: "Starts at: "
+	h3, p
+		margin: 0
+	p:before
+		content: "Ranges: "
+
+@media not print
+	html
+		background: $background url("/v/shooter") bottom left no-repeat
+		background-attachment: fixed
+		background-size: 14em
+		color: $grey
+
+	nav
+		display: flex
+		ul
+			margin: 0
+			list-style: none
+			ul
+				background: $background
+				box-shadow: 4px 4px 15px $blue
+				display: none
+				margin-left: -.5em
+				min-width: 100%
+				padding: 0
+				position: absolute
+				z-index: 1
+				a
+					display: block
+					padding: .2em .5em
+
+		li:hover ul
+			display: block
+
+		& > ul > li
+			color: $white
+			display: inline-block
+			padding: 0 .5em
+			position: relative
+
+	fieldset
+		border-color: $charcoal
+		border-radius .5em
+		margin-bottom 1em
+
+	h1, h2, h3, h4, h5, h6, legend
+		color: $head
+
+	label, button
+			float: left
+
+	button
+		background: transparent
+		border: 0
+		font-size: 1em
+		height: 2.5em
+
+	label
+		padding-right: 1em
+
+	input, select
+		background: $charcoal
+		color: $grey
+		display: block
+		border: 1px solid
+		border-radius: .2em
+		min-width: 100%
+
+	thead
+		color: $thead
+
+	table:not(.printCards) tbody tr:hover
+		background: rgba(128,128,128,.5)
+
+@media print
+	form, nav
+		display: none
