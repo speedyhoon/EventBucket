@@ -41,7 +41,7 @@ func init() {
 	post("/12", 12, eventShooterUpdate)
 	post("/13", 13, eventShooterExistingInsert)
 	post("/15", 15, eventAvailableGradesUpsert)
-	get("/17", 17, eventSearchShooters)
+	post("/17", 17, shooterInsert)
 	post("/18", 18, shooterInsert)
 	post("/19", 19, shooterUpdate)
 	get(urlShooters, 20, shooters)
