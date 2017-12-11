@@ -459,9 +459,8 @@
     v8: v8UintReq
     max: 65535
 - title: New Shooter
-  handler: eventSearchShooters
+  handler: shooterInsert
   namespace: shooterNew
-  method: get
   accesskey: N
   vars: clubName := defaultClubName()
   inputs:
