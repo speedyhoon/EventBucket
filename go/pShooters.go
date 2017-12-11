@@ -120,7 +120,9 @@ func clubInsertIfMissing(clubName string) (string, error) {
 func dataListAgeGroup() []option {
 	//TODO would changing option.Value to an interface reduce the amount of code to convert types?
 	return []option{
-		{}, //None = 0
+		{},
+		//{Value: "0"}, //None = 0
+		//{Value: "", Label: "None"}, //None = 0
 		{Value: "1", Label: "U21"},
 		{Value: "2", Label: "U25"},
 		{Value: "3", Label: "Veteran"},
