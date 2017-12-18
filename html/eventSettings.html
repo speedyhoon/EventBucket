@@ -1,9 +1,9 @@
 {{define "eventsettings"}}
-	{{form .eventEdit}}
+	{{form eventEdit}}
 	{{if.Event.Closed}}
 		<samp>Event is closed, no changes can be made.</samp>
 	{{else}}
-		{{form .eventRangeNew}}
+		{{form eventRangeNew}}
 		{{with.RangeDataList}}
 			<datalist id=r>
 				{{range.}}
@@ -12,7 +12,7 @@
 			</datalist>
 		{{end}}
 		{{if ge (len .Ranges) 2}}
-			{{form .eventAggNew}}
+			{{form eventAggNew}}
 		{{end}}
 	{{end}}
 
@@ -61,6 +61,6 @@
 		{{end}}
 	{{end}}
 
-	{{form .eventAvailableGrades}}
+	{{form eventAvailableGrades}}
 	<script defer src=/j/main></script>
 {{end}}

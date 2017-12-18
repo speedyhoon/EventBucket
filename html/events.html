@@ -1,5 +1,5 @@
 {{define "events"}}
-	{{form .eventNew}}
+	{{form eventNew}}
 	{{template "networkAdapters" .Network}}
 	<small>Total Events: {{len .Events}}</small>
 	{{with.Events}}
