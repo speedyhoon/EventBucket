@@ -5,7 +5,7 @@
 		{{if.Club.URL}}</a>{{end}}
 	</h2>
 
-	{{form .clubEdit}}
+	{{form clubEdit}}
 
 	{{if.showMap}}
 		<h2>Map</h2>
@@ -44,7 +44,7 @@
 		<td>
 			<button name=C value={{.Club.ID}}>Save</button>
 	</template>
-	{{form .clubMoundNew}}
+	{{form clubMoundNew}}
 	<script defer src=/j/main></script>
 	<script defer src=/j/clubSettings></script>
 	<script defer src=/j/editRow></script>
