@@ -141,7 +141,7 @@ watchers:
     \tools\go\gofmt -s -r=(a)+->+a
     write
   all: |
-    @\go ^go build -o=@\built\EventBucket.exe -ldflags=-s+-w
+    @\go ^go build -o=@\built\EventBucket.exe -ldflags=-s+-w -race
     restartCommand @\built\EventBucket.exe -debug -dark -http 127.1.1.5:3333
     incRevision
     refreshBrowser
