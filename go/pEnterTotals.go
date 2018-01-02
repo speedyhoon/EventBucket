@@ -33,7 +33,7 @@ func enterTotals(w http.ResponseWriter, r *http.Request, showAll bool, event Eve
 		}
 	}
 
-	templater(w, page{
+	render(w, page{
 		Title:   "Enter Totals",
 		Menu:    urlEvents,
 		MenuID:  event.ID,

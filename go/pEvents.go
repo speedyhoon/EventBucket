@@ -14,7 +14,7 @@ func events(w http.ResponseWriter, r *http.Request) {
 	}
 	_, forms := sessionForms(w, r, eventNew)
 
-	templater(w, page{
+	render(w, page{
 		Title: "Events",
 		Error: err,
 		Data: map[string]interface{}{

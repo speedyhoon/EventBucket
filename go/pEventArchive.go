@@ -4,7 +4,7 @@ import "net/http"
 
 func eventArchive(w http.ResponseWriter, r *http.Request) {
 	events, err := getEvents(onlyClosed)
-	templater(w, page{
+	render(w, page{
 		Title: "Archive",
 		Error: err,
 		Data: map[string]interface{}{

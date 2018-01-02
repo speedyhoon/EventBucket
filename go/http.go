@@ -249,7 +249,7 @@ func errorHandler(w http.ResponseWriter, r *http.Request, errorType string) {
 		}
 	}
 
-	templater(w, page{
+	render(w, page{
 		Title:  "Error",
 		Status: http.StatusNotFound,
 		Data: map[string]interface{}{

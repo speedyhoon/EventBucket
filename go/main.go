@@ -37,7 +37,7 @@ func main() {
 	flag.Parse()
 
 	if *isDark {
-		masterTemplate.Theme = 1
+		mainTheme = 1
 	}
 
 	//Turn on trace logging

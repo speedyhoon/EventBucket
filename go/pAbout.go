@@ -9,7 +9,7 @@ import (
 
 func about(w http.ResponseWriter, r *http.Request) {
 	_, forms := sessionForms(w, r, settings)
-	templater(w, page{
+	render(w, page{
 		Title: "About",
 		Data: map[string]interface{}{
 			"settings": forms[0],
@@ -19,9 +19,9 @@ func about(w http.ResponseWriter, r *http.Request) {
 }
 
 func settingsUpdate(f form) (string, error) {
-	masterTemplate.Theme++
-	if masterTemplate.Theme == 2 {
-		masterTemplate.Theme = 0
+	mainTheme++
+	if mainTheme == 2 {
+		mainTheme = 0
 	}
 	return "", nil
 }

@@ -30,7 +30,7 @@ func entries(w http.ResponseWriter, r *http.Request, event Event) {
 	//Provide event ID for link to change available grades in event settings
 	shooterEntry.Fields[6].Value = event.ID
 
-	templater(w, page{
+	render(w, page{
 		Title:   "Entries",
 		Menu:    urlEvents,
 		MenuID:  event.ID,

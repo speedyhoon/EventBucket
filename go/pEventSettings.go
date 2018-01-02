@@ -25,7 +25,7 @@ func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
 	forms[5].Fields[0].Options = availableGrades(event.Grades)
 	forms[5].Fields[1].Value = event.ID
 
-	templater(w, page{
+	render(w, page{
 		Title:   "Event Settings",
 		Menu:    urlEvents,
 		MenuID:  event.ID,
