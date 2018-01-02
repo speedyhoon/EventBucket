@@ -42,7 +42,7 @@ func printScorecards(w http.ResponseWriter, r *http.Request, event Event, shoote
 		errorHandler(w, r, "range")
 		return
 	}
-	templater(w, page{
+	render(w, page{
 		Title:  "Print Scorecards",
 		Menu:   urlEvents,
 		MenuID: event.ID,

@@ -9,7 +9,7 @@ import (
 func shooters(w http.ResponseWriter, r *http.Request, f form) {
 	_, forms := sessionForms(w, r, shooterNew, shootersImport, shooterSearch)
 
-	templater(w, page{
+	render(w, page{
 		Title: "Shooters",
 		Data: map[string]interface{}{
 			"shooterNew":     forms[0],
@@ -35,7 +35,7 @@ func shooterUpdate(f form) (string, error) {
 }
 
 func eventSearchShooters(w http.ResponseWriter, r *http.Request, f form) {
-	templater(w, page{
+	render(w, page{
 		template: "shooterSearch",
 		Data: map[string]interface{}{
 			"shooters": searchShooters(f.Fields[0].Value, f.Fields[1].Value, f.Fields[2].Value),

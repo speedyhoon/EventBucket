@@ -35,6 +35,52 @@ const (
 )
 
 var (
+	mainMenu = []menu{{
+		Name: "Events",
+		Link: urlEvents,
+		SubMenu: []menu{{
+			Name: "Entries",
+			Link: urlEntries,
+		}, {
+			Name: "Event Settings",
+			Link: urlEventSettings,
+		}, {
+			Name:      "Scoreboard",
+			Link:      urlScoreboard,
+			RangeMenu: true,
+		}, {
+			Name:      "Enter Shots",
+			Link:      urlEnterShots,
+			RangeMenu: true,
+		}, {
+			Name:      "Enter Totals",
+			Link:      urlEnterTotals,
+			RangeMenu: true,
+		}, {
+			Name: "Event Report",
+			Link: urlEventReport,
+		}},
+	}, {
+		Name: "Clubs",
+		Link: urlClubs,
+		SubMenu: []menu{{
+			Name: "Club",
+			Link: urlClub,
+		}},
+	}, {
+		Name: "Shooters",
+		Link: urlShooters,
+	}, {
+		Name: "Archive",
+		Link: urlArchive,
+	}, {
+		Name: "About",
+		Link: urlAbout,
+	}, {
+		Name: "Licence",
+		Link: urlLicence,
+	}}
+
 	//URL validation matching
 	regexID      = regexp.MustCompile(`^[a-z0-9]+$`)
 	regexPath    = regexp.MustCompile(`^[a-z0-9]+/[a-z0-9]+$`)

@@ -34,61 +34,9 @@ func (p page) csp() string {
 	return lock
 }
 
-type markupEnv struct {
-	Page  page
-	Menu  []menu
-	Theme uint8
-}
-
 var (
+	mainTheme uint8
 	templates      *template.Template
-	masterTemplate = markupEnv{
-		Menu: []menu{{
-			Name: "Events",
-			Link: urlEvents,
-			SubMenu: []menu{{
-				Name: "Entries",
-				Link: urlEntries,
-			}, {
-				Name: "Event Settings",
-				Link: urlEventSettings,
-			}, {
-				Name:      "Scoreboard",
-				Link:      urlScoreboard,
-				RangeMenu: true,
-			}, {
-				Name:      "Enter Shots",
-				Link:      urlEnterShots,
-				RangeMenu: true,
-			}, {
-				Name:      "Enter Totals",
-				Link:      urlEnterTotals,
-				RangeMenu: true,
-			}, {
-				Name: "Event Report",
-				Link: urlEventReport,
-			}},
-		}, {
-			Name: "Clubs",
-			Link: urlClubs,
-			SubMenu: []menu{{
-				Name: "Club",
-				Link: urlClub,
-			}},
-		}, {
-			Name: "Shooters",
-			Link: urlShooters,
-		}, {
-			Name: "Archive",
-			Link: urlArchive,
-		}, {
-			Name: "About",
-			Link: urlAbout,
-		}, {
-			Name: "Licence",
-			Link: urlLicence,
-		}},
-	}
 	tempFuncs = template.FuncMap{
 		"a": func(attribute string, value interface{}) string {
 			//"a": func(attribute string, value interface{}) template.HTMLAttr {
@@ -165,7 +113,7 @@ func init() {
 	}
 }
 
-func templater(w http.ResponseWriter, page page) {
+func render(w http.ResponseWriter, page page) {
 	//Gzip response, even if requester doesn't support gzip
 	gz := gzip.NewWriter(w)
 	defer func() {
@@ -187,9 +135,6 @@ func templater(w http.ResponseWriter, page page) {
 		page.SubTemplate = strings.Replace(strings.ToLower(page.Title), " ", "", -1)
 	}
 
-	//Add page content just generated to the default page environment (which has CSS and JS, etc).
-	masterTemplate.Page = page
-
 	//TODO optionally remove during build time if debug == false
 	if debug {
 		var err error
@@ -203,7 +148,13 @@ func templater(w http.ResponseWriter, page page) {
 		}
 	}
 
-	if err := templates.ExecuteTemplate(wz, masterTemplate.Page.template, masterTemplate); err != nil {
+	type markupEnv struct {
+		Page  page
+		Menu  []menu
+		Theme uint8
+	}
+
+	if err := templates.ExecuteTemplate(wz, page.template, markupEnv{Page: page, Menu: mainMenu, Theme: mainTheme}); err != nil {
 		warn.Println(err)
 		http.Error(wz, err.Error(), http.StatusInternalServerError)
 	}

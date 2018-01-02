@@ -29,7 +29,7 @@ func enterShots(w http.ResponseWriter, r *http.Request, showAll bool, event Even
 		}
 	}
 
-	templater(w, page{
+	render(w, page{
 		Title:   "Enter Shots",
 		Menu:    urlEvents,
 		MenuID:  event.ID,

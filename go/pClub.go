@@ -26,7 +26,7 @@ func club(w http.ResponseWriter, r *http.Request, club Club) {
 	//Club Mound form
 	forms[1].Fields[1].Value = club.ID
 
-	templater(w, page{
+	render(w, page{
 		Title:   "Club",
 		MenuID:  club.ID,
 		Menu:    urlClubs,
@@ -43,7 +43,7 @@ func club(w http.ResponseWriter, r *http.Request, club Club) {
 func clubs(w http.ResponseWriter, r *http.Request) {
 	clubs, err := getClubs()
 	_, forms := sessionForms(w, r, clubNew)
-	templater(w, page{
+	render(w, page{
 		Title:   "Clubs",
 		skipCSP: true,
 		Error:   err,

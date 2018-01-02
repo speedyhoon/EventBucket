@@ -11,7 +11,7 @@ func scoreboard(w http.ResponseWriter, r *http.Request, event Event, rangeID rID
 
 	sortShooters(rangeID).Sort(event.Shooters)
 
-	templater(w, page{
+	render(w, page{
 		Title:    "Scoreboard",
 		Menu:     urlEvents,
 		MenuID:   event.ID,
