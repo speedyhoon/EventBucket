@@ -18,18 +18,39 @@ var globalSessions = struct {
 }{m: make(map[string]form)}
 
 func init() {
-	go maintainSessions()
+	go sessionUpkeep()
 }
 
-//maintainSessions periodically deletes expired sessions
-func maintainSessions() {
+//sessionUpkeep periodically deletes expired sessions
+func sessionUpkeep() {
 	for range time.NewTicker(sessionExpiryTime).C {
 		//Can't directly change global variables in a go routine, so call an external function.
-		purgeSessions()
+		sessionPurge()
 	}
 }
 
-func setSession(w http.ResponseWriter, f form) {
+//Delete sessions where the expiry datetime has already lapsed.
+func sessionPurge() {
+	globalSessions.RLock()
+	qty := len(globalSessions.m)
+	globalSessions.RUnlock()
+	if qty == 0 {
+		return
+	}
+
+	t.Println("About to purge sessions. Qty:", qty)
+	now := time.Now()
+	globalSessions.Lock()
+	for sessionID := range globalSessions.m {
+		if globalSessions.m[sessionID].expiry.Before(now) {
+			delete(globalSessions.m, sessionID)
+		}
+	}
+	t.Println("Remaining sessions:", len(globalSessions.m))
+	globalSessions.Unlock()
+}
+
+func sessionSet(w http.ResponseWriter, f form) {
 	f.expiry = time.Now().Add(sessionExpiryTime)
 	var ok bool
 	var id string
@@ -85,37 +106,18 @@ func sessionID() string {
 	return string(b)
 }
 
-//Delete sessions where the expiry datetime has already lapsed.
-func purgeSessions() {
-	globalSessions.RLock()
-	qty := len(globalSessions.m)
-	globalSessions.RUnlock()
-	if qty == 0 {
-		return
-	}
-
-	t.Println("About to purge sessions. Qty:", qty)
-	now := time.Now()
-	globalSessions.Lock()
-	for sessionID := range globalSessions.m {
-		if globalSessions.m[sessionID].expiry.Before(now) {
-			delete(globalSessions.m, sessionID)
-		}
-	}
-	t.Println("Remaining sessions:", len(globalSessions.m))
-	globalSessions.Unlock()
-}
-
-func sessionForms(w http.ResponseWriter, r *http.Request, actions ...uint8) (uint8, []form) {
+//sessionForms retrieves a slice of forms, including any errors (if any)
+func sessionForms(w http.ResponseWriter, r *http.Request, formIDs ...uint8) (uint8, []form) {
 	const noAction = 255
 
 	//Get users session id from request cookie header
 	cookie, err := r.Cookie(sessionToken)
 	if err != nil || cookie == nil || cookie.Value == "" {
 		//No session found. Return default forms.
-		return noAction, getForms(actions...)
+		return noAction, getForms(formIDs...)
 	}
 
+	//Remove client session cookie
 	http.SetCookie(w, &http.Cookie{
 		Name:     sessionToken,
 		Value:    "",                                       //Remove cookie by setting it to nothing (empty string).
@@ -128,15 +130,16 @@ func sessionForms(w http.ResponseWriter, r *http.Request, actions ...uint8) (uin
 	contents, ok := globalSessions.m[cookie.Value]
 	globalSessions.RUnlock()
 	if !ok {
-		return noAction, getForms(actions...)
+		return noAction, getForms(formIDs...)
 	}
+
 	//Clear the session contents as it has been returned to the user.
 	globalSessions.Lock()
 	delete(globalSessions.m, cookie.Value)
 	globalSessions.Unlock()
 
 	var forms []form
-	for _, id := range actions {
+	for _, id := range formIDs {
 		if contents.action == id {
 			forms = append(forms, contents)
 		} else {
