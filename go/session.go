@@ -23,8 +23,7 @@ func init() {
 
 //maintainSessions periodically deletes expired sessions
 func maintainSessions() {
-	ticker := time.NewTicker(sessionExpiryTime)
-	for range ticker.C {
+	for range time.NewTicker(sessionExpiryTime).C {
 		//Can't directly change global variables in a go routine, so call an external function.
 		purgeSessions()
 	}
@@ -32,17 +31,30 @@ func maintainSessions() {
 
 func setSession(w http.ResponseWriter, f form) {
 	f.expiry = time.Now().Add(sessionExpiryTime)
-	cookie := http.Cookie{
-		Name:     sessionToken,
-		Value:    sessionID(),
-		HttpOnly: true,
-		Expires:  f.expiry,
-	}
+	var ok bool
+	var id string
 
 	//Start mutex write lock.
 	globalSessions.Lock()
-	globalSessions.m[cookie.Value] = f
+	for {
+		id = sessionID()
+		_, ok = globalSessions.m[id]
+
+		if !ok {
+			//Assign the session ID if it isn't already assigned
+			globalSessions.m[id] = f
+			break
+		}
+		//else if sessionID is already assigned then regenerate a different session ID
+	}
 	globalSessions.Unlock()
+
+	cookie := http.Cookie{
+		Name:     sessionToken,
+		Value:    id,
+		HttpOnly: true,
+		Expires:  f.expiry,
+	}
 	http.SetCookie(w, &cookie)
 }
 
@@ -82,7 +94,7 @@ func purgeSessions() {
 		return
 	}
 
-	t.Println("About to purge sessions, qty", qty)
+	t.Println("About to purge sessions. Qty:", qty)
 	now := time.Now()
 	globalSessions.Lock()
 	for sessionID := range globalSessions.m {
