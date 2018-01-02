@@ -260,7 +260,7 @@ func errorHandler(w http.ResponseWriter, r *http.Request, errorType string) {
 
 func formError(w http.ResponseWriter, r *http.Request, f form, err error) {
 	f.Error = err
-	setSession(w, f)
+	sessionSet(w, f)
 	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 }
 

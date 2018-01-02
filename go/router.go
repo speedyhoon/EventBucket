@@ -83,7 +83,7 @@ func post(url string, formID uint8, page func(f form) (string, error)) {
 			}
 			f, ok := validBoth(r, formID)
 			if !ok {
-				setSession(w, f)
+				sessionSet(w, f)
 				http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 				return
 			}
