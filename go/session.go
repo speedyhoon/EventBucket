@@ -149,8 +149,8 @@ func sessionForms(w http.ResponseWriter, r *http.Request, formIDs ...uint8) (uin
 	return contents.action, forms
 }
 
-func getForms(actions ...uint8) (forms []form) {
-	for _, id := range actions {
+func getForms(formIDs ...uint8) (forms []form) {
+	for _, id := range formIDs {
 		forms = append(forms, getForm(id))
 	}
 	return forms

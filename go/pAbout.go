@@ -33,15 +33,15 @@ func localIPs() map[string]interface{} {
 	}
 
 	var localIPs []string
-	addrs, err := net.InterfaceAddrs()
+	addresses, err := net.InterfaceAddrs()
 	if err == nil {
-		var ipnet *net.IPNet
+		var ipNet *net.IPNet
 		var ok bool
-		for _, address := range addrs {
+		for _, address := range addresses {
 			//Check the address type is not localhost or a loopback address
-			ipnet, ok = address.(*net.IPNet)
-			if ok && !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil && !strings.HasPrefix(ipnet.IP.String(), "169.254.") {
-				localIPs = append(localIPs, ipnet.IP.String()+portAddr)
+			ipNet, ok = address.(*net.IPNet)
+			if ok && !ipNet.IP.IsLoopback() && ipNet.IP.To4() != nil && !strings.HasPrefix(ipNet.IP.String(), "169.254.") {
+				localIPs = append(localIPs, ipNet.IP.String()+portAddr)
 			}
 		}
 	}
