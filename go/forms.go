@@ -2,7 +2,12 @@
 //Please edit /form/forms.yml & then rebuild EventBucket
 package main
 
-import "time"
+import (
+	"time"
+
+	"github.com/speedyhoon/v8"
+	"github.com/speedyhoon/forms"
+)
 
 const (
 	clubNew              uint8 = 0
@@ -48,181 +53,181 @@ func init() {
 	post("/22", 22, settingsUpdate)
 }
 
-func getForm(id uint8) form {
-	return form{
-		action: id,
-		Fields: func(id uint8) []field {
+func getForm(id uint8) forms.Form {
+	return forms.Form{
+		Action: id,
+		Fields: func(id uint8) []forms.Field {
 			switch id {
 			case 0: //New Club
-				return []field{
-					{name: "n", v8: v8StrReq},
+				return []forms.Field{
+					{Name: "n", V8: v8.StrReq},
 				}
 			case 1: //Club Details
-				return []field{
-					{name: "n", v8: v8StrReq},
-					{name: "a", v8: v8Str},
-					{name: "w", v8: v8Str},
-					{name: "p", v8: v8Str},
-					{name: "x", v8: v8Float32, min: -90, max: 90, step: 1e-06},
-					{name: "y", v8: v8Float32, min: -180, max: 180, step: 1e-06},
-					{name: "b", v8: v8Bool},
-					{name: "u", v8: v8Str},
-					{name: "C", v8: v8Regex, regex: regexID},
+				return []forms.Field{
+					{Name: "n", V8: v8.StrReq},
+					{Name: "a", V8: v8.Str},
+					{Name: "w", V8: v8.Str},
+					{Name: "p", V8: v8.Str},
+					{Name: "x", V8: v8.Float32, Min: -90, Max: 90, Step: 1e-06},
+					{Name: "y", V8: v8.Float32, Min: -180, Max: 180, Step: 1e-06},
+					{Name: "b", V8: v8.Bool},
+					{Name: "u", V8: v8.Str},
+					{Name: "C", V8: v8.Regex, Regex: regexID},
 				}
 			case 2: //New Shooting Mound
-				return []field{
-					{name: "n", v8: v8StrReq},
-					{name: "C", v8: v8Regex, regex: regexID},
+				return []forms.Field{
+					{Name: "n", V8: v8.StrReq},
+					{Name: "C", V8: v8.Regex, Regex: regexID},
 				}
 			case 3: //Edit Shooting Mound
-				return []field{
-					{name: "n", v8: v8StrReq},
-					{name: "I", v8: v8Uint, max: 65535},
-					{name: "C", v8: v8Regex, regex: regexID},
+				return []forms.Field{
+					{Name: "n", V8: v8.StrReq},
+					{Name: "I", V8: v8.Uint, Max: 65535},
+					{Name: "C", V8: v8.Regex, Regex: regexID},
 				}
 			case 4: //Map Clubs
-				return []field{
-					{name: "C", v8: v8Regex, regex: regexID},
+				return []forms.Field{
+					{Name: "C", V8: v8.Regex, Regex: regexID},
 				}
 			case 5: //New Event
 				clubName := defaultClubName()
-				return []field{
-					{name: "C", v8: v8Str, Value: clubName, Required: clubName == "", minLen: 1, Options: clubsDataList()},
-					{name: "n", v8: v8StrReq},
-					{name: "d", v8: v8Str, Value: time.Now().Format("2006-01-02"), maxLen: 10},
-					{name: "t", v8: v8Str, Value: time.Now().Format("15:04"), maxLen: 5},
+				return []forms.Field{
+					{Name: "C", V8: v8.Str, Value: clubName, Required: clubName == "", MinLen: 1, Options: clubsDataList()},
+					{Name: "n", V8: v8.StrReq},
+					{Name: "d", V8: v8.Str, Value: time.Now().Format("2006-01-02"), MaxLen: 10},
+					{Name: "t", V8: v8.Str, Value: time.Now().Format("15:04"), MaxLen: 5},
 				}
 			case 6: //Event Details
-				return []field{
-					{name: "C", v8: v8StrReq, Options: clubsDataList()},
-					{name: "n", v8: v8StrReq},
-					{name: "d", v8: v8Str, maxLen: 10, minLen: 1},
-					{name: "t", v8: v8Str, maxLen: 5, minLen: 5},
-					{name: "c", v8: v8Bool},
-					{name: "E", v8: v8Regex, regex: regexID},
+				return []forms.Field{
+					{Name: "C", V8: v8.StrReq, Options: clubsDataList()},
+					{Name: "n", V8: v8.StrReq},
+					{Name: "d", V8: v8.Str, MaxLen: 10, MinLen: 1},
+					{Name: "t", V8: v8.Str, MaxLen: 5, MinLen: 5},
+					{Name: "c", V8: v8.Bool},
+					{Name: "E", V8: v8.Regex, Regex: regexID},
 				}
 			case 7: //Add Range
-				return []field{
-					{name: "n", v8: v8StrReq},
-					{name: "E", v8: v8Regex, regex: regexID},
+				return []forms.Field{
+					{Name: "n", V8: v8.StrReq},
+					{Name: "E", V8: v8.Regex, Regex: regexID},
 				}
 			case 8: //Update Range
-				return []field{
-					{name: "I", v8: v8UintReq, min: 1, max: 65535},
-					{name: "n", v8: v8StrReq},
-					{name: "k", v8: v8Bool},
-					{name: "o", v8: v8UintReq, max: 65535},
-					{name: "E", v8: v8Regex, regex: regexID},
+				return []forms.Field{
+					{Name: "I", V8: v8.UintReq, Min: 1, Max: 65535},
+					{Name: "n", V8: v8.StrReq},
+					{Name: "k", V8: v8.Bool},
+					{Name: "o", V8: v8.UintReq, Max: 65535},
+					{Name: "E", V8: v8.Regex, Regex: regexID},
 				}
 			case 9: //Add Aggregate Range
-				return []field{
-					{name: "n", v8: v8StrReq},
-					{name: "R", v8: v8UintList, Required: true, maxLen: 5, minLen: 2, min: 1, max: 65535},
-					{name: "E", v8: v8Regex, regex: regexID},
+				return []forms.Field{
+					{Name: "n", V8: v8.StrReq},
+					{Name: "R", V8: v8.UintList, Required: true, MaxLen: 5, MinLen: 2, Min: 1, Max: 65535},
+					{Name: "E", V8: v8.Regex, Regex: regexID},
 				}
 			case 10: //Update Agg
-				return []field{
-					{name: "E", v8: v8Regex, regex: regexID},
-					{name: "I", v8: v8UintReq, min: 1, max: 65535},
-					{name: "n", v8: v8StrReq},
-					{name: "R", v8: v8UintList, Required: true, minLen: 2, min: 1, max: 65535},
-					{name: "o", v8: v8UintReq, max: 65535},
+				return []forms.Field{
+					{Name: "E", V8: v8.Regex, Regex: regexID},
+					{Name: "I", V8: v8.UintReq, Min: 1, Max: 65535},
+					{Name: "n", V8: v8.StrReq},
+					{Name: "R", V8: v8.UintList, Required: true, MinLen: 2, Min: 1, Max: 65535},
+					{Name: "o", V8: v8.UintReq, Max: 65535},
 				}
 			case 11: //Shooter Entry
 				clubName := defaultClubName()
-				return []field{
-					{name: "f", v8: v8StrReq},
-					{name: "s", v8: v8StrReq},
-					{name: "C", v8: v8Str, Placeholder: clubName, Options: clubsDataList()},
-					{name: "S", v8: v8Str, Options: searchShootersOptions("", "", clubName)},
-					{name: "r", v8: v8UintOpt, Options: dataListAgeGroup()},
-					{name: "x", v8: v8Bool},
-					{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: globalGradesDataList},
-					{name: "E", v8: v8Regex, regex: regexID},
+				return []forms.Field{
+					{Name: "f", V8: v8.StrReq},
+					{Name: "s", V8: v8.StrReq},
+					{Name: "C", V8: v8.Str, Placeholder: clubName, Options: clubsDataList()},
+					{Name: "S", V8: v8.Str, Options: searchShootersOptions("", "", clubName)},
+					{Name: "r", V8: v8.UintOpt, Options: dataListAgeGroup()},
+					{Name: "x", V8: v8.Bool},
+					{Name: "g", V8: v8.UintList, Required: true, Max: len(globalGrades) - 1, Options: globalGradesDataList},
+					{Name: "E", V8: v8.Regex, Regex: regexID},
 				}
 			case 12: //Entries Edit Shooter Details
-				return []field{
-					{name: "S", v8: v8UintReq, max: 65535},
-					{name: "E", v8: v8RegexReq, regex: regexID},
-					{name: "f", v8: v8StrReq},
-					{name: "s", v8: v8StrReq},
-					{name: "C", v8: v8Regex, regex: regexID},
-					{name: "g", v8: v8UintReq, max: len(globalGrades) - 1, Options: globalGradesDataList},
-					{name: "r", v8: v8UintOpt, Options: dataListAgeGroup()},
-					{name: "x", v8: v8Bool},
-					{name: "k", v8: v8Bool},
+				return []forms.Field{
+					{Name: "S", V8: v8.UintReq, Max: 65535},
+					{Name: "E", V8: v8.RegexReq, Regex: regexID},
+					{Name: "f", V8: v8.StrReq},
+					{Name: "s", V8: v8.StrReq},
+					{Name: "C", V8: v8.Regex, Regex: regexID},
+					{Name: "g", V8: v8.UintReq, Max: len(globalGrades) - 1, Options: globalGradesDataList},
+					{Name: "r", V8: v8.UintOpt, Options: dataListAgeGroup()},
+					{Name: "x", V8: v8.Bool},
+					{Name: "k", V8: v8.Bool},
 				}
 			case 13: //Existing Shooter Entry
-				return []field{
-					{name: "S", v8: v8RegexReq, regex: regexID},
-					{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: globalGradesDataList},
-					{name: "r", v8: v8UintOpt, Options: dataListAgeGroup()},
-					{name: "E", v8: v8RegexReq, regex: regexID},
+				return []forms.Field{
+					{Name: "S", V8: v8.RegexReq, Regex: regexID},
+					{Name: "g", V8: v8.UintList, Required: true, Max: len(globalGrades) - 1, Options: globalGradesDataList},
+					{Name: "r", V8: v8.UintOpt, Options: dataListAgeGroup()},
+					{Name: "E", V8: v8.RegexReq, Regex: regexID},
 				}
 			case 14: //Enter Range Totals
-				return []field{
-					{name: "t", v8: v8UintReq, max: 120},
-					{name: "c", v8: v8Uint, max: 20},
-					{name: "E", v8: v8RegexReq, regex: regexID},
-					{name: "R", v8: v8UintReq, min: 1, max: 65535},
-					{name: "S", v8: v8UintReq, max: 65535},
-					{name: "h", v8: v8Uint, max: 100},
+				return []forms.Field{
+					{Name: "t", V8: v8.UintReq, Max: 120},
+					{Name: "c", V8: v8.Uint, Max: 20},
+					{Name: "E", V8: v8.RegexReq, Regex: regexID},
+					{Name: "R", V8: v8.UintReq, Min: 1, Max: 65535},
+					{Name: "S", V8: v8.UintReq, Max: 65535},
+					{Name: "h", V8: v8.Uint, Max: 100},
 				}
 			case 15: //Grades Available
-				return []field{
-					{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: availableGrades([]uint{})},
-					{name: "E", v8: v8Regex, regex: regexID},
+				return []forms.Field{
+					{Name: "g", V8: v8.UintList, Required: true, Max: len(globalGrades) - 1, Options: availableGrades([]uint{})},
+					{Name: "E", V8: v8.Regex, Regex: regexID},
 				}
 			case 16: //Update Shooter Shots (Scorecards)
-				return []field{
-					{name: "s", v8: v8StrReq, maxLen: 12},
-					{name: "E", v8: v8RegexReq, regex: regexID},
-					{name: "R", v8: v8UintReq, min: 1, max: 65535},
-					{name: "S", v8: v8UintReq, max: 65535},
+				return []forms.Field{
+					{Name: "s", V8: v8.StrReq, MaxLen: 12},
+					{Name: "E", V8: v8.RegexReq, Regex: regexID},
+					{Name: "R", V8: v8.UintReq, Min: 1, Max: 65535},
+					{Name: "S", V8: v8.UintReq, Max: 65535},
 				}
 			case 17: //New Shooter
 				clubName := defaultClubName()
-				return []field{
-					{name: "f", v8: v8StrReq},
-					{name: "s", v8: v8StrReq},
-					{name: "C", v8: v8Str, Placeholder: clubName, Required: clubName == "", minLen: 1, Options: clubsDataList()},
-					{name: "r", v8: v8UintOpt, Options: dataListAgeGroup()},
-					{name: "x", v8: v8Bool},
-					{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: globalGradesDataList},
+				return []forms.Field{
+					{Name: "f", V8: v8.StrReq},
+					{Name: "s", V8: v8.StrReq},
+					{Name: "C", V8: v8.Str, Placeholder: clubName, Required: clubName == "", MinLen: 1, Options: clubsDataList()},
+					{Name: "r", V8: v8.UintOpt, Options: dataListAgeGroup()},
+					{Name: "x", V8: v8.Bool},
+					{Name: "g", V8: v8.UintList, Required: true, Max: len(globalGrades) - 1, Options: globalGradesDataList},
 				}
 			case 18: //Shooter Details
-				return []field{
-					{name: "f", v8: v8StrReq},
-					{name: "s", v8: v8StrReq},
-					{name: "C", v8: v8StrReq},
-					{name: "g", v8: v8UintList, Required: true, max: len(globalGrades) - 1, Options: globalGradesDataList},
-					{name: "r", v8: v8UintOpt, Options: dataListAgeGroup()},
-					{name: "x", v8: v8Bool},
-					{name: "I", v8: v8RegexReq, regex: regexID},
+				return []forms.Field{
+					{Name: "f", V8: v8.StrReq},
+					{Name: "s", V8: v8.StrReq},
+					{Name: "C", V8: v8.StrReq},
+					{Name: "g", V8: v8.UintList, Required: true, Max: len(globalGrades) - 1, Options: globalGradesDataList},
+					{Name: "r", V8: v8.UintOpt, Options: dataListAgeGroup()},
+					{Name: "x", V8: v8.Bool},
+					{Name: "I", V8: v8.RegexReq, Regex: regexID},
 				}
 			case 19: //Shooter Update
-				return []field{
-					{name: "f", v8: v8Str},
-					{name: "s", v8: v8Str},
-					{name: "C", v8: v8Str},
+				return []forms.Field{
+					{Name: "f", V8: v8.Str},
+					{Name: "s", V8: v8.Str},
+					{Name: "C", V8: v8.Str},
 				}
 			case 20: //Shooter Search
 				clubName := defaultClubName()
-				return []field{
-					{name: "f", v8: v8Str},
-					{name: "s", v8: v8Str},
-					{name: "C", v8: v8Str, Placeholder: clubName, Required: clubName == "", Options: clubsDataList()},
+				return []forms.Field{
+					{Name: "f", V8: v8.Str},
+					{Name: "s", V8: v8.Str},
+					{Name: "C", V8: v8.Str, Placeholder: clubName, Required: clubName == "", Options: clubsDataList()},
 				}
 			case 21: //Import Shooters
-				return []field{
-					{name: "f", v8: v8FileReq},
+				return []forms.Field{
+					{Name: "f", V8: v8.FileReq},
 				}
 			case 22: //Settings
-				return []field{
-					{name: "t", v8: v8Bool},
+				return []forms.Field{
+					{Name: "t", V8: v8.Bool},
 				}
 			}
-			return []field{}
+			return []forms.Field{}
 		}(id),
 	}
 }

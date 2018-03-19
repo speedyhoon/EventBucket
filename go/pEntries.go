@@ -1,21 +1,25 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+	"github.com/speedyhoon/session"
+	"github.com/speedyhoon/forms"
+)
 
 func entries(w http.ResponseWriter, r *http.Request, event Event) {
-	action, forms := sessionForms(w, r, eventShooterNew, eventShooterExisting)
-	shooterEntry := forms[0]
+	action, f := session.Forms(w, r, getForm, eventShooterNew, eventShooterExisting)
+	shooterEntry := f[0]
 	if action == eventShooterExisting {
 		//Existing shooter select box
-		shooterEntry.Fields[3].Error = forms[1].Fields[0].Error
+		shooterEntry.Fields[3].Error = f[1].Fields[0].Error
 		//Grade
-		shooterEntry.Fields[6].Error = forms[1].Fields[1].Error
-		shooterEntry.Fields[6].Value = forms[1].Fields[1].Value
+		shooterEntry.Fields[6].Error = f[1].Fields[1].Error
+		shooterEntry.Fields[6].Value = f[1].Fields[1].Value
 		//Age Group
-		shooterEntry.Fields[4].Error = forms[1].Fields[2].Error
-		shooterEntry.Fields[4].Value = forms[1].Fields[2].Value
+		shooterEntry.Fields[4].Error = f[1].Fields[2].Error
+		shooterEntry.Fields[4].Value = f[1].Fields[2].Value
 		//Existing Shooter button
-		shooterEntry.Fields[7].Error = forms[1].Fields[3].Error
+		shooterEntry.Fields[7].Error = f[1].Fields[3].Error
 	}
 	shooterEntry.Fields[2].Options = clubsDataList()
 
@@ -23,7 +27,7 @@ func entries(w http.ResponseWriter, r *http.Request, event Event) {
 	shooterEntry.Fields[6].Options = grades
 	shooterEntry.Fields[6].Value = event.ID
 	shooterEntry.Fields[7].Value = event.ID
-	shooterEntry.Fields = append(shooterEntry.Fields, field{Value: event.ID})
+	shooterEntry.Fields = append(shooterEntry.Fields, forms.Field{Value: event.ID})
 
 	shooterEntry.Fields[3].Options = searchShootersOptions("", "", event.Club.Name)
 
@@ -44,7 +48,7 @@ func entries(w http.ResponseWriter, r *http.Request, event Event) {
 	})
 }
 
-func eventInsert(f form) (string, error) {
+func eventInsert(f forms.Form) (string, error) {
 	//Try to find an existing club and insert and insert one if it doesn't exist.
 	clubID, err := clubInsertIfMissing(f.Fields[0].Value)
 	if err != nil {
@@ -63,13 +67,13 @@ func eventInsert(f form) (string, error) {
 	return urlEventSettings + ID, err
 }
 
-func eventAvailableGradesUpsert(f form) (string, error) {
+func eventAvailableGradesUpsert(f forms.Form) (string, error) {
 	eventID := f.Fields[1].Value
 	return urlEntries + eventID,
-		updateDocument(tblEvent, eventID, &f.Fields[0].valueUintSlice, &Event{}, updateEventGrades)
+		updateDocument(tblEvent, eventID, &f.Fields[0].ValueUintSlice, &Event{}, updateEventGrades)
 }
 
-func eventShooterInsert(f form) (string, error) {
+func eventShooterInsert(f forms.Form) (string, error) {
 	//Populate club name if it is empty
 	if f.Fields[2].Value == "" {
 		f.Fields[2].Value = defaultClubName()
@@ -82,9 +86,9 @@ func eventShooterInsert(f form) (string, error) {
 		NickName:  f.Fields[0].Value,
 		Surname:   f.Fields[1].Value,
 		Club:      f.Fields[2].Value,
-		AgeGroup:  f.Fields[4].valueUint,
+		AgeGroup:  f.Fields[4].ValueUint,
 		Sex:       f.Fields[5].Checked,
-		Grades:    f.Fields[6].valueUintSlice,
+		Grades:    f.Fields[6].ValueUintSlice,
 	}
 	//Insert shooter into Shooter Bucket
 	shooterID, err := shooter.insert()
@@ -99,7 +103,7 @@ func eventShooterInsert(f form) (string, error) {
 		updateDocument(tblEvent, eventID, &shooter, &Event{}, eventShooterInsertDB)
 }
 
-func eventShooterExistingInsert(f form) (string, error) {
+func eventShooterExistingInsert(f forms.Form) (string, error) {
 	eventID := f.Fields[3].Value
 	shooter, err := getShooter(f.Fields[0].Value)
 	if err != nil {
@@ -111,22 +115,22 @@ func eventShooterExistingInsert(f form) (string, error) {
 			FirstName: shooter.NickName,
 			Surname:   shooter.Surname,
 			Club:      shooter.Club,
-			Grades:    f.Fields[1].valueUintSlice,
-			AgeGroup:  f.Fields[2].valueUint,
+			Grades:    f.Fields[1].ValueUintSlice,
+			AgeGroup:  f.Fields[2].ValueUint,
 			Sex:       shooter.Sex,
 		}, &Event{}, eventShooterInsertDB)
 }
 
-func eventShooterUpdate(f form) (string, error) {
+func eventShooterUpdate(f forms.Form) (string, error) {
 	eventID := f.Fields[1].Value
 	return urlEntries + eventID,
 		updateDocument(tblEvent, eventID, &EventShooter{
-			ID:        f.Fields[0].valueUint,
+			ID:        f.Fields[0].ValueUint,
 			FirstName: f.Fields[2].Value,
 			Surname:   f.Fields[3].Value,
 			Club:      f.Fields[4].Value,
-			Grade:     f.Fields[5].valueUint,
-			AgeGroup:  f.Fields[6].valueUint,
+			Grade:     f.Fields[5].ValueUint,
+			AgeGroup:  f.Fields[6].ValueUint,
 			Sex:       f.Fields[7].Checked,
 			Disabled:  f.Fields[8].Checked,
 		}, &Event{}, eventShooterUpdater)

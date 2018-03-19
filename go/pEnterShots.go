@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"github.com/speedyhoon/forms"
 )
 
 func enterShotsAll(w http.ResponseWriter, r *http.Request, event Event, rangeID rID) {
@@ -45,13 +46,13 @@ func enterShots(w http.ResponseWriter, r *http.Request, showAll bool, event Even
 	})
 }
 
-func updateShotScores(fields []field) string {
+func updateShotScores(fields []forms.Field) string {
 	event, err := getEvent(fields[1].Value)
 	if err != nil {
 		return fmt.Sprintf("Event with id %v doesn't exist", fields[1].Value)
 	}
 
-	shooterID := fields[3].valueUint
+	shooterID := fields[3].ValueUint
 	if shooterID != event.Shooters[shooterID].ID {
 		return fmt.Sprintf("Shooter with id %v doesn't exist in Event with id %v", shooterID, event.ID)
 	}

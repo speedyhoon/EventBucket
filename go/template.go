@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/speedyhoon/text/template"
+	"github.com/speedyhoon/forms"
 )
 
 type menu struct {
@@ -36,8 +37,8 @@ func (p page) csp() string {
 
 var (
 	mainTheme uint8
-	templates      *template.Template
-	tempFuncs = template.FuncMap{
+	tmpl8     *template.Template
+	tempFuncs   = template.FuncMap{
 		"a": func(attribute string, value interface{}) string {
 			//"a": func(attribute string, value interface{}) template.HTMLAttr {
 			var output string
@@ -58,13 +59,13 @@ var (
 				if value.(uint) > 0 {
 					output = attribute + "=" + addQuotes(value)
 				}
-			case []option:
-				if len(value.([]option)) > 0 {
+			case []forms.Option:
+				if len(value.([]forms.Option)) > 0 {
 					output = attribute
 				}
 			//TODO remove default if !debug
 			default:
-				warn.Printf("attribute type %T not defined\n%v %v\n", value, value, len(value.([]option)))
+				warn.Printf("attribute type %T not defined\n%v %v\n", value, value, len(value.([]forms.Option)))
 			}
 			//return template.HTMLAttr(output)
 			return output
@@ -105,7 +106,7 @@ var (
 
 func init() {
 	var err error
-	templates, err = template.New("").Funcs(tempFuncs).ParseFiles(
+	tmpl8, err = template.New("").Funcs(tempFuncs).ParseFiles(
 		filepath.Join(runDir, "h"),
 	)
 	if err != nil {
@@ -113,7 +114,7 @@ func init() {
 	}
 }
 
-func render(w http.ResponseWriter, page page) {
+func render(w http.ResponseWriter, p page) {
 	//Gzip response, even if requester doesn't support gzip
 	gz := gzip.NewWriter(w)
 	defer func() {
@@ -124,21 +125,21 @@ func render(w http.ResponseWriter, page page) {
 	wz := gzipResponseWriter{Writer: gz, ResponseWriter: w}
 
 	//Add HTTP headers so browsers don't cache the HTML resource because it may contain different content every request.
-	headers(wz, html, nocache, cGzip, page.csp())
+	headers(wz, html, nocache, cGzip, p.csp())
 
-	if page.Status != 0 {
-		wz.WriteHeader(page.Status)
+	if p.Status != 0 {
+		wz.WriteHeader(p.Status)
 	}
 
-	//Convert page.Title to the lowercase HTML template file name
-	if page.SubTemplate == "" {
-		page.SubTemplate = strings.Replace(strings.ToLower(page.Title), " ", "", -1)
+	if p.SubTemplate == "" {
+		//Convert page.Title to the lowercase HTML template file name
+		p.SubTemplate = strings.Replace(strings.ToLower(p.Title), " ", "", -1)
 	}
 
 	//TODO optionally remove during build time if debug == false
 	if debug {
 		var err error
-		templates, err = template.New("").Funcs(tempFuncs).ParseFiles(
+		tmpl8, err = template.New("").Funcs(tempFuncs).ParseFiles(
 			filepath.Join(runDir, "h"),
 		)
 		if err != nil {
@@ -154,7 +155,7 @@ func render(w http.ResponseWriter, page page) {
 		Theme uint8
 	}
 
-	if err := templates.ExecuteTemplate(wz, page.template, markupEnv{Page: page, Menu: mainMenu, Theme: mainTheme}); err != nil {
+	if err := tmpl8.ExecuteTemplate(wz, p.template, markupEnv{Page: p, Menu: mainMenu, Theme: mainTheme}); err != nil {
 		warn.Println(err)
 		http.Error(wz, err.Error(), http.StatusInternalServerError)
 	}

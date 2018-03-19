@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"github.com/speedyhoon/forms"
 )
 
 func enterTotalsAll(w http.ResponseWriter, r *http.Request, event Event, rangeID rID) {
@@ -51,22 +52,22 @@ func enterTotals(w http.ResponseWriter, r *http.Request, showAll bool, event Eve
 	})
 }
 
-func eventTotalUpsert(fields []field) string {
+func eventTotalUpsert(fields []forms.Field) string {
 	//Save score to event in database.
 	err := updateDocument(tblEvent, fields[2].Value, &shooterScore{
 		rangeID: fields[3].Value,
-		id:      fields[4].valueUint,
+		id:      fields[4].ValueUint,
 		score: Score{
-			Total:    fields[0].valueUint,
-			Centers:  fields[1].valueUint,
-			ShootOff: fields[5].valueUint,
+			Total:    fields[0].ValueUint,
+			Centers:  fields[1].ValueUint,
+			ShootOff: fields[5].ValueUint,
 		}}, &Event{}, upsertScore)
 
 	//Return any upsert errors onscreen.
 	if err != nil {
 		return err.Error()
 	}
-	return fmt.Sprintf("Saved %v.%v for shooter %v on range %v in event %v.", fields[0].valueUint, fields[1].valueUint, fields[4].valueUint, fields[3].Value, fields[2].Value)
+	return fmt.Sprintf("Saved %v.%v for shooter %v on range %v in event %v.", fields[0].ValueUint, fields[1].ValueUint, fields[4].ValueUint, fields[3].Value, fields[2].Value)
 }
 
 func eventRange(ranges []Range, rangeID rID, w http.ResponseWriter, r *http.Request) (Range, error) {
