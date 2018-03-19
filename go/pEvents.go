@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"sort"
 	"strings"
+	"github.com/speedyhoon/session"
 )
 
 func events(w http.ResponseWriter, r *http.Request) {
@@ -12,7 +13,7 @@ func events(w http.ResponseWriter, r *http.Request) {
 		//Sort list of events by date then by name
 		eventOrderedBy(sortByDate, sortByName).Sort(events)
 	}
-	_, forms := sessionForms(w, r, eventNew)
+	_, forms := session.Forms(w, r, getForm, eventNew)
 
 	render(w, page{
 		Title: "Events",

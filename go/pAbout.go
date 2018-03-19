@@ -5,20 +5,22 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"github.com/speedyhoon/session"
+	"github.com/speedyhoon/forms"
 )
 
 func about(w http.ResponseWriter, r *http.Request) {
-	_, forms := sessionForms(w, r, settings)
+	_, f := session.Forms(w, r, getForm, settings)
 	render(w, page{
 		Title: "About",
 		Data: map[string]interface{}{
-			"settings": forms[0],
+			"settings": f[0],
 			"Network":  localIPs(),
 		},
 	})
 }
 
-func settingsUpdate(f form) (string, error) {
+func settingsUpdate(f forms.Form) (string, error) {
 	mainTheme++
 	if mainTheme == 2 {
 		mainTheme = 0

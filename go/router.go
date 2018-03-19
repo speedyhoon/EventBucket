@@ -8,6 +8,9 @@ import (
 	"regexp"
 
 	"golang.org/x/net/websocket"
+	"github.com/speedyhoon/forms"
+	"github.com/speedyhoon/v8"
+	"github.com/speedyhoon/session"
 )
 
 const (
@@ -115,7 +118,7 @@ func init() {
 	get404(events)
 }
 
-func post(url string, formID uint8, page func(f form) (string, error)) {
+func post(url string, formID uint8, page func(f forms.Form) (string, error)) {
 	http.HandleFunc(
 		url,
 		func(w http.ResponseWriter, r *http.Request) {
@@ -124,19 +127,30 @@ func post(url string, formID uint8, page func(f form) (string, error)) {
 				A request was made of a resource using a request method not supported by that resource; for example,
 				using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
 				//en.wikipedia.org/wiki/List_of_HTTP_status_codes*/
-				http.Redirect(w, r, r.Referer(), http.StatusMethodNotAllowed)
+				//http.Redirect(w, r, r.Referer(), http.StatusMethodNotAllowed)
+
+				render(w, page{
+					Title:  "Error",
+					Status: http.StatusMethodNotAllowed,
+					Data: map[string]interface{}{
+						"Type": "incorrect form submission",
+					},
+				})
+
 				return
 			}
-			f, ok := validBoth(r, formID)
+			f, ok := v8.IsValidRequest(r, getForm(formID))
 			if !ok {
-				sessionSet(w, f)
+				session.Set(w, f)
 				http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 				return
 			}
 			redirect, err := page(f)
 			//Display any insert errors onscreen.
 			if err != nil {
-				formError(w, r, f, err)
+				f.Error = err
+				session.Set(w, f)
+				http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 				return
 			}
 			if redirect == "" {
@@ -147,11 +161,11 @@ func post(url string, formID uint8, page func(f form) (string, error)) {
 	)
 }
 
-func get(url string, formID uint8, page func(http.ResponseWriter, *http.Request, form)) {
+func get(url string, formID uint8, page func(http.ResponseWriter, *http.Request, forms.Form)) {
 	http.HandleFunc(
 		url,
 		isGetMethod(func(w http.ResponseWriter, r *http.Request) {
-			f, _ := validBoth(r, formID)
+			f, _ := v8.IsValidRequest(r, getForm(formID))
 			page(w, r, f)
 		}))
 }
@@ -177,26 +191,26 @@ func processSocket(ws *websocket.Conn) {
 		//Ignore any messages that do not have a case in this switch.
 		switch formID {
 		case eventTotalScores:
-			var form url.Values
-			err = json.Unmarshal([]byte(msg[1:]), &form)
+			var urlValues url.Values
+			err = json.Unmarshal([]byte(msg[1:]), &urlValues)
 			if err != nil {
 				warn.Println(err)
 				continue
 			}
-			if form, passed := isValid(form, formID); passed {
+			if form, passed := v8.IsValid(urlValues, getForm(formID)); passed {
 				send(eventTotalUpsert(form.Fields))
 			} else {
 				send(fmt.Sprintf("Unable to save %v.", msg))
 			}
 		case eventUpdateShotScore:
-			var form url.Values
-			err = json.Unmarshal([]byte(msg[1:]), &form)
+			var urlValues url.Values
+			err = json.Unmarshal([]byte(msg[1:]), &urlValues)
 			if err != nil {
 				warn.Println(err)
 				continue
 			}
 
-			if form, passed := isValid(form, formID); passed {
+			if form, passed := v8.IsValid(urlValues, getForm(formID)); passed {
 				send("!" + updateShotScores(form.Fields))
 			} else {
 				var response []byte

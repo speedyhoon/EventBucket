@@ -4,10 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"github.com/speedyhoon/session"
+	"github.com/speedyhoon/forms"
 )
 
 func club(w http.ResponseWriter, r *http.Request, club Club) {
-	action, forms := sessionForms(w, r, clubEdit, clubMoundNew)
+	action, forms := session.Forms(w, r, getForm, clubEdit, clubMoundNew)
 
 	//Club Details Form
 	if action != clubEdit {
@@ -42,7 +44,7 @@ func club(w http.ResponseWriter, r *http.Request, club Club) {
 
 func clubs(w http.ResponseWriter, r *http.Request) {
 	clubs, err := getClubs()
-	_, forms := sessionForms(w, r, clubNew)
+	_, forms := session.Forms(w, r, getForm, clubNew)
 	render(w, page{
 		Title:   "Clubs",
 		skipCSP: true,
@@ -55,7 +57,7 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func clubsMap(w http.ResponseWriter, r *http.Request, f form) {
+func clubsMap(w http.ResponseWriter, r *http.Request, f forms.Form) {
 	clubs, err := getMapClubs(f.Fields[0].Value)
 	if err != nil {
 		warn.Println(err)
@@ -69,7 +71,7 @@ func clubsMap(w http.ResponseWriter, r *http.Request, f form) {
 	fmt.Fprint(w, list)
 }
 
-func clubInsert(f form) (string, error) {
+func clubInsert(f forms.Form) (string, error) {
 	name := f.Fields[0].Value
 
 	//Check if a club with that name already exists.
@@ -89,7 +91,7 @@ func clubInsert(f form) (string, error) {
 	return urlClub + ID + "#edit", nil
 }
 
-func clubDetailsUpsert(f form) (string, error) {
+func clubDetailsUpsert(f forms.Form) (string, error) {
 	clubID := f.Fields[8].Value
 	isDefault := f.Fields[6].Checked
 	defaultClub := getDefaultClub()
@@ -106,24 +108,24 @@ func clubDetailsUpsert(f form) (string, error) {
 			Address:   f.Fields[1].Value,
 			Town:      f.Fields[2].Value,
 			Postcode:  f.Fields[3].Value,
-			Latitude:  f.Fields[4].valueFloat32,
-			Longitude: f.Fields[5].valueFloat32,
+			Latitude:  f.Fields[4].ValueFloat32,
+			Longitude: f.Fields[5].ValueFloat32,
 			IsDefault: isDefault,
 			URL:       f.Fields[7].Value,
 		}, &Club{}, updateClubDetails)
 }
 
-func clubMoundInsert(f form) (string, error) {
+func clubMoundInsert(f forms.Form) (string, error) {
 	clubID := f.Fields[1].Value
 	return urlClub + clubID,
 		updateDocument(tblClub, clubID, f.Fields[0].Value, &Club{}, insertClubMound)
 }
 
-func clubMoundUpsert(f form) (string, error) {
+func clubMoundUpsert(f forms.Form) (string, error) {
 	clubID := f.Fields[2].Value
 	return urlClub + clubID,
 		updateDocument(tblClub, clubID, &Mound{
 			Name: f.Fields[0].Value,
-			ID:   f.Fields[1].valueUint,
+			ID:   f.Fields[1].ValueUint,
 		}, &Club{}, editMound)
 }

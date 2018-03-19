@@ -3,11 +3,13 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"github.com/speedyhoon/session"
+	"github.com/speedyhoon/forms"
 )
 
 func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
 	//Retrieve any submitted form that failed to save.
-	action, forms := sessionForms(w, r, eventEdit, eventRangeNew, eventAggNew, eventRangeEdit, eventAggEdit, eventAvailableGrades)
+	action, forms := session.Forms(w, r, getForm, eventEdit, eventRangeNew, eventAggNew, eventRangeEdit, eventAggEdit, eventAvailableGrades)
 	if action != eventEdit {
 		forms[0].Fields[0].Value = event.Club.Name
 		forms[0].Fields[1].Value = event.Name
@@ -44,16 +46,16 @@ func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
 	})
 }
 
-func dataListRanges(ranges []Range, selected bool) (options []option) {
+func dataListRanges(ranges []Range, selected bool) (options []forms.Option) {
 	for _, r := range ranges {
 		if !r.IsAgg {
-			options = append(options, option{Label: r.Name, Value: fmt.Sprintf("%d", r.ID), Selected: selected})
+			options = append(options, forms.Option{Label: r.Name, Value: fmt.Sprintf("%d", r.ID), Selected: selected})
 		}
 	}
 	return options
 }
 
-func eventDetailsUpsert(f form) (string, error) {
+func eventDetailsUpsert(f forms.Form) (string, error) {
 	eventID := f.Fields[5].Value
 	return urlEventSettings + eventID,
 		updateDocument(tblEvent, eventID, &Event{
@@ -65,40 +67,40 @@ func eventDetailsUpsert(f form) (string, error) {
 		}, &Event{}, updateEventDetails)
 }
 
-func eventRangeInsert(f form) (string, error) {
+func eventRangeInsert(f forms.Form) (string, error) {
 	eventID := f.Fields[1].Value
 	return urlEventSettings + eventID,
 		updateDocument(tblEvent, eventID, &Range{Name: f.Fields[0].Value}, &Event{}, eventAddRange)
 }
 
-func eventRangeUpdate(f form) (string, error) {
+func eventRangeUpdate(f forms.Form) (string, error) {
 	eventID := f.Fields[0].Value
 	return urlEventSettings + eventID,
 		updateDocument(tblEvent, eventID, &Range{
-			ID:     f.Fields[1].valueUint,
+			ID:     f.Fields[1].ValueUint,
 			Name:   f.Fields[2].Value,
 			Locked: f.Fields[3].Checked,
-			Order:  f.Fields[4].valueUint,
+			Order:  f.Fields[4].ValueUint,
 		}, &Event{}, editRange)
 }
 
-func eventAggUpdate(f form) (string, error) {
+func eventAggUpdate(f forms.Form) (string, error) {
 	eventID := f.Fields[0].Value
 	return urlEventSettings + eventID,
 		updateDocument(tblEvent, eventID, &Range{
-			ID:    f.Fields[1].valueUint,
+			ID:    f.Fields[1].ValueUint,
 			Name:  f.Fields[2].Value,
-			Aggs:  f.Fields[3].valueUintSlice,
-			Order: f.Fields[4].valueUint,
+			Aggs:  f.Fields[3].ValueUintSlice,
+			Order: f.Fields[4].ValueUint,
 		}, &Event{}, editRange)
 }
 
-func eventAggInsert(f form) (string, error) {
+func eventAggInsert(f forms.Form) (string, error) {
 	eventID := f.Fields[2].Value
 	return urlEventSettings + eventID,
 		updateDocument(tblEvent, eventID, &Range{
 			Name:  f.Fields[0].Value,
-			Aggs:  f.Fields[1].valueUintSlice,
+			Aggs:  f.Fields[1].ValueUintSlice,
 			IsAgg: true,
 		}, &Event{}, eventAddAgg)
 }

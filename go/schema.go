@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"regexp"
 	"strings"
 	"time"
 )
@@ -185,30 +184,4 @@ type shooterScore struct {
 	rangeID string
 	id      uint
 	score   Score
-}
-
-type form struct {
-	action uint8
-	Fields []field
-	Error  error
-	expiry time.Time
-}
-
-type option struct {
-	Label, Value string
-	Selected     bool
-}
-
-type field struct {
-	name, Error, Value, Placeholder       string
-	Options                               []option
-	maxLen, minLen                        int
-	min, max                              int
-	step, valueFloat32                    float32
-	regex                                 *regexp.Regexp
-	v8                                    func(*field, ...string)
-	valueUint                             uint
-	valueUintSlice                        []uint
-	Required, Disable, AutoFocus, Checked bool
-	//size                                  uint8
 }

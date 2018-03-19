@@ -1,21 +1,21 @@
 package main
 
 import (
-	//"bytes"
-	//"encoding/json"
 	"net/http"
+	"github.com/speedyhoon/forms"
+	"github.com/speedyhoon/session"
 )
 
-func shooters(w http.ResponseWriter, r *http.Request, f form) {
-	_, forms := sessionForms(w, r, shooterNew, shootersImport, shooterSearch)
+func shooters(w http.ResponseWriter, r *http.Request, form forms.Form) {
+	_, f := session.Forms(w, r, getForm, shooterNew, shootersImport, shooterSearch)
 
 	render(w, page{
 		Title: "Shooters",
 		Data: map[string]interface{}{
-			"shooterNew":     forms[0],
-			"shootersImport": forms[1],
-			"shooterSearch":  f,
-			"Shooters":       searchShooters(f.Fields[0].Value, f.Fields[1].Value, f.Fields[2].Value),
+			"shooterNew":     f[0],
+			"shootersImport": f[1],
+			"shooterSearch":  form,
+			"Shooters":       searchShooters(form.Fields[0].Value, form.Fields[1].Value, form.Fields[2].Value),
 			"qty":            tblQty(tblShooter),
 			"Grades":         globalGradesDataList,
 			"AgeGroups":      dataListAgeGroup(),
@@ -23,18 +23,18 @@ func shooters(w http.ResponseWriter, r *http.Request, f form) {
 	})
 }
 
-func shooterUpdate(f form) (string, error) {
+func shooterUpdate(f forms.Form) (string, error) {
 	return "", updateDocument(tblShooter, f.Fields[6].Value, &Shooter{
 		FirstName: f.Fields[0].Value,
 		Surname:   f.Fields[1].Value,
 		Club:      f.Fields[2].Value,
-		Grades:    f.Fields[3].valueUintSlice,
-		AgeGroup:  f.Fields[4].valueUint,
+		Grades:    f.Fields[3].ValueUintSlice,
+		AgeGroup:  f.Fields[4].ValueUint,
 		Sex:       f.Fields[5].Checked,
 	}, &Shooter{}, updateShooterDetails)
 }
 
-func eventSearchShooters(w http.ResponseWriter, r *http.Request, f form) {
+func eventSearchShooters(w http.ResponseWriter, r *http.Request, f forms.Form) {
 	render(w, page{
 		template: "shooterSearch",
 		Data: map[string]interface{}{
@@ -43,7 +43,7 @@ func eventSearchShooters(w http.ResponseWriter, r *http.Request, f form) {
 	})
 }
 
-func shooterInsert(f form) (string, error) {
+func shooterInsert(f forms.Form) (string, error) {
 	//Add new club if there isn't already a club with that name
 	clubID, err := clubInsertIfMissing(f.Fields[2].Value)
 	if err != nil {
@@ -55,14 +55,14 @@ func shooterInsert(f form) (string, error) {
 		FirstName: f.Fields[0].Value,
 		Surname:   f.Fields[1].Value,
 		Club:      clubID,
-		Grades:    f.Fields[3].valueUintSlice,
-		AgeGroup:  f.Fields[4].valueUint,
+		Grades:    f.Fields[3].ValueUintSlice,
+		AgeGroup:  f.Fields[4].ValueUint,
 		Sex:       f.Fields[5].Checked,
 	}.insert()
 	return "", err
 }
 
-/*func importShooters(f form) (string, error) {
+/*func importShooters(f forms.Form) (string, error) {
 	//Form validation doesn't yet have a
 	file, _, err := r.FormFile("f")
 	if err != nil {
@@ -117,9 +117,9 @@ func clubInsertIfMissing(clubName string) (string, error) {
 }
 
 //TODO move into a config file or database?
-func dataListAgeGroup() []option {
+func dataListAgeGroup() []forms.Option {
 	//TODO would changing option.Value to an interface reduce the amount of code to convert types?
-	return []option{
+	return []forms.Option{
 		{},
 		//{Value: "0"}, //None = 0
 		//{Value: "", Label: "None"}, //None = 0
