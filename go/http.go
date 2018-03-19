@@ -67,19 +67,25 @@ func serveFile(fileName string, compress bool) {
 }
 
 func serveDir(contentType string, compress bool) {
-	http.Handle(contentType,
-		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			//If url is a directory return a 404 to prevent displaying a directory listing.
-			if strings.HasSuffix(r.URL.Path, "/") {
-				http.NotFound(w, r)
-				return
-			}
+	http.HandleFunc(contentType, isDir(func(w http.ResponseWriter, r *http.Request) {
 			headers(w, contentType, cache)
 			if compress {
 				headers(w, brotli)
 			}
 			http.FileServer(http.Dir(runDir)).ServeHTTP(w, r)
-		}))
+	}))
+}
+
+func isDir(h func(w http.ResponseWriter, r *http.Request)) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		//If url is a directory
+		if strings.HasSuffix(r.URL.Path, "/") {
+			//Then return a 404 to prevent displaying all files in the directory
+			http.NotFound(w, r)
+			return
+		}
+		h(w, r)
+	}
 }
 
 //TODO security add Access-Control-Allow-Origin //net.tutsplus.com/tutorials/client-side-security-best-practices/
@@ -258,12 +264,6 @@ func errorHandler(w http.ResponseWriter, r *http.Request, errorType string) {
 	})
 }
 
-func formError(w http.ResponseWriter, r *http.Request, f form, err error) {
-	f.Error = err
-	sessionSet(w, f)
-	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
-}
-
 //Update the expires http header time, every 15 minutes rather than recalculating it on every http request.
 func maintainExpires() {
 	setExpiresTime()
@@ -279,3 +279,32 @@ func setExpiresTime() {
 	cacheExpires = time.Now().UTC().AddDate(1, 0, 0).Format("Mon, 02 Jan 2006 15:04:05 GMT")
 	//w3.org: "All HTTP date/time stamps MUST be represented in Greenwich Mean Time" under 3.3.1 Full Date //www.w3.org/Protocols/rfc2616/rfc2616-sec3.html
 }
+
+/*func serveImg(dir, mimeType string, fileSystem http.FileSystem) {
+	http.HandleFunc(dir, isDir(func(w http.ResponseWriter, r *http.Request) {
+		//If client accepts Webp images
+		if strings.Contains(r.Header.Get("Accept"), "image/webp") {
+			r.URL.Path += ".webp"
+			w.Header().Set(contentType, "image/webp")
+		} else {
+			w.Header().Set(contentType, mimeType)
+		}
+		http.FileServer(fileSystem).ServeHTTP(w, r)
+	}))
+}
+
+func serveImages(dir, mimeType string, fileSystem http.FileSystem) {
+	http.HandleFunc(
+		dir,
+		isDir(
+			func(w http.ResponseWriter, r *http.Request) {
+				//If client accepts Webp images
+				if strings.Contains(r.Header.Get("Accept"), "image/webp") {
+					r.URL.Path += ".webp"
+					w.Header().Set(contentType, "image/webp")
+				} else {
+					w.Header().Set(contentType, mimeType)
+				}
+				http.FileServer(fileSystem).ServeHTTP(w, r)
+	}))
+}*/
