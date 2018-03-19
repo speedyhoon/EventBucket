@@ -1,9 +1,10 @@
 {{define "about"}}
 	<p>EventBucket is designed to assist with collecting scores during shooting events. Has your rifle club ever had difficulty keeping up with scoring for weekly matches, pennants or even prize meetings? EventBucket will solve these issues. It does not require electronic targets and can complement existing scoring and check scoring using cards and blackboards.
-	{{template "networkAdapters" .Network}}
 	<p class=center>
 		<span class=builtWith>
 			Built with:<br>
+			{{/*TODO change this page cache to 12 months*/}}
+			{{/*TODO data inline webp images so serveDir(dirWEBP, false) can be removed*/}}
 			<a title="JetBrains Goland" href=//jetbrains.com/go><img src=/png/Goland></a>
 			<a title=BuildIt.ninja href=//github.com/speedyhoon/BuildIt.ninja><img src=/png/BuildIt.ninja></a>
 			<a title="Go Programming Language" href=//golang.org><img src=/png/Go></a>
@@ -15,4 +16,5 @@
 		<br><br>
 		EventBucket version: GitVersionTag<br>
 		Compiled by BuiltIt.ninja using GoVersion, on BuildDate.
+		{{/*TODO settings form is missing. Should it go on this page?? */}}
 {{end}}
