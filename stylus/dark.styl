@@ -5,133 +5,26 @@ $invalid = #744
 //$bgGrey = #445
 $bgGrey = rgba(128, 128, 128, .5)
 $blue = #09f
-$red = #f05
 
 $background = darken($base-color, 100%)
-$text = lighten($base-color, 10%)
-$heading = lighten($base-color, 100%)
+$text = lighten($base-color, 100%)
 $oddTableRowBackground = darken($base-color, 30%)
-$liteGrey = lighten($base-color, 10%)
 
-body
-	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
-
-a, abbr, button, thead td
-	color: $blue
-
-[src="/v/logo"]
-	width: 210px
-	height: 25px
-
-samp
-	color: $background
-	display: block
-	padding: .5em
-	background: $red
-	border-radius: .3em
-	font-weight: 600
-	margin: 1em 0
-
-table
-	border-collapse: collapse
-	width: 100%
-
-tbody tr:hover
-	background: rgba(128,128,128,.5)
-
-[data-e] td:last-child
-    background: url("/v/edit") no-repeat center center
-
-thead td
-	cursor: pointer
-
-.asc, .desc
-	background: url(/w/sty) no-repeat
-	padding-left: 1em
-
-.desc
-	background-image: url(/w/can)
-
-//Menu
-nav
-	display: flex
-
-	li
-		display: inline-block
-		padding: 0 .5em
-
-//Forms
-fieldset
-	border-color: $bgGrey
-
-	label:not(:last-child), button:not(:last-child)
-		margin-right: 1em
-
-	label, input, select
-		display: block
-
-	label
-		float: left
-
-button
-	background: transparent
-	border: 0
-	border-radius: .5em
-	cursor: pointer
-	font-size: 1em
-
-button:hover
-	text-decoration: underline
-
-abbr
-	cursor: help
-
-.center
-	text-align: center
-
-.tick
-	background: url("/v/tick") center center
-
-.builtWith
-	background: #fff
-	border-radius: 1em
-	display: inline-block
-	color: black
-	padding: 1em
-	img
-		margin: .5em
-
-//@import "main"
-
-@media print
-	form, nav
-		display: none
+@import main
 
 @media not print
 	html
-		background: $background url("/v/shooter") bottom left no-repeat
-		background-attachment: fixed
-		background-size: 14em
+		background-color: $background
 		color: $text
-
-	h1,h2,h3,h4,legend
-		color: $heading
-		margin-bottom: 0
-
-	legend u
-		font-weight: 900
-
-	a:not(:hover), abbr:not(:hover)
-		text-decoration: none
 
 	//Forms
 	input, select
 		background: $bgGrey
-		border-color: $base-color
+		border-color: $grey
 		color: $liteGrey
 
-	.dirty
-		background: $invalid
+	fieldset
+		border-color: $bgGrey
 
 //If Background graphics checkbox is ticked in the print window then the QR barcodes won't be scannable.
 .printCards
