@@ -3,7 +3,7 @@ $grey = #777
 $greyTransparent = rgba(99, 99, 99, 0.3)
 $liteGrey = #cdd
 $red = #c24
-$white = #000
+$white = #fff
 //menu
 $margin = 1.5em
 $halfMargin = $margin/2
@@ -14,7 +14,6 @@ $fatBorder = $fatWidth solid
 $thinBorder = 1px solid
 body
 	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
-	margin-left: 1em
 
 //About images
 .builtWith
@@ -27,24 +26,10 @@ body
 a:hover
 	color: $text
 
-//TODO remove?
-a.edit
-	background: url(/v/edit)
-	display: inline-block;
-	height: 20px
-	width: 20px
-
-//TODO remove?
-table.edit tbody td:last-child
-	background: url("/v/edit")
-
-	a
-		width: 100%;
-		display: block;
-
 //Tables
 table
 	border-collapse: collapse
+	width: 100%
 
 	th, thead td
 		font-weight: 700
@@ -69,11 +54,12 @@ table
 .tick
 	background: url(/v/tick) no-repeat center
 
+[src="/v/logo"]
+	width: 210px
+	height: 25px
+
 body > form, table:not(.printCards)
 	margin-bottom: 1em
-
-body > form, table
-	width: 100%
 
 //Forms
 legend
@@ -151,21 +137,9 @@ form#edit:target
 		background-size: 14em
 
 	nav
-		display: block
-		float: left
-		width: 100%
-		margin-bottom: .5em
-		div
-			display: inline-block
-			float: left
-			padding: $bigPadding $margin $bigPadding 1em
+		display: flex
 		ul
-			display: inline-block
-			float: left
 			list-style: none
-			margin: 0
-			padding: 0
-			width: "calc(100% - %s - 190px)" % ($margin*2)
 
 		& > ul > li
 			display: inline-block
@@ -186,13 +160,12 @@ form#edit:target
 				box-shadow: .1em .1em 6px $blue
 				display: none
 				position: absolute
-				min-width: 100%
-				z-index: 1
+				//z-index: 1
 
 		li:hover
 			ul
 				display: block
-				padding: .3em 0
+				padding: .3em
 
 	legend
 		color: $grey
