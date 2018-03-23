@@ -10,7 +10,7 @@ import (
 )
 
 func about(w http.ResponseWriter, r *http.Request) {
-	_, f := session.Forms(w, r, getForm, settings)
+	f, _ := session.Forms(w, r, getFields, settings)
 	render(w, page{
 		Title: "About",
 		Data: map[string]interface{}{

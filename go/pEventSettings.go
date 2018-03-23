@@ -9,23 +9,23 @@ import (
 
 func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
 	//Retrieve any submitted form that failed to save.
-	action, forms := session.Forms(w, r, getForm, eventEdit, eventRangeNew, eventAggNew, eventRangeEdit, eventAggEdit, eventAvailableGrades)
-	if action != eventEdit {
-		forms[0].Fields[0].Value = event.Club.Name
-		forms[0].Fields[1].Value = event.Name
-		forms[0].Fields[2].Value = event.Date
-		forms[0].Fields[3].Value = event.Time
-		forms[0].Fields[4].Checked = event.Closed
-		forms[0].Fields[5].Value = event.ID
+	f, submitted := session.Forms(w, r, getFields, eventEdit, eventRangeNew, eventAggNew, eventRangeEdit, eventAggEdit, eventAvailableGrades)
+	if submitted.Action != eventEdit {
+		submitted.Fields[0].Value = event.Club.Name
+		submitted.Fields[1].Value = event.Name
+		submitted.Fields[2].Value = event.Date
+		submitted.Fields[3].Value = event.Time
+		submitted.Fields[4].Checked = event.Closed
+		submitted.Fields[5].Value = event.ID
 	}
-	forms[1].Fields[1].Value = event.ID
+	f[1].Fields[1].Value = event.ID
 
-	forms[2].Fields[1].Options = dataListRanges(event.Ranges, true)
-	forms[2].Fields[2].Value = event.ID
+	f[2].Fields[1].Options = dataListRanges(event.Ranges, true)
+	f[2].Fields[2].Value = event.ID
 
 	//AvailableGrades
-	forms[5].Fields[0].Options = availableGrades(event.Grades)
-	forms[5].Fields[1].Value = event.ID
+	f[5].Fields[0].Options = availableGrades(event.Grades)
+	f[5].Fields[1].Value = event.ID
 
 	render(w, page{
 		Title:   "Event Settings",
@@ -35,13 +35,13 @@ func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
 		Data: map[string]interface{}{
 			"Ranges":               dataListRanges(event.Ranges, false),
 			"Event":                event,
-			"eventEdit":            forms[0],
-			"eventRangeNew":        forms[1],
-			"eventAggNew":          forms[2],
+			"eventEdit":            f[0],
+			"eventRangeNew":        f[1],
+			"eventAggNew":          f[2],
 			"RangeDataList":        event.Club.Mounds,
-			"eventRangeUpdate":     forms[3],
-			"eventAggUpdate":       forms[4],
-			"eventAvailableGrades": forms[5],
+			"eventRangeUpdate":     f[3],
+			"eventAggUpdate":       f[4],
+			"eventAvailableGrades": f[5],
 		},
 	})
 }

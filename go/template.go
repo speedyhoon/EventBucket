@@ -104,6 +104,9 @@ var (
 	}
 )
 
+//TODO replace with //#ifdef not DEBUG
+//#ifdef DEBUG
+//#else
 func init() {
 	var err error
 	tmpl8, err = template.New("").Funcs(tempFuncs).ParseFiles(
@@ -113,6 +116,7 @@ func init() {
 		warn.Fatal(err)
 	}
 }
+//#endif
 
 func render(w http.ResponseWriter, p page) {
 	//Gzip response, even if requester doesn't support gzip
@@ -136,18 +140,17 @@ func render(w http.ResponseWriter, p page) {
 		p.SubTemplate = strings.Replace(strings.ToLower(p.Title), " ", "", -1)
 	}
 
-	//TODO optionally remove during build time if debug == false
-	if debug {
-		var err error
-		tmpl8, err = template.New("").Funcs(tempFuncs).ParseFiles(
-			filepath.Join(runDir, "h"),
-		)
-		if err != nil {
-			warn.Println(err)
-			http.Error(wz, err.Error(), http.StatusInternalServerError)
-			return
-		}
+	//#ifdef DEBUG
+	var err error
+	tmpl8, err = template.New("").Funcs(tempFuncs).ParseFiles(
+		filepath.Join(runDir, "h"),
+	)
+	if err != nil {
+		warn.Println(err)
+		http.Error(wz, err.Error(), http.StatusInternalServerError)
+		return
 	}
+	//#endif
 
 	type markupEnv struct {
 		Page  page

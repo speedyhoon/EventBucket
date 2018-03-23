@@ -6,16 +6,16 @@ import (
 	"github.com/speedyhoon/session"
 )
 
-func shooters(w http.ResponseWriter, r *http.Request, form forms.Form) {
-	_, f := session.Forms(w, r, getForm, shooterNew, shootersImport, shooterSearch)
+func shooters(w http.ResponseWriter, r *http.Request, fields []forms.Field) {
+	f, _ := session.Forms(w, r, getFields, shooterNew, shootersImport, shooterSearch)
 
 	render(w, page{
 		Title: "Shooters",
 		Data: map[string]interface{}{
 			"shooterNew":     f[0],
 			"shootersImport": f[1],
-			"shooterSearch":  form,
-			"Shooters":       searchShooters(form.Fields[0].Value, form.Fields[1].Value, form.Fields[2].Value),
+			"shooterSearch":  forms.Form{Fields: fields},
+			"Shooters":       searchShooters(fields[0].Value, fields[1].Value, fields[2].Value),
 			"qty":            tblQty(tblShooter),
 			"Grades":         globalGradesDataList,
 			"AgeGroups":      dataListAgeGroup(),
@@ -23,14 +23,14 @@ func shooters(w http.ResponseWriter, r *http.Request, form forms.Form) {
 	})
 }
 
-func shooterUpdate(f forms.Form) (string, error) {
-	return "", updateDocument(tblShooter, f.Fields[6].Value, &Shooter{
-		FirstName: f.Fields[0].Value,
-		Surname:   f.Fields[1].Value,
-		Club:      f.Fields[2].Value,
-		Grades:    f.Fields[3].ValueUintSlice,
-		AgeGroup:  f.Fields[4].ValueUint,
-		Sex:       f.Fields[5].Checked,
+func shooterUpdate(f []forms.Field) (string, error) {
+	return "", updateDocument(tblShooter, f[6].Value, &Shooter{
+		FirstName: f[0].Value,
+		Surname:   f[1].Value,
+		Club:      f[2].Value,
+		Grades:    f[3].ValueUintSlice,
+		AgeGroup:  f[4].ValueUint,
+		Sex:       f[5].Checked,
 	}, &Shooter{}, updateShooterDetails)
 }
 

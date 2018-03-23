@@ -17,7 +17,6 @@ import (
 var (
 	//Command line flags.
 	portAddr  = ":"
-	debug     bool
 	isPrivate bool
 
 	//Logging
@@ -30,7 +29,6 @@ var (
 func main() {
 	//Command line flags
 	isDark := flag.Bool("dark", false, "Switch EventBucket to use a dark theme for night shooting")
-	flag.BoolVar(&debug, "debug", false, "Turn on debugging and turn off club maps.")
 	gradesFilePath := flag.String("grades", "", "Load grade settings from a JSON file. If the file doesn't exist, EventBucket will try to create it & exit")
 	httpListen := flag.String("http", "127.0.0.1:80", "host:port to listen on")
 	dbPath := flag.String("dbpath", filepath.Join(os.Getenv("ProgramData"), "EventBucket", "EventBucket.db"), "Directory for datafiles.")
@@ -40,13 +38,13 @@ func main() {
 		mainTheme = 1
 	}
 
+	//#ifdef DEBUG
 	//Turn on trace logging
-	if debug {
-		t.SetOutput(os.Stdout)
-		t.SetPrefix("\x1b[33;1m" + t.Prefix())       //Yellow
-		info.SetPrefix("\x1b[36;1m" + info.Prefix()) //Blue
-		warn.SetPrefix("\x1b[31;1m" + warn.Prefix()) //Red
-	}
+	t.SetOutput(os.Stdout)
+	t.SetPrefix("\x1b[33;1m" + t.Prefix())       //Yellow
+	info.SetPrefix("\x1b[36;1m" + info.Prefix()) //Blue
+	warn.SetPrefix("\x1b[31;1m" + warn.Prefix()) //Red
+	//#endif
 
 	//Try to load the grades file if any are specified
 	if loadGrades(*gradesFilePath) != nil {
@@ -92,12 +90,13 @@ func main() {
 			warn.Fatal(err)
 		} else {
 			info.Print("Started EventBucket HTTP server...")
-			url := "http://" + httpAddr
-			if !debug && openBrowser(url) {
+			//#ifdef DEBUG
+			info.Println(httpAddr)
+			//#else
+			if url := "http://" + httpAddr; openBrowser(url) {
 				info.Printf("A browser window should open. If not, please visit %s", url)
-			} else {
-				info.Printf("Please open your web browser and visit %s", url)
 			}
+			//#endif
 		}
 	}()
 

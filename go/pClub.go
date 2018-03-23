@@ -9,19 +9,18 @@ import (
 )
 
 func club(w http.ResponseWriter, r *http.Request, club Club) {
-	action, forms := session.Forms(w, r, getForm, clubEdit, clubMoundNew)
+	forms, submitted := session.Forms(w, r, getFields, clubEdit, clubMoundNew)
 
-	//Club Details Form
-	if action != clubEdit {
-		forms[0].Fields[0].Value = club.Name
-		forms[0].Fields[1].Value = club.Address
-		forms[0].Fields[2].Value = club.Town
-		forms[0].Fields[3].Value = club.Postcode
-		forms[0].Fields[4].Value = trimFloat(club.Latitude)
-		forms[0].Fields[5].Value = trimFloat(club.Longitude)
-		forms[0].Fields[6].Checked = club.IsDefault
-		forms[0].Fields[6].Disable = club.IsDefault
-		forms[0].Fields[7].Value = club.URL
+	if submitted.Action == clubEdit {
+		submitted.Fields[0].Value = club.Name
+		submitted.Fields[1].Value = club.Address
+		submitted.Fields[2].Value = club.Town
+		submitted.Fields[3].Value = club.Postcode
+		submitted.Fields[4].Value = trimFloat(club.Latitude)
+		submitted.Fields[5].Value = trimFloat(club.Longitude)
+		submitted.Fields[6].Checked = club.IsDefault
+		submitted.Fields[6].Disable = club.IsDefault
+		submitted.Fields[7].Value = club.URL
 	}
 	forms[0].Fields[8].Value = club.ID
 
@@ -35,30 +34,36 @@ func club(w http.ResponseWriter, r *http.Request, club Club) {
 		skipCSP: true,
 		Data: map[string]interface{}{
 			"Club":         club,
-			"showMap":      !debug,
 			"clubEdit":     forms[0],
 			"clubMoundNew": forms[1],
+			//#ifdef DEBUG
+			//TODO move option into HTML generation
+			"showMap":      true,
+			//#endif
 		},
 	})
 }
 
 func clubs(w http.ResponseWriter, r *http.Request) {
 	clubs, err := getClubs()
-	_, forms := session.Forms(w, r, getForm, clubNew)
+	f, _ := session.Forms(w, r, getFields, clubNew)
 	render(w, page{
 		Title:   "Clubs",
 		skipCSP: true,
 		Error:   err,
 		Data: map[string]interface{}{
-			"clubNew": forms[0],
+			"clubNew": f[0],
 			"clubs":   clubs,
-			"showMap": !debug,
+			//#ifdef DEBUG
+			//TODO move option into HTML generation
+			"showMap": true,
+			//#endif
 		},
 	})
 }
 
-func clubsMap(w http.ResponseWriter, r *http.Request, f forms.Form) {
-	clubs, err := getMapClubs(f.Fields[0].Value)
+func clubsMap(w http.ResponseWriter, r *http.Request, f []forms.Field) {
+	clubs, err := getMapClubs(f[0].Value)
 	if err != nil {
 		warn.Println(err)
 	}
