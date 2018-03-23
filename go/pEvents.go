@@ -13,7 +13,7 @@ func events(w http.ResponseWriter, r *http.Request) {
 		//Sort list of events by date then by name
 		eventOrderedBy(sortByDate, sortByName).Sort(events)
 	}
-	_, forms := session.Forms(w, r, getForm, eventNew)
+	forms, _ := session.Forms(w, r, getFields, eventNew)
 
 	render(w, page{
 		Title: "Events",

@@ -7,19 +7,19 @@ import (
 )
 
 func entries(w http.ResponseWriter, r *http.Request, event Event) {
-	action, f := session.Forms(w, r, getForm, eventShooterNew, eventShooterExisting)
-	shooterEntry := f[0]
-	if action == eventShooterExisting {
+	f, submitted := session.Forms(w, r, getFields, eventShooterNew, eventShooterExisting)
+	shooterEntry := &f[0]
+	if submitted.Action == eventShooterExisting {
 		//Existing shooter select box
-		shooterEntry.Fields[3].Error = f[1].Fields[0].Error
+		submitted.Fields[3].Error = f[1].Fields[0].Error
 		//Grade
-		shooterEntry.Fields[6].Error = f[1].Fields[1].Error
-		shooterEntry.Fields[6].Value = f[1].Fields[1].Value
+		submitted.Fields[6].Error = f[1].Fields[1].Error
+		submitted.Fields[6].Value = f[1].Fields[1].Value
 		//Age Group
-		shooterEntry.Fields[4].Error = f[1].Fields[2].Error
-		shooterEntry.Fields[4].Value = f[1].Fields[2].Value
+		submitted.Fields[4].Error = f[1].Fields[2].Error
+		submitted.Fields[4].Value = f[1].Fields[2].Value
 		//Existing Shooter button
-		shooterEntry.Fields[7].Error = f[1].Fields[3].Error
+		submitted.Fields[7].Error = f[1].Fields[3].Error
 	}
 	shooterEntry.Fields[2].Options = clubsDataList()
 

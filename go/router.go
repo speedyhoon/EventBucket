@@ -139,20 +139,25 @@ func post(url string, formID uint8, page func(f forms.Form) (string, error)) {
 
 				return
 			}
-			f, ok := v8.IsValidRequest(r, getForm(formID))
+			f, ok := v8.IsValidRequest(r, getFields(formID))
+			form := forms.Form{Action: formID, Fields: f}
 			if !ok {
-				session.Set(w, f)
-				http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
+				redirectError(w, r, form)
 				return
 			}
-			redirect, err := page(f)
+
+			var redirect string
+			redirect, form.Error = page(form)
 			//Display any insert errors onscreen.
-			if err != nil {
-				f.Error = err
-				session.Set(w, f)
-				http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
+			if form.Error != nil {
+				form.Fields[0].AutoFocus = true
+				redirectError(w, r, form)
 				return
 			}
+
+			//Display default acknowledgement message using a session
+			session.Set(w, forms.Form{Action: formID}) //Don't store validated fields in session
+
 			if redirect == "" {
 				redirect = r.Referer()
 			}
@@ -161,11 +166,16 @@ func post(url string, formID uint8, page func(f forms.Form) (string, error)) {
 	)
 }
 
-func get(url string, formID uint8, page func(http.ResponseWriter, *http.Request, forms.Form)) {
+func redirectError(w http.ResponseWriter, r *http.Request, f forms.Form) {
+	session.Set(w, f)
+	http.Redirect(w, r, fmt.Sprintf("%v#%v", r.Referer(), f.Action), http.StatusSeeOther)
+}
+
+func get(url string, formID uint8, page func(http.ResponseWriter, *http.Request, []forms.Field)) {
 	http.HandleFunc(
 		url,
 		isGetMethod(func(w http.ResponseWriter, r *http.Request) {
-			f, _ := v8.IsValidRequest(r, getForm(formID))
+			f, _ := v8.IsValidRequest(r, getFields(formID))
 			page(w, r, f)
 		}))
 }
@@ -197,8 +207,8 @@ func processSocket(ws *websocket.Conn) {
 				warn.Println(err)
 				continue
 			}
-			if form, passed := v8.IsValid(urlValues, getForm(formID)); passed {
-				send(eventTotalUpsert(form.Fields))
+			if fields, passed := v8.IsValid(urlValues, getFields(formID)); passed {
+				send(eventTotalUpsert(fields))
 			} else {
 				send(fmt.Sprintf("Unable to save %v.", msg))
 			}
@@ -210,11 +220,11 @@ func processSocket(ws *websocket.Conn) {
 				continue
 			}
 
-			if form, passed := v8.IsValid(urlValues, getForm(formID)); passed {
-				send("!" + updateShotScores(form.Fields))
+			if fields, passed := v8.IsValid(urlValues, getFields(formID)); passed {
+				send("!" + updateShotScores(fields))
 			} else {
 				var response []byte
-				response, err = json.Marshal(form)
+				response, err = json.Marshal(fields)
 				if err != nil {
 					warn.Println(err)
 					continue
