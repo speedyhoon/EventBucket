@@ -9,7 +9,7 @@ import (
 )
 
 func club(w http.ResponseWriter, r *http.Request, club Club) {
-	forms, submitted := session.Forms(w, r, getFields, clubEdit, clubMoundNew)
+	fs, submitted := session.Forms(w, r, getFields, clubEdit, clubMoundNew)
 
 	if submitted.Action == clubEdit {
 		submitted.Fields[0].Value = club.Name
@@ -22,10 +22,10 @@ func club(w http.ResponseWriter, r *http.Request, club Club) {
 		submitted.Fields[6].Disable = club.IsDefault
 		submitted.Fields[7].Value = club.URL
 	}
-	forms[0].Fields[8].Value = club.ID
+	fs[0].Fields[8].Value = club.ID
 
 	//Club Mound form
-	forms[1].Fields[1].Value = club.ID
+	fs[1].Fields[1].Value = club.ID
 
 	render(w, page{
 		Title:   "Club",
@@ -34,8 +34,8 @@ func club(w http.ResponseWriter, r *http.Request, club Club) {
 		skipCSP: true,
 		Data: map[string]interface{}{
 			"Club":         club,
-			"clubEdit":     forms[0],
-			"clubMoundNew": forms[1],
+			"clubEdit":     fs[0],
+			"clubMoundNew": fs[1],
 		},
 	})
 }
