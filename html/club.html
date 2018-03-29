@@ -7,7 +7,7 @@
 
 	{{form clubEdit}}
 
-	{{if.showMap}}
+	#ifdef DEBUG
 		<h2>Map</h2>
 		{{if and .Club.Latitude .Club.Longitude}}
 			<div id=map></div>
@@ -15,7 +15,7 @@
 		{{else}}
 			<p>Club latitude and longitude are empty.
 		{{end}}
-	{{end}}
+	#endif
 
 	<h2>Mounds</h2>
 	<small>Total Mounds: {{len .Club.Mounds}}</small>
