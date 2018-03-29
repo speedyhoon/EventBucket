@@ -14,10 +14,10 @@
 						{{if.IsDefault}}<td class=tick>{{else}}<td>{{end}}
 				{{end}}
 		</table>
-		{{if $.showMap}}
+		#ifdef DEBUG
 			<div id=map></div>
 			<script defer src=/j/map></script>
-		{{end}}
+		#endif
 	{{end}}
 	<script defer src=/j/main></script>
 {{end}}

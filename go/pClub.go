@@ -36,10 +36,6 @@ func club(w http.ResponseWriter, r *http.Request, club Club) {
 			"Club":         club,
 			"clubEdit":     forms[0],
 			"clubMoundNew": forms[1],
-			//#ifdef DEBUG
-			//TODO move option into HTML generation
-			"showMap":      true,
-			//#endif
 		},
 	})
 }
@@ -54,10 +50,6 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 		Data: map[string]interface{}{
 			"clubNew": f[0],
 			"clubs":   clubs,
-			//#ifdef DEBUG
-			//TODO move option into HTML generation
-			"showMap": true,
-			//#endif
 		},
 	})
 }
@@ -101,7 +93,7 @@ func clubDetailsUpsert(f forms.Form) (string, error) {
 	isDefault := f.Fields[6].Checked()
 	defaultClub := getDefaultClub()
 	if isDefault && defaultClub.ID != clubID {
-		//need to remove isDefault for the default club so there is only one default at a time.
+		//Need to remove isDefault for the default club so there is only one default at a time.
 		err := updateDocument(tblClub, defaultClub.ID, &Club{IsDefault: false}, &Club{}, updateClubDefault)
 		if err != nil {
 			warn.Println(err)
