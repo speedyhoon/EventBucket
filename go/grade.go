@@ -280,7 +280,7 @@ func loadGrades(filePath string) error {
 	if err != nil {
 		//Unable to unmarshal settings from JSON file.
 		warn.Println(err)
-		return fmt.Errorf("Error: %v, File: %v", err, filePath)
+		return fmt.Errorf("error: %v, File: %v", err, filePath)
 	}
 	info.Println("Loaded grade settings from:", filePath)
 	redoGlobals(disciplines)
