@@ -60,7 +60,7 @@ func view(bucketName []byte, myCall func(*bolt.Bucket) error) error {
 	return db.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(bucketName)
 		if bucket == nil {
-			return fmt.Errorf("Bucket %q not found", bucketName)
+			return fmt.Errorf("bucket %q not found", bucketName)
 		}
 		return myCall(bucket)
 	})
