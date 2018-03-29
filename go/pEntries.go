@@ -11,15 +11,15 @@ func entries(w http.ResponseWriter, r *http.Request, event Event) {
 	shooterEntry := &f[0]
 	if submitted.Action == eventShooterExisting {
 		//Existing shooter select box
-		submitted.Fields[3].Error = f[1].Fields[0].Error
+		submitted.Fields[3].Err = f[1].Fields[0].Err
 		//Grade
-		submitted.Fields[6].Error = f[1].Fields[1].Error
+		submitted.Fields[6].Err = f[1].Fields[1].Err
 		submitted.Fields[6].Value = f[1].Fields[1].Value
 		//Age Group
-		submitted.Fields[4].Error = f[1].Fields[2].Error
+		submitted.Fields[4].Err = f[1].Fields[2].Err
 		submitted.Fields[4].Value = f[1].Fields[2].Value
 		//Existing Shooter button
-		submitted.Fields[7].Error = f[1].Fields[3].Error
+		submitted.Fields[7].Err = f[1].Fields[3].Err
 	}
 	shooterEntry.Fields[2].Options = clubsDataList()
 
@@ -50,7 +50,7 @@ func entries(w http.ResponseWriter, r *http.Request, event Event) {
 
 func eventInsert(f forms.Form) (string, error) {
 	//Try to find an existing club and insert and insert one if it doesn't exist.
-	clubID, err := clubInsertIfMissing(f.Fields[0].Value)
+	clubID, err := clubInsertIfMissing(f.Fields[0].Str())
 	if err != nil {
 		return "", err
 	}
@@ -58,9 +58,9 @@ func eventInsert(f forms.Form) (string, error) {
 	//Insert new event into database.
 	ID, err := Event{
 		ClubID:  clubID,
-		Name:    f.Fields[1].Value,
-		Date:    f.Fields[2].Value,
-		Time:    f.Fields[3].Value,
+		Name:    f.Fields[1].Str(),
+		Date:    f.Fields[2].Str(),
+		Time:    f.Fields[3].Str(),
 		Closed:  false,
 		AutoInc: AutoInc{Range: 1}, //The next incremental range id to use.
 	}.insert()
@@ -68,27 +68,27 @@ func eventInsert(f forms.Form) (string, error) {
 }
 
 func eventAvailableGradesUpsert(f forms.Form) (string, error) {
-	eventID := f.Fields[1].Value
+	eventID := f.Fields[1].Str()
 	return urlEntries + eventID,
-		updateDocument(tblEvent, eventID, &f.Fields[0].ValueUintSlice, &Event{}, updateEventGrades)
+		updateDocument(tblEvent, eventID, &f.Fields[0].Value, &Event{}, updateEventGrades)
 }
 
 func eventShooterInsert(f forms.Form) (string, error) {
 	//Populate club name if it is empty
 	if f.Fields[2].Value == "" {
 		f.Fields[2].Value = defaultClubName()
-	} else if _, err := clubInsertIfMissing(f.Fields[2].Value); err != nil {
+	} else if _, err := clubInsertIfMissing(f.Fields[2].Str()); err != nil {
 		return "", err
 	}
 
 	shooter := Shooter{
-		FirstName: f.Fields[0].Value,
-		NickName:  f.Fields[0].Value,
-		Surname:   f.Fields[1].Value,
-		Club:      f.Fields[2].Value,
-		AgeGroup:  f.Fields[4].ValueUint,
-		Sex:       f.Fields[5].Checked,
-		Grades:    f.Fields[6].ValueUintSlice,
+		FirstName: f.Fields[0].Str(),
+		NickName:  f.Fields[0].Str(),
+		Surname:   f.Fields[1].Str(),
+		Club:      f.Fields[2].Str(),
+		AgeGroup:  f.Fields[4].Uint(),
+		Sex:       f.Fields[5].Checked(),
+		Grades:    f.Fields[6].UintSlice(),
 	}
 	//Insert shooter into Shooter Bucket
 	shooterID, err := shooter.insert()
@@ -97,15 +97,15 @@ func eventShooterInsert(f forms.Form) (string, error) {
 	}
 
 	//Insert shooter into event
-	eventID := f.Fields[7].Value
+	eventID := f.Fields[7].Str()
 	shooter.ID = shooterID
 	return urlEntries + eventID,
 		updateDocument(tblEvent, eventID, &shooter, &Event{}, eventShooterInsertDB)
 }
 
 func eventShooterExistingInsert(f forms.Form) (string, error) {
-	eventID := f.Fields[3].Value
-	shooter, err := getShooter(f.Fields[0].Value)
+	eventID := f.Fields[3].Str()
+	shooter, err := getShooter(f.Fields[0].Str())
 	if err != nil {
 		return "", err
 	}
@@ -115,23 +115,23 @@ func eventShooterExistingInsert(f forms.Form) (string, error) {
 			FirstName: shooter.NickName,
 			Surname:   shooter.Surname,
 			Club:      shooter.Club,
-			Grades:    f.Fields[1].ValueUintSlice,
-			AgeGroup:  f.Fields[2].ValueUint,
+			Grades:    f.Fields[1].UintSlice(),
+			AgeGroup:  f.Fields[2].Uint(),
 			Sex:       shooter.Sex,
 		}, &Event{}, eventShooterInsertDB)
 }
 
 func eventShooterUpdate(f forms.Form) (string, error) {
-	eventID := f.Fields[1].Value
+	eventID := f.Fields[1].Str()
 	return urlEntries + eventID,
 		updateDocument(tblEvent, eventID, &EventShooter{
-			ID:        f.Fields[0].ValueUint,
-			FirstName: f.Fields[2].Value,
-			Surname:   f.Fields[3].Value,
-			Club:      f.Fields[4].Value,
-			Grade:     f.Fields[5].ValueUint,
-			AgeGroup:  f.Fields[6].ValueUint,
-			Sex:       f.Fields[7].Checked,
-			Disabled:  f.Fields[8].Checked,
+			ID:        f.Fields[0].Uint(),
+			FirstName: f.Fields[2].Str(),
+			Surname:   f.Fields[3].Str(),
+			Club:      f.Fields[4].Str(),
+			Grade:     f.Fields[5].Uint(),
+			AgeGroup:  f.Fields[6].Uint(),
+			Sex:       f.Fields[7].Checked(),
+			Disabled:  f.Fields[8].Checked(),
 		}, &Event{}, eventShooterUpdater)
 }

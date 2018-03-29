@@ -54,20 +54,20 @@ func enterTotals(w http.ResponseWriter, r *http.Request, showAll bool, event Eve
 
 func eventTotalUpsert(fields []forms.Field) string {
 	//Save score to event in database.
-	err := updateDocument(tblEvent, fields[2].Value, &shooterScore{
-		rangeID: fields[3].Value,
-		id:      fields[4].ValueUint,
+	err := updateDocument(tblEvent, fields[2].Str(), &shooterScore{
+		rangeID: fields[3].Str(),
+		id:      fields[4].Uint(),
 		score: Score{
-			Total:    fields[0].ValueUint,
-			Centers:  fields[1].ValueUint,
-			ShootOff: fields[5].ValueUint,
+			Total:    fields[0].Uint(),
+			Centers:  fields[1].Uint(),
+			ShootOff: fields[5].Uint(),
 		}}, &Event{}, upsertScore)
 
 	//Return any upsert errors onscreen.
 	if err != nil {
 		return err.Error()
 	}
-	return fmt.Sprintf("Saved %v.%v for shooter %v on range %v in event %v.", fields[0].ValueUint, fields[1].ValueUint, fields[4].ValueUint, fields[3].Value, fields[2].Value)
+	return fmt.Sprintf("Saved %d.%d for shooter %d on range %v in event %v.", fields[0].Value, fields[1].Value, fields[4].Value, fields[3].Value, fields[2].Value)
 }
 
 func eventRange(ranges []Range, rangeID rID, w http.ResponseWriter, r *http.Request) (Range, error) {

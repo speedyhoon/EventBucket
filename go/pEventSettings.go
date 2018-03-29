@@ -15,7 +15,7 @@ func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
 		submitted.Fields[1].Value = event.Name
 		submitted.Fields[2].Value = event.Date
 		submitted.Fields[3].Value = event.Time
-		submitted.Fields[4].Checked = event.Closed
+		submitted.Fields[4].Value = event.Closed
 		submitted.Fields[5].Value = event.ID
 	}
 	f[1].Fields[1].Value = event.ID
@@ -56,51 +56,51 @@ func dataListRanges(ranges []Range, selected bool) (options []forms.Option) {
 }
 
 func eventDetailsUpsert(f forms.Form) (string, error) {
-	eventID := f.Fields[5].Value
+	eventID := f.Fields[5].Str()
 	return urlEventSettings + eventID,
 		updateDocument(tblEvent, eventID, &Event{
-			ClubID: f.Fields[0].Value,
-			Name:   f.Fields[1].Value,
-			Date:   f.Fields[2].Value,
-			Time:   f.Fields[3].Value,
-			Closed: f.Fields[4].Checked,
+			ClubID: f.Fields[0].Str(),
+			Name:   f.Fields[1].Str(),
+			Date:   f.Fields[2].Str(),
+			Time:   f.Fields[3].Str(),
+			Closed: f.Fields[4].Checked(),
 		}, &Event{}, updateEventDetails)
 }
 
 func eventRangeInsert(f forms.Form) (string, error) {
-	eventID := f.Fields[1].Value
+	eventID := f.Fields[1].Str()
 	return urlEventSettings + eventID,
-		updateDocument(tblEvent, eventID, &Range{Name: f.Fields[0].Value}, &Event{}, eventAddRange)
+		updateDocument(tblEvent, eventID, &Range{Name: f.Fields[0].Str()}, &Event{}, eventAddRange)
 }
 
 func eventRangeUpdate(f forms.Form) (string, error) {
-	eventID := f.Fields[0].Value
+	eventID := f.Fields[0].Str()
 	return urlEventSettings + eventID,
 		updateDocument(tblEvent, eventID, &Range{
-			ID:     f.Fields[1].ValueUint,
-			Name:   f.Fields[2].Value,
-			Locked: f.Fields[3].Checked,
-			Order:  f.Fields[4].ValueUint,
+			ID:     f.Fields[1].Uint(),
+			Name:   f.Fields[2].Str(),
+			Locked: f.Fields[3].Checked(),
+			Order:  f.Fields[4].Uint(),
 		}, &Event{}, editRange)
 }
 
 func eventAggUpdate(f forms.Form) (string, error) {
-	eventID := f.Fields[0].Value
+	eventID := f.Fields[0].Str()
 	return urlEventSettings + eventID,
 		updateDocument(tblEvent, eventID, &Range{
-			ID:    f.Fields[1].ValueUint,
-			Name:  f.Fields[2].Value,
-			Aggs:  f.Fields[3].ValueUintSlice,
-			Order: f.Fields[4].ValueUint,
+			ID:    f.Fields[1].Uint(),
+			Name:  f.Fields[2].Str(),
+			Aggs:  f.Fields[3].UintSlice(),
+			Order: f.Fields[4].Uint(),
 		}, &Event{}, editRange)
 }
 
 func eventAggInsert(f forms.Form) (string, error) {
-	eventID := f.Fields[2].Value
+	eventID := f.Fields[2].Str()
 	return urlEventSettings + eventID,
 		updateDocument(tblEvent, eventID, &Range{
-			Name:  f.Fields[0].Value,
-			Aggs:  f.Fields[1].ValueUintSlice,
+			Name:  f.Fields[0].Str(),
+			Aggs:  f.Fields[1].UintSlice(),
 			IsAgg: true,
 		}, &Event{}, eventAddAgg)
 }

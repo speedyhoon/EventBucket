@@ -18,7 +18,7 @@ func club(w http.ResponseWriter, r *http.Request, club Club) {
 		submitted.Fields[3].Value = club.Postcode
 		submitted.Fields[4].Value = trimFloat(club.Latitude)
 		submitted.Fields[5].Value = trimFloat(club.Longitude)
-		submitted.Fields[6].Checked = club.IsDefault
+		submitted.Fields[6].Value = club.IsDefault
 		submitted.Fields[6].Disable = club.IsDefault
 		submitted.Fields[7].Value = club.URL
 	}
@@ -63,7 +63,7 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 }
 
 func clubsMap(w http.ResponseWriter, r *http.Request, f []forms.Field) {
-	clubs, err := getMapClubs(f[0].Value)
+	clubs, err := getMapClubs(f[0].Str())
 	if err != nil {
 		warn.Println(err)
 	}
@@ -77,7 +77,7 @@ func clubsMap(w http.ResponseWriter, r *http.Request, f []forms.Field) {
 }
 
 func clubInsert(f forms.Form) (string, error) {
-	name := f.Fields[0].Value
+	name := f.Fields[0].Str()
 
 	//Check if a club with that name already exists.
 	club, ok := getClubByName(name)
@@ -97,8 +97,8 @@ func clubInsert(f forms.Form) (string, error) {
 }
 
 func clubDetailsUpsert(f forms.Form) (string, error) {
-	clubID := f.Fields[8].Value
-	isDefault := f.Fields[6].Checked
+	clubID := f.Fields[8].Str()
+	isDefault := f.Fields[6].Checked()
 	defaultClub := getDefaultClub()
 	if isDefault && defaultClub.ID != clubID {
 		//need to remove isDefault for the default club so there is only one default at a time.
@@ -109,28 +109,28 @@ func clubDetailsUpsert(f forms.Form) (string, error) {
 	}
 	return urlClub + clubID,
 		updateDocument(tblClub, clubID, &Club{
-			Name:      f.Fields[0].Value,
-			Address:   f.Fields[1].Value,
-			Town:      f.Fields[2].Value,
-			Postcode:  f.Fields[3].Value,
-			Latitude:  f.Fields[4].ValueFloat32,
-			Longitude: f.Fields[5].ValueFloat32,
+			Name:      f.Fields[0].Str(),
+			Address:   f.Fields[1].Str(),
+			Town:      f.Fields[2].Str(),
+			Postcode:  f.Fields[3].Str(),
+			Latitude:  f.Fields[4].Float(),
+			Longitude: f.Fields[5].Float(),
 			IsDefault: isDefault,
-			URL:       f.Fields[7].Value,
+			URL:       f.Fields[7].Str(),
 		}, &Club{}, updateClubDetails)
 }
 
 func clubMoundInsert(f forms.Form) (string, error) {
-	clubID := f.Fields[1].Value
+	clubID := f.Fields[1].Str()
 	return urlClub + clubID,
 		updateDocument(tblClub, clubID, f.Fields[0].Value, &Club{}, insertClubMound)
 }
 
 func clubMoundUpsert(f forms.Form) (string, error) {
-	clubID := f.Fields[2].Value
+	clubID := f.Fields[2].Str()
 	return urlClub + clubID,
 		updateDocument(tblClub, clubID, &Mound{
-			Name: f.Fields[0].Value,
-			ID:   f.Fields[1].ValueUint,
+			Name: f.Fields[0].Str(),
+			ID:   f.Fields[1].Uint(),
 		}, &Club{}, editMound)
 }

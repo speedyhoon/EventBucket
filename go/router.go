@@ -118,7 +118,7 @@ func init() {
 	get404(events)
 }
 
-func post(url string, formID uint8, page func(f forms.Form) (string, error)) {
+func post(url string, formID uint8, p func(f forms.Form) (string, error)) {
 	http.HandleFunc(
 		url,
 		func(w http.ResponseWriter, r *http.Request) {
@@ -147,10 +147,10 @@ func post(url string, formID uint8, page func(f forms.Form) (string, error)) {
 			}
 
 			var redirect string
-			redirect, form.Error = page(form)
+			redirect, form.Error = p(form)
 			//Display any insert errors onscreen.
 			if form.Error != nil {
-				form.Fields[0].AutoFocus = true
+				form.Fields[0].Focus = true
 				redirectError(w, r, form)
 				return
 			}
