@@ -15,7 +15,7 @@ func shooters(w http.ResponseWriter, r *http.Request, fields []forms.Field) {
 			"shooterNew":     f[0],
 			"shootersImport": f[1],
 			"shooterSearch":  forms.Form{Fields: fields},
-			"Shooters":       searchShooters(fields[0].Value, fields[1].Value, fields[2].Value),
+			"Shooters":       searchShooters(fields[0].Str(), fields[1].Str(), fields[2].Str()),
 			"qty":            tblQty(tblShooter),
 			"Grades":         globalGradesDataList,
 			"AgeGroups":      dataListAgeGroup(),
@@ -23,14 +23,14 @@ func shooters(w http.ResponseWriter, r *http.Request, fields []forms.Field) {
 	})
 }
 
-func shooterUpdate(f []forms.Field) (string, error) {
-	return "", updateDocument(tblShooter, f[6].Value, &Shooter{
-		FirstName: f[0].Value,
-		Surname:   f[1].Value,
-		Club:      f[2].Value,
-		Grades:    f[3].ValueUintSlice,
-		AgeGroup:  f[4].ValueUint,
-		Sex:       f[5].Checked,
+func shooterUpdate(f forms.Form) (string, error) {
+	return "", updateDocument(tblShooter, f.Fields[6].Str(), &Shooter{
+		FirstName: f.Fields[0].Str(),
+		Surname:   f.Fields[1].Str(),
+		Club:      f.Fields[2].Str(),
+		Grades:    f.Fields[3].UintSlice(),
+		AgeGroup:  f.Fields[4].Uint(),
+		Sex:       f.Fields[5].Checked(),
 	}, &Shooter{}, updateShooterDetails)
 }
 
@@ -38,26 +38,26 @@ func eventSearchShooters(w http.ResponseWriter, r *http.Request, f forms.Form) {
 	render(w, page{
 		template: "shooterSearch",
 		Data: map[string]interface{}{
-			"shooters": searchShooters(f.Fields[0].Value, f.Fields[1].Value, f.Fields[2].Value),
+			"shooters": searchShooters(f.Fields[0].Str(), f.Fields[1].Str(), f.Fields[2].Str()),
 		},
 	})
 }
 
 func shooterInsert(f forms.Form) (string, error) {
 	//Add new club if there isn't already a club with that name
-	clubID, err := clubInsertIfMissing(f.Fields[2].Value)
+	clubID, err := clubInsertIfMissing(f.Fields[2].Str())
 	if err != nil {
 		return "", err
 	}
 
 	//Insert new shooter
 	_, err = Shooter{
-		FirstName: f.Fields[0].Value,
-		Surname:   f.Fields[1].Value,
+		FirstName: f.Fields[0].Str(),
+		Surname:   f.Fields[1].Str(),
 		Club:      clubID,
-		Grades:    f.Fields[3].ValueUintSlice,
-		AgeGroup:  f.Fields[4].ValueUint,
-		Sex:       f.Fields[5].Checked,
+		Grades:    f.Fields[3].UintSlice(),
+		AgeGroup:  f.Fields[4].Uint(),
+		Sex:       f.Fields[5].Checked(),
 	}.insert()
 	return "", err
 }

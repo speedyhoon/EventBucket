@@ -47,22 +47,22 @@ func enterShots(w http.ResponseWriter, r *http.Request, showAll bool, event Even
 }
 
 func updateShotScores(fields []forms.Field) string {
-	event, err := getEvent(fields[1].Value)
+	event, err := getEvent(fields[1].Str())
 	if err != nil {
 		return fmt.Sprintf("Event with id %v doesn't exist", fields[1].Value)
 	}
 
-	shooterID := fields[3].ValueUint
+	shooterID := fields[3].Uint()
 	if shooterID != event.Shooters[shooterID].ID {
 		return fmt.Sprintf("Shooter with id %v doesn't exist in Event with id %v", shooterID, event.ID)
 	}
 	shooter := event.Shooters[shooterID]
 
 	//Calculate the score with the shots given
-	newScore := calcTotalCenters(fields[0].Value, globalGrades[shooter.Grade].ClassID)
+	newScore := calcTotalCenters(fields[0].Str(), globalGrades[shooter.Grade].ClassID)
 
 	err = updateDocument(tblEvent, event.ID, &shooterScore{
-		rangeID: fields[2].Value,
+		rangeID: fields[2].Str(),
 		id:      shooterID,
 		score:   newScore,
 	}, &Event{}, upsertScore)
@@ -85,7 +85,7 @@ func updateShotScores(fields []forms.Field) string {
 		S uint
 		T string
 	}{
-		fields[2].Value,
+		fields[2].Str(),
 		shooterID,
 		score,
 	}
