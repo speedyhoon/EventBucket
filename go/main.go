@@ -31,7 +31,7 @@ func main() {
 	isDark := flag.Bool("dark", false, "Switch EventBucket to use a dark theme for night shooting")
 	gradesFilePath := flag.String("grades", "", "Load grade settings from a JSON file. If the file doesn't exist, EventBucket will try to create it & exit")
 	httpListen := flag.String("http", "127.0.0.1:80", "host:port to listen on")
-	dbPath := flag.String("dbpath", filepath.Join(os.Getenv("ProgramData"), "EventBucket", "EventBucket.db"), "Directory for datafiles.")
+	dbPath := flag.String("dbpath", filepath.Join(os.Getenv("ProgramData"), "EventBucket", "EventBuc.ket"), "Directory for datafiles.")
 	flag.Parse()
 
 	if *isDark {
