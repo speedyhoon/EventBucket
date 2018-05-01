@@ -5,7 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"strings"
+
 	"github.com/speedyhoon/forms"
 )
 
@@ -272,14 +274,14 @@ func loadGrades(filePath string) error {
 	contents, err := ioutil.ReadFile(filePath)
 	//If file is empty, try to write a new JSON file.
 	if err != nil {
-		wrn.Println(err)
+		log.Println(err)
 		return err
 	}
 	var disciplines []Discipline
 	err = json.Unmarshal(contents, &disciplines)
 	if err != nil {
 		//Unable to unmarshal settings from JSON file.
-		wrn.Println(err)
+		log.Println(err)
 		return fmt.Errorf("error: %v, File: %v", err, filePath)
 	}
 	inf.Println("Loaded grade settings from:", filePath)
@@ -292,7 +294,7 @@ func buildGradesFile(filePath string) {
 	src, err := json.MarshalIndent(globalDisciplines, "", "\t")
 	if err != nil {
 		//Output marshal errors
-		wrn.Println(err)
+		log.Println(err)
 	}
 	if !strings.HasSuffix(filePath, ".json") {
 		filePath += ".json"
@@ -300,7 +302,7 @@ func buildGradesFile(filePath string) {
 
 	err = ioutil.WriteFile(filePath, src, 0777)
 	if err != nil {
-		wrn.Println(err, "Unable to write to file", filePath)
+		log.Println(err, "Unable to write to file", filePath)
 	}
 	inf.Println("Created grades settings file:", filePath)
 }

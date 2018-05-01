@@ -3,8 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
+
 	"github.com/speedyhoon/forms"
 )
 
@@ -93,7 +95,7 @@ func updateShotScores(fields []forms.Field) string {
 	var response []byte
 	response, err = json.Marshal(data)
 	if err != nil {
-		wrn.Println(err)
+		log.Println(err)
 	}
 	return fmt.Sprintf("%s", response)
 }

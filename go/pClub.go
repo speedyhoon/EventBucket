@@ -3,9 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
-	"github.com/speedyhoon/session"
+
 	"github.com/speedyhoon/forms"
+	"github.com/speedyhoon/session"
 )
 
 func club(w http.ResponseWriter, r *http.Request, club Club) {
@@ -57,13 +59,13 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 func clubsMap(w http.ResponseWriter, r *http.Request, f []forms.Field) {
 	clubs, err := getMapClubs(f[0].Str())
 	if err != nil {
-		wrn.Println(err)
+		log.Println(err)
 	}
 
 	var list []byte
 	list, err = json.Marshal(clubs)
 	if err != nil {
-		wrn.Println(err)
+		log.Println(err)
 	}
 	fmt.Fprint(w, list)
 }
@@ -96,7 +98,7 @@ func clubDetailsUpsert(f forms.Form) (string, error) {
 		//Need to remove isDefault for the default club so there is only one default at a time.
 		err := updateDocument(tblClub, defaultClub.ID, &Club{IsDefault: false}, &Club{}, updateClubDefault)
 		if err != nil {
-			wrn.Println(err)
+			log.Println(err)
 		}
 	}
 	return urlClub + clubID,

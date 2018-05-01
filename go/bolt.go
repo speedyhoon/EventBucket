@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
+	"log"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -31,13 +32,13 @@ func startDB(dbPath string) {
 	//Create database directory if needed.
 	err := mkDir(filepath.Dir(dbPath))
 	if err != nil {
-		wrn.Fatal(err)
+		log.Fatal(err)
 	}
 
 	//Database save location
 	db, err = bolt.Open(dbPath, 0644, &bolt.Options{Timeout: time.Second * 8})
 	if err != nil {
-		wrn.Fatalln("Connection timeout. Unable to open", dbPath)
+		log.Fatalln("Connection timeout. Unable to open", dbPath)
 	}
 
 	//Prepare database by creating all buckets (tables) needed. Otherwise view (read only) transactions will fail.
@@ -45,13 +46,13 @@ func startDB(dbPath string) {
 		for index, bucketName := range [][]byte{tblClub, tblEvent, tblShooter} {
 			_, err = tx.CreateBucketIfNotExists(bucketName)
 			if err != nil {
-				wrn.Printf("Unable to create table %v in database", []string{"club", "event", "shooter"}[index])
+				log.Printf("Unable to create table %v in database", []string{"club", "event", "shooter"}[index])
 			}
 		}
 		return nil
 	})
 	if err != nil {
-		wrn.Println(err)
+		log.Println(err)
 	}
 }
 
@@ -88,7 +89,7 @@ func tblQty(bucketName []byte) (qty uint) {
 		return nil
 	})
 	if err != nil {
-		wrn.Println(err)
+		log.Println(err)
 	}
 	return
 }
@@ -106,7 +107,7 @@ func getDocument(bucketName []byte, ID string, result interface{}) error {
 		}
 		err = json.Unmarshal(document, &result)
 		if err != nil {
-			wrn.Printf("'%v' Query document unmarshaling failed: \n%q\n%#v\n", ID, document, err)
+			log.Printf("'%v' Query document unmarshaling failed: \n%q\n%#v\n", ID, document, err)
 		}
 		return err
 	})
@@ -132,7 +133,7 @@ func getShooter(ID string) (shooter Shooter, err error) {
 func nextID(bucket *bolt.Bucket) (string, []byte) {
 	num, err := bucket.NextSequence()
 	if err != nil {
-		wrn.Println("Failed to get the next sequence number.", err)
+		log.Println("Failed to get the next sequence number.", err)
 	}
 	b := make([]byte, 8)
 	binary.BigEndian.PutUint64(b, num)
@@ -400,7 +401,7 @@ func clubsDataList() (clubs []forms.Option) {
 		return nil
 	})
 	if err != nil {
-		wrn.Println(err)
+		log.Println(err)
 	}
 	return
 }
@@ -437,7 +438,7 @@ func getDefaultClub() Club {
 		return nil
 	})
 	if err != nil && err.Error() != success {
-		wrn.Println(err)
+		log.Println(err)
 	}
 	if found {
 		//TODO is found bool actually needed?
@@ -464,7 +465,7 @@ SearchNextGrade:
 	for _, gradeID := range newShooter.Grades {
 		for _, s := range event.Shooters {
 			if s.EID == shooter.EID && s.Grade == gradeID {
-				wrn.Printf("Shooter %v %v is not allowed to enter into %v event twice with the same grade %v.\n", shooter.FirstName, shooter.Surname, event.Name, globalGrades[gradeID].Name)
+				log.Printf("Shooter %v %v is not allowed to enter into %v event twice with the same grade %v.\n", shooter.FirstName, shooter.Surname, event.Name, globalGrades[gradeID].Name)
 				continue SearchNextGrade
 			}
 		}
@@ -584,7 +585,7 @@ func searchShooters(firstName, surname, club string) (shooters []Shooter) {
 		return nil
 	})
 	if err != nil {
-		wrn.Println(err)
+		log.Println(err)
 	}
 	return
 }

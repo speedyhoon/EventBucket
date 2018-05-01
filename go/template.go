@@ -4,12 +4,13 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"path/filepath"
 	"strings"
 
-	"github.com/speedyhoon/text/template"
 	"github.com/speedyhoon/forms"
+	"github.com/speedyhoon/text/template"
 )
 
 type menu struct {
@@ -38,7 +39,7 @@ func (p page) csp() string {
 var (
 	mainTheme uint8
 	tmpl8     *template.Template
-	tempFuncs   = template.FuncMap{
+	tempFuncs = template.FuncMap{
 		"a": func(attribute string, value interface{}) string {
 			//"a": func(attribute string, value interface{}) template.HTMLAttr {
 			var output string
@@ -65,7 +66,7 @@ var (
 				}
 			//TODO remove default if !debug
 			default:
-				wrn.Printf("attribute type %T not defined\n%v %v\n", value, value, len(value.([]forms.Option)))
+				log.Printf("attribute type %T not defined\n%v %v\n", value, value, len(value.([]forms.Option)))
 			}
 			//return template.HTMLAttr(output)
 			return output
@@ -104,16 +105,14 @@ var (
 	}
 )
 
-//TODO replace with //#ifdef not DEBUG
-//#ifdef DEBUG
-//#else
+//#ifndef DEBUG
 func init() {
 	var err error
 	tmpl8, err = template.New("").Funcs(tempFuncs).ParseFiles(
 		filepath.Join(runDir, "h"),
 	)
 	if err != nil {
-		wrn.Fatal(err)
+		log.Fatal(err)
 	}
 }
 //#endif
@@ -123,7 +122,7 @@ func render(w http.ResponseWriter, p page) {
 	gz := gzip.NewWriter(w)
 	defer func() {
 		if err := gz.Close(); err != nil {
-			wrn.Println(err)
+			log.Println(err)
 		}
 	}()
 	wz := gzipResponseWriter{Writer: gz, ResponseWriter: w}
@@ -146,7 +145,7 @@ func render(w http.ResponseWriter, p page) {
 		filepath.Join(runDir, "h"),
 	)
 	if err != nil {
-		wrn.Println(err)
+		log.Println(err)
 		http.Error(wz, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -159,7 +158,7 @@ func render(w http.ResponseWriter, p page) {
 	}
 
 	if err := tmpl8.ExecuteTemplate(wz, p.template, markupEnv{Page: p, Menu: mainMenu, Theme: mainTheme}); err != nil {
-		wrn.Println(err)
+		log.Println(err)
 		http.Error(wz, err.Error(), http.StatusInternalServerError)
 	}
 }
