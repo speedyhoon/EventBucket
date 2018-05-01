@@ -55,11 +55,11 @@ func init() {
 
 func getFields(id uint8) []forms.Field {
 	switch id {
-	case 0: //New Club
+	case clubNew: //New Club
 		return []forms.Field{
 			{Name: "n", V8: v8.StrReq},
 		}
-	case 1: //Club Details
+	case clubEdit: //Club Details
 		return []forms.Field{
 			{Name: "n", V8: v8.StrReq},
 			{Name: "a", V8: v8.Str},
@@ -71,7 +71,7 @@ func getFields(id uint8) []forms.Field {
 			{Name: "u", V8: v8.Str},
 			{Name: "C", V8: v8.Regex, Regex: regexID},
 		}
-	case 2: //New Shooting Mound
+	case clubMoundNew: //New Shooting Mound
 		return []forms.Field{
 			{Name: "n", V8: v8.StrReq},
 			{Name: "C", V8: v8.Regex, Regex: regexID},
@@ -86,7 +86,7 @@ func getFields(id uint8) []forms.Field {
 		return []forms.Field{
 			{Name: "C", V8: v8.Regex, Regex: regexID},
 		}
-	case 5: //New Event
+	case eventNew: //New Event
 		clubName := defaultClubName()
 		return []forms.Field{
 			{Name: "C", V8: v8.Str, Value: clubName, Required: clubName == "", MinLen: 1, Options: clubsDataList()},
@@ -94,7 +94,7 @@ func getFields(id uint8) []forms.Field {
 			{Name: "d", V8: v8.Str, Value: time.Now().Format("2006-01-02"), MaxLen: 10},
 			{Name: "t", V8: v8.Str, Value: time.Now().Format("15:04"), MaxLen: 5},
 		}
-	case 6: //Event Details
+	case eventEdit: //Event Details
 		return []forms.Field{
 			{Name: "C", V8: v8.StrReq, Options: clubsDataList()},
 			{Name: "n", V8: v8.StrReq},
@@ -103,12 +103,12 @@ func getFields(id uint8) []forms.Field {
 			{Name: "c", V8: v8.Bool},
 			{Name: "E", V8: v8.Regex, Regex: regexID},
 		}
-	case 7: //Add Range
+	case eventRangeNew: //Add Range
 		return []forms.Field{
 			{Name: "n", V8: v8.StrReq},
 			{Name: "E", V8: v8.Regex, Regex: regexID},
 		}
-	case 8: //Update Range
+	case eventRangeEdit: //Update Range
 		return []forms.Field{
 			{Name: "I", V8: v8.UintReq, Min: 1, Max: 65535},
 			{Name: "n", V8: v8.StrReq},
@@ -116,13 +116,13 @@ func getFields(id uint8) []forms.Field {
 			{Name: "o", V8: v8.UintReq, Max: 65535},
 			{Name: "E", V8: v8.Regex, Regex: regexID},
 		}
-	case 9: //Add Aggregate Range
+	case eventAggNew: //Add Aggregate Range
 		return []forms.Field{
 			{Name: "n", V8: v8.StrReq},
 			{Name: "R", V8: v8.UintList, Required: true, MaxLen: 5, MinLen: 2, Min: 1, Max: 65535},
 			{Name: "E", V8: v8.Regex, Regex: regexID},
 		}
-	case 10: //Update Agg
+	case eventAggEdit: //Update Agg
 		return []forms.Field{
 			{Name: "E", V8: v8.Regex, Regex: regexID},
 			{Name: "I", V8: v8.UintReq, Min: 1, Max: 65535},
@@ -130,7 +130,7 @@ func getFields(id uint8) []forms.Field {
 			{Name: "R", V8: v8.UintList, Required: true, MinLen: 2, Min: 1, Max: 65535},
 			{Name: "o", V8: v8.UintReq, Max: 65535},
 		}
-	case 11: //Shooter Entry
+	case eventShooterNew: //Shooter Entry
 		clubName := defaultClubName()
 		return []forms.Field{
 			{Name: "f", V8: v8.StrReq},
@@ -154,14 +154,14 @@ func getFields(id uint8) []forms.Field {
 			{Name: "x", V8: v8.Bool},
 			{Name: "k", V8: v8.Bool},
 		}
-	case 13: //Existing Shooter Entry
+	case eventShooterExisting: //Existing Shooter Entry
 		return []forms.Field{
 			{Name: "S", V8: v8.RegexReq, Regex: regexID},
 			{Name: "g", V8: v8.UintList, Required: true, Max: len(globalGrades) - 1, Options: globalGradesDataList},
 			{Name: "r", V8: v8.UintOpt, Options: dataListAgeGroup()},
 			{Name: "E", V8: v8.RegexReq, Regex: regexID},
 		}
-	case 14: //Enter Range Totals
+	case eventTotalScores: //Enter Range Totals
 		return []forms.Field{
 			{Name: "t", V8: v8.UintReq, Max: 120},
 			{Name: "c", V8: v8.Uint, Max: 20},
@@ -170,19 +170,19 @@ func getFields(id uint8) []forms.Field {
 			{Name: "S", V8: v8.UintReq, Max: 65535},
 			{Name: "h", V8: v8.Uint, Max: 100},
 		}
-	case 15: //Grades Available
+	case eventAvailableGrades: //Grades Available
 		return []forms.Field{
 			{Name: "g", V8: v8.UintList, Required: true, Max: len(globalGrades) - 1, Options: availableGrades([]uint{})},
 			{Name: "E", V8: v8.Regex, Regex: regexID},
 		}
-	case 16: //Update Shooter Shots (Scorecards)
+	case eventUpdateShotScore: //Update Shooter Shots (Scorecards)
 		return []forms.Field{
 			{Name: "s", V8: v8.StrReq, MaxLen: 12},
 			{Name: "E", V8: v8.RegexReq, Regex: regexID},
 			{Name: "R", V8: v8.UintReq, Min: 1, Max: 65535},
 			{Name: "S", V8: v8.UintReq, Max: 65535},
 		}
-	case 17: //New Shooter
+	case shooterNew: //New Shooter
 		clubName := defaultClubName()
 		return []forms.Field{
 			{Name: "f", V8: v8.StrReq},
@@ -208,18 +208,18 @@ func getFields(id uint8) []forms.Field {
 			{Name: "s", V8: v8.Str},
 			{Name: "C", V8: v8.Str},
 		}
-	case 20: //Shooter Search
+	case shooterSearch: //Shooter Search
 		clubName := defaultClubName()
 		return []forms.Field{
 			{Name: "f", V8: v8.Str},
 			{Name: "s", V8: v8.Str},
 			{Name: "C", V8: v8.Str, Placeholder: clubName, Required: clubName == "", Options: clubsDataList()},
 		}
-	case 21: //Import Shooters
+	case shootersImport: //Import Shooters
 		return []forms.Field{
 			{Name: "f", V8: v8.FileReq},
 		}
-	case 22: //Settings
+	case settings: //Settings
 		return []forms.Field{
 			{Name: "t", V8: v8.Bool},
 		}
