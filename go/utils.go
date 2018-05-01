@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"runtime"
@@ -13,7 +14,7 @@ import (
 func stoU(id string) (uint, error) {
 	u, err := strconv.ParseUint(strings.TrimSpace(id), 10, sysArch)
 	if err != nil {
-		wrn.Printf("Unable to convert %v to uint", id)
+		log.Printf("Unable to convert %v to uint", id)
 	}
 	return uint(u), err
 }
@@ -37,7 +38,7 @@ func mkDir(path string) error {
 	if err != nil || !info.IsDir() {
 		err = os.Mkdir(path, os.ModeDir)
 		if err != nil {
-			wrn.Printf("Unable to create directory %v %v", path, err)
+			log.Printf("Unable to create directory %v %v", path, err)
 		}
 	}
 	return err
