@@ -88,16 +88,16 @@ func main() {
 	go func() {
 		if err = h.ListenAndServe(); err != nil {
 			warn.Fatal(err)
-		} else {
-			info.Print("Started EventBucket HTTP server...")
-			//#ifdef DEBUG
-			info.Println(httpAddr)
-			//#else
-			if url := "http://" + httpAddr; openBrowser(url) {
-				info.Printf("A browser window should open. If not, please visit %s", url)
-			}
-			//#endif
 		}
+
+		info.Print("Started EventBucket HTTP server...")
+		//#ifdef DEBUG
+		info.Println(httpAddr)
+		//#else
+		if url := "http://" + httpAddr; openBrowser(url) {
+			info.Printf("A browser window should open. If not, please visit %s", url)
+		}
+		//#endif
 	}()
 
 	<-stop
