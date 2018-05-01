@@ -68,11 +68,11 @@ func serveFile(fileName string, compress bool) {
 
 func serveDir(contentType string, compress bool) {
 	http.HandleFunc(contentType, isDir(func(w http.ResponseWriter, r *http.Request) {
-			headers(w, contentType, cache)
-			if compress {
-				headers(w, brotli)
-			}
-			http.FileServer(http.Dir(runDir)).ServeHTTP(w, r)
+		headers(w, contentType, cache)
+		if compress {
+			headers(w, brotli)
+		}
+		http.FileServer(http.Dir(runDir)).ServeHTTP(w, r)
 	}))
 }
 

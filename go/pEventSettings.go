@@ -3,8 +3,9 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"github.com/speedyhoon/session"
+
 	"github.com/speedyhoon/forms"
+	"github.com/speedyhoon/session"
 )
 
 func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
