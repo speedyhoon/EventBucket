@@ -11,11 +11,11 @@ import (
 )
 
 func about(w http.ResponseWriter, r *http.Request) {
-	f, _ := session.Forms(w, r, getFields, settings)
+	fs, _ := session.Forms(w, r, getFields, settings)
 	render(w, page{
 		Title: "About",
 		Data: map[string]interface{}{
-			"settings": f[0],
+			"settings": fs[settings],
 			"Network":  localIPs(),
 		},
 	})

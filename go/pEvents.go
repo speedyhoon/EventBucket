@@ -14,13 +14,13 @@ func events(w http.ResponseWriter, r *http.Request) {
 		//Sort list of events by date then by name
 		eventOrderedBy(sortByDate, sortByName).Sort(events)
 	}
-	forms, _ := session.Forms(w, r, getFields, eventNew)
+	fs, _ := session.Forms(w, r, getFields, eventNew)
 
 	render(w, page{
 		Title: "Events",
 		Error: err,
 		Data: map[string]interface{}{
-			"eventNew": forms[0],
+			"eventNew": fs[eventNew],
 			"Events":   events,
 			"Network":  localIPs(),
 		},
