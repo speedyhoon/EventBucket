@@ -27,8 +27,8 @@ func entries(w http.ResponseWriter, r *http.Request, event Event) {
 	fs[eventShooterNew].Fields[6].Options = grades
 	fs[eventShooterNew].Fields[6].Value = event.ID
 	fs[eventShooterNew].Fields[7].Value = event.ID
-	//TODO add in below ignored field
-	//f[eventShooterNew].Fields = append(f[eventShooterNew].Fields, forms.Field{Value: event.ID})
+	//TODO what was the below ignored field used for?
+	//fs[eventShooterNew].Fields = append(fs[eventShooterNew].Fields, forms.Field{Value: event.ID})
 
 	fs[eventShooterNew].Fields[3].Options = searchShootersOptions("", "", event.Club.Name)
 
