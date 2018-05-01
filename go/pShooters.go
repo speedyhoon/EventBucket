@@ -8,13 +8,13 @@ import (
 )
 
 func shooters(w http.ResponseWriter, r *http.Request, fields []forms.Field) {
-	f, _ := session.Forms(w, r, getFields, shooterNew, shootersImport, shooterSearch)
+	fs, _ := session.Forms(w, r, getFields, shooterNew, shootersImport, shooterSearch)
 
 	render(w, page{
 		Title: "Shooters",
 		Data: map[string]interface{}{
-			"shooterNew":     f[0],
-			"shootersImport": f[1],
+			"shooterNew":     fs[shooterNew],
+			"shootersImport": fs[shootersImport],
 			"shooterSearch":  forms.Form{Fields: fields},
 			"Shooters":       searchShooters(fields[0].Str(), fields[1].Str(), fields[2].Str()),
 			"qty":            tblQty(tblShooter),

@@ -11,23 +11,25 @@ import (
 )
 
 func club(w http.ResponseWriter, r *http.Request, club Club) {
-	fs, submitted := session.Forms(w, r, getFields, clubEdit, clubMoundNew)
+	fs, action := session.Forms(w, r, getFields, clubEdit, clubMoundNew)
 
-	if submitted.Action == clubEdit {
-		submitted.Fields[0].Value = club.Name
-		submitted.Fields[1].Value = club.Address
-		submitted.Fields[2].Value = club.Town
-		submitted.Fields[3].Value = club.Postcode
-		submitted.Fields[4].Value = trimFloat(club.Latitude)
-		submitted.Fields[5].Value = trimFloat(club.Longitude)
-		submitted.Fields[6].Value = club.IsDefault
-		submitted.Fields[6].Disable = club.IsDefault
-		submitted.Fields[7].Value = club.URL
+	if action == clubEdit {
+		fs[action].Fields[0].Value = club.Name
+		fs[action].Fields[1].Value = club.Address
+		fs[action].Fields[2].Value = club.Town
+		fs[action].Fields[3].Value = club.Postcode
+		fs[action].Fields[4].Value = trimFloat(club.Latitude)
+		fs[action].Fields[5].Value = trimFloat(club.Longitude)
+		fs[action].Fields[6].Value = club.IsDefault
+		fs[action].Fields[6].Disable = club.IsDefault
+		fs[action].Fields[7].Value = club.URL
 	}
-	fs[0].Fields[8].Value = club.ID
+
+	//always set the clubID
+	fs[clubEdit].Fields[8].Value = club.ID
 
 	//Club Mound form
-	fs[1].Fields[1].Value = club.ID
+	fs[clubMoundNew].Fields[1].Value = club.ID
 
 	render(w, page{
 		Title:   "Club",
@@ -36,8 +38,8 @@ func club(w http.ResponseWriter, r *http.Request, club Club) {
 		skipCSP: true,
 		Data: map[string]interface{}{
 			"Club":         club,
-			"clubEdit":     fs[0],
-			"clubMoundNew": fs[1],
+			"clubEdit":     fs[clubEdit],
+			"clubMoundNew": fs[clubMoundNew],
 		},
 	})
 }

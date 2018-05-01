@@ -10,23 +10,22 @@ import (
 
 func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
 	//Retrieve any submitted form that failed to save.
-	f, submitted := session.Forms(w, r, getFields, eventEdit, eventRangeNew, eventAggNew, eventRangeEdit, eventAggEdit, eventAvailableGrades)
-	if submitted.Action != eventEdit {
-		submitted.Fields[0].Value = event.Club.Name
-		submitted.Fields[1].Value = event.Name
-		submitted.Fields[2].Value = event.Date
-		submitted.Fields[3].Value = event.Time
-		submitted.Fields[4].Value = event.Closed
-		submitted.Fields[5].Value = event.ID
+	fs, action := session.Forms(w, r, getFields, eventEdit, eventRangeNew, eventAggNew, eventRangeEdit, eventAggEdit, eventAvailableGrades)
+	if action != eventEdit {
+		fs[action].Fields[0].Value = event.Club.Name
+		fs[action].Fields[1].Value = event.Name
+		fs[action].Fields[2].Value = event.Date
+		fs[action].Fields[3].Value = event.Time
+		fs[action].Fields[4].Value = event.Closed
+		fs[action].Fields[5].Value = event.ID
 	}
-	f[1].Fields[1].Value = event.ID
+	fs[eventRangeNew].Fields[1].Value = event.ID
 
-	f[2].Fields[1].Options = dataListRanges(event.Ranges, true)
-	f[2].Fields[2].Value = event.ID
+	fs[eventAggNew].Fields[1].Options = dataListRanges(event.Ranges, true)
+	fs[eventAggNew].Fields[2].Value = event.ID
 
-	//AvailableGrades
-	f[5].Fields[0].Options = availableGrades(event.Grades)
-	f[5].Fields[1].Value = event.ID
+	fs[eventAvailableGrades].Fields[0].Options = availableGrades(event.Grades)
+	fs[eventAvailableGrades].Fields[1].Value = event.ID
 
 	render(w, page{
 		Title:   "Event Settings",
@@ -36,13 +35,13 @@ func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
 		Data: map[string]interface{}{
 			"Ranges":               dataListRanges(event.Ranges, false),
 			"Event":                event,
-			"eventEdit":            f[0],
-			"eventRangeNew":        f[1],
-			"eventAggNew":          f[2],
+			"eventEdit":            fs[eventEdit],
+			"eventRangeNew":        fs[eventRangeNew],
+			"eventAggNew":          fs[eventAggNew],
 			"RangeDataList":        event.Club.Mounds,
-			"eventRangeUpdate":     f[3],
-			"eventAggUpdate":       f[4],
-			"eventAvailableGrades": f[5],
+			"eventRangeUpdate":     fs[eventRangeEdit],
+			"eventAggUpdate":       fs[eventAggEdit],
+			"eventAvailableGrades": fs[eventAvailableGrades],
 		},
 	})
 }
