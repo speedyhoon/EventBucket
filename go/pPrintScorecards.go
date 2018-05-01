@@ -25,13 +25,13 @@ func barcodeQR(w http.ResponseWriter, r *http.Request, parameters string) {
 
 func barcode2D(w io.Writer, code barcode.Barcode, err error) {
 	if err != nil {
-		warn.Println(err)
+		wrn.Println(err)
 		return
 	}
 	buf := new(bytes.Buffer)
 	err = png.Encode(buf, code)
 	if err != nil {
-		warn.Println(err)
+		wrn.Println(err)
 		return
 	}
 	fmt.Fprint(w, buf.String())

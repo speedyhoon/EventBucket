@@ -272,17 +272,17 @@ func loadGrades(filePath string) error {
 	contents, err := ioutil.ReadFile(filePath)
 	//If file is empty, try to write a new JSON file.
 	if err != nil {
-		warn.Println(err)
+		wrn.Println(err)
 		return err
 	}
 	var disciplines []Discipline
 	err = json.Unmarshal(contents, &disciplines)
 	if err != nil {
 		//Unable to unmarshal settings from JSON file.
-		warn.Println(err)
+		wrn.Println(err)
 		return fmt.Errorf("error: %v, File: %v", err, filePath)
 	}
-	info.Println("Loaded grade settings from:", filePath)
+	inf.Println("Loaded grade settings from:", filePath)
 	redoGlobals(disciplines)
 	return nil
 }
@@ -292,7 +292,7 @@ func buildGradesFile(filePath string) {
 	src, err := json.MarshalIndent(globalDisciplines, "", "\t")
 	if err != nil {
 		//Output marshal errors
-		warn.Println(err)
+		wrn.Println(err)
 	}
 	if !strings.HasSuffix(filePath, ".json") {
 		filePath += ".json"
@@ -300,9 +300,9 @@ func buildGradesFile(filePath string) {
 
 	err = ioutil.WriteFile(filePath, src, 0777)
 	if err != nil {
-		warn.Println(err, "Unable to write to file", filePath)
+		wrn.Println(err, "Unable to write to file", filePath)
 	}
-	info.Println("Created grades settings file:", filePath)
+	inf.Println("Created grades settings file:", filePath)
 }
 
 //TODO Change the event to point to a certain grade revision with an id and save grades in a different database bucket (table)

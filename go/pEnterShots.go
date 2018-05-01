@@ -93,7 +93,7 @@ func updateShotScores(fields []forms.Field) string {
 	var response []byte
 	response, err = json.Marshal(data)
 	if err != nil {
-		warn.Println(err)
+		wrn.Println(err)
 	}
 	return fmt.Sprintf("%s", response)
 }

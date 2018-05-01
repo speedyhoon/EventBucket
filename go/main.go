@@ -21,9 +21,9 @@ var (
 
 	//Logging
 	//TODO add t & info when debug == true during build time
-	t    = log.New(ioutil.Discard, "TRACE: ", log.Lshortfile) //Flags can be log.Lshortfile|log.Ltime
-	info = log.New(os.Stdout, "", 0)
-	warn = log.New(os.Stderr, "WARN: ", log.Lshortfile)
+	trc = log.New(ioutil.Discard, "TRACE: ", log.Lshortfile) //Flags can be log.Lshortfile|log.Ltime
+	inf = log.New(os.Stdout, "", 0)
+	wrn = log.New(os.Stderr, "WARN: ", log.Lshortfile)
 )
 
 func main() {
@@ -40,11 +40,13 @@ func main() {
 
 	//#ifdef DEBUG
 	//Turn on trace logging
-	t.SetOutput(os.Stdout)
-	t.SetPrefix("\x1b[33;1m" + t.Prefix())       //Yellow
-	info.SetPrefix("\x1b[36;1m" + info.Prefix()) //Blue
-	warn.SetPrefix("\x1b[31;1m" + warn.Prefix()) //Red
+	trc.SetOutput(os.Stdout)
+	trc.SetPrefix("\x1b[33;1m" + trc.Prefix())       //Yellow
+	inf.SetPrefix("\x1b[36;1m" + inf.Prefix())       //Blue
+	wrn.SetPrefix("\x1b[31;1mWARN: " + wrn.Prefix()) //Red
 	//#endif
+	wrn.SetFlags(log.Lshortfile)
+	wrn.SetOutput(os.Stderr)
 
 	//Try to load the grades file if any are specified
 	if loadGrades(*gradesFilePath) != nil {
@@ -59,7 +61,7 @@ func main() {
 	startDB(*dbPath)
 	defer func() {
 		if err := db.Close(); err != nil {
-			warn.Println(err)
+			wrn.Println(err)
 		}
 	}()
 
@@ -69,7 +71,7 @@ func main() {
 	//HTTP server host & port
 	host, port, err := net.SplitHostPort(*httpListen)
 	if err != nil {
-		warn.Fatal(err)
+		wrn.Fatal(err)
 	}
 
 	const localhost = "localhost"
@@ -87,24 +89,24 @@ func main() {
 	h := http.Server{Addr: httpAddr, Handler: nil}
 	go func() {
 		if err = h.ListenAndServe(); err != nil {
-			warn.Fatal(err)
+			wrn.Fatal(err)
 		}
 
-		info.Print("Started EventBucket HTTP server...")
+		inf.Print("Started EventBucket HTTP server...")
 		//#ifdef DEBUG
-		info.Println(httpAddr)
+		inf.Println(httpAddr)
 		//#else
 		if url := "http://" + httpAddr; openBrowser(url) {
-			info.Printf("A browser window should open. If not, please visit %s", url)
+			inf.Printf("A browser window should open. If not, please visit %s", url)
 		}
 		//#endif
 	}()
 
 	<-stop
-	info.Println("Shutting down the server...")
+	inf.Println("Shutting down the server...")
 	err = h.Shutdown(context.Background())
 	if err != nil {
-		warn.Println(err)
+		wrn.Println(err)
 	}
-	info.Println("EvenBucket server stopped.")
+	inf.Println("EvenBucket server stopped.")
 }
