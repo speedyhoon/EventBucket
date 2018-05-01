@@ -65,7 +65,7 @@ var (
 				}
 			//TODO remove default if !debug
 			default:
-				warn.Printf("attribute type %T not defined\n%v %v\n", value, value, len(value.([]forms.Option)))
+				wrn.Printf("attribute type %T not defined\n%v %v\n", value, value, len(value.([]forms.Option)))
 			}
 			//return template.HTMLAttr(output)
 			return output
@@ -113,7 +113,7 @@ func init() {
 		filepath.Join(runDir, "h"),
 	)
 	if err != nil {
-		warn.Fatal(err)
+		wrn.Fatal(err)
 	}
 }
 //#endif
@@ -123,7 +123,7 @@ func render(w http.ResponseWriter, p page) {
 	gz := gzip.NewWriter(w)
 	defer func() {
 		if err := gz.Close(); err != nil {
-			warn.Println(err)
+			wrn.Println(err)
 		}
 	}()
 	wz := gzipResponseWriter{Writer: gz, ResponseWriter: w}
@@ -146,7 +146,7 @@ func render(w http.ResponseWriter, p page) {
 		filepath.Join(runDir, "h"),
 	)
 	if err != nil {
-		warn.Println(err)
+		wrn.Println(err)
 		http.Error(wz, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -159,7 +159,7 @@ func render(w http.ResponseWriter, p page) {
 	}
 
 	if err := tmpl8.ExecuteTemplate(wz, p.template, markupEnv{Page: p, Menu: mainMenu, Theme: mainTheme}); err != nil {
-		warn.Println(err)
+		wrn.Println(err)
 		http.Error(wz, err.Error(), http.StatusInternalServerError)
 	}
 }

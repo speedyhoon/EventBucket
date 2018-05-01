@@ -13,7 +13,7 @@ import (
 func stoU(id string) (uint, error) {
 	u, err := strconv.ParseUint(strings.TrimSpace(id), 10, sysArch)
 	if err != nil {
-		warn.Printf("Unable to convert %v to uint", id)
+		wrn.Printf("Unable to convert %v to uint", id)
 	}
 	return uint(u), err
 }
@@ -37,7 +37,7 @@ func mkDir(path string) error {
 	if err != nil || !info.IsDir() {
 		err = os.Mkdir(path, os.ModeDir)
 		if err != nil {
-			warn.Printf("Unable to create directory %v %v", path, err)
+			wrn.Printf("Unable to create directory %v %v", path, err)
 		}
 	}
 	return err

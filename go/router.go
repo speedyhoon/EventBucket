@@ -187,7 +187,7 @@ func processSocket(ws *websocket.Conn) {
 	var err error
 	send := func(str string) {
 		if err = websocket.Message.Send(ws, str); err != nil {
-			warn.Println(err)
+			wrn.Println(err)
 		}
 	}
 	//Start a loop to listen to incoming websocket traffic from all clients.
@@ -204,7 +204,7 @@ func processSocket(ws *websocket.Conn) {
 			var urlValues url.Values
 			err = json.Unmarshal([]byte(msg[1:]), &urlValues)
 			if err != nil {
-				warn.Println(err)
+				wrn.Println(err)
 				continue
 			}
 			if fields, passed := v8.IsValid(urlValues, getFields(formID)); passed {
@@ -216,7 +216,7 @@ func processSocket(ws *websocket.Conn) {
 			var urlValues url.Values
 			err = json.Unmarshal([]byte(msg[1:]), &urlValues)
 			if err != nil {
-				warn.Println(err)
+				wrn.Println(err)
 				continue
 			}
 
@@ -226,7 +226,7 @@ func processSocket(ws *websocket.Conn) {
 				var response []byte
 				response, err = json.Marshal(fields)
 				if err != nil {
-					warn.Println(err)
+					wrn.Println(err)
 					continue
 				}
 				send(fmt.Sprintf("!%U%s", msg[0], response))
@@ -235,7 +235,7 @@ func processSocket(ws *websocket.Conn) {
 			var response []byte
 			response, err = json.Marshal(globalDisciplines)
 			if err != nil {
-				warn.Println(err)
+				wrn.Println(err)
 				continue
 			}
 			send(fmt.Sprintf("~%s", response))

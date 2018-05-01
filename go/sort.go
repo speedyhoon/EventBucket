@@ -46,7 +46,7 @@ func sorterShootOff(rangeID string, c1, c2 *EventShooter) bool {
 		//temp.Warning = legendShootOff
 		c2.Scores[rangeID] = temp
 	}*/
-	t.Println(c1.Scores[rangeID].ShootOff > c2.Scores[rangeID].ShootOff, c1.Scores[rangeID].ShootOff, c2.Scores[rangeID].ShootOff)
+	trc.Println(c1.Scores[rangeID].ShootOff > c2.Scores[rangeID].ShootOff, c1.Scores[rangeID].ShootOff, c2.Scores[rangeID].ShootOff)
 	return c1.Scores[rangeID].ShootOff > c2.Scores[rangeID].ShootOff
 }
 
