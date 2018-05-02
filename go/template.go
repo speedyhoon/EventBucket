@@ -11,6 +11,7 @@ import (
 
 	"github.com/speedyhoon/forms"
 	"github.com/speedyhoon/text/template"
+	"github.com/speedyhoon/utl"
 )
 
 type menu struct {
@@ -80,7 +81,7 @@ var (
 			return ""
 		},
 		"ordinal": func(x int) string {
-			return ordinal(uint(x), false)
+			return utl.Ordinal(uint(x), false)
 		},
 		"findRange": func(rangeID uint, ranges []Range) Range {
 			for _, r := range ranges {
