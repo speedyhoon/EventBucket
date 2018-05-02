@@ -67,7 +67,7 @@ func view(bucketName []byte, myCall func(*bolt.Bucket) error) error {
 	})
 }
 
-//search checks if each item can be unmarshalled before executing the provided function myCall
+//search executes view() first and then checks if each item can be unmarshalled before executing the provided function myCall
 func search(table []byte, object interface{}, myCall func(interface{}) error) error {
 	return view(table, func(b *bolt.Bucket) error {
 		return b.ForEach(func(_, value []byte) error {
@@ -174,7 +174,7 @@ func (event Event) insert() (string, error) {
 }
 
 func (club Club) insert() (string, error) {
-	if !club.IsDefault && !hasDefaultClub() {
+	if !club.IsDefault && !defaultClub().IsDefault {
 		club.IsDefault = true
 	}
 	return insertDocument(
@@ -418,31 +418,20 @@ func getEvents(query func(Event) bool) ([]Event, error) {
 	})
 }
 
-func hasDefaultClub() bool {
-	return defaultClubName() != ""
-}
-
-func defaultClubName() string {
-	return getDefaultClub().Name
-}
-
-func getDefaultClub() Club {
+func defaultClub() Club {
 	const success = "1"
 	var club Club
-	var found bool
 	err := search(tblClub, &club, func(interface{}) error {
 		if club.IsDefault {
-			found = true
 			return fmt.Errorf(success)
 		}
 		return nil
 	})
-	if err != nil && err.Error() != success {
+	if err != nil{
+		if err.Error() == success{
+			return club
+		}
 		log.Println(err)
-	}
-	if found {
-		//TODO is found bool actually needed?
-		return club
 	}
 	return Club{}
 }
@@ -566,7 +555,7 @@ func b36toBy(id string) ([]byte, error) {
 func searchShooters(firstName, surname, club string) (shooters []Shooter) {
 	//Search for shooters in the default club if all search values are empty.
 	if firstName == "" && surname == "" && club == "" {
-		club = defaultClubName()
+		club = defaultClub().Name
 	}
 
 	firstName = strings.ToLower(firstName)
