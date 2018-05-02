@@ -87,9 +87,9 @@ func getFields(id uint8) []forms.Field {
 			{Name: "C", V8: v8.Regex, Regex: regexID},
 		}
 	case eventNew: //New Event
-		clubName := defaultClubName()
+		club := defaultClub()
 		return []forms.Field{
-			{Name: "C", V8: v8.Str, Value: clubName, Required: clubName == "", MinLen: 1, Options: clubsDataList()},
+			{Name: "C", V8: v8.Str, Value: club.Name, Required: club.IsDefault, MinLen: 1, Options: clubsDataList()},
 			{Name: "n", V8: v8.StrReq},
 			{Name: "d", V8: v8.Str, Value: time.Now().Format("2006-01-02"), MaxLen: 10},
 			{Name: "t", V8: v8.Str, Value: time.Now().Format("15:04"), MaxLen: 5},
@@ -131,7 +131,7 @@ func getFields(id uint8) []forms.Field {
 			{Name: "o", V8: v8.UintReq, Max: 65535},
 		}
 	case eventShooterNew: //Shooter Entry
-		clubName := defaultClubName()
+		clubName := defaultClub().Name
 		return []forms.Field{
 			{Name: "f", V8: v8.StrReq},
 			{Name: "s", V8: v8.StrReq},
@@ -183,11 +183,11 @@ func getFields(id uint8) []forms.Field {
 			{Name: "S", V8: v8.UintReq, Max: 65535},
 		}
 	case shooterNew: //New Shooter
-		clubName := defaultClubName()
+		club := defaultClub()
 		return []forms.Field{
 			{Name: "f", V8: v8.StrReq},
 			{Name: "s", V8: v8.StrReq},
-			{Name: "C", V8: v8.Str, Placeholder: clubName, Required: clubName == "", MinLen: 1, Options: clubsDataList()},
+			{Name: "C", V8: v8.Str, Placeholder: club.Name, Required: club.IsDefault, MinLen: 1, Options: clubsDataList()},
 			{Name: "r", V8: v8.UintOpt, Options: dataListAgeGroup()},
 			{Name: "x", V8: v8.Bool},
 			{Name: "g", V8: v8.UintList, Required: true, Max: len(globalGrades) - 1, Options: globalGradesDataList},
@@ -209,11 +209,11 @@ func getFields(id uint8) []forms.Field {
 			{Name: "C", V8: v8.Str},
 		}
 	case shooterSearch: //Shooter Search
-		clubName := defaultClubName()
+		club := defaultClub()
 		return []forms.Field{
 			{Name: "f", V8: v8.Str},
 			{Name: "s", V8: v8.Str},
-			{Name: "C", V8: v8.Str, Placeholder: clubName, Required: clubName == "", Options: clubsDataList()},
+			{Name: "C", V8: v8.Str, Placeholder: club.Name, Required: club.IsDefault, Options: clubsDataList()},
 		}
 	case shootersImport: //Import Shooters
 		return []forms.Field{

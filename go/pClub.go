@@ -83,7 +83,7 @@ func clubInsert(f forms.Form) (string, error) {
 		var err error
 		ID, err = Club{
 			Name:      name,
-			IsDefault: getDefaultClub().ID == "", //Set this club to the default if no other clubs are the default
+			IsDefault: !defaultClub().IsDefault, //Set this club to the default if no other clubs are the default
 		}.insert()
 		if err != nil {
 			return "", err
@@ -95,7 +95,7 @@ func clubInsert(f forms.Form) (string, error) {
 func clubDetailsUpsert(f forms.Form) (string, error) {
 	clubID := f.Fields[8].Str()
 	isDefault := f.Fields[6].Checked()
-	defaultClub := getDefaultClub()
+	defaultClub := defaultClub()
 	if isDefault && defaultClub.ID != clubID {
 		//Need to remove isDefault for the default club so there is only one default at a time.
 		err := updateDocument(tblClub, defaultClub.ID, &Club{IsDefault: false}, &Club{}, updateClubDefault)

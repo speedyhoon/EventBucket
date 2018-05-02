@@ -77,7 +77,7 @@ func eventAvailableGradesUpsert(f forms.Form) (string, error) {
 func eventShooterInsert(f forms.Form) (string, error) {
 	//Populate club name if it is empty
 	if f.Fields[2].Value == "" {
-		f.Fields[2].Value = defaultClubName()
+		f.Fields[2].Value = defaultClub().Name
 	} else if _, err := clubInsertIfMissing(f.Fields[2].Str()); err != nil {
 		return "", err
 	}
