@@ -91,9 +91,9 @@ func main() {
 		//#ifdef DEBUG
 		inf.Println(httpAddr)
 		//#else
-		if url := "http://" + httpAddr; openBrowser(url) {
-			inf.Printf("A browser window should open. If not, please visit %s", url)
-		}
+		httpAddr = "http://" + httpAddr
+		openBrowser(httpAddr)
+		inf.Printf("A browser window should open. If not, please visit %s", httpAddr)
 		//#endif
 	}()
 

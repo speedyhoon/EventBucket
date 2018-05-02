@@ -64,9 +64,10 @@ var (
 				if len(value.([]forms.Option)) > 0 {
 					output = attribute
 				}
-			//TODO remove default if !debug
+			//#ifdef DEBUG
 			default:
 				log.Printf("attribute type %T not defined\n%v %v\n", value, value, len(value.([]forms.Option)))
+			//#endif
 			}
 			//return template.HTMLAttr(output)
 			return output
