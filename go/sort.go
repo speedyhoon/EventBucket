@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"math"
 	"sort"
+
+	"github.com/speedyhoon/utl"
 )
 
 type sortEventShooter func(r1 string, p1, p2 *EventShooter) bool
@@ -119,14 +121,14 @@ func addGradeSeparatorToShooterObjectAndPositions(eventShooters []EventShooter, 
 		//Check if shooters grades and scores are the same
 		shooterTie = sameGrade && score.Total == previousScore.Total && score.Centers == previousScore.Centers && score.Centers2 == previousScore.Centers2 && score.CountBack == previousScore.CountBack && score.CountBack2 == previousScore.CountBack2 && score.ShootOff == previousScore.ShootOff
 		if shooterTie {
-			previousScore.Ordinal = ordinal(position, shooterTie)
+			previousScore.Ordinal = utl.Ordinal(position, shooterTie)
 			eventShooters[previousShooter].Scores[rangeID] = previousScore
 		} else {
 			position++
 		}
 
 		score.Position = position
-		score.Ordinal = ordinal(position, shooterTie)
+		score.Ordinal = utl.Ordinal(position, shooterTie)
 		if eventShooters[shooterID].Scores == nil {
 			eventShooters[shooterID].Scores = make(ScoreMap, 1)
 		}
@@ -135,28 +137,4 @@ func addGradeSeparatorToShooterObjectAndPositions(eventShooters []EventShooter, 
 		previousScore = score
 	}
 	return eventShooters
-}
-
-//Ordinal gives you the input number in a rank/ordinal format. e.g. Ordinal(3, true) outputs "=3rd"
-func ordinal(position uint, equal bool) string {
-	suffix := "th"
-	switch position % 10 {
-	case 1:
-		if position%100 != 11 {
-			suffix = "st"
-		}
-	case 2:
-		if position%100 != 12 {
-			suffix = "nd"
-		}
-	case 3:
-		if position%100 != 13 {
-			suffix = "rd"
-		}
-	}
-	var sign string
-	if equal {
-		sign = "="
-	}
-	return fmt.Sprintf("%v%d%v", sign, position, suffix)
 }
