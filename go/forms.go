@@ -31,29 +31,30 @@ const (
 )
 
 func init() {
-	post("/0", 0, clubInsert)
-	post("/1", 1, clubDetailsUpsert)
-	post("/2", 2, clubMoundInsert)
+	post("/0", clubNew, clubInsert)
+	post("/1", clubEdit, clubDetailsUpsert)
+	post("/2", clubMoundNew, clubMoundInsert)
 	post("/3", 3, clubMoundUpsert)
 	get("/4", 4, clubsMap)
-	post("/5", 5, eventInsert)
-	post("/6", 6, eventDetailsUpsert)
-	post("/7", 7, eventRangeInsert)
-	post("/8", 8, eventRangeUpdate)
-	post("/9", 9, eventAggInsert)
-	post("/10", 10, eventAggUpdate)
-	post("/11", 11, eventShooterInsert)
+	post("/5", eventNew, eventInsert)
+	post("/6", eventEdit, eventDetailsUpsert)
+	post("/7", eventRangeNew, eventRangeInsert)
+	post("/8", eventRangeEdit, eventRangeUpdate)
+	post("/9", eventAggNew, eventAggInsert)
+	post("/10", eventAggEdit, eventAggUpdate)
+	post("/11", eventShooterNew, eventShooterInsert)
 	post("/12", 12, eventShooterUpdate)
-	post("/13", 13, eventShooterExistingInsert)
-	post("/15", 15, eventAvailableGradesUpsert)
-	post("/17", 17, shooterInsert)
+	post("/13", eventShooterExisting, eventShooterExistingInsert)
+	post("/15", eventAvailableGrades, eventAvailableGradesUpsert)
+	post("/17", shooterNew, shooterInsert)
 	post("/18", 18, shooterInsert)
 	post("/19", 19, shooterUpdate)
-	get(urlShooters, 20, shooters)
-	post("/22", 22, settingsUpdate)
+	get(urlShooters, shooterSearch, shooters)
+	post("/22", settings, settingsUpdate)
 }
 
 func getFields(id uint8) []forms.Field {
+	const dateTime = "2006-01-02 15:04"
 	switch id {
 	case clubNew: //New Club
 		return []forms.Field{
@@ -91,15 +92,13 @@ func getFields(id uint8) []forms.Field {
 		return []forms.Field{
 			{Name: "C", V8: v8.Str, Value: club.Name, Required: club.IsDefault, MinLen: 1, Options: clubsDataList()},
 			{Name: "n", V8: v8.StrReq},
-			{Name: "d", V8: v8.Str, Value: time.Now().Format("2006-01-02"), MaxLen: 10},
-			{Name: "t", V8: v8.Str, Value: time.Now().Format("15:04"), MaxLen: 5},
+			{Name: "d", V8: v8.DateTime, Value: time.Now().Format(dateTime), Placeholder: dateTime, MaxLen: 16, MinLen: 14},
 		}
 	case eventEdit: //Event Details
 		return []forms.Field{
 			{Name: "C", V8: v8.StrReq, Options: clubsDataList()},
 			{Name: "n", V8: v8.StrReq},
-			{Name: "d", V8: v8.Str, MaxLen: 10, MinLen: 1},
-			{Name: "t", V8: v8.Str, MaxLen: 5, MinLen: 5},
+			{Name: "d", V8: v8.DateTime, Placeholder: dateTime, MaxLen: 16, MinLen: 14},
 			{Name: "c", V8: v8.Bool},
 			{Name: "E", V8: v8.Regex, Regex: regexID},
 		}

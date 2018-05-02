@@ -75,7 +75,7 @@ func eventOrderedBy(less ...compareEvent) *eventSort {
 }
 
 func sortByDate(c1, c2 *Event) bool {
-	return c1.ISO.After(c2.ISO)
+	return c1.DateTime.After(c2.DateTime)
 }
 func sortByName(c1, c2 *Event) bool {
 	return strings.ToLower(c1.Name) < strings.ToLower(c2.Name)

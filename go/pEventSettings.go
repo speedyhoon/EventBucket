@@ -14,10 +14,9 @@ func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
 	if action != eventEdit {
 		fs[action].Fields[0].Value = event.Club.Name
 		fs[action].Fields[1].Value = event.Name
-		fs[action].Fields[2].Value = event.Date
-		fs[action].Fields[3].Value = event.Time
-		fs[action].Fields[4].Value = event.Closed
-		fs[action].Fields[5].Value = event.ID
+		fs[action].Fields[2].Value = event.DateTime
+		fs[action].Fields[3].Value = event.Closed
+		fs[action].Fields[4].Value = event.ID
 	}
 	fs[eventRangeNew].Fields[1].Value = event.ID
 
@@ -56,14 +55,13 @@ func dataListRanges(ranges []Range, selected bool) (options []forms.Option) {
 }
 
 func eventDetailsUpsert(f forms.Form) (string, error) {
-	eventID := f.Fields[5].Str()
+	eventID := f.Fields[4].Str()
 	return urlEventSettings + eventID,
 		updateDocument(tblEvent, eventID, &Event{
-			ClubID: f.Fields[0].Str(),
-			Name:   f.Fields[1].Str(),
-			Date:   f.Fields[2].Str(),
-			Time:   f.Fields[3].Str(),
-			Closed: f.Fields[4].Checked(),
+			ClubID:   f.Fields[0].Str(),
+			Name:     f.Fields[1].Str(),
+			DateTime: f.Fields[2].Time(),
+			Closed:   f.Fields[3].Checked(),
 		}, &Event{}, updateEventDetails)
 }
 

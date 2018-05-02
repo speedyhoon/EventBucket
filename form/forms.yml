@@ -125,17 +125,12 @@
     v8: v8StrReq
   - label: Start date
     name: d
-    type: date
-    v8: v8Str
-    value: time.Now().Format("2006-01-02")
-    maxlen: 10
+    type: datetime
+    v8: v8DateTime
+    value: time.Now().Format("2006-01-02 15:04")
+    maxlen: 16
+    minlen: 14
     help: The date that the event commences.
-  - label: Start time
-    name: t
-    type: time
-    v8: v8Str
-    maxlen: 5
-    value: time.Now().Format("15:04")
   - label: Save
     type: submit
 - title: Event Details
@@ -155,17 +150,11 @@
     v8: v8StrReq
     minlen: 1
   - label: Date
-    type: date
+    type: datetime
     name: d
-    maxlen: 10
-    minlen: 1
-    v8: v8Str
-  - label: Time
-    type: time
-    name: t
-    maxlen: 5
-    minlen: 5
-    v8: v8Str
+    maxlen: 16
+    minlen: 14
+    v8: v8DateTime
   - label: Close Event
     type: checkbox
     name: c
