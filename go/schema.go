@@ -185,7 +185,3 @@ type shooterScore struct {
 	id      uint
 	score   Score
 }
-
-type serverSettings struct {
-	theme bool
-}
