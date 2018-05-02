@@ -58,12 +58,11 @@ func eventInsert(f forms.Form) (string, error) {
 
 	//Insert new event into database.
 	ID, err := Event{
-		ClubID:  clubID,
-		Name:    f.Fields[1].Str(),
-		Date:    f.Fields[2].Str(),
-		Time:    f.Fields[3].Str(),
-		Closed:  false,
-		AutoInc: AutoInc{Range: 1}, //The next incremental range id to use.
+		ClubID:   clubID,
+		Name:     f.Fields[1].Str(),
+		DateTime: f.Fields[2].Time(),
+		Closed:   false,
+		AutoInc:  AutoInc{Range: 1}, //The next incremental range id to use.
 	}.insert()
 	return urlEventSettings + ID, err
 }

@@ -67,7 +67,7 @@ var (
 			//#ifdef DEBUG
 			default:
 				log.Printf("attribute type %T not defined\n%v %v\n", value, value, len(value.([]forms.Option)))
-			//#endif
+				//#endif
 			}
 			//return template.HTMLAttr(output)
 			return output
@@ -116,6 +116,7 @@ func init() {
 		log.Fatal(err)
 	}
 }
+
 //#endif
 
 func render(w http.ResponseWriter, p page) {

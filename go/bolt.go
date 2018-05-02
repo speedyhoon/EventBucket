@@ -277,8 +277,7 @@ func updateEventDetails(decode interface{}, contents interface{}) interface{} {
 	//Manually set each one otherwise it would override the existing event and its details (Ranges, Shooters & their scores) since the form doesn't already have that info.
 	event.Name = update.Name
 	event.Club = update.Club
-	event.Date = update.Date
-	event.Time = update.Time
+	event.DateTime = update.DateTime
 	event.Closed = update.Closed
 	return event
 }
@@ -427,8 +426,8 @@ func defaultClub() Club {
 		}
 		return nil
 	})
-	if err != nil{
-		if err.Error() == success{
+	if err != nil {
+		if err.Error() == success {
 			return club
 		}
 		log.Println(err)
