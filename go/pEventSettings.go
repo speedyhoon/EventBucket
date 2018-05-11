@@ -10,7 +10,7 @@ import (
 
 func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
 	//Retrieve any submitted form that failed to save.
-	fs, action := session.Forms(w, r, getFields, eventEdit, eventRangeNew, eventAggNew, eventRangeEdit, eventAggEdit, eventAvailableGrades)
+	fs, action := session.Get(w, r, getFields, eventEdit, eventRangeNew, eventAggNew, eventRangeEdit, eventAggEdit, eventAvailableGrades)
 	if action != eventEdit {
 		fs[action].Fields[0].Value = event.Club.Name
 		fs[action].Fields[1].Value = event.Name

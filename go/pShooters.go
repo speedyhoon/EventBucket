@@ -8,7 +8,7 @@ import (
 )
 
 func shooters(w http.ResponseWriter, r *http.Request, fields []forms.Field) {
-	fs, _ := session.Forms(w, r, getFields, shooterNew, shootersImport, shooterSearch)
+	fs, _ := session.Get(w, r, getFields, shooterNew, shootersImport, shooterSearch)
 
 	render(w, page{
 		Title: "Shooters",
