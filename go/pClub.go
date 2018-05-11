@@ -11,7 +11,7 @@ import (
 )
 
 func club(w http.ResponseWriter, r *http.Request, club Club) {
-	fs, action := session.Forms(w, r, getFields, clubEdit, clubMoundNew)
+	fs, action := session.Get(w, r, getFields, clubEdit, clubMoundNew)
 
 	if action == clubEdit {
 		fs[action].Fields[0].Value = club.Name
@@ -46,7 +46,7 @@ func club(w http.ResponseWriter, r *http.Request, club Club) {
 
 func clubs(w http.ResponseWriter, r *http.Request) {
 	clubs, err := getClubs()
-	f, _ := session.Forms(w, r, getFields, clubNew)
+	f, _ := session.Get(w, r, getFields, clubNew)
 	render(w, page{
 		Title:   "Clubs",
 		skipCSP: true,

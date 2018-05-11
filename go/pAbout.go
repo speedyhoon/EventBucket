@@ -11,7 +11,7 @@ import (
 )
 
 func about(w http.ResponseWriter, r *http.Request) {
-	fs, _ := session.Forms(w, r, getFields, settings)
+	fs, _ := session.Get(w, r, getFields, settings)
 	render(w, page{
 		Title: "About",
 		Data: map[string]interface{}{
