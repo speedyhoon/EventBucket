@@ -35,7 +35,9 @@ func club(w http.ResponseWriter, r *http.Request, club Club) {
 		Title:   "Club",
 		MenuID:  club.ID,
 		Menu:    urlClubs,
+		//#ifndef DEBUG
 		skipCSP: true,
+		//#endif
 		Data: map[string]interface{}{
 			"Club":         club,
 			"clubEdit":     fs[clubEdit],
@@ -49,7 +51,9 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 	f, _ := session.Get(w, r, getFields, clubNew)
 	render(w, page{
 		Title:   "Clubs",
+		//#ifndef DEBUG
 		skipCSP: true,
+		//#endif
 		Error:   err,
 		Data: map[string]interface{}{
 			"clubNew": f[0],
