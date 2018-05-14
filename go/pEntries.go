@@ -51,7 +51,7 @@ func entries(w http.ResponseWriter, r *http.Request, event Event) {
 
 func eventInsert(f forms.Form) (string, error) {
 	//Try to find an existing club and insert and insert one if it doesn't exist.
-	clubID, err := clubInsertIfMissing(f.Fields[0].Str())
+	clubID, err := clubInsertIfNone(f.Fields[0].Str())
 	if err != nil {
 		return "", err
 	}
@@ -77,7 +77,7 @@ func eventShooterInsert(f forms.Form) (string, error) {
 	//Populate club name if it is empty
 	if f.Fields[2].Value == "" {
 		f.Fields[2].Value = defaultClub().Name
-	} else if _, err := clubInsertIfMissing(f.Fields[2].Str()); err != nil {
+	} else if _, err := clubInsertIfNone(f.Fields[2].Str()); err != nil {
 		return "", err
 	}
 

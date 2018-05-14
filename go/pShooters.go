@@ -46,7 +46,7 @@ func eventSearchShooters(w http.ResponseWriter, r *http.Request, f forms.Form) {
 
 func shooterInsert(f forms.Form) (string, error) {
 	//Add new club if there isn't already a club with that name
-	clubID, err := clubInsertIfMissing(f.Fields[2].Str())
+	clubID, err := clubInsertIfNone(f.Fields[2].Str())
 	if err != nil {
 		return "", err
 	}
@@ -91,7 +91,7 @@ func shooterInsert(f forms.Form) (string, error) {
 	//Insert each shooter into database. //TODO look into using a batch write to update the database.
 	for _, shooter := range shooters {
 		if shooter.Club != "" {
-			clubID, err = clubInsertIfMissing(shooter.Club)
+			clubID, err = clubInsertIfNone(shooter.Club)
 			if err != nil {
 				warn.Println(err)
 			} else {
@@ -105,17 +105,6 @@ func shooterInsert(f forms.Form) (string, error) {
 	}
 	return "", err
 }*/
-
-//Add new club if there isn't already a club with that name
-func clubInsertIfMissing(clubName string) (string, error) {
-	club, ok := getClubByName(clubName)
-	if ok {
-		//return existing club
-		return club.ID, nil
-	}
-	//Club doesn't exist so try to insert it.
-	return Club{Name: clubName}.insert()
-}
 
 //TODO move into a config file or database?
 func dataListAgeGroup() []forms.Option {
