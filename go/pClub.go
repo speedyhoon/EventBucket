@@ -72,22 +72,10 @@ func clubsMap(w http.ResponseWriter, r *http.Request, f []forms.Field) {
 	fmt.Fprint(w, list)
 }
 
-func clubInsert(f forms.Form) (string, error) {
-	name := f.Fields[0].Str()
-
-	//Check if a club with that name already exists.
-	club, ok := getClubByName(name)
-	ID := club.ID
-
-	if !ok {
-		var err error
-		ID, err = Club{
-			Name:      name,
-			IsDefault: !defaultClub().IsDefault, //Set this club to the default if no other clubs are the default
-		}.insert()
-		if err != nil {
-			return "", err
-		}
+func clubInsert(f forms.Form) (ID string, err error) {
+	ID, err = clubInsertIfMissing(f.Fields[0].Str())
+	if err != nil {
+		return "", err
 	}
 	return urlClub + ID + "#edit", nil
 }
