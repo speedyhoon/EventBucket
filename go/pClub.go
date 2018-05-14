@@ -73,11 +73,22 @@ func clubsMap(w http.ResponseWriter, r *http.Request, f []forms.Field) {
 }
 
 func clubInsert(f forms.Form) (ID string, err error) {
-	ID, err = clubInsertIfMissing(f.Fields[0].Str())
+	ID, err = clubInsertIfNone(f.Fields[0].Str())
 	if err != nil {
 		return "", err
 	}
 	return urlClub + ID + "#edit", nil
+}
+
+//Add new club if there isn't already a club with that name
+func clubInsertIfNone(clubName string) (string, error) {
+	club, ok := getClubByName(clubName)
+	if ok {
+		//return existing club
+		return club.ID, nil
+	}
+	//Club doesn't exist so try to insert it.
+	return Club{Name: clubName}.insert()
 }
 
 func clubDetailsUpsert(f forms.Form) (string, error) {
