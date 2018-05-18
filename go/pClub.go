@@ -32,9 +32,9 @@ func club(w http.ResponseWriter, r *http.Request, club Club) {
 	fs[clubMoundNew].Fields[1].Value = club.ID
 
 	render(w, page{
-		Title:   "Club",
-		MenuID:  club.ID,
-		Menu:    urlClubs,
+		Title:  "Club",
+		MenuID: club.ID,
+		Menu:   urlClubs,
 		//#ifndef DEBUG
 		skipCSP: true,
 		//#endif
@@ -50,11 +50,11 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 	clubs, err := getClubs()
 	f, _ := session.Get(w, r, getFields, clubNew)
 	render(w, page{
-		Title:   "Clubs",
+		Title: "Clubs",
+		Error: err,
 		//#ifndef DEBUG
 		skipCSP: true,
 		//#endif
-		Error:   err,
 		Data: map[string]interface{}{
 			"clubNew": f[0],
 			"clubs":   clubs,
