@@ -51,15 +51,15 @@ var (
 				}
 			case string:
 				if value.(string) != "" {
-					output = attribute + "=" + addQuotes(value)
+					output = attribute + "=" + utl.AddQuotes(value)
 				}
 			case int:
 				if value.(int) > 0 {
-					output = attribute + "=" + addQuotes(value)
+					output = attribute + "=" + utl.AddQuotes(value)
 				}
 			case uint:
 				if value.(uint) > 0 {
-					output = attribute + "=" + addQuotes(value)
+					output = attribute + "=" + utl.AddQuotes(value)
 				}
 			case []forms.Option:
 				if len(value.([]forms.Option)) > 0 {
@@ -164,21 +164,6 @@ func render(w http.ResponseWriter, p page) {
 		log.Println(err)
 		http.Error(wz, err.Error(), http.StatusInternalServerError)
 	}
-}
-
-//addQuotes returns value with or without surrounding single or double quote characters suitable for a [[//dev.w3.org/html5/html-author/#attributes][HTML5 attribute]] value.
-func addQuotes(in interface{}) string {
-	value := strings.Replace(fmt.Sprintf("%v", in), `&`, "&amp;", -1) //will destroy any existing escaped characters like &#62;
-	double := strings.Count(value, `"`)
-	single := strings.Count(value, `'`)
-	if single > 0 && single >= double {
-		return `"` + strings.Replace(value, `"`, "&#34;", -1) + `"`
-	}
-	//Space, double quote, accent, equals, less-than sign, greater-than sign.
-	if double > 0 || strings.ContainsAny(value, " \"`=<>") {
-		return `'` + strings.Replace(value, `'`, "&#39;", -1) + `'`
-	}
-	return value
 }
 
 type gzipResponseWriter struct {
