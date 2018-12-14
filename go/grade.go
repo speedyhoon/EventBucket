@@ -8,7 +8,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/speedyhoon/forms"
+	"github.com/speedyhoon/frm"
 )
 
 //Discipline separates different types of shooting so the number of shots & sighters can be easily changed while still using the same targets and Mark as another Discipline, e.g. Target rifles and Match rifles are vastly different disciplines but use the same scoring standard.
@@ -56,8 +56,8 @@ type Shot struct {
 var (
 	globalDisciplines     []Discipline
 	globalGrades          []Grade
-	globalGradesDataList  []forms.Option
-	globalAvailableGrades []forms.Option
+	globalGradesDataList  []frm.Option
+	globalAvailableGrades []frm.Option
 )
 
 func redoGlobals(disciplines []Discipline) {
@@ -83,16 +83,16 @@ func defaultGrades(classes []Discipline) []Grade {
 	return grades
 }
 
-func dataListGrades(grades []Grade) []forms.Option {
-	var options []forms.Option
+func dataListGrades(grades []Grade) []frm.Option {
+	var options []frm.Option
 	for id, grade := range grades {
-		options = append(options, forms.Option{Value: fmt.Sprintf("%d", id), Label: grade.Name})
+		options = append(options, frm.Option{Value: fmt.Sprintf("%d", id), Label: grade.Name})
 	}
 	return options
 }
 
-func availableGrades(grades []uint) []forms.Option {
-	var options []forms.Option
+func availableGrades(grades []uint) []frm.Option {
+	var options []frm.Option
 	for id, grade := range globalGrades {
 		selected := len(grades) == 0
 		if !selected {
@@ -103,20 +103,20 @@ func availableGrades(grades []uint) []forms.Option {
 				}
 			}
 		}
-		options = append(options, forms.Option{Value: fmt.Sprintf("%d", id), Label: grade.Name, Selected: selected})
+		options = append(options, frm.Option{Value: fmt.Sprintf("%d", id), Label: grade.Name, Selected: selected})
 	}
 	return options
 }
 
-func eventGrades(grades []uint) []forms.Option {
+func eventGrades(grades []uint) []frm.Option {
 	if len(grades) == 0 {
 		return globalGradesDataList
 	}
-	var options []forms.Option
+	var options []frm.Option
 	for id, grade := range globalGrades {
 		for _, gradeID := range grades {
 			if uint(id) == gradeID {
-				options = append(options, forms.Option{Value: fmt.Sprintf("%d", id), Label: grade.Name})
+				options = append(options, frm.Option{Value: fmt.Sprintf("%d", id), Label: grade.Name})
 				break
 			}
 		}

@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/boltdb/bolt"
-	"github.com/speedyhoon/forms"
+	"github.com/speedyhoon/frm"
 )
 
 var (
@@ -393,10 +393,10 @@ func getMapClubs(clubID string) (clubs []Club, err error) {
 	})
 }
 
-func clubsDataList() (clubs []forms.Option) {
+func clubsDataList() (clubs []frm.Option) {
 	err := search(tblClub, &Club{}, func(c interface{}) error {
 		club := *c.(*Club)
-		clubs = append(clubs, forms.Option{Value: club.ID, Label: club.Name, Selected: club.IsDefault})
+		clubs = append(clubs, frm.Option{Value: club.ID, Label: club.Name, Selected: club.IsDefault})
 		return nil
 	})
 	if err != nil {
@@ -578,9 +578,9 @@ func searchShooters(firstName, surname, club string) (shooters []Shooter) {
 	return
 }
 
-func searchShootersOptions(firstName, surname, club string) (options []forms.Option) {
+func searchShootersOptions(firstName, surname, club string) (options []frm.Option) {
 	for _, s := range searchShooters(firstName, surname, club) {
-		options = append(options, forms.Option{Value: s.ID, Label: s.FirstName + " " + s.Surname + ", " + s.Club})
+		options = append(options, frm.Option{Value: s.ID, Label: s.FirstName + " " + s.Surname + ", " + s.Club})
 	}
 	return
 }

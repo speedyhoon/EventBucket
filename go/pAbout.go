@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/speedyhoon/forms"
+	"github.com/speedyhoon/frm"
 	"github.com/speedyhoon/session"
 )
 
@@ -21,7 +21,7 @@ func about(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func settingsUpdate(f forms.Form) (string, error) {
+func settingsUpdate(f frm.Form) (string, error) {
 	mainTheme++
 	if mainTheme == 2 {
 		mainTheme = 0

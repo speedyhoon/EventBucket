@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/speedyhoon/forms"
+	"github.com/speedyhoon/frm"
 	"github.com/speedyhoon/session"
 )
 
@@ -45,16 +45,16 @@ func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
 	})
 }
 
-func dataListRanges(ranges []Range, selected bool) (options []forms.Option) {
+func dataListRanges(ranges []Range, selected bool) (options []frm.Option) {
 	for _, r := range ranges {
 		if !r.IsAgg {
-			options = append(options, forms.Option{Label: r.Name, Value: fmt.Sprintf("%d", r.ID), Selected: selected})
+			options = append(options, frm.Option{Label: r.Name, Value: fmt.Sprintf("%d", r.ID), Selected: selected})
 		}
 	}
 	return options
 }
 
-func eventDetailsUpsert(f forms.Form) (string, error) {
+func eventDetailsUpsert(f frm.Form) (string, error) {
 	eventID := f.Fields[4].Str()
 	return urlEventSettings + eventID,
 		updateDocument(tblEvent, eventID, &Event{
@@ -65,13 +65,13 @@ func eventDetailsUpsert(f forms.Form) (string, error) {
 		}, &Event{}, updateEventDetails)
 }
 
-func eventRangeInsert(f forms.Form) (string, error) {
+func eventRangeInsert(f frm.Form) (string, error) {
 	eventID := f.Fields[1].Str()
 	return urlEventSettings + eventID,
 		updateDocument(tblEvent, eventID, &Range{Name: f.Fields[0].Str()}, &Event{}, eventAddRange)
 }
 
-func eventRangeUpdate(f forms.Form) (string, error) {
+func eventRangeUpdate(f frm.Form) (string, error) {
 	eventID := f.Fields[0].Str()
 	return urlEventSettings + eventID,
 		updateDocument(tblEvent, eventID, &Range{
@@ -82,23 +82,23 @@ func eventRangeUpdate(f forms.Form) (string, error) {
 		}, &Event{}, editRange)
 }
 
-func eventAggUpdate(f forms.Form) (string, error) {
+func eventAggUpdate(f frm.Form) (string, error) {
 	eventID := f.Fields[0].Str()
 	return urlEventSettings + eventID,
 		updateDocument(tblEvent, eventID, &Range{
 			ID:    f.Fields[1].Uint(),
 			Name:  f.Fields[2].Str(),
-			Aggs:  f.Fields[3].UintSlice(),
+			Aggs:  f.Fields[3].Uints(),
 			Order: f.Fields[4].Uint(),
 		}, &Event{}, editRange)
 }
 
-func eventAggInsert(f forms.Form) (string, error) {
+func eventAggInsert(f frm.Form) (string, error) {
 	eventID := f.Fields[2].Str()
 	return urlEventSettings + eventID,
 		updateDocument(tblEvent, eventID, &Range{
 			Name:  f.Fields[0].Str(),
-			Aggs:  f.Fields[1].UintSlice(),
+			Aggs:  f.Fields[1].Uints(),
 			IsAgg: true,
 		}, &Event{}, eventAddAgg)
 }

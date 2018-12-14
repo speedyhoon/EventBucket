@@ -2,14 +2,13 @@ package main
 
 import (
 	"compress/gzip"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"path/filepath"
 	"strings"
 
-	"github.com/speedyhoon/forms"
+	"github.com/speedyhoon/frm"
 	"github.com/speedyhoon/text/template"
 	"github.com/speedyhoon/utl"
 )
@@ -61,13 +60,13 @@ var (
 				if value.(uint) > 0 {
 					output = attribute + "=" + utl.AddQuotes(value)
 				}
-			case []forms.Option:
-				if len(value.([]forms.Option)) > 0 {
+			case []frm.Option:
+				if len(value.([]frm.Option)) > 0 {
 					output = attribute
 				}
 			//#ifdef DEBUG
 			default:
-				log.Printf("attribute type %T not defined\n%v %v\n", value, value, len(value.([]forms.Option)))
+				log.Printf("attribute type %T not defined\n%v %v\n", value, value, len(value.([]frm.Option)))
 				//#endif
 			}
 			//return template.HTMLAttr(output)

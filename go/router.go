@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"regexp"
 
-	"github.com/speedyhoon/forms"
+	"github.com/speedyhoon/frm"
 	"github.com/speedyhoon/session"
 	"github.com/speedyhoon/v8"
 	"golang.org/x/net/websocket"
@@ -119,7 +119,7 @@ func init() {
 	get404(events)
 }
 
-func post(url string, formID uint8, p func(f forms.Form) (string, error)) {
+func post(url string, formID uint8, p func(f frm.Form) (string, error)) {
 	http.HandleFunc(
 		url,
 		func(w http.ResponseWriter, r *http.Request) {
@@ -141,23 +141,23 @@ func post(url string, formID uint8, p func(f forms.Form) (string, error)) {
 				return
 			}
 			f, ok := v8.IsValidRequest(r, getFields(formID))
-			form := forms.Form{Action: formID, Fields: f}
+			form := frm.Form{Action: formID, Fields: f}
 			if !ok {
 				redirectError(w, r, form)
 				return
 			}
 
 			var redirect string
-			redirect, form.Error = p(form)
+			redirect, form.Err = p(form)
 			//Display any insert errors onscreen.
-			if form.Error != nil {
+			if form.Err != nil {
 				form.Fields[0].Focus = true
 				redirectError(w, r, form)
 				return
 			}
 
 			//Display default acknowledgement message using a session
-			session.Set(w, forms.Form{Action: formID}) //Don't store validated fields in session
+			session.Set(w, frm.Form{Action: formID}) //Don't store validated fields in session
 
 			if redirect == "" {
 				redirect = r.Referer()
@@ -167,12 +167,12 @@ func post(url string, formID uint8, p func(f forms.Form) (string, error)) {
 	)
 }
 
-func redirectError(w http.ResponseWriter, r *http.Request, f forms.Form) {
+func redirectError(w http.ResponseWriter, r *http.Request, f frm.Form) {
 	session.Set(w, f)
 	http.Redirect(w, r, fmt.Sprintf("%v#%v", r.Referer(), f.Action), http.StatusSeeOther)
 }
 
-func get(url string, formID uint8, page func(http.ResponseWriter, *http.Request, []forms.Field)) {
+func get(url string, formID uint8, page func(http.ResponseWriter, *http.Request, []frm.Field)) {
 	http.HandleFunc(
 		url,
 		isGetMethod(func(w http.ResponseWriter, r *http.Request) {
