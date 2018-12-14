@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/speedyhoon/forms"
+	"github.com/speedyhoon/frm"
 )
 
 func enterShotsAll(w http.ResponseWriter, r *http.Request, event Event, rangeID rID) {
@@ -48,7 +48,7 @@ func enterShots(w http.ResponseWriter, r *http.Request, showAll bool, event Even
 	})
 }
 
-func updateShotScores(fields []forms.Field) string {
+func updateShotScores(fields []frm.Field) string {
 	event, err := getEvent(fields[1].Str())
 	if err != nil {
 		return fmt.Sprintf("Event with id %v doesn't exist", fields[1].Value)

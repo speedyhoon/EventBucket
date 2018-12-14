@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/speedyhoon/forms"
+	"github.com/speedyhoon/frm"
 )
 
 func enterTotalsAll(w http.ResponseWriter, r *http.Request, event Event, rangeID rID) {
@@ -53,7 +53,7 @@ func enterTotals(w http.ResponseWriter, r *http.Request, showAll bool, event Eve
 	})
 }
 
-func eventTotalUpsert(fields []forms.Field) string {
+func eventTotalUpsert(fields []frm.Field) string {
 	//Save score to event in database.
 	err := updateDocument(tblEvent, fields[2].Str(), &shooterScore{
 		rangeID: fields[3].Str(),

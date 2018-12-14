@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/speedyhoon/forms"
+	"github.com/speedyhoon/frm"
 	"github.com/speedyhoon/session"
 )
 
@@ -62,7 +62,7 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func clubsMap(w http.ResponseWriter, r *http.Request, f []forms.Field) {
+func clubsMap(w http.ResponseWriter, r *http.Request, f []frm.Field) {
 	clubs, err := getMapClubs(f[0].Str())
 	if err != nil {
 		log.Println(err)
@@ -76,7 +76,7 @@ func clubsMap(w http.ResponseWriter, r *http.Request, f []forms.Field) {
 	fmt.Fprint(w, list)
 }
 
-func clubInsert(f forms.Form) (ID string, err error) {
+func clubInsert(f frm.Form) (ID string, err error) {
 	ID, err = clubInsertIfNone(f.Fields[0].Str())
 	if err != nil {
 		return "", err
@@ -95,7 +95,7 @@ func clubInsertIfNone(clubName string) (string, error) {
 	return Club{Name: clubName}.insert()
 }
 
-func clubDetailsUpsert(f forms.Form) (string, error) {
+func clubDetailsUpsert(f frm.Form) (string, error) {
 	clubID := f.Fields[8].Str()
 	isDefault := f.Fields[6].Checked()
 	defaultClub := defaultClub()
@@ -119,13 +119,13 @@ func clubDetailsUpsert(f forms.Form) (string, error) {
 		}, &Club{}, updateClubDetails)
 }
 
-func clubMoundInsert(f forms.Form) (string, error) {
+func clubMoundInsert(f frm.Form) (string, error) {
 	clubID := f.Fields[1].Str()
 	return urlClub + clubID,
 		updateDocument(tblClub, clubID, f.Fields[0].Value, &Club{}, insertClubMound)
 }
 
-func clubMoundUpsert(f forms.Form) (string, error) {
+func clubMoundUpsert(f frm.Form) (string, error) {
 	clubID := f.Fields[2].Str()
 	return urlClub + clubID,
 		updateDocument(tblClub, clubID, &Mound{

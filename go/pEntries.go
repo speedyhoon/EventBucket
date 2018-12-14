@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/speedyhoon/forms"
+	"github.com/speedyhoon/frm"
 	"github.com/speedyhoon/session"
 )
 
@@ -28,7 +28,7 @@ func entries(w http.ResponseWriter, r *http.Request, event Event) {
 	fs[eventShooterNew].Fields[6].Value = event.ID
 	fs[eventShooterNew].Fields[7].Value = event.ID
 	//TODO what was the below ignored field used for?
-	//fs[eventShooterNew].Fields = append(fs[eventShooterNew].Fields, forms.Field{Value: event.ID})
+	//fs[eventShooterNew].Fields = append(fs[eventShooterNew].Fields, frm.Field{Value: event.ID})
 
 	fs[eventShooterNew].Fields[3].Options = searchShootersOptions("", "", event.Club.Name)
 
@@ -49,7 +49,7 @@ func entries(w http.ResponseWriter, r *http.Request, event Event) {
 	})
 }
 
-func eventInsert(f forms.Form) (string, error) {
+func eventInsert(f frm.Form) (string, error) {
 	//Try to find an existing club and insert and insert one if it doesn't exist.
 	clubID, err := clubInsertIfNone(f.Fields[0].Str())
 	if err != nil {
@@ -67,13 +67,13 @@ func eventInsert(f forms.Form) (string, error) {
 	return urlEventSettings + ID, err
 }
 
-func eventAvailableGradesUpsert(f forms.Form) (string, error) {
+func eventAvailableGradesUpsert(f frm.Form) (string, error) {
 	eventID := f.Fields[1].Str()
 	return urlEntries + eventID,
 		updateDocument(tblEvent, eventID, &f.Fields[0].Value, &Event{}, updateEventGrades)
 }
 
-func eventShooterInsert(f forms.Form) (string, error) {
+func eventShooterInsert(f frm.Form) (string, error) {
 	//Populate club name if it is empty
 	if f.Fields[2].Value == "" {
 		f.Fields[2].Value = defaultClub().Name
@@ -88,7 +88,7 @@ func eventShooterInsert(f forms.Form) (string, error) {
 		Club:      f.Fields[2].Str(),
 		AgeGroup:  f.Fields[4].Uint(),
 		Sex:       f.Fields[5].Checked(),
-		Grades:    f.Fields[6].UintSlice(),
+		Grades:    f.Fields[6].Uints(),
 	}
 	//Insert shooter into Shooter Bucket
 	shooterID, err := shooter.insert()
@@ -103,7 +103,7 @@ func eventShooterInsert(f forms.Form) (string, error) {
 		updateDocument(tblEvent, eventID, &shooter, &Event{}, eventShooterInsertDB)
 }
 
-func eventShooterExistingInsert(f forms.Form) (string, error) {
+func eventShooterExistingInsert(f frm.Form) (string, error) {
 	eventID := f.Fields[3].Str()
 	shooter, err := getShooter(f.Fields[0].Str())
 	if err != nil {
@@ -115,13 +115,13 @@ func eventShooterExistingInsert(f forms.Form) (string, error) {
 			FirstName: shooter.NickName,
 			Surname:   shooter.Surname,
 			Club:      shooter.Club,
-			Grades:    f.Fields[1].UintSlice(),
+			Grades:    f.Fields[1].Uints(),
 			AgeGroup:  f.Fields[2].Uint(),
 			Sex:       shooter.Sex,
 		}, &Event{}, eventShooterInsertDB)
 }
 
-func eventShooterUpdate(f forms.Form) (string, error) {
+func eventShooterUpdate(f frm.Form) (string, error) {
 	eventID := f.Fields[1].Str()
 	return urlEntries + eventID,
 		updateDocument(tblEvent, eventID, &EventShooter{
