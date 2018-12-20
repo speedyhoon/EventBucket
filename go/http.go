@@ -24,6 +24,8 @@ const (
 	open           = "o"
 	lock           = "l"
 	html           = "h"
+	dateTime       = "2006-01-02 15:04"
+	dateLong       = "Mon, 02 Jan 2006 15:04:05 GMT"
 )
 
 var (
@@ -276,7 +278,7 @@ func maintainExpires() {
 //Set expiry date 1 year, 0 months & 0 days in the future.
 func setExpiresTime() {
 	//Date format is the same as Go`s time.RFC1123 but uses "GMT" timezone instead of "UTC" time standard.
-	cacheExpires = time.Now().UTC().AddDate(1, 0, 0).Format("Mon, 02 Jan 2006 15:04:05 GMT")
+	cacheExpires = time.Now().UTC().AddDate(1, 0, 0).Format(dateLong)
 	//w3.org: "All HTTP date/time stamps MUST be represented in Greenwich Mean Time" under 3.3.1 Full Date //www.w3.org/Protocols/rfc2616/rfc2616-sec3.html
 }
 
