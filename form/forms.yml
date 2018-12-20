@@ -6,7 +6,7 @@
   - label: Club Name
     name: n
     accesskey: N
-    v8: v8StrReq
+    v8: StrReq
     minlen: 1
   - label: Save
     type: submit
@@ -20,24 +20,24 @@
   - label: Club Name
     name: n
     accesskey: C
-    v8: v8StrReq
+    v8: StrReq
     minlen: 1
   - label: Address
     name: a
-    v8: v8Str
+    v8: Str
   - label: Town
     name: w
-    v8: v8Str
+    v8: Str
   - label: Postcode
     name: p
-    v8: v8Str
+    v8: Str
   - label: Latitude
     name: x
     type: number
     max: 90
     min: -90
     step: .000001
-    v8: v8Float32
+    v8: Float32
     help: Entering your clubs Latitude &amp; Longitide will generate a map with your clubs location (requires an internet connection).
   - label: Longitude
     name: y
@@ -45,21 +45,21 @@
     min: -180
     max: 180
     step: .000001
-    v8: v8Float32
+    v8: Float32
     help: Entering your clubs Latitude &amp; Longitide will generate a map with your clubs location (requires an internet connection).
   - label: Default Club
     name: b
     type: checkbox
-    v8: v8Bool
+    v8: Bool
     help: "{{with index .Fields 6}}{{if.Checked}}To change the default club, open the club you want to be the default and tick 'Default Club'. There must only be one default club selected at a time.{{else}}Automatically inserts this Club Name when creating new events.{{end}}{{end}}"
   - label: Website Address
     name: u
     type: url
-    v8: v8Str
+    v8: Str
   - label: Save
     name: C
     type: submit
-    v8: v8Regex
+    v8: Regex
     regex: regexID
 - title: New Shooting Mound
   handler: clubMoundInsert
@@ -69,13 +69,13 @@
   - label: Mound Name
     name: n
     accesskey: N
-    v8: v8StrReq
+    v8: StrReq
     minlen: 1
     help: A list of club mounds will appear as a drop down menu for Range Name under Event Settings &gt; Add Range within an Event. This allows selecting range names from a list on the hosting Club, rather than typing.
   - label: Save
     name: C
     type: submit
-    v8: v8Regex
+    v8: Regex
     regex: regexID
 - title: Edit Shooting Mound
   handler: clubMoundUpsert
@@ -83,16 +83,16 @@
   inputs:
   - label: Mound Name
     name: n
-    v8: v8StrReq
+    v8: StrReq
   - label: Mound ID
     type: hidden
     name: I
-    v8: v8Uint
+    v8: Uint
     max: 65535
   - label: Save
     name: C
     type: submit
-    v8: v8Regex
+    v8: Regex
     regex: regexID
 - title: Map Clubs
   handler: clubsMap
@@ -101,7 +101,7 @@
   inputs:
   - label: Club
     name: C
-    v8: v8Regex
+    v8: Regex
     regex: regexID
 - title: New Event
   handler: eventInsert
@@ -113,7 +113,7 @@
     name: C
     minlen: 1
     type: search
-    v8: v8Str
+    v8: Str
     required: clubName == ""
     options: clubsDataList()
     value: clubName
@@ -122,11 +122,11 @@
     name: n
     accesskey: N
     minlen: 1
-    v8: v8StrReq
+    v8: StrReq
   - label: Start date
     name: d
     type: datetime
-    v8: v8DateTime
+    v8: DateTime
     value: time.Now().Format("2006-01-02 15:04")
     maxlen: 16
     minlen: 14
@@ -141,33 +141,33 @@
   - label: Club Name
     type: search
     name: C
-    v8: v8StrReq
+    v8: StrReq
     minlen: 1
     options: clubsDataList()
   - label: Event Name
     name: n
     accesskey: v
-    v8: v8StrReq
+    v8: StrReq
     minlen: 1
   - label: Date
     type: datetime
     name: d
     maxlen: 16
     minlen: 14
-    v8: v8DateTime
+    v8: DateTime
   - label: Close Event
     type: checkbox
     name: c
-    v8: v8Bool
+    v8: Bool
   # - label: Duplicate Shooters
   #   type: checkbox
   #   name: a
-  #   v8: v8Bool
+  #   v8: Bool
   #   help: Allows a shooter to enter an event twice or more with the same grade. Prize Meetings and Championship events don't allow duplicate entries within the same grade.
   - label: Save
     type: submit
     name: E
-    v8: v8Regex
+    v8: Regex
     regex: regexID
 - title: Add Range
   handler: eventRangeInsert
@@ -178,13 +178,13 @@
     type: search
     name: n
     accesskey: R
-    v8: v8StrReq
+    v8: StrReq
     minlen: 1
     dataList: r
   - label: Save
     type: submit
     name: E
-    v8: v8Regex
+    v8: Regex
     regex: regexID
 - title: Update Range
   handler: eventRangeUpdate
@@ -193,23 +193,23 @@
   inputs:
   - label: d
     name: I
-    v8: v8UintReq
+    v8: UintReq
     min: 1
     max: 65535
   - label: d
     name: n
-    v8: v8StrReq
+    v8: StrReq
   - label: d
     name: k
-    v8: v8Bool
+    v8: Bool
   - label: d
     name: o
-    v8: v8UintReq
+    v8: UintReq
     max: 65535
   - label: Save
     type: submit
     name: E
-    v8: v8Regex
+    v8: Regex
     regex: regexID
 - title:  Add Aggregate Range
   handler: eventAggInsert
@@ -220,13 +220,13 @@
     name: n
     accessKey: a
     minlen: 1
-    v8: v8StrReq
+    v8: StrReq
   - label: Sum up ranges
     type: listBox
     name: R
     required: true
     help: Select which ranges this Aggregate will add together and display a total on the scoreboard.
-    v8: v8UintList
+    v8: UintList
     step: 1
     min: 1
     max: 65535
@@ -235,7 +235,7 @@
   - label: Save
     type: submit
     name: E
-    v8: v8Regex
+    v8: Regex
     regex: regexID
 - title: Update Agg
   handler: eventAggUpdate
@@ -244,26 +244,26 @@
   inputs:
   - label: d
     name: E
-    v8: v8Regex
+    v8: Regex
     regex: regexID
   - label: d
     name: I
-    v8: v8UintReq
+    v8: UintReq
     min: 1
     max: 65535
   - label: d
     name: n
-    v8: v8StrReq
+    v8: StrReq
   - label: d
     name: R
-    v8: v8UintList
+    v8: UintList
     required: true
     minlen: 2
     min: 1
     max: 65535
   - label: d
     name: o
-    v8: v8UintReq
+    v8: UintReq
     max: 65535
 - title:  Shooter Entry
   handler: eventShooterInsert
@@ -274,43 +274,43 @@
   - name: f
     label: First Name
     type: search
-    v8: v8StrReq
+    v8: StrReq
     accesskey: S
   - name: s
     label: Surname
     type: search
-    v8: v8StrReq
+    v8: StrReq
   - name: C
     label: Club
     type: search
-    v8: v8Str
+    v8: Str
     options: clubsDataList()
     placeholder: clubName
   - name: S
     label: Shooter
     type: select
-    v8: v8Str
+    v8: Str
     options: searchShootersOptions("", "", clubName)
   - name: r
     label: Age Group
     type: select
-    v8: v8UintOpt
+    v8: UintOpt
     options: dataListAgeGroup()
   - name: x
     label: Ladies
-    v8: v8Bool
+    v8: Bool
     type: checkbox
   - name: g
     label: 'Grades<a href=/event-settings/{{(index .Fields 6).Value}}#grades class=edit title="Edit available grades for this event"></a>'
     type: listbox
-    v8: v8UintList
+    v8: UintList
     required: true
     max: len(globalGrades) - 1
     options: globalGradesDataList
   - name: E
     label: Save
     type: submit
-    v8: v8Regex
+    v8: Regex
     regex: regexID
 - title: Entries Edit Shooter Details
   handler: eventShooterUpdate
@@ -319,39 +319,39 @@
   - label: Shooter ID
     type: hidden
     name: S
-    v8: v8UintReq
+    v8: UintReq
     max: 65535
   - label: Event ID
     name: E
     type: hidden
-    v8: v8RegexReq
+    v8: RegexReq
     regex: regexID
   - label: First Name
     name: f
-    v8: v8StrReq
+    v8: StrReq
   - label: Surname
     name: s
-    v8: v8StrReq
+    v8: StrReq
   - label: Save
     name: C
     type: submit
-    v8: v8Regex
+    v8: Regex
     regex: regexID
   - label: Grade
     name: g
-    v8: v8UintReq
+    v8: UintReq
     max: len(globalGrades) - 1
     options: globalGradesDataList
   - label: Age Group
     name: r
-    v8: v8UintOpt
+    v8: UintOpt
     options: dataListAgeGroup()
   - label: Sex
     name: x
-    v8: v8Bool
+    v8: Bool
   - label: Locked
     name: k
-    v8: v8Bool
+    v8: Bool
 - title:  Existing Shooter Entry
   handler: eventShooterExistingInsert
   namespace: eventShooterExisting
@@ -360,22 +360,22 @@
   inputs:
   - label: Shooter
     name: S
-    v8: v8RegexReq
+    v8: RegexReq
     regex: regexID
   - label: Grade
     name: g
-    v8: v8UintList
+    v8: UintList
     required: true
     max: len(globalGrades) - 1
     options: globalGradesDataList
   - label: Age Group
     name: r
-    v8: v8UintOpt
+    v8: UintOpt
     options: dataListAgeGroup()
   - label: Save
     name: E
     type: submit
-    v8: v8RegexReq
+    v8: RegexReq
     regex: regexID
 - title: Enter Range Totals
   namespace: eventTotalScores
@@ -383,28 +383,28 @@
   inputs:
   - label: Total
     name: t
-    v8: v8UintReq
+    v8: UintReq
     max: 120
   - label: Centers
     name: c
-    v8: v8Uint
+    v8: Uint
     max: 20
   - label: Event
     name: E
-    v8: v8RegexReq
+    v8: RegexReq
     regex: regexID
   - label: Range
     name: R
-    v8: v8UintReq
+    v8: UintReq
     min: 1
     max: 65535
   - label: Shooter
     name: S
-    v8: v8UintReq
+    v8: UintReq
     max: 65535
   - label: Shoot Off
     name: h
-    v8: v8Uint
+    v8: Uint
     max: 100
 - title: Grades Available
   handler: eventAvailableGradesUpsert
@@ -416,14 +416,14 @@
     name: g
     type: listbox
     accesskey: G
-    v8: v8UintList
+    v8: UintList
     required: true
     max: len(globalGrades) - 1
     options: availableGrades([]uint{})
   - label: Save
     name: E
     type: submit
-    v8: v8Regex
+    v8: Regex
     regex: regexID
 - title: Update Shooter Shots (Scorecards)
   namespace: eventUpdateShotScore
@@ -431,21 +431,21 @@
   inputs:
   - label: d
     name: s
-    v8: v8StrReq
+    v8: StrReq
     maxlen: 12
     minlen: 1
   - label: d
     name: E
-    v8: v8RegexReq
+    v8: RegexReq
     regex: regexID
   - label: d
     name: R
-    v8: v8UintReq
+    v8: UintReq
     min: 1
     max: 65535
   - label: d
     name: S
-    v8: v8UintReq
+    v8: UintReq
     max: 65535
 - title: New Shooter
   handler: shooterInsert
@@ -455,15 +455,15 @@
   inputs:
   - name: f
     label: First Name
-    v8: v8StrReq
+    v8: StrReq
     accesskey: N
   - name: s
     label: Surname
-    v8: v8StrReq
+    v8: StrReq
   - label: Club
     name: C
     type: search
-    v8: v8Str
+    v8: Str
     minlen: 1
     required: clubName == ""
     options: clubsDataList()
@@ -471,16 +471,16 @@
   - label: Age Group
     name: r
     type: select
-    v8: v8UintOpt
+    v8: UintOpt
     options: dataListAgeGroup()
   - label: Ladies
     name: x
     type: checkbox
-    v8: v8Bool
+    v8: Bool
   - label: Grade
     name: g
     type: listbox
-    v8: v8UintList
+    v8: UintList
     required: true
     max: len(globalGrades) - 1
     options: globalGradesDataList
@@ -493,30 +493,30 @@
   inputs:
   - label: First Name
     name: f
-    v8: v8StrReq
+    v8: StrReq
   - label: Surname
     name: s
-    v8: v8StrReq
+    v8: StrReq
   - label: Club
     name: C
-    v8: v8StrReq
+    v8: StrReq
   - label: Grades
     name: g
-    v8: v8UintList
+    v8: UintList
     required: true
     max: len(globalGrades) - 1
     options: globalGradesDataList
   - label: Age Group
     name: r
-    v8: v8UintOpt
+    v8: UintOpt
     options: dataListAgeGroup()
   - label: Ladies
     name: x
-    v8: v8Bool
+    v8: Bool
   - label: Save
     type: submit
     name: I
-    v8: v8RegexReq
+    v8: RegexReq
     regex: regexID
 - title: Shooter Update
   handler: shooterUpdate
@@ -524,13 +524,13 @@
   inputs:
   - label: First Name
     name: f
-    v8: v8Str
+    v8: Str
   - label: Surname
     name: s
-    v8: v8Str
+    v8: Str
   - label: Club
     name: C
-    v8: v8Str
+    v8: Str
 - title: Shooter Search
   handler: shooters
   namespace: shooterSearch
@@ -541,17 +541,17 @@
   inputs:
   - name: f
     label: First Name
-    v8: v8Str
+    v8: Str
     type: search
     accesskey: S
   - name: s
     label: Surname
-    v8: v8Str
+    v8: Str
     type: search
   - name: C
     label: Club
     type: search
-    v8: v8Str
+    v8: Str
     placeholder: clubName
     required: clubName == ""
     options: clubsDataList()
@@ -564,7 +564,7 @@
   - name: f
     label: Browse&mldr;
     type: file
-    v8: v8FileReq
+    v8: FileReq
     accesskey: I
   - label: Save
     type: submit
@@ -575,6 +575,6 @@
   inputs:
   - label: Toggle Theme
     name: t
-    v8: v8Bool
+    v8: Bool
     accesskey: S
     type: submit
