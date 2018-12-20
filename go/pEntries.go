@@ -8,32 +8,32 @@ import (
 )
 
 func entries(w http.ResponseWriter, r *http.Request, event Event) {
-	fs, action := session.Get(w, r, getFields, eventShooterNew, eventShooterExisting)
-	if action == eventShooterExisting {
+	fs, action := session.Get(w, r, getFields, frmEventShooterNew, frmEventShooterExisting)
+	if action == frmEventShooterExisting {
 		//Existing shooter select box
-		fs[action].Fields[3].Err = fs[eventShooterExisting].Fields[0].Err
+		fs[action].Fields[3].Err = fs[frmEventShooterExisting].Fields[0].Err
 		//Grade
-		fs[action].Fields[6].Err = fs[eventShooterExisting].Fields[1].Err
-		fs[action].Fields[6].Value = fs[eventShooterExisting].Fields[1].Value
+		fs[action].Fields[6].Err = fs[frmEventShooterExisting].Fields[1].Err
+		fs[action].Fields[6].Value = fs[frmEventShooterExisting].Fields[1].Value
 		//Age Group
-		fs[action].Fields[4].Err = fs[eventShooterExisting].Fields[2].Err
-		fs[action].Fields[4].Value = fs[eventShooterExisting].Fields[2].Value
+		fs[action].Fields[4].Err = fs[frmEventShooterExisting].Fields[2].Err
+		fs[action].Fields[4].Value = fs[frmEventShooterExisting].Fields[2].Value
 		//Existing Shooter button
-		fs[action].Fields[7].Err = fs[eventShooterExisting].Fields[3].Err
+		fs[action].Fields[7].Err = fs[frmEventShooterExisting].Fields[3].Err
 	}
-	fs[eventShooterNew].Fields[2].Options = clubsDataList()
+	fs[frmEventShooterNew].Fields[2].Options = clubsDataList()
 
 	grades := eventGrades(event.Grades)
-	fs[eventShooterNew].Fields[6].Options = grades
-	fs[eventShooterNew].Fields[6].Value = event.ID
-	fs[eventShooterNew].Fields[7].Value = event.ID
+	fs[frmEventShooterNew].Fields[6].Options = grades
+	fs[frmEventShooterNew].Fields[6].Value = event.ID
+	fs[frmEventShooterNew].Fields[7].Value = event.ID
 	//TODO what was the below ignored field used for?
-	//fs[eventShooterNew].Fields = append(fs[eventShooterNew].Fields, frm.Field{Value: event.ID})
+	//fs[frmEventShooterNew].Fields = append(fs[frmEventShooterNew].Fields, frm.Field{Value: event.ID})
 
-	fs[eventShooterNew].Fields[3].Options = searchShootersOptions("", "", event.Club.Name)
+	fs[frmEventShooterNew].Fields[3].Options = searchShootersOptions("", "", event.Club.Name)
 
 	//Provide event ID for link to change available grades in event settings
-	fs[eventShooterNew].Fields[6].Value = event.ID
+	fs[frmEventShooterNew].Fields[6].Value = event.ID
 
 	render(w, page{
 		Title:   "Entries",
@@ -42,7 +42,7 @@ func entries(w http.ResponseWriter, r *http.Request, event Event) {
 		Heading: event.Name,
 		Data: map[string]interface{}{
 			"Event":           event,
-			"eventShooterNew": fs[eventShooterNew],
+			"eventShooterNew": fs[frmEventShooterNew],
 			"AvailableGrades": grades,
 			"AgeGroups":       dataListAgeGroup(),
 		},

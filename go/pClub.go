@@ -11,9 +11,9 @@ import (
 )
 
 func club(w http.ResponseWriter, r *http.Request, club Club) {
-	fs, action := session.Get(w, r, getFields, clubEdit, clubMoundNew)
+	fs, action := session.Get(w, r, getFields, frmClubEdit, frmClubMoundNew)
 
-	if action == clubEdit {
+	if action == frmClubEdit {
 		fs[action].Fields[0].Value = club.Name
 		fs[action].Fields[1].Value = club.Address
 		fs[action].Fields[2].Value = club.Town
@@ -26,10 +26,10 @@ func club(w http.ResponseWriter, r *http.Request, club Club) {
 	}
 
 	//always set the clubID
-	fs[clubEdit].Fields[8].Value = club.ID
+	fs[frmClubEdit].Fields[8].Value = club.ID
 
 	//Club Mound form
-	fs[clubMoundNew].Fields[1].Value = club.ID
+	fs[frmClubMoundNew].Fields[1].Value = club.ID
 
 	render(w, page{
 		Title:  "Club",
@@ -40,15 +40,15 @@ func club(w http.ResponseWriter, r *http.Request, club Club) {
 		//#endif
 		Data: map[string]interface{}{
 			"Club":         club,
-			"clubEdit":     fs[clubEdit],
-			"clubMoundNew": fs[clubMoundNew],
+			"clubEdit":     fs[frmClubEdit],
+			"clubMoundNew": fs[frmClubMoundNew],
 		},
 	})
 }
 
 func clubs(w http.ResponseWriter, r *http.Request) {
 	clubs, err := getClubs()
-	f, _ := session.Get(w, r, getFields, clubNew)
+	f, _ := session.Get(w, r, getFields, frmClubNew)
 	render(w, page{
 		Title: "Clubs",
 		Error: err,

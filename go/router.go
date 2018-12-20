@@ -201,7 +201,7 @@ func processSocket(ws *websocket.Conn) {
 		formID = msg[0]
 		//Ignore any messages that do not have a case in this switch.
 		switch formID {
-		case eventTotalScores:
+		case frmEventTotalScores:
 			var urlValues url.Values
 			err = json.Unmarshal([]byte(msg[1:]), &urlValues)
 			if err != nil {
@@ -213,7 +213,7 @@ func processSocket(ws *websocket.Conn) {
 			} else {
 				send(fmt.Sprintf("Unable to save %v.", msg))
 			}
-		case eventUpdateShotScore:
+		case frmEventUpdateShotScore:
 			var urlValues url.Values
 			err = json.Unmarshal([]byte(msg[1:]), &urlValues)
 			if err != nil {

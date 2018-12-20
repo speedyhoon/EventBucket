@@ -107,16 +107,16 @@
   handler: eventInsert
   namespace: eventNew
   accesskey: N
-  vars: clubName := defaultClubName()
+  vars: club := defaultClub()
   inputs:
   - label: Club Name
     name: C
     minlen: 1
     type: search
     v8: Str
-    required: clubName == ""
+    required: club.IsDefault
     options: clubsDataList()
-    value: clubName
+    value: club.Name
     help: The club who is hosting this event.
   - label: Event Name
     name: n
@@ -127,9 +127,10 @@
     name: d
     type: datetime
     v8: DateTime
-    value: time.Now().Format("2006-01-02 15:04")
+    value: time.Now().Format(dateTime)
     maxlen: 16
     minlen: 14
+    placeholder: dateTime
     help: The date that the event commences.
   - label: Save
     type: submit
@@ -154,6 +155,7 @@
     name: d
     maxlen: 16
     minlen: 14
+    placeholder: dateTime
     v8: DateTime
   - label: Close Event
     type: checkbox
@@ -269,7 +271,7 @@
   handler: eventShooterInsert
   namespace: eventShooterNew
   accesskey: S
-  vars: clubName := defaultClubName()
+  vars: clubName := defaultClub().Name
   inputs:
   - name: f
     label: First Name
@@ -451,7 +453,7 @@
   handler: shooterInsert
   namespace: shooterNew
   accesskey: N
-  vars: clubName := defaultClubName()
+  vars: club := defaultClub()
   inputs:
   - name: f
     label: First Name
@@ -465,9 +467,9 @@
     type: search
     v8: Str
     minlen: 1
-    required: clubName == ""
+    required: club.IsDefault
     options: clubsDataList()
-    placeholder: clubName
+    placeholder: club.Name
   - label: Age Group
     name: r
     type: select
@@ -537,7 +539,7 @@
   method: get
   attachtopage: true
   accesskey: S
-  vars: "clubName := defaultClubName()"
+  vars: "club := defaultClub()"
   inputs:
   - name: f
     label: First Name
@@ -552,8 +554,8 @@
     label: Club
     type: search
     v8: Str
-    placeholder: clubName
-    required: clubName == ""
+    placeholder: club.Name
+    required: club.IsDefault
     options: clubsDataList()
   - label: Search
     type: submit
