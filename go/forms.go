@@ -59,7 +59,6 @@ func init() {
 }
 
 func getFields(id uint8) []frm.Field {
-	const dateTime = "2006-01-02 15:04"
 	switch id {
 	case frmClubNew:
 		return []frm.Field{
