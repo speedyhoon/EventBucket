@@ -10,21 +10,21 @@ import (
 
 func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
 	//Retrieve any submitted form that failed to save.
-	fs, action := session.Get(w, r, getFields, eventEdit, eventRangeNew, eventAggNew, eventRangeEdit, eventAggEdit, eventAvailableGrades)
-	if action != eventEdit {
+	fs, action := session.Get(w, r, getFields, frmEventEdit, frmEventRangeNew, frmEventAggNew, frmEventRangeEdit, frmEventAggEdit, frmEventAvailableGrades)
+	if action != frmEventEdit {
 		fs[action].Fields[0].Value = event.Club.Name
 		fs[action].Fields[1].Value = event.Name
 		fs[action].Fields[2].Value = event.DateTime
 		fs[action].Fields[3].Value = event.Closed
 		fs[action].Fields[4].Value = event.ID
 	}
-	fs[eventRangeNew].Fields[1].Value = event.ID
+	fs[frmEventRangeNew].Fields[1].Value = event.ID
 
-	fs[eventAggNew].Fields[1].Options = dataListRanges(event.Ranges, true)
-	fs[eventAggNew].Fields[2].Value = event.ID
+	fs[frmEventAggNew].Fields[1].Options = dataListRanges(event.Ranges, true)
+	fs[frmEventAggNew].Fields[2].Value = event.ID
 
-	fs[eventAvailableGrades].Fields[0].Options = availableGrades(event.Grades)
-	fs[eventAvailableGrades].Fields[1].Value = event.ID
+	fs[frmEventAvailableGrades].Fields[0].Options = availableGrades(event.Grades)
+	fs[frmEventAvailableGrades].Fields[1].Value = event.ID
 
 	render(w, page{
 		Title:   "Event Settings",
@@ -34,13 +34,13 @@ func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
 		Data: map[string]interface{}{
 			"Ranges":               dataListRanges(event.Ranges, false),
 			"Event":                event,
-			"eventEdit":            fs[eventEdit],
-			"eventRangeNew":        fs[eventRangeNew],
-			"eventAggNew":          fs[eventAggNew],
+			"eventEdit":            fs[frmEventEdit],
+			"eventRangeNew":        fs[frmEventRangeNew],
+			"eventAggNew":          fs[frmEventAggNew],
 			"RangeDataList":        event.Club.Mounds,
-			"eventRangeUpdate":     fs[eventRangeEdit],
-			"eventAggUpdate":       fs[eventAggEdit],
-			"eventAvailableGrades": fs[eventAvailableGrades],
+			"eventRangeUpdate":     fs[frmEventRangeEdit],
+			"eventAggUpdate":       fs[frmEventAggEdit],
+			"eventAvailableGrades": fs[frmEventAvailableGrades],
 		},
 	})
 }
