@@ -81,11 +81,8 @@ func search(table []byte, object interface{}, myCall func(interface{}) error) er
 
 //tblQty returns the total number of records contained in the bucket (table)
 func tblQty(bucketName []byte) (qty uint) {
-	err := db.View(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(bucketName)
-		if bucket != nil {
-			qty = uint(bucket.Stats().KeyN)
-		}
+	err := view(bucketName, func(bucket *bolt.Bucket) error {
+		qty = uint(bucket.Stats().KeyN)
 		return nil
 	})
 	if err != nil {
