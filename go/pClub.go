@@ -73,7 +73,11 @@ func clubsMap(w http.ResponseWriter, r *http.Request, f []frm.Field) {
 	if err != nil {
 		log.Println(err)
 	}
-	fmt.Fprint(w, list)
+
+	_, err = fmt.Fprint(w, list)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func clubInsert(f frm.Form) (ID string, err error) {
