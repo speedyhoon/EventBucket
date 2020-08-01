@@ -10,29 +10,29 @@ import (
 )
 
 const (
-	frmClubNew                   uint8 = 0
-	frmClubEdit                  uint8 = 1
-	frmClubMoundNew              uint8 = 2
-	frmEditShootingMound         uint8 = 3
-	frmMapClubs                  uint8 = 4
-	frmEventNew                  uint8 = 5
-	frmEventEdit                 uint8 = 6
-	frmEventRangeNew             uint8 = 7
-	frmEventRangeEdit            uint8 = 8
-	frmEventAggNew               uint8 = 9
-	frmEventAggEdit              uint8 = 10
-	frmEventShooterNew           uint8 = 11
-	frmEntriesEditShooterDetails uint8 = 12
-	frmEventShooterExisting      uint8 = 13
-	frmEventTotalScores          uint8 = 14
-	frmEventAvailableGrades      uint8 = 15
-	frmEventUpdateShotScore      uint8 = 16
-	frmShooterNew                uint8 = 17
-	frmShooterDetails            uint8 = 18
-	frmShooterUpdate             uint8 = 19
-	frmShooterSearch             uint8 = 20
-	frmShootersImport            uint8 = 21
-	frmSettings                  uint8 = 22
+	frmClubNew uint8 = iota
+	frmClubEdit
+	frmClubMoundNew
+	frmEditShootingMound
+	frmMapClubs
+	frmEventNew
+	frmEventEdit
+	frmEventRangeNew
+	frmEventRangeEdit
+	frmEventAggNew
+	frmEventAggEdit
+	frmEventShooterNew
+	frmEntriesEditShooterDetails
+	frmEventShooterExisting
+	frmEventTotalScores
+	frmEventAvailableGrades
+	frmEventUpdateShotScore
+	frmShooterNew
+	frmShooterDetails
+	frmShooterUpdate
+	frmShooterSearch
+	frmShootersImport
+	frmSettings
 )
 
 func init() {
