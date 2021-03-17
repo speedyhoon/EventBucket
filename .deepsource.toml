@@ -15,10 +15,6 @@ enabled = true
   environment = ["browser"]
 
 [[transformers]]
-name = "isort"
-enabled = true
-
-[[transformers]]
 name = "prettier"
 enabled = true
 
