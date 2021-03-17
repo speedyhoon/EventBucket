@@ -15,9 +15,5 @@ enabled = true
   environment = ["browser"]
 
 [[transformers]]
-name = "prettier"
-enabled = true
-
-[[transformers]]
 name = "gofmt"
 enabled = true
