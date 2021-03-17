@@ -1,17 +1,17 @@
 {
-	"FixedFileInfo": {
-		"FileVersion": {
-			"Major": 3,
-			"Minor": 0,
-			"Patch": 4,
-			"Build": 411
-		}
-	},
-	"StringFileInfo": {
-		"CompanyName": "EventBucket",
-		"FileDescription": "EventBucket",
-		"LegalCopyright": "EventBucket",
-		"ProductName": "EventBucket",
-		"ProductVersion": "3.0.4"
-	}
+  "FixedFileInfo": {
+    "FileVersion": {
+      "Major": 3,
+      "Minor": 0,
+      "Patch": 4,
+      "Build": 411
+    }
+  },
+  "StringFileInfo": {
+    "CompanyName": "EventBucket",
+    "FileDescription": "EventBucket",
+    "LegalCopyright": "EventBucket",
+    "ProductName": "EventBucket",
+    "ProductVersion": "3.0.4"
+  }
 }
