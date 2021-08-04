@@ -35,7 +35,7 @@ func shooterUpdate(f frm.Form) (string, error) {
 	}, &Shooter{}, updateShooterDetails)
 }
 
-func eventSearchShooters(w http.ResponseWriter, r *http.Request, f frm.Form) {
+func eventSearchShooters(w http.ResponseWriter, _ *http.Request, f frm.Form) {
 	render(w, page{
 		template: "shooterSearch",
 		Data: map[string]interface{}{

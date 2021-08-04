@@ -16,7 +16,7 @@ type multiEventShooterSorter struct {
 	rangeID string
 }
 
-func sorterGrade(rangeID string, c1, c2 *EventShooter) bool {
+func sorterGrade(_ string, c1, c2 *EventShooter) bool {
 	return c1.Grade < c2.Grade
 }
 func sorterTotal(rangeID string, c1, c2 *EventShooter) bool {

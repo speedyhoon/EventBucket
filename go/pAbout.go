@@ -21,7 +21,7 @@ func about(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func settingsUpdate(f frm.Form) (string, error) {
+func settingsUpdate(_ frm.Form) (string, error) {
 	mainTheme = !mainTheme
 
 	return "", nil
