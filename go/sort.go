@@ -83,11 +83,11 @@ func (ms *multiEventShooterSorter) Less(i, j int) bool {
 	//Try all but the last comparison.
 	var k int
 	for k = 0; k < len(ms.sort)-1; k++ {
-		sort := ms.sort[k]
+		sortFunc := ms.sort[k]
 		switch {
-		case sort(ms.rangeID, p, q):
+		case sortFunc(ms.rangeID, p, q):
 			return true
-		case sort(ms.rangeID, q, p):
+		case sortFunc(ms.rangeID, q, p):
 			return false
 		}
 	}
