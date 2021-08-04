@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/speedyhoon/frm"
-	"github.com/speedyhoon/v8"
+	"github.com/speedyhoon/vl"
 )
 
 const (
@@ -62,169 +62,169 @@ func getFields(id uint8) []frm.Field {
 	switch id {
 	case frmClubNew:
 		return []frm.Field{
-			{Name: "n", V8: v8.StrReq},
+			{Name: "n", V8: vl.StrReq},
 		}
 	case frmClubEdit:
 		return []frm.Field{
-			{Name: "n", V8: v8.StrReq},
-			{Name: "a", V8: v8.Str},
-			{Name: "w", V8: v8.Str},
-			{Name: "p", V8: v8.Str},
-			{Name: "x", V8: v8.Float32, Min: -90, Max: 90, Step: 1e-06},
-			{Name: "y", V8: v8.Float32, Min: -180, Max: 180, Step: 1e-06},
-			{Name: "b", V8: v8.Bool},
-			{Name: "u", V8: v8.Str},
-			{Name: "C", V8: v8.Regex, Regex: regexID},
+			{Name: "n", V8: vl.StrReq},
+			{Name: "a", V8: vl.Str},
+			{Name: "w", V8: vl.Str},
+			{Name: "p", V8: vl.Str},
+			{Name: "x", V8: vl.Float32, Min: -90, Max: 90, Step: 1e-06},
+			{Name: "y", V8: vl.Float32, Min: -180, Max: 180, Step: 1e-06},
+			{Name: "b", V8: vl.Bool},
+			{Name: "u", V8: vl.Str},
+			{Name: "C", V8: vl.Regex, Regex: regexID},
 		}
 	case frmClubMoundNew:
 		return []frm.Field{
-			{Name: "n", V8: v8.StrReq},
-			{Name: "C", V8: v8.Regex, Regex: regexID},
+			{Name: "n", V8: vl.StrReq},
+			{Name: "C", V8: vl.Regex, Regex: regexID},
 		}
 	case frmEditShootingMound:
 		return []frm.Field{
-			{Name: "n", V8: v8.StrReq},
-			{Name: "I", V8: v8.Uint, Max: 65535},
-			{Name: "C", V8: v8.Regex, Regex: regexID},
+			{Name: "n", V8: vl.StrReq},
+			{Name: "I", V8: vl.Uint, Max: 65535},
+			{Name: "C", V8: vl.Regex, Regex: regexID},
 		}
 	case frmMapClubs:
 		return []frm.Field{
-			{Name: "C", V8: v8.Regex, Regex: regexID},
+			{Name: "C", V8: vl.Regex, Regex: regexID},
 		}
 	case frmEventNew:
 		club := defaultClub()
 		return []frm.Field{
-			{Name: "C", V8: v8.Str, Value: club.Name, Required: club.IsDefault, MinLen: 1, Options: clubsDataList()},
-			{Name: "n", V8: v8.StrReq},
-			{Name: "d", V8: v8.DateTime, Value: time.Now().Format(dateTime), Placeholder: dateTime, MaxLen: 16, MinLen: 14},
+			{Name: "C", V8: vl.Str, Value: club.Name, Required: club.IsDefault, MinLen: 1, Options: clubsDataList()},
+			{Name: "n", V8: vl.StrReq},
+			{Name: "d", V8: vl.DateTime, Value: time.Now().Format(dateTime), Placeholder: dateTime, MaxLen: 16, MinLen: 14},
 		}
 	case frmEventEdit:
 		return []frm.Field{
-			{Name: "C", V8: v8.StrReq, Options: clubsDataList()},
-			{Name: "n", V8: v8.StrReq},
-			{Name: "d", V8: v8.DateTime, Placeholder: dateTime, MaxLen: 16, MinLen: 14},
-			{Name: "c", V8: v8.Bool},
-			{Name: "E", V8: v8.Regex, Regex: regexID},
+			{Name: "C", V8: vl.StrReq, Options: clubsDataList()},
+			{Name: "n", V8: vl.StrReq},
+			{Name: "d", V8: vl.DateTime, Placeholder: dateTime, MaxLen: 16, MinLen: 14},
+			{Name: "c", V8: vl.Bool},
+			{Name: "E", V8: vl.Regex, Regex: regexID},
 		}
 	case frmEventRangeNew:
 		return []frm.Field{
-			{Name: "n", V8: v8.StrReq},
-			{Name: "E", V8: v8.Regex, Regex: regexID},
+			{Name: "n", V8: vl.StrReq},
+			{Name: "E", V8: vl.Regex, Regex: regexID},
 		}
 	case frmEventRangeEdit:
 		return []frm.Field{
-			{Name: "I", V8: v8.UintReq, Min: 1, Max: 65535},
-			{Name: "n", V8: v8.StrReq},
-			{Name: "k", V8: v8.Bool},
-			{Name: "o", V8: v8.UintReq, Max: 65535},
-			{Name: "E", V8: v8.Regex, Regex: regexID},
+			{Name: "I", V8: vl.UintReq, Min: 1, Max: 65535},
+			{Name: "n", V8: vl.StrReq},
+			{Name: "k", V8: vl.Bool},
+			{Name: "o", V8: vl.UintReq, Max: 65535},
+			{Name: "E", V8: vl.Regex, Regex: regexID},
 		}
 	case frmEventAggNew:
 		return []frm.Field{
-			{Name: "n", V8: v8.StrReq},
-			{Name: "R", V8: v8.UintList, Required: true, MaxLen: 5, MinLen: 2, Min: 1, Max: 65535},
-			{Name: "E", V8: v8.Regex, Regex: regexID},
+			{Name: "n", V8: vl.StrReq},
+			{Name: "R", V8: vl.UintList, Required: true, MaxLen: 5, MinLen: 2, Min: 1, Max: 65535},
+			{Name: "E", V8: vl.Regex, Regex: regexID},
 		}
 	case frmEventAggEdit:
 		return []frm.Field{
-			{Name: "E", V8: v8.Regex, Regex: regexID},
-			{Name: "I", V8: v8.UintReq, Min: 1, Max: 65535},
-			{Name: "n", V8: v8.StrReq},
-			{Name: "R", V8: v8.UintList, Required: true, MinLen: 2, Min: 1, Max: 65535},
-			{Name: "o", V8: v8.UintReq, Max: 65535},
+			{Name: "E", V8: vl.Regex, Regex: regexID},
+			{Name: "I", V8: vl.UintReq, Min: 1, Max: 65535},
+			{Name: "n", V8: vl.StrReq},
+			{Name: "R", V8: vl.UintList, Required: true, MinLen: 2, Min: 1, Max: 65535},
+			{Name: "o", V8: vl.UintReq, Max: 65535},
 		}
 	case frmEventShooterNew:
 		clubName := defaultClub().Name
 		return []frm.Field{
-			{Name: "f", V8: v8.StrReq},
-			{Name: "s", V8: v8.StrReq},
-			{Name: "C", V8: v8.Str, Placeholder: clubName, Options: clubsDataList()},
-			{Name: "S", V8: v8.Str, Options: searchShootersOptions("", "", clubName)},
-			{Name: "r", V8: v8.UintOpt, Options: dataListAgeGroup()},
-			{Name: "x", V8: v8.Bool},
-			{Name: "g", V8: v8.UintList, Required: true, Max: len(globalGrades) - 1, Options: globalGradesDataList},
-			{Name: "E", V8: v8.Regex, Regex: regexID},
+			{Name: "f", V8: vl.StrReq},
+			{Name: "s", V8: vl.StrReq},
+			{Name: "C", V8: vl.Str, Placeholder: clubName, Options: clubsDataList()},
+			{Name: "S", V8: vl.Str, Options: searchShootersOptions("", "", clubName)},
+			{Name: "r", V8: vl.UintOpt, Options: dataListAgeGroup()},
+			{Name: "x", V8: vl.Bool},
+			{Name: "g", V8: vl.UintList, Required: true, Max: len(globalGrades) - 1, Options: globalGradesDataList},
+			{Name: "E", V8: vl.Regex, Regex: regexID},
 		}
 	case frmEntriesEditShooterDetails:
 		return []frm.Field{
-			{Name: "S", V8: v8.UintReq, Max: 65535},
-			{Name: "E", V8: v8.RegexReq, Regex: regexID},
-			{Name: "f", V8: v8.StrReq},
-			{Name: "s", V8: v8.StrReq},
-			{Name: "C", V8: v8.Regex, Regex: regexID},
-			{Name: "g", V8: v8.UintReq, Max: len(globalGrades) - 1, Options: globalGradesDataList},
-			{Name: "r", V8: v8.UintOpt, Options: dataListAgeGroup()},
-			{Name: "x", V8: v8.Bool},
-			{Name: "k", V8: v8.Bool},
+			{Name: "S", V8: vl.UintReq, Max: 65535},
+			{Name: "E", V8: vl.RegexReq, Regex: regexID},
+			{Name: "f", V8: vl.StrReq},
+			{Name: "s", V8: vl.StrReq},
+			{Name: "C", V8: vl.Regex, Regex: regexID},
+			{Name: "g", V8: vl.UintReq, Max: len(globalGrades) - 1, Options: globalGradesDataList},
+			{Name: "r", V8: vl.UintOpt, Options: dataListAgeGroup()},
+			{Name: "x", V8: vl.Bool},
+			{Name: "k", V8: vl.Bool},
 		}
 	case frmEventShooterExisting:
 		return []frm.Field{
-			{Name: "S", V8: v8.RegexReq, Regex: regexID},
-			{Name: "g", V8: v8.UintList, Required: true, Max: len(globalGrades) - 1, Options: globalGradesDataList},
-			{Name: "r", V8: v8.UintOpt, Options: dataListAgeGroup()},
-			{Name: "E", V8: v8.RegexReq, Regex: regexID},
+			{Name: "S", V8: vl.RegexReq, Regex: regexID},
+			{Name: "g", V8: vl.UintList, Required: true, Max: len(globalGrades) - 1, Options: globalGradesDataList},
+			{Name: "r", V8: vl.UintOpt, Options: dataListAgeGroup()},
+			{Name: "E", V8: vl.RegexReq, Regex: regexID},
 		}
 	case frmEventTotalScores:
 		return []frm.Field{
-			{Name: "t", V8: v8.UintReq, Max: 120},
-			{Name: "c", V8: v8.Uint, Max: 20},
-			{Name: "E", V8: v8.RegexReq, Regex: regexID},
-			{Name: "R", V8: v8.UintReq, Min: 1, Max: 65535},
-			{Name: "S", V8: v8.UintReq, Max: 65535},
-			{Name: "h", V8: v8.Uint, Max: 100},
+			{Name: "t", V8: vl.UintReq, Max: 120},
+			{Name: "c", V8: vl.Uint, Max: 20},
+			{Name: "E", V8: vl.RegexReq, Regex: regexID},
+			{Name: "R", V8: vl.UintReq, Min: 1, Max: 65535},
+			{Name: "S", V8: vl.UintReq, Max: 65535},
+			{Name: "h", V8: vl.Uint, Max: 100},
 		}
 	case frmEventAvailableGrades:
 		return []frm.Field{
-			{Name: "g", V8: v8.UintList, Required: true, Max: len(globalGrades) - 1, Options: availableGrades([]uint{})},
-			{Name: "E", V8: v8.Regex, Regex: regexID},
+			{Name: "g", V8: vl.UintList, Required: true, Max: len(globalGrades) - 1, Options: availableGrades([]uint{})},
+			{Name: "E", V8: vl.Regex, Regex: regexID},
 		}
 	case frmEventUpdateShotScore:
 		return []frm.Field{
-			{Name: "s", V8: v8.StrReq, MaxLen: 12},
-			{Name: "E", V8: v8.RegexReq, Regex: regexID},
-			{Name: "R", V8: v8.UintReq, Min: 1, Max: 65535},
-			{Name: "S", V8: v8.UintReq, Max: 65535},
+			{Name: "s", V8: vl.StrReq, MaxLen: 12},
+			{Name: "E", V8: vl.RegexReq, Regex: regexID},
+			{Name: "R", V8: vl.UintReq, Min: 1, Max: 65535},
+			{Name: "S", V8: vl.UintReq, Max: 65535},
 		}
 	case frmShooterNew:
 		club := defaultClub()
 		return []frm.Field{
-			{Name: "f", V8: v8.StrReq},
-			{Name: "s", V8: v8.StrReq},
-			{Name: "C", V8: v8.Str, Placeholder: club.Name, Required: club.IsDefault, MinLen: 1, Options: clubsDataList()},
-			{Name: "r", V8: v8.UintOpt, Options: dataListAgeGroup()},
-			{Name: "x", V8: v8.Bool},
-			{Name: "g", V8: v8.UintList, Required: true, Max: len(globalGrades) - 1, Options: globalGradesDataList},
+			{Name: "f", V8: vl.StrReq},
+			{Name: "s", V8: vl.StrReq},
+			{Name: "C", V8: vl.Str, Placeholder: club.Name, Required: club.IsDefault, MinLen: 1, Options: clubsDataList()},
+			{Name: "r", V8: vl.UintOpt, Options: dataListAgeGroup()},
+			{Name: "x", V8: vl.Bool},
+			{Name: "g", V8: vl.UintList, Required: true, Max: len(globalGrades) - 1, Options: globalGradesDataList},
 		}
 	case frmShooterDetails:
 		return []frm.Field{
-			{Name: "f", V8: v8.StrReq},
-			{Name: "s", V8: v8.StrReq},
-			{Name: "C", V8: v8.StrReq},
-			{Name: "g", V8: v8.UintList, Required: true, Max: len(globalGrades) - 1, Options: globalGradesDataList},
-			{Name: "r", V8: v8.UintOpt, Options: dataListAgeGroup()},
-			{Name: "x", V8: v8.Bool},
-			{Name: "I", V8: v8.RegexReq, Regex: regexID},
+			{Name: "f", V8: vl.StrReq},
+			{Name: "s", V8: vl.StrReq},
+			{Name: "C", V8: vl.StrReq},
+			{Name: "g", V8: vl.UintList, Required: true, Max: len(globalGrades) - 1, Options: globalGradesDataList},
+			{Name: "r", V8: vl.UintOpt, Options: dataListAgeGroup()},
+			{Name: "x", V8: vl.Bool},
+			{Name: "I", V8: vl.RegexReq, Regex: regexID},
 		}
 	case frmShooterUpdate:
 		return []frm.Field{
-			{Name: "f", V8: v8.Str},
-			{Name: "s", V8: v8.Str},
-			{Name: "C", V8: v8.Str},
+			{Name: "f", V8: vl.Str},
+			{Name: "s", V8: vl.Str},
+			{Name: "C", V8: vl.Str},
 		}
 	case frmShooterSearch:
 		club := defaultClub()
 		return []frm.Field{
-			{Name: "f", V8: v8.Str},
-			{Name: "s", V8: v8.Str},
-			{Name: "C", V8: v8.Str, Placeholder: club.Name, Required: club.IsDefault, Options: clubsDataList()},
+			{Name: "f", V8: vl.Str},
+			{Name: "s", V8: vl.Str},
+			{Name: "C", V8: vl.Str, Placeholder: club.Name, Required: club.IsDefault, Options: clubsDataList()},
 		}
 	case frmShootersImport:
 		return []frm.Field{
-			{Name: "f", V8: v8.FileReq},
+			{Name: "f", V8: vl.FileReq},
 		}
 	case frmSettings:
 		return []frm.Field{
-			{Name: "t", V8: v8.Bool},
+			{Name: "t", V8: vl.Bool},
 		}
 	}
 	return []frm.Field{}
