@@ -22,10 +22,8 @@ func about(w http.ResponseWriter, r *http.Request) {
 }
 
 func settingsUpdate(f frm.Form) (string, error) {
-	mainTheme++
-	if mainTheme == 2 {
-		mainTheme = 0
-	}
+	mainTheme = !mainTheme
+
 	return "", nil
 }
 

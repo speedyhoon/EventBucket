@@ -38,7 +38,7 @@ func (p page) csp() string {
 }
 
 var (
-	mainTheme uint8
+	mainTheme bool
 	tmpl8     *template.Template
 	tempFuncs = template.FuncMap{
 		"a": func(attribute string, value interface{}) string {
@@ -160,7 +160,12 @@ func render(w http.ResponseWriter, p page) {
 		Theme uint8
 	}
 
-	if err := tmpl8.ExecuteTemplate(wz, p.template, markupEnv{Page: p, Menu: mainMenu, Theme: mainTheme}); err != nil {
+	me := markupEnv{Page: p, Menu: mainMenu}
+	if mainTheme {
+		me.Theme = 1
+	}
+
+	if err = tmpl8.ExecuteTemplate(wz, p.template, me); err != nil {
 		log.Println(err)
 		http.Error(wz, err.Error(), http.StatusInternalServerError)
 	}
