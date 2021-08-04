@@ -76,7 +76,7 @@ func eventRange(ranges []Range, rangeID rID, w http.ResponseWriter, r *http.Requ
 		if r.ID == uint(rangeID) {
 			//If range is an aggregate return an error message.
 			if r.IsAgg {
-				return Range{}, errors.New("Range is an aggregate and scores can't be entered directly")
+				return Range{}, errors.New("range is an aggregate and scores can't be entered directly")
 			}
 			//Return valid range.
 			return r, nil
@@ -84,5 +84,5 @@ func eventRange(ranges []Range, rangeID rID, w http.ResponseWriter, r *http.Requ
 	}
 	//Otherwise event doesn't contain a range with that id and return 404.
 	errorHandler(w, r, "range")
-	return Range{}, errors.New("Range with that ID doesn't exists in this event")
+	return Range{}, errors.New("a range with that ID doesn't exists in this event")
 }
