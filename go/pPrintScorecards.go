@@ -35,7 +35,11 @@ func barcode2D(w io.Writer, code barcode.Barcode, err error) {
 		log.Println(err)
 		return
 	}
-	fmt.Fprint(w, buf.String())
+
+	_, err = fmt.Fprint(w, buf.String())
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func printScorecards(w http.ResponseWriter, r *http.Request, event Event, shooterID sID) {
