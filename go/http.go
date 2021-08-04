@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
-	"time"
 )
 
 const (
@@ -31,9 +30,6 @@ const (
 var (
 	runDir string
 
-	//Used for every HTTP request with cache headers set.
-	cacheExpires string
-
 	headerOptions = map[string][2]string{
 		cGzip:   {contentEncode, cGzip},
 		brotli:  {contentEncode, brotli},
@@ -48,8 +44,6 @@ var (
 )
 
 func init() {
-	go maintainExpires()
-
 	var err error
 	runDir, err = os.Executable()
 	if err == nil {
@@ -97,8 +91,7 @@ func headers(w http.ResponseWriter, setHeaders ...string) {
 	for _, lookup := range setHeaders {
 		switch lookup {
 		case cache:
-			w.Header().Set(cacheControl, "public")
-			w.Header().Set(expires, cacheExpires)
+			w.Header().Set(cacheControl, "public, max-age=31622400")
 			w.Header().Set("Vary", acceptEncoding)
 		case nocache:
 			w.Header().Set(cacheControl, "no-cache, no-store, must-revalidate")
@@ -264,22 +257,6 @@ func errorHandler(w http.ResponseWriter, r *http.Request, errorType string) {
 			"Type": errorType,
 		},
 	})
-}
-
-//Update the expires http header time, every 15 minutes rather than recalculating it on every http request.
-func maintainExpires() {
-	setExpiresTime()
-	for range time.NewTicker(time.Hour * 23).C {
-		//Can't directly change global variables in a go routine, so call an external function.
-		setExpiresTime()
-	}
-}
-
-//Set expiry date 1 year, 0 months & 0 days in the future.
-func setExpiresTime() {
-	//Date format is the same as Go`s time.RFC1123 but uses "GMT" timezone instead of "UTC" time standard.
-	cacheExpires = time.Now().UTC().AddDate(1, 0, 0).Format(dateLong)
-	//w3.org: "All HTTP date/time stamps MUST be represented in Greenwich Mean Time" under 3.3.1 Full Date //www.w3.org/Protocols/rfc2616/rfc2616-sec3.html
 }
 
 /*func serveImg(dir, mimeType string, fileSystem http.FileSystem) {
