@@ -158,10 +158,10 @@ func insertDocument(tblName []byte, document interface{}, assignID func(interfac
 	})
 }
 
-func (event Event) insert() (string, error) {
+func (e Event) insert() (string, error) {
 	return insertDocument(
 		tblEvent,
-		event,
+		e,
 		func(i interface{}, b36 string) interface{} {
 			o := i.(Event)
 			o.ID = b36
@@ -513,18 +513,18 @@ func upsertScore(decode interface{}, contents interface{}) interface{} {
 	return event
 }
 
-func (shooterScores ScoreMap) calcShooterAggs(ranges []Range) ScoreMap {
+func (s ScoreMap) calcShooterAggs(ranges []Range) ScoreMap {
 	for _, r := range ranges {
 		if r.IsAgg {
-			shooterScores[r.StrID()] = shooterScores.calcAgg(r.Aggs)
+			s[r.StrID()] = s.calcAgg(r.Aggs)
 		}
 	}
-	return shooterScores
+	return s
 }
 
-func (shooterScores ScoreMap) calcAgg(aggRangeIDs []uint) (total Score) {
+func (s ScoreMap) calcAgg(aggRangeIDs []uint) (total Score) {
 	for _, id := range aggRangeIDs {
-		if score, ok := shooterScores.get(id); ok {
+		if score, ok := s.get(id); ok {
 			total.Total += score.Total
 			total.Centers += score.Centers
 			total.Centers2 += score.Centers2
