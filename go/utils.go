@@ -12,7 +12,7 @@ import (
 
 //Converts numeric string to uint
 func stoU(id string) (uint, error) {
-	u, err := strconv.ParseUint(strings.TrimSpace(id), 10, sysArch)
+	u, err := strconv.ParseUint(strings.TrimSpace(id), 10, strconv.IntSize)
 	if err != nil {
 		log.Printf("Unable to convert %v to uint", id)
 	}
