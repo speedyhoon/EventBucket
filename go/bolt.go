@@ -24,9 +24,9 @@ var (
 	tblShooter = []byte{2}
 )
 
-const (
-	eNoDocument = "'%v' document is empty / doesn't exist %q"
-)
+const eNoDocument = "'%v' document is empty / doesn't exist %q"
+
+var success = fmt.Errorf("")
 
 func startDB(dbPath string) {
 	//Create database directory if needed.
@@ -415,16 +415,15 @@ func getEvents(query func(Event) bool) ([]Event, error) {
 }
 
 func defaultClub() Club {
-	const success = "1"
 	var club Club
 	err := search(tblClub, &club, func(interface{}) error {
 		if club.IsDefault {
-			return fmt.Errorf(success)
+			return success
 		}
 		return nil
 	})
 	if err != nil {
-		if err.Error() == success {
+		if err == success {
 			return club
 		}
 		log.Println(err)
@@ -584,15 +583,14 @@ func searchShootersOptions(firstName, surname, club string) (options []frm.Optio
 
 func getClubByName(clubName string) (club Club, ok bool) {
 	clubName = strings.ToLower(clubName)
-	const success = "1"
 
 	err := search(tblClub, &club, func(club interface{}) error {
 		//Case insensitive search
 		if strings.ToLower(club.(*Club).Name) == clubName {
 			//Return a successful error to stop searching any further
-			return fmt.Errorf(success)
+			return success
 		}
 		return nil
 	})
-	return club, err != nil && err.Error() == success
+	return club, err != nil && err == success
 }
