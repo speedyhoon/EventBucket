@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -118,7 +119,8 @@ type ScoreMap map[string]Score
 
 //get returns a Score given a rangeID index
 func (s ScoreMap) get(id uint) (sc Score, ok bool) {
-	sc, ok = s[fmt.Sprintf("%d", id)]
+	sc, ok = s[strconv.FormatUint(uint64(id), 10)]
+
 	return
 }
 
