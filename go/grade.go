@@ -269,7 +269,7 @@ func loadGrades(filePath string) error {
 		//When loaded display filepath loaded
 		//maybe only load from a single directory if none specified?
 		//TODO change the default for portableApps mode
-		return errors.New("File specified is empty")
+		return errors.New("file specified is empty")
 	}
 	contents, err := ioutil.ReadFile(filePath)
 	//If file is empty, try to write a new JSON file.
