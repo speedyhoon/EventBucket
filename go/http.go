@@ -6,39 +6,31 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"github.com/speedyhoon/cnst"
 )
 
 const (
-	contentType    = "Content-Type"
-	contentEncode  = "Content-Encoding"
-	cacheControl   = "Cache-Control"
-	expires        = "Expires"
-	cache          = "cache"
-	nocache        = "nocache"
-	cGzip          = "gzip"
-	brotli         = "br"
-	acceptEncoding = "Accept-Encoding"
-	csp            = "Content-Security-Policy"
-	open           = "o"
-	lock           = "l"
-	html           = "h"
-	dateTime       = "2006-01-02 15:04"
-	dateLong       = "Mon, 02 Jan 2006 15:04:05 GMT"
+	cache    = "cache"
+	nocache  = "nocache"
+	open     = "o"
+	lock     = "l"
+	dateTime = "2006-01-02 15:04"
 )
 
 var (
 	runDir string
 
 	headerOptions = map[string][2]string{
-		cGzip:   {contentEncode, cGzip},
-		brotli:  {contentEncode, brotli},
-		html:    {contentType, "text/html; charset=utf-8"},
-		dirCSS:  {contentType, "text/css; charset=utf-8"},
-		dirJS:   {contentType, "text/javascript"},
-		urlSVG:  {contentType, "image/svg+xml"},
-		dirWEBP: {contentType, "image/webp"},
-		open:    {csp, "style-src 'self'"},
-		lock:    {csp, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src ws: 'self'; img-src 'self' data:"}, //font-src 'self'
+		cnst.Gzip:     {cnst.ContentEncoding, cnst.Gzip},
+		cnst.Brotli:   {cnst.ContentEncoding, cnst.Brotli},
+		cnst.HTMLUTF8: {cnst.ContentType, cnst.HTMLUTF8},
+		cnst.CSSUTF8:  {cnst.ContentType, cnst.CSSUTF8},
+		cnst.JS:       {cnst.ContentType, cnst.JS},
+		cnst.SVG:      {cnst.ContentType, cnst.SVG},
+		cnst.WEBP:     {cnst.ContentType, cnst.WEBP},
+		open:          {cnst.CSP, "style-src 'self'"},
+		lock:          {cnst.CSP, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src ws: 'self'; img-src 'self' data:"}, //font-src 'self'
 	}
 )
 
@@ -54,7 +46,7 @@ func serveFile(fileName string, compress bool) {
 	http.HandleFunc(fileName, func(w http.ResponseWriter, r *http.Request) {
 		h := []string{cache, fileName}
 		if compress {
-			h = append(h, brotli)
+			h = append(h, cnst.Brotli)
 		}
 		headers(w, h...)
 		http.ServeFile(w, r, filepath.Join(runDir, fileName))
@@ -65,7 +57,7 @@ func serveDir(contentType string, compress bool) {
 	http.HandleFunc(contentType, isDir(func(w http.ResponseWriter, r *http.Request) {
 		headers(w, contentType, cache)
 		if compress {
-			headers(w, brotli)
+			headers(w, cnst.Brotli)
 		}
 		http.FileServer(http.Dir(runDir)).ServeHTTP(w, r)
 	}))
@@ -86,15 +78,15 @@ func isDir(h func(w http.ResponseWriter, r *http.Request)) func(http.ResponseWri
 //TODO security add Access-Control-Allow-Origin //net.tutsplus.com/tutorials/client-side-security-best-practices/
 func headers(w http.ResponseWriter, setHeaders ...string) {
 	//The page cannot be displayed in a frame, regardless of the site attempting to do so. //developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options
-	w.Header().Set("X-Frame-Options", "DENY")
+	w.Header().Set(cnst.XFrameOptions, cnst.Deny)
 	for _, lookup := range setHeaders {
 		switch lookup {
 		case cache:
-			w.Header().Set(cacheControl, "public, max-age=31622400")
-			w.Header().Set("Vary", acceptEncoding)
+			w.Header().Set(cnst.CacheControl, "public, max-age=31622400")
+			w.Header().Set("Vary", cnst.AcceptEncoding)
 		case nocache:
-			w.Header().Set(cacheControl, "no-cache, no-store, must-revalidate")
-			w.Header().Set(expires, "0")
+			w.Header().Set(cnst.CacheControl, "no-cache, no-store, must-revalidate")
+			w.Header().Set(cnst.Expires, "0")
 			w.Header().Set("Pragma", "no-cache")
 		default:
 			//Set resource content type header or set content encoding gzip header
@@ -261,11 +253,11 @@ func errorHandler(w http.ResponseWriter, r *http.Request, errorType string) {
 /*func serveImg(dir, mimeType string, fileSystem http.FileSystem) {
 	http.HandleFunc(dir, isDir(func(w http.ResponseWriter, r *http.Request) {
 		//If client accepts Webp images
-		if strings.Contains(r.Header.Get("Accept"), "image/webp") {
+		if strings.Contains(r.Header.Get(cnst.Accept), cnst.WEBP) {
 			r.URL.Path += ".webp"
-			w.Header().Set(contentType, "image/webp")
+			w.Header().Set(cnst.ContentType, cnst.WEBP)
 		} else {
-			w.Header().Set(contentType, mimeType)
+			w.Header().Set(cnst.ContentType, mimeType)
 		}
 		http.FileServer(fileSystem).ServeHTTP(w, r)
 	}))
@@ -277,11 +269,11 @@ func serveImages(dir, mimeType string, fileSystem http.FileSystem) {
 		isDir(
 			func(w http.ResponseWriter, r *http.Request) {
 				//If client accepts Webp images
-				if strings.Contains(r.Header.Get("Accept"), "image/webp") {
+				if strings.Contains(r.Header.Get(cnst.Accept), cnst.WEBP) {
 					r.URL.Path += ".webp"
-					w.Header().Set(contentType, "image/webp")
+					w.Header().Set(cnst.ContentType, cnst.WEBP)
 				} else {
-					w.Header().Set(contentType, mimeType)
+					w.Header().Set(cnst.ContentType, mimeType)
 				}
 				http.FileServer(fileSystem).ServeHTTP(w, r)
 	}))

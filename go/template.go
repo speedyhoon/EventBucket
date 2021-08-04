@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/speedyhoon/cnst"
 	"github.com/speedyhoon/frm"
 	"github.com/speedyhoon/text/template"
 	"github.com/speedyhoon/utl"
@@ -130,7 +131,7 @@ func render(w http.ResponseWriter, p page) {
 	wz := gzipResponseWriter{Writer: gz, ResponseWriter: w}
 
 	//Add HTTP headers so browsers don't cache the HTML resource because it may contain different content every request.
-	headers(wz, html, nocache, cGzip, p.csp())
+	headers(wz, cnst.HTMLUTF8, nocache, cnst.Gzip, p.csp())
 
 	if p.Status != 0 {
 		wz.WriteHeader(p.Status)
