@@ -9,7 +9,6 @@ import (
 )
 
 const (
-	gt             = "GET"
 	contentType    = "Content-Type"
 	contentEncode  = "Content-Encoding"
 	cacheControl   = "Cache-Control"
@@ -219,7 +218,7 @@ func errorWrapper(w http.ResponseWriter, r *http.Request, url string) {
 func isGetMethod(h func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//Don't accept post or put requests
-		if r.Method != gt {
+		if r.Method != http.MethodGet {
 			//http.Redirect(w, r, url, http.StatusSeeOther)
 			http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 			return
