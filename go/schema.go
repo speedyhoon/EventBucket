@@ -21,8 +21,8 @@ type Club struct {
 	Name      string   `json:"n"`
 	IsDefault bool     `json:"d,omitempty"`
 	Mounds    []string `json:"M,omitempty"`
-	Latitude  float32  `json:"x,omitempty"`
-	Longitude float32  `json:"y,omitempty"`
+	Latitude  float64  `json:"x,omitempty"`
+	Longitude float64  `json:"y,omitempty"`
 	URL       string   `json:"u,omitempty"`
 	Address   string   `json:"a,omitempty"`
 	Town      string   `json:"w,omitempty"`

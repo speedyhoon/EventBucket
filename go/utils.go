@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -60,6 +59,6 @@ func openBrowser(url string) bool {
 	return exec.Command(args[0], append(args[1:], url)...).Start() == nil
 }
 
-func trimFloat(num float32) string {
-	return strings.TrimRight(strings.TrimRight(fmt.Sprintf("%.6f", num), "0"), ".")
+func trimFloat(num float64) string {
+	return strconv.FormatFloat(num, 'g', -1, 64)
 }
