@@ -62,7 +62,7 @@ func clubs(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func clubsMap(w http.ResponseWriter, r *http.Request, f []frm.Field) {
+func clubsMap(w http.ResponseWriter, _ *http.Request, f []frm.Field) {
 	clubs, err := getMapClubs(f[0].Str())
 	if err != nil {
 		log.Println(err)

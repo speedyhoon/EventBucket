@@ -2,7 +2,7 @@ package main
 
 import "net/http"
 
-func eventArchive(w http.ResponseWriter, r *http.Request) {
+func eventArchive(w http.ResponseWriter, _ *http.Request) {
 	events, err := getEvents(onlyClosed)
 	render(w, page{
 		Title: "Archive",
