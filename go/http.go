@@ -8,6 +8,8 @@ import (
 	"strings"
 
 	"github.com/speedyhoon/cnst"
+	"github.com/speedyhoon/cnst/hdrs"
+	"github.com/speedyhoon/cnst/mime"
 )
 
 const (
@@ -22,15 +24,15 @@ var (
 	runDir string
 
 	headerOptions = map[string][2]string{
-		cnst.Gzip:     {cnst.ContentEncoding, cnst.Gzip},
-		cnst.Brotli:   {cnst.ContentEncoding, cnst.Brotli},
-		cnst.HTMLUTF8: {cnst.ContentType, cnst.HTMLUTF8},
-		cnst.CSSUTF8:  {cnst.ContentType, cnst.CSSUTF8},
-		cnst.JS:       {cnst.ContentType, cnst.JS},
-		cnst.SVG:      {cnst.ContentType, cnst.SVG},
-		cnst.WEBP:     {cnst.ContentType, cnst.WEBP},
-		open:          {cnst.CSP, "style-src 'self'"},
-		lock:          {cnst.CSP, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src ws: 'self'; img-src 'self' data:"}, //font-src 'self'
+		cnst.Gzip:     {hdrs.ContentEncoding, cnst.Gzip},
+		cnst.Brotli:   {hdrs.ContentEncoding, cnst.Brotli},
+		mime.HTMLUTF8: {hdrs.ContentType, mime.HTMLUTF8},
+		mime.CSSUTF8:  {hdrs.ContentType, mime.CSSUTF8},
+		mime.JS:       {hdrs.ContentType, mime.JS},
+		mime.SVG:      {hdrs.ContentType, mime.SVG},
+		mime.WEBP:     {hdrs.ContentType, mime.WEBP},
+		open:          {hdrs.CSP, "style-src 'self'"},
+		lock:          {hdrs.CSP, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src ws: 'self'; img-src 'self' data:"}, //font-src 'self'
 	}
 )
 
@@ -78,15 +80,15 @@ func isDir(h func(w http.ResponseWriter, r *http.Request)) func(http.ResponseWri
 //TODO security add Access-Control-Allow-Origin //net.tutsplus.com/tutorials/client-side-security-best-practices/
 func headers(w http.ResponseWriter, setHeaders ...string) {
 	//The page cannot be displayed in a frame, regardless of the site attempting to do so. //developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options
-	w.Header().Set(cnst.XFrameOptions, cnst.Deny)
+	w.Header().Set(hdrs.XFrameOptions, cnst.Deny)
 	for _, lookup := range setHeaders {
 		switch lookup {
 		case cache:
-			w.Header().Set(cnst.CacheControl, "public, max-age=31622400")
-			w.Header().Set("Vary", cnst.AcceptEncoding)
+			w.Header().Set(hdrs.CacheControl, "public, max-age=31622400")
+			w.Header().Set("Vary", hdrs.AcceptEncoding)
 		case nocache:
-			w.Header().Set(cnst.CacheControl, "no-cache, no-store, must-revalidate")
-			w.Header().Set(cnst.Expires, "0")
+			w.Header().Set(hdrs.CacheControl, "no-cache, no-store, must-revalidate")
+			w.Header().Set(hdrs.Expires, "0")
 			w.Header().Set("Pragma", "no-cache")
 		default:
 			//Set resource content type header or set content encoding gzip header
