@@ -8,6 +8,7 @@ import (
 
 	"github.com/speedyhoon/frm"
 	"github.com/speedyhoon/session"
+	"github.com/speedyhoon/utl"
 )
 
 func club(w http.ResponseWriter, r *http.Request, club Club) {
@@ -18,8 +19,8 @@ func club(w http.ResponseWriter, r *http.Request, club Club) {
 		fs[action].Fields[1].Value = club.Address
 		fs[action].Fields[2].Value = club.Town
 		fs[action].Fields[3].Value = club.Postcode
-		fs[action].Fields[4].Value = trimFloat(club.Latitude)
-		fs[action].Fields[5].Value = trimFloat(club.Longitude)
+		fs[action].Fields[4].Value = utl.TrimFloat(club.Latitude)
+		fs[action].Fields[5].Value = utl.TrimFloat(club.Longitude)
 		fs[action].Fields[6].Value = club.IsDefault
 		fs[action].Fields[6].Disable = club.IsDefault
 		fs[action].Fields[7].Value = club.URL
