@@ -1,13 +1,13 @@
 package main
 
 import (
-	"compress/gzip"
 	"io"
 	"log"
 	"net/http"
 	"path/filepath"
 	"strings"
 
+	"github.com/andybalholm/brotli"
 	"github.com/speedyhoon/cnst"
 	"github.com/speedyhoon/cnst/mime"
 	"github.com/speedyhoon/frm"
@@ -122,14 +122,13 @@ func init() {
 //#endif
 
 func render(w http.ResponseWriter, p page) {
-	//Gzip response, even if requester doesn't support gzip
-	gz := gzip.NewWriter(w)
+	//Brotli compress response, even if AcceptEncoding doesn't contain "br"
+	wz := gzipResponseWriter{WriteCloser: brotli.NewWriterLevel(w, brotli.BestCompression), ResponseWriter: w}
 	defer func() {
-		if err := gz.Close(); err != nil {
+		if err := wz.WriteCloser.Close(); err != nil {
 			log.Println(err)
 		}
 	}()
-	wz := gzipResponseWriter{Writer: gz, ResponseWriter: w}
 
 	//Add HTTP headers so browsers don't cache the HTML resource because it may contain different content every request.
 	headers(wz, mime.HTMLUTF8, nocache, cnst.Gzip, p.csp())
@@ -173,10 +172,10 @@ func render(w http.ResponseWriter, p page) {
 }
 
 type gzipResponseWriter struct {
-	io.Writer
+	io.WriteCloser
 	http.ResponseWriter
 }
 
 func (w gzipResponseWriter) Write(b []byte) (int, error) {
-	return w.Writer.Write(b)
+	return w.WriteCloser.Write(b)
 }
