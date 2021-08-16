@@ -123,7 +123,10 @@ func init() {
 
 func render(w http.ResponseWriter, p page) {
 	//Brotli compress response, even if AcceptEncoding doesn't contain "br"
-	wz := gzipResponseWriter{WriteCloser: brotli.NewWriterLevel(w, brotli.BestCompression), ResponseWriter: w}
+	wz := compressResponse{
+		WriteCloser:    brotli.NewWriterLevel(w, brotli.BestCompression),
+		ResponseWriter: w,
+	}
 	defer func() {
 		if err := wz.WriteCloser.Close(); err != nil {
 			log.Println(err)
@@ -171,11 +174,11 @@ func render(w http.ResponseWriter, p page) {
 	}
 }
 
-type gzipResponseWriter struct {
+type compressResponse struct {
 	io.WriteCloser
 	http.ResponseWriter
 }
 
-func (w gzipResponseWriter) Write(b []byte) (int, error) {
+func (w compressResponse) Write(b []byte) (int, error) {
 	return w.WriteCloser.Write(b)
 }
