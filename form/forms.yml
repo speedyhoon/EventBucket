@@ -37,7 +37,7 @@
     max: 90
     min: -90
     step: .000001
-    v8: Float32
+    v8: Float64
     help: Entering your clubs Latitude &amp; Longitide will generate a map with your clubs location (requires an internet connection).
   - label: Longitude
     name: y
@@ -45,7 +45,7 @@
     min: -180
     max: 180
     step: .000001
-    v8: Float32
+    v8: Float64
     help: Entering your clubs Latitude &amp; Longitide will generate a map with your clubs location (requires an internet connection).
   - label: Default Club
     name: b

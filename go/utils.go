@@ -58,7 +58,3 @@ func openBrowser(url string) bool {
 	}
 	return exec.Command(args[0], append(args[1:], url)...).Start() == nil
 }
-
-func trimFloat(num float64) string {
-	return strconv.FormatFloat(num, 'g', -1, 64)
-}
