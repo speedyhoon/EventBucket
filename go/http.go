@@ -24,15 +24,15 @@ var (
 	runDir string
 
 	headerOptions = map[string][2]string{
-		cnst.Gzip:     {hdrs.ContentEncoding, cnst.Gzip},
-		cnst.Brotli:   {hdrs.ContentEncoding, cnst.Brotli},
-		mime.HTMLUTF8: {hdrs.ContentType, mime.HTMLUTF8},
-		mime.CSSUTF8:  {hdrs.ContentType, mime.CSSUTF8},
-		mime.JS:       {hdrs.ContentType, mime.JS},
-		mime.SVG:      {hdrs.ContentType, mime.SVG},
-		mime.WEBP:     {hdrs.ContentType, mime.WEBP},
-		open:          {hdrs.CSP, "style-src 'self'"},
-		lock:          {hdrs.CSP, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src ws: 'self'; img-src 'self' data:"}, //font-src 'self'
+		cnst.Gzip:   {hdrs.ContentEncoding, cnst.Gzip},
+		cnst.Brotli: {hdrs.ContentEncoding, cnst.Brotli},
+		mime.HTML:   {hdrs.ContentType, mime.HTML},
+		mime.CSS:    {hdrs.ContentType, mime.CSS},
+		mime.JS:     {hdrs.ContentType, mime.JS},
+		mime.SVG:    {hdrs.ContentType, mime.SVG},
+		mime.WEBP:   {hdrs.ContentType, mime.WEBP},
+		open:        {hdrs.CSP, "style-src 'self'"},
+		lock:        {hdrs.CSP, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src ws: 'self'; img-src 'self' data:"}, //font-src 'self'
 	}
 )
 
@@ -77,7 +77,7 @@ func isDir(h func(w http.ResponseWriter, r *http.Request)) func(http.ResponseWri
 	}
 }
 
-//TODO security add Access-Control-Allow-Origin //net.tutsplus.com/tutorials/client-side-security-best-practices/
+// TODO security add Access-Control-Allow-Origin //net.tutsplus.com/tutorials/client-side-security-best-practices/
 func headers(w http.ResponseWriter, setHeaders ...string) {
 	//The page cannot be displayed in a frame, regardless of the site attempting to do so. //developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options
 	w.Header().Set(hdrs.XFrameOptions, cnst.Deny)

@@ -108,7 +108,7 @@ var (
 	}
 )
 
-//#ifndef DEBUG
+// #ifndef DEBUG
 func init() {
 	var err error
 	tmpl8, err = template.New("").Funcs(tempFuncs).ParseFiles(
@@ -134,7 +134,7 @@ func render(w http.ResponseWriter, p page) {
 	}()
 
 	//Add HTTP headers so browsers don't cache the HTML resource because it may contain different content every request.
-	headers(wz, mime.HTMLUTF8, nocache, cnst.Gzip, p.csp())
+	headers(wz, mime.HTML, nocache, cnst.Gzip, p.csp())
 
 	if p.Status != 0 {
 		wz.WriteHeader(p.Status)
