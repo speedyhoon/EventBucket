@@ -89,7 +89,7 @@ func clubInsert(f frm.Form) (ID string, err error) {
 	return urlClub + ID + "#edit", nil
 }
 
-//Add new club if there isn't already a club with that name
+// Add new club if there isn't already a club with that name
 func clubInsertIfNone(clubName string) (string, error) {
 	club, ok := getClubByName(clubName)
 	if ok {
@@ -117,8 +117,8 @@ func clubDetailsUpsert(f frm.Form) (string, error) {
 			Address:   f.Fields[1].Str(),
 			Town:      f.Fields[2].Str(),
 			Postcode:  f.Fields[3].Str(),
-			Latitude:  f.Fields[4].Float(),
-			Longitude: f.Fields[5].Float(),
+			Latitude:  f.Fields[4].Float64(),
+			Longitude: f.Fields[5].Float64(),
 			IsDefault: isDefault,
 			URL:       f.Fields[7].Str(),
 		}, &Club{}, updateClubDetails)
