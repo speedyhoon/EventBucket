@@ -115,7 +115,7 @@ func calcTotalCenters(shots string, classID uint) Score {
 			total += defaultClassSettings[classID].Marking.Shots[shot].Value
 			centers += defaultClassSettings[classID].Marking.Shots[shot].Center
 
-			// Append count back in reverse order, so it can be ordered by the last few shots.
+			// Append countBack in reverse order, so it can be ordered by the last few shots.
 			countBack = defaultClassSettings[classID].Marking.Shots[shot].CountBack + countBack
 			/*if shot == "-" {
 				warning = legendIncompleteScore

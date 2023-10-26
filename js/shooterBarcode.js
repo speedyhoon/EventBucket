@@ -4,7 +4,7 @@ document.querySelector('#sb').onsubmit = function(event){
 	return false;
 };
 
-//If shooter ID is provided, try to find the shooter. Otherwise, autofocus on barcode search textbox.
+//If shooter ID is provided, try to find the shooter. Otherwise, autofocus on barcode search text box.
 if(!window.location.hash){
 	document.querySelector('[name=B]').setAttribute('autofocus', '');
 }else{
@@ -57,7 +57,7 @@ function shooterBarcode($search){
 }
 
 function goToShooter(shooterID, search){
-	//If the shooter textbox exists in the DOM, set focus to their text box.
+	//If the shooter text box exists in the DOM, set focus to their text box.
 	var d = document.getElementById(shooterID)
 		,pathName = window.location.pathname.split('/')[1];
 	if(d){

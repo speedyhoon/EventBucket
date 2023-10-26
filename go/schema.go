@@ -154,16 +154,16 @@ type EventShooter struct {
 type Shooter struct {
 	ID        string           `json:"I"` // EventBucket shooters ID.
 	SID       uint             `json:"J,omitempty"`
-	NID       uint             `json:"N,omitempty"` // NRAA sequential integer id.
+	NID       uint             `json:"N,omitempty"` // N.R.A.A. sequential integer id.
 	FirstName string           `json:"f,omitempty"`
 	Surname   string           `json:"s,omitempty"`
 	NickName  string           `json:"n,omitempty"`
 	Club      string           `json:"C,omitempty"`
-	Skill     map[string]Skill `json:"K,omitempty"` // Grading set by the NRAA for each class.
+	Skill     map[string]Skill `json:"K,omitempty"` // Grading set by the N.R.A.A. for each class.
 	Address   string           `json:"a,omitempty"`
 	Email     string           `json:"e,omitempty"`
 	Status    int              `json:"v,omitempty"` /* Shooter details 0=not modified, 1=updated, 2=merged, 3=deleted
-	If shooter details are merged with another existing shooter, then this is the other NRAA_SID it was merged with.
+	If shooter details are merged with another existing shooter, then this is the other `NRAA_SID` it was merged with.
 	When merging set one record to merged, the other to deleted.
 	Both records must set MergedSID to the other corresponding shooter SID.*/
 	MergedSID int       `json:"m,omitempty"`

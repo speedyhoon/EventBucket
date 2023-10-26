@@ -163,7 +163,7 @@ func defaultGlobalDisciplines() []Discipline {
 			"g": {Shot: "6", Sighter: "g"},
 			"v": {Shot: "V", Sighter: "v"},
 			"x": {Shot: "X", Sighter: "x"},
-			// TODO sort isn't sorting by countback 2 descending.
+			// TODO sort isn't sorting by CountBack2 descending.
 			// TODO precedence is taken over the last X shot rather than the most X's shot.
 		}}
 	// Disciplines F Standard, F Open and F/TR have been merged together because they all use the same scoring method (0123456X). Although they are technically separate disciplines, most events assign the same number of shots and sighters for all three.  If the disciplines need to be independent, these settings can be overwritten using the command line flag -grades and specifying a JSON settings file. e.g. EventBucket.exe -grades my_new_grades.json
