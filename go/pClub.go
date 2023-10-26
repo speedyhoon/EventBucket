@@ -26,10 +26,10 @@ func club(w http.ResponseWriter, r *http.Request, club Club) {
 		fs[action].Fields[7].Value = club.URL
 	}
 
-	//always set the clubID
+	// Always set the clubID.
 	fs[frmClubEdit].Fields[8].Value = club.ID
 
-	//Club Mound form
+	// Club Mound form.
 	fs[frmClubMoundNew].Fields[1].Value = club.ID
 
 	render(w, page{
@@ -93,10 +93,10 @@ func clubInsert(f frm.Form) (ID string, err error) {
 func clubInsertIfNone(clubName string) (string, error) {
 	club, ok := getClubByName(clubName)
 	if ok {
-		//return existing club
+		// Return the existing club.
 		return club.ID, nil
 	}
-	//Club doesn't exist so try to insert it.
+	// Club doesn't exist so try to insert it.
 	return Club{Name: clubName}.insert()
 }
 
@@ -105,7 +105,7 @@ func clubDetailsUpsert(f frm.Form) (string, error) {
 	isDefault := f.Fields[6].Checked()
 	defaultClub := defaultClub()
 	if isDefault && defaultClub.ID != clubID {
-		//Need to remove isDefault for the default club so there is only one default at a time.
+		// Need to remove isDefault for the default club so there is only one default at a time.
 		err := updateDocument(tblClub, defaultClub.ID, &Club{IsDefault: false}, &Club{}, updateClubDefault)
 		if err != nil {
 			log.Println(err)

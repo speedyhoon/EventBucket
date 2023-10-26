@@ -32,7 +32,7 @@ var (
 		mime.SVG:    {hdrs.ContentType, mime.SVG},
 		mime.WEBP:   {hdrs.ContentType, mime.WEBP},
 		open:        {hdrs.CSP, "style-src 'self'"},
-		lock:        {hdrs.CSP, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src ws: 'self'; img-src 'self' data:"}, //font-src 'self'
+		lock:        {hdrs.CSP, "default-src 'none'; style-src 'self'; script-src 'self'; connect-src ws: 'self'; img-src 'self' data:"}, // font-src 'self'
 	}
 )
 
@@ -67,9 +67,9 @@ func serveDir(contentType string, compress bool) {
 
 func isDir(h func(w http.ResponseWriter, r *http.Request)) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		//If url is a directory
+		// If url is a directory.
 		if strings.HasSuffix(r.URL.Path, "/") {
-			//Then return a 404 to prevent displaying all files in the directory
+			// Then return a 404 to prevent displaying all files in the directory.
 			http.NotFound(w, r)
 			return
 		}
@@ -79,7 +79,7 @@ func isDir(h func(w http.ResponseWriter, r *http.Request)) func(http.ResponseWri
 
 // TODO security add Access-Control-Allow-Origin //net.tutsplus.com/tutorials/client-side-security-best-practices/
 func headers(w http.ResponseWriter, setHeaders ...string) {
-	//The page cannot be displayed in a frame, regardless of the site attempting to do so. //developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options
+	// The page cannot be displayed in a frame, regardless of the site attempting to do so. //developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options
 	w.Header().Set(hdrs.XFrameOptions, cnst.Deny)
 	for _, lookup := range setHeaders {
 		switch lookup {
@@ -91,7 +91,7 @@ func headers(w http.ResponseWriter, setHeaders ...string) {
 			w.Header().Set(hdrs.Expires, "0")
 			w.Header().Set("Pragma", "no-cache")
 		default:
-			//Set resource content type header or set content encoding gzip header
+			// Set resource content type header or set content encoding gzip header.
 			if h, ok := headerOptions[lookup]; ok {
 				w.Header().Set(h[0], h[1])
 			}
@@ -115,8 +115,8 @@ func getRedirectPermanent(url string, pageFunc func(http.ResponseWriter, *http.R
 		isGetMethod(func(w http.ResponseWriter, r *http.Request) {
 			pageFunc(w, r)
 		}))
-	//Redirects back to subdirectory "url". Needed when url parameters are not wanted or needed.
-	//e.g. if url = "foobar" then "http://localhost/foobar/fdsa" will redirect to "http://localhost/foobar"
+	// Redirects back to subdirectory "url". Needed when url parameters are not wanted or needed.
+	// e.g. if url = "foobar" then "http://localhost/foobar/fdsa" will redirect to "http://localhost/foobar".
 	http.Handle(url+"/", http.RedirectHandler(url, http.StatusMovedPermanently))
 }
 
@@ -128,7 +128,7 @@ func getParameters(url string, pageFunc interface{}, regex *regexp.Regexp) {
 			lowerParams = strings.ToLower(parameters)
 
 			if parameters != lowerParams {
-				//Redirect to page with lowercase parameters.
+				// Redirect to page with lowercase parameters.
 				http.Redirect(w, r, url+lowerParams, http.StatusSeeOther)
 				return
 			}
@@ -144,14 +144,14 @@ func getParameters(url string, pageFunc interface{}, regex *regexp.Regexp) {
 func findHandler(pageFunc interface{}, w http.ResponseWriter, r *http.Request, lowerParams string) {
 	ids := strings.Split(lowerParams, "/")
 	switch pageFunc.(type) {
-	//pPrintScorecards.go
+	// pPrintScorecards.go
 	case func(http.ResponseWriter, *http.Request, string):
 		pageFunc.(func(http.ResponseWriter, *http.Request, string))(w, r, lowerParams)
 
 	case func(http.ResponseWriter, *http.Request, string, string):
 		pageFunc.(func(http.ResponseWriter, *http.Request, string, string))(w, r, ids[0], ids[1])
 
-	//pEntries.go
+	// pEntries.go
 	case func(http.ResponseWriter, *http.Request, Event):
 		event, err := getEvent(ids[0])
 		if err != nil {
@@ -160,10 +160,10 @@ func findHandler(pageFunc interface{}, w http.ResponseWriter, r *http.Request, l
 		}
 		pageFunc.(func(http.ResponseWriter, *http.Request, Event))(w, r, event)
 
-	//pClub.go
+	// pClub.go
 	case func(http.ResponseWriter, *http.Request, Club):
 		club, err := getClub(ids[0])
-		//If club not found in the database return error club not found (404).
+		// If club not found in the database return error club not found (404).
 		if err != nil {
 			errorHandler(w, r, "club")
 			return
@@ -183,9 +183,9 @@ func findHandler(pageFunc interface{}, w http.ResponseWriter, r *http.Request, l
 		}
 		pageFunc.(func(http.ResponseWriter, *http.Request, Event, sID))(w, r, event, sID(shooterID))
 
-	//pEnterShots.go
-	//pEnterTotals.go
-	//pScoreboard.go
+	// pEnterShots.go
+	// pEnterTotals.go
+	// pScoreboard.go
 	case func(http.ResponseWriter, *http.Request, Event, rID):
 		event, err := getEvent(ids[0])
 		if err != nil {
@@ -211,7 +211,7 @@ func errorWrapper(w http.ResponseWriter, r *http.Request, url string) {
 
 func isGetMethod(h func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		//Don't accept post or put requests
+		// Don't accept post or put requests.
 		if r.Method != http.MethodGet {
 			//http.Redirect(w, r, url, http.StatusSeeOther)
 			http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
@@ -222,21 +222,21 @@ func isGetMethod(h func(w http.ResponseWriter, r *http.Request)) func(w http.Res
 }
 
 func errorHandler(w http.ResponseWriter, r *http.Request, errorType string) {
-	//All EventBucket page urls and ids are lowercase
+	// All EventBucket page urls and ids are lowercase.
 	lowerURL := strings.ToLower(r.URL.Path)
 
-	//Redirect if url contains any uppercase letters.
+	// Redirect if url contains any uppercase letters.
 	if r.URL.Path != lowerURL {
 		http.Redirect(w, r, lowerURL, http.StatusSeeOther)
 		return
 	}
 	lowerURL = strings.TrimSuffix(r.URL.Path, "/")
 
-	//check if the request matches any of the pages that don't require parameters
+	// Check if the request matches any of the pages that don't require parameters.
 	if strings.Count(lowerURL, "/") >= 2 {
 		for _, page := range []string{urlAbout, urlArchive, urlClubs, urlLicence, urlShooters} {
 			if strings.HasPrefix(lowerURL, page) {
-				//redirect to page without parameters
+				// Redirect to page without parameters.
 				http.Redirect(w, r, page, http.StatusSeeOther)
 				return
 			}
@@ -254,7 +254,7 @@ func errorHandler(w http.ResponseWriter, r *http.Request, errorType string) {
 
 /*func serveImg(dir, mimeType string, fileSystem http.FileSystem) {
 	http.HandleFunc(dir, isDir(func(w http.ResponseWriter, r *http.Request) {
-		//If client accepts Webp images
+		// If client accepts Webp images.
 		if strings.Contains(r.Header.Get(cnst.Accept), cnst.WEBP) {
 			r.URL.Path += ".webp"
 			w.Header().Set(cnst.ContentType, cnst.WEBP)
@@ -270,7 +270,7 @@ func serveImages(dir, mimeType string, fileSystem http.FileSystem) {
 		dir,
 		isDir(
 			func(w http.ResponseWriter, r *http.Request) {
-				//If client accepts Webp images
+				// If client accepts Webp images.
 				if strings.Contains(r.Header.Get(cnst.Accept), cnst.WEBP) {
 					r.URL.Path += ".webp"
 					w.Header().Set(cnst.ContentType, cnst.WEBP)

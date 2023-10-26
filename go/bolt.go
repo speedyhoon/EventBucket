@@ -16,10 +16,10 @@ import (
 )
 
 var (
-	//Database connection.
+	// Database connection.
 	db *bolt.DB
 
-	//Database bucket (table) names
+	// Database bucket (table) names.
 	tblClub    = []byte{0}
 	tblEvent   = []byte{1}
 	tblShooter = []byte{2}
@@ -30,19 +30,19 @@ const eNoDocument = "'%v' document is empty / doesn't exist %q"
 var success = fmt.Errorf("")
 
 func startDB(dbPath string) {
-	//Create database directory if needed.
+	// Create database directory if needed.
 	err := mkDir(filepath.Dir(dbPath))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	//Database save location
+	// Database save location.
 	db, err = bolt.Open(dbPath, 0644, &bolt.Options{Timeout: time.Second * 8})
 	if err != nil {
 		log.Fatalln("Connection timeout. Unable to open", dbPath)
 	}
 
-	//Prepare database by creating all buckets (tables) needed. Otherwise, view (read only) transactions will fail.
+	// Prepare database by creating all buckets (tables) needed. Otherwise, view (read only) transactions will fail.
 	err = db.Update(func(tx *bolt.Tx) error {
 		for index, bucketName := range [][]byte{tblClub, tblEvent, tblShooter} {
 			_, err = tx.CreateBucketIfNotExists(bucketName)
@@ -57,7 +57,7 @@ func startDB(dbPath string) {
 	}
 }
 
-// view checks if a bucket exists before executing the provided function myCall
+// view checks if a bucket exists before executing the provided function myCall.
 func view(bucketName []byte, myCall func(*bolt.Bucket) error) error {
 	return db.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(bucketName)
@@ -68,7 +68,7 @@ func view(bucketName []byte, myCall func(*bolt.Bucket) error) error {
 	})
 }
 
-// search executes view() first and then checks if each item can be unmarshalled before executing the provided function myCall
+// search executes view() first and then checks if each item can be unmarshalled before executing the provided function myCall.
 func search(table []byte, object interface{}, myCall func(interface{}) error) error {
 	return view(table, func(b *bolt.Bucket) error {
 		return b.ForEach(func(_, value []byte) error {
@@ -80,7 +80,7 @@ func search(table []byte, object interface{}, myCall func(interface{}) error) er
 	})
 }
 
-// tblQty returns the total number of records contained in the bucket (table)
+// tblQty returns the total number of records contained in the bucket (table).
 func tblQty(bucketName []byte) (qty uint) {
 	err := view(bucketName, func(bucket *bolt.Bucket) error {
 		qty = uint(bucket.Stats().KeyN)
@@ -146,11 +146,11 @@ func insertDocument(tblName []byte, document interface{}, assignID func(interfac
 		}
 		var id []byte
 		b36, id = nextID(bucket)
-		//Generate ID for the user.
-		//This returns an error only if the Tx is closed or not writable.
-		//That can't happen in an Update() call so I ignore the error check.
+		// Generate ID for the user.
+		// This returns an error only if the Tx is closed or not writable.
+		// That can't happen in an Update() call so I ignore the error check.
 
-		//Marshal user data into bytes.
+		// Marshal user data into bytes.
 		buf, err := json.Marshal(assignID(document, b36))
 		if err != nil {
 			return err
@@ -245,7 +245,7 @@ func updateShooterDetails(decode interface{}, contents interface{}) interface{} 
 func updateClubDetails(decode interface{}, contents interface{}) interface{} {
 	club := decode.(*Club)
 	update := contents.(*Club)
-	//Manually set each one otherwise it would override the existing club and its details (Mounds etc.)
+	// Manually set each one otherwise it would override the existing club and its details (Mounds etc.).
 	club.Name = update.Name
 	club.Address = update.Address
 	club.Town = update.Town
@@ -272,7 +272,7 @@ func insertClubMound(decode interface{}, mound interface{}) interface{} {
 func updateEventDetails(decode interface{}, contents interface{}) interface{} {
 	event := decode.(*Event)
 	update := contents.(*Event)
-	//Manually set each one otherwise it would override the existing event and its details (Ranges, Shooters & their scores) since the form doesn't already have that info.
+	// Manually set each one otherwise it would override the existing event and its details (Ranges, Shooters & their scores) since the form doesn't already have that info.
 	event.Name = update.Name
 	event.Club = update.Club
 	event.DateTime = update.DateTime
@@ -311,14 +311,14 @@ func editRange(decode interface{}, contents interface{}) interface{} {
 				r.Aggs = rangeDetails.Aggs
 			} else {
 				r.Locked = rangeDetails.Locked
-				//if r.Locked {
-				//event.Shooters = addGradeSeparatorToShooterObjectAndPositions(event.Shooters, r.StrID())
-				//info.Println("Recalculate range", r.ID, r.Name)
-				//}
+				/*if r.Locked {
+					event.Shooters = addGradeSeparatorToShooterObjectAndPositions(event.Shooters, r.StrID())
+					info.Println("Recalculate range", r.ID, r.Name)
+				}*/
 			}
-			//Move range if the order has changed
+			// Move range if the order has changed.
 			if uint(i) != rangeDetails.Order {
-				//Cut range
+				// Cut range.
 				if i <= 0 {
 					event.Ranges = append([]Range{}, event.Ranges[1:]...)
 				} else if i >= len(event.Ranges)-1 {
@@ -327,7 +327,7 @@ func editRange(decode interface{}, contents interface{}) interface{} {
 					event.Ranges = append(event.Ranges[:i], event.Ranges[i+1:]...)
 				}
 
-				//Paste range
+				// Paste range.
 				if rangeDetails.Order <= 0 {
 					event.Ranges = append([]Range{r}, event.Ranges...)
 				} else if rangeDetails.Order >= uint(len(event.Ranges)-1) {
@@ -336,7 +336,7 @@ func editRange(decode interface{}, contents interface{}) interface{} {
 					event.Ranges = append(event.Ranges[:rangeDetails.Order], append([]Range{r}, event.Ranges[rangeDetails.Order:]...)...)
 				}
 
-				//Now rearrange any list of Aggregates that contain this range. This saves performing a double loop in the scoreboard page because the aggregate list is now out of order.
+				// Now rearrange any list of Aggregates that contain this range. This saves performing a double loop in the scoreboard page because the aggregate list is now out of order.
 				for w, rng := range event.Ranges {
 					if rng.IsAgg {
 						var rangeList []uint
@@ -446,7 +446,7 @@ func eventShooterInsertDB(decode interface{}, contents interface{}) interface{} 
 	}
 
 SearchNextGrade:
-	//Loop through the shooters selected grades & add a new shooter for each with a different grades.
+	// Loop through the shooters selected grades & add a new shooter for each with a different grades.
 	for _, gradeID := range newShooter.Grades {
 		for _, s := range event.Shooters {
 			if s.EID == shooter.EID && s.Grade == gradeID {
@@ -455,17 +455,17 @@ SearchNextGrade:
 			}
 		}
 
-		//Assign shooter ID
+		// Assign shooter ID.
 		shooter.ID = event.AutoInc.Shooter
 		shooter.Grade = gradeID
 		event.Shooters = append(event.Shooters, shooter)
 
-		//Increment Event Shooter ID
+		// Increment Event Shooter ID.
 		event.AutoInc.Shooter++
 
-		//Some events shooters from grade X are automatically added to grade Y, e.g. Shooters in Match Reserve are able to win prizes in the higher grade Match Open.
+		// Some events shooters from grade X are automatically added to grade Y, e.g. Shooters in Match Reserve are able to win prizes in the higher grade Match Open.
 		for _, grade := range globalGrades[gradeID].DuplicateTo {
-			//Don't add the shooter because they have already selected to enter into the duplicate grade.
+			// Don't add the shooter because they have already selected to enter into the duplicate grade.
 			if !containsUint(newShooter.Grades, grade) {
 				shooter.LinkedID = shooter.ID
 				shooter.ID = event.AutoInc.Shooter
@@ -537,7 +537,7 @@ func (s ScoreMap) calcAgg(aggRangeIDs []uint) (total Score) {
 	return total
 }
 
-// Converts base36 string to []byte used for bolt maps
+// Converts base36 string to []byte used for bolt maps.
 func b36toBy(id string) ([]byte, error) {
 	num, err := strconv.ParseUint(id, 36, 64)
 	if err != nil {
@@ -549,7 +549,7 @@ func b36toBy(id string) ([]byte, error) {
 }
 
 func searchShooters(firstName, surname, club string) (shooters []Shooter) {
-	//Search for shooters in the default club if all search values are empty.
+	// Search for shooters in the default club if all search values are empty.
 	if firstName == "" && surname == "" && club == "" {
 		club = defaultClub().Name
 	}
@@ -560,7 +560,7 @@ func searchShooters(firstName, surname, club string) (shooters []Shooter) {
 
 	err := search(tblShooter, &Shooter{}, func(s interface{}) error {
 		shooter := *s.(*Shooter)
-		//strings.Contains returns true when sub-string is "" (empty string)
+		// strings.Contains returns true when sub-string is "" (empty string)
 		if strings.Contains(strings.ToLower(shooter.FirstName), firstName) && strings.Contains(strings.ToLower(shooter.Surname), surname) {
 			clubs, err := getClub(shooter.Club)
 			if err == nil && strings.Contains(strings.ToLower(clubs.Name), club) {
@@ -588,7 +588,7 @@ func getClubByName(clubName string) (club Club, ok bool) {
 	err := search(tblClub, &club, func(club interface{}) error {
 		// Case-insensitive search
 		if strings.ToLower(club.(*Club).Name) == clubName {
-			//Return a successful error to stop searching any further
+			// Return a successful error to stop searching any further.
 			return success
 		}
 		return nil

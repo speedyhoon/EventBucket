@@ -45,13 +45,13 @@ func eventSearchShooters(w http.ResponseWriter, _ *http.Request, f frm.Form) {
 }
 
 func shooterInsert(f frm.Form) (string, error) {
-	//Add new club if there isn't already a club with that name
+	// Add new club if there isn't already a club with that name.
 	clubID, err := clubInsertIfNone(f.Fields[2].Str())
 	if err != nil {
 		return "", err
 	}
 
-	//Insert new shooter
+	// Insert new shooter.
 	_, err = Shooter{
 		FirstName: f.Fields[0].Str(),
 		Surname:   f.Fields[1].Str(),
@@ -64,7 +64,7 @@ func shooterInsert(f frm.Form) (string, error) {
 }
 
 /*func importShooters(f frm.Form) (string, error) {
-	//Form validation doesn't yet have a
+	// Form validation doesn't yet have a.
 	file, _, err := r.FormFile("f")
 	if err != nil {
 		warn.Println(err)
@@ -72,14 +72,14 @@ func shooterInsert(f frm.Form) (string, error) {
 	}
 	defer file.Close()
 
-	//Read file contents into bytes buffer.
+	// Read file contents into bytes buffer.
 	buf := new(bytes.Buffer)
 	_, err = buf.ReadFrom(file)
 	if err != nil {
 		warn.Println(err)
 	}
 
-	//Convert file source into structs.
+	// Convert file source into structs.
 	var shooters []Shooter
 	err = json.Unmarshal(buf.Bytes(), &shooters)
 	if err != nil {
@@ -88,7 +88,7 @@ func shooterInsert(f frm.Form) (string, error) {
 	}
 
 	var clubID string
-	//Insert each shooter into database. //TODO look into using a batch write to update the database.
+	// Insert each shooter into database. // TODO look into using a batch write to update the database.
 	for _, shooter := range shooters {
 		if shooter.Club != "" {
 			clubID, err = clubInsertIfNone(shooter.Club)
@@ -108,11 +108,11 @@ func shooterInsert(f frm.Form) (string, error) {
 
 // TODO move into a config file or database?
 func dataListAgeGroup() []frm.Option {
-	//TODO would changing option.Value to an interface reduce the amount of code to convert types?
+	// TODO would changing option.Value to an interface reduce the amount of code to convert types?
 	return []frm.Option{
 		{},
-		//{Value: "0"}, //None = 0
-		//{Value: "", Label: "None"}, //None = 0
+		//{Value: "0"},	// None = 0.
+		//{Value: "", Label: "None"},	//None = 0.
 		{Value: "1", Label: "U21"},
 		{Value: "2", Label: "U25"},
 		{Value: "3", Label: "Veteran"},

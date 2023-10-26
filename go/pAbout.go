@@ -39,7 +39,7 @@ func localIPs() map[string]interface{} {
 		var ipNet *net.IPNet
 		var ok bool
 		for _, address := range addresses {
-			//Check the address type is not localhost or a loopback address
+			// Check the address type is not localhost or a loopback address.
 			ipNet, ok = address.(*net.IPNet)
 			if ok && !ipNet.IP.IsLoopback() && ipNet.IP.To4() != nil && !strings.HasPrefix(ipNet.IP.String(), "169.254.") {
 				localIPs = append(localIPs, ipNet.IP.String()+portAddr)
