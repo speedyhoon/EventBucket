@@ -8,7 +8,7 @@ import (
 )
 
 func shooters(w http.ResponseWriter, r *http.Request, fields []frm.Field) {
-	fs, _ := session.Get(w, r, getFields, frmShooterNew, frmShootersImport, frmShooterSearch)
+	fs, _ := session.Get(w, r, frmShooterNew, frmShootersImport, frmShooterSearch)
 
 	render(w, page{
 		Title: "Shooters",
@@ -106,7 +106,7 @@ func shooterInsert(f frm.Form) (string, error) {
 	return "", err
 }*/
 
-//TODO move into a config file or database?
+// TODO move into a config file or database?
 func dataListAgeGroup() []frm.Option {
 	//TODO would changing option.Value to an interface reduce the amount of code to convert types?
 	return []frm.Option{

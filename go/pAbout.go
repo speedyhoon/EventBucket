@@ -11,7 +11,7 @@ import (
 )
 
 func about(w http.ResponseWriter, r *http.Request) {
-	fs, _ := session.Get(w, r, getFields, frmSettings)
+	fs, _ := session.Get(w, r, frmSettings)
 	render(w, page{
 		Title: "About",
 		Data: map[string]interface{}{
@@ -27,7 +27,7 @@ func settingsUpdate(_ frm.Form) (string, error) {
 	return "", nil
 }
 
-//localIPs returns the non loopback local IPv4 of the host
+// localIPs returns the non loopback local IPv4 address of the host.
 func localIPs() map[string]interface{} {
 	if isPrivate {
 		return map[string]interface{}{}
