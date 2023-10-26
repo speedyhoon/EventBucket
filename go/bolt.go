@@ -417,21 +417,18 @@ func getEvents(query func(Event) bool) ([]Event, error) {
 }
 
 // TODO defaultClub should save the default club details to memory or disk so the database doesn't need to be called all the time.
-func defaultClub() Club {
-	var club Club
+func defaultClub() (club Club) {
 	err := search(tblClub, &club, func(interface{}) error {
 		if club.IsDefault {
 			return success
 		}
 		return nil
 	})
-	if err != nil {
-		if errors.Is(err, success) {
-			return club
-		}
+	if err != nil && !errors.Is(err, success) {
 		log.Println(err)
 	}
-	return Club{}
+
+	return
 }
 
 func eventShooterInsertDB(decode interface{}, contents interface{}) interface{} {
