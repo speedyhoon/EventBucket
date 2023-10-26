@@ -57,10 +57,17 @@ func init() {
 	get(urlShooters, frmShooterSearch, shooters)
 	post("/22", frmSettings, settingsUpdate)
 
+	/* TODO instead of calling the database every page load -- HTML <datalist> for clubsDataList AND searchShootersOptions
+	should be generated during database inserts/updates and statically inserted */
+
+	/* TODO vl validation -- add Int & Uint bit maximum size to limits (auto-calculated if Max field is present)
+	so if the conversion using strconv is out of bounds it can fail early. */
+
 	frm.GetFields = func(id uint8) []frm.Field {
 		switch id {
 		case frmClubNew:
 			return []frm.Field{
+				// TODO automatically generate comments to label each field so you know which one is which easily.
 				{Name: "n", V8: vl.StrReq},
 			}
 		case frmClubEdit:
@@ -83,6 +90,7 @@ func init() {
 		case frmEditShootingMound:
 			return []frm.Field{
 				{Name: "n", V8: vl.StrReq},
+				// TODO replace with Uint16 if the maximum is math.MaxUint16.
 				{Name: "I", V8: vl.Uint, Max: 65535},
 				{Name: "C", V8: vl.Regex, Regex: regexID},
 			}
@@ -112,24 +120,30 @@ func init() {
 			}
 		case frmEventRangeEdit:
 			return []frm.Field{
+				// TODO fix fake maximum uint id limit.
 				{Name: "I", V8: vl.UintReq, Min: 1, Max: 65535},
 				{Name: "n", V8: vl.StrReq},
 				{Name: "k", V8: vl.Bool},
+				// TODO fix fake maximum uint id limit.
 				{Name: "o", V8: vl.UintReq, Max: 65535},
 				{Name: "E", V8: vl.Regex, Regex: regexID},
 			}
 		case frmEventAggNew:
 			return []frm.Field{
 				{Name: "n", V8: vl.StrReq},
+				// TODO fix fake maximum uint id limit.
 				{Name: "R", V8: vl.UintList, Required: true, MaxLen: 5, MinLen: 2, Min: 1, Max: 65535},
 				{Name: "E", V8: vl.Regex, Regex: regexID},
 			}
 		case frmEventAggEdit:
 			return []frm.Field{
 				{Name: "E", V8: vl.Regex, Regex: regexID},
+				// TODO fix fake maximum uint id limit.
 				{Name: "I", V8: vl.UintReq, Min: 1, Max: 65535},
 				{Name: "n", V8: vl.StrReq},
+				// TODO fix fake maximum uint id limit.
 				{Name: "R", V8: vl.UintList, Required: true, MinLen: 2, Min: 1, Max: 65535},
+				// TODO fix fake maximum uint id limit.
 				{Name: "o", V8: vl.UintReq, Max: 65535},
 			}
 		case frmEventShooterNew:
@@ -137,7 +151,9 @@ func init() {
 			return []frm.Field{
 				{Name: "f", V8: vl.StrReq},
 				{Name: "s", V8: vl.StrReq},
+				// TODO replace database call with datalist template insertion.
 				{Name: "C", V8: vl.Str, Placeholder: clubName, Options: clubsDataList()},
+				// TODO replace database call with datalist template insertion.
 				{Name: "S", V8: vl.Str, Options: searchShootersOptions("", "", clubName)},
 				{Name: "r", V8: vl.UintOpt, Options: dataListAgeGroup()},
 				{Name: "x", V8: vl.Bool},
@@ -146,6 +162,7 @@ func init() {
 			}
 		case frmEntriesEditShooterDetails:
 			return []frm.Field{
+				// TODO fix fake maximum uint id limit.
 				{Name: "S", V8: vl.UintReq, Max: 65535},
 				{Name: "E", V8: vl.RegexReq, Regex: regexID},
 				{Name: "f", V8: vl.StrReq},
@@ -168,12 +185,15 @@ func init() {
 				{Name: "t", V8: vl.UintReq, Max: 120},
 				{Name: "c", V8: vl.Uint, Max: 20},
 				{Name: "E", V8: vl.RegexReq, Regex: regexID},
+				// TODO fix fake maximum uint id limit.
 				{Name: "R", V8: vl.UintReq, Min: 1, Max: 65535},
+				// TODO fix fake maximum uint id limit.
 				{Name: "S", V8: vl.UintReq, Max: 65535},
 				{Name: "h", V8: vl.Uint, Max: 100},
 			}
 		case frmEventAvailableGrades:
 			return []frm.Field{
+				// TODO replace availableGrades() with datalist template insertion.
 				{Name: "g", V8: vl.UintList, Required: true, Max: len(globalGrades) - 1, Options: availableGrades([]uint{})},
 				{Name: "E", V8: vl.Regex, Regex: regexID},
 			}
@@ -181,7 +201,9 @@ func init() {
 			return []frm.Field{
 				{Name: "s", V8: vl.StrReq, MaxLen: 12},
 				{Name: "E", V8: vl.RegexReq, Regex: regexID},
+				// TODO fix fake maximum uint id limit.
 				{Name: "R", V8: vl.UintReq, Min: 1, Max: 65535},
+				// TODO fix fake maximum uint id limit.
 				{Name: "S", V8: vl.UintReq, Max: 65535},
 			}
 		case frmShooterNew:
@@ -189,6 +211,7 @@ func init() {
 			return []frm.Field{
 				{Name: "f", V8: vl.StrReq},
 				{Name: "s", V8: vl.StrReq},
+				// TODO replace database call with datalist template insertion.
 				{Name: "C", V8: vl.Str, Placeholder: club.Name, Required: club.IsDefault, MinLen: 1, Options: clubsDataList()},
 				{Name: "r", V8: vl.UintOpt, Options: dataListAgeGroup()},
 				{Name: "x", V8: vl.Bool},
@@ -215,6 +238,7 @@ func init() {
 			return []frm.Field{
 				{Name: "f", V8: vl.Str},
 				{Name: "s", V8: vl.Str},
+				// TODO replace database call with datalist template insertion.
 				{Name: "C", V8: vl.Str, Placeholder: club.Name, Required: club.IsDefault, Options: clubsDataList()},
 			}
 		case frmShootersImport:

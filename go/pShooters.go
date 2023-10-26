@@ -35,6 +35,7 @@ func shooterUpdate(f frm.Form) (string, error) {
 	}, &Shooter{}, updateShooterDetails)
 }
 
+// eventSearchShooters TODO can this unreferenced function be called during startup so the database doesn't need to be called as much?
 func eventSearchShooters(w http.ResponseWriter, _ *http.Request, f frm.Form) {
 	render(w, page{
 		template: "shooterSearch",
