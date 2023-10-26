@@ -23,7 +23,7 @@ func eventSettings(w http.ResponseWriter, r *http.Request, event Event) {
 	fs[frmEventAggNew].Fields[1].Options = dataListRanges(event.Ranges, true)
 	fs[frmEventAggNew].Fields[2].Value = event.ID
 
-	fs[frmEventAvailableGrades].Fields[0].Options = availableGrades(event.Grades)
+	fs[frmEventAvailableGrades].Fields[0].Options = availableGrades(event.Grades...)
 	fs[frmEventAvailableGrades].Fields[1].Value = event.ID
 
 	render(w, page{

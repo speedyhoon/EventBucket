@@ -194,7 +194,7 @@ func init() {
 		case frmEventAvailableGrades:
 			return []frm.Field{
 				// TODO replace availableGrades() with datalist template insertion.
-				{Name: "g", V8: vl.UintList, Required: true, Max: len(globalGrades) - 1, Options: availableGrades([]uint{})},
+				{Name: "g", V8: vl.UintList, Required: true, Max: len(globalGrades) - 1, Options: availableGrades()},
 				{Name: "E", V8: vl.Regex, Regex: regexID},
 			}
 		case frmEventUpdateShotScore:
