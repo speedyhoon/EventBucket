@@ -89,7 +89,7 @@ func headers(w http.ResponseWriter, setHeaders ...string) {
 		case nocache:
 			w.Header().Set(hdrs.CacheControl, "no-cache, no-store, must-revalidate")
 			w.Header().Set(hdrs.Expires, "0")
-			w.Header().Set("Pragma", "no-cache")
+			w.Header().Set("Pragma", cnst.NoCache)
 		default:
 			// Set resource content type header or set content encoding gzip header.
 			if h, ok := headerOptions[lookup]; ok {
