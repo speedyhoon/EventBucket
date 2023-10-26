@@ -69,7 +69,7 @@ func redoGlobals(disciplines []Discipline) {
 	globalDisciplines = calcGradeMaximums(globalDisciplines)
 	globalGrades = defaultGrades(globalDisciplines)
 	globalGradesDataList = dataListGrades(globalGrades)
-	globalAvailableGrades = availableGrades([]uint{})
+	globalAvailableGrades = availableGrades()
 }
 
 func defaultGrades(classes []Discipline) []Grade {
@@ -92,8 +92,7 @@ func dataListGrades(grades []Grade) []frm.Option {
 	return options
 }
 
-func availableGrades(grades []uint) []frm.Option {
-	var options []frm.Option
+func availableGrades(grades ...uint) (options []frm.Option) {
 	for id, grade := range globalGrades {
 		selected := len(grades) == 0
 		if !selected {
@@ -107,7 +106,8 @@ func availableGrades(grades []uint) []frm.Option {
 		}
 		options = append(options, frm.Option{Value: fmt.Sprintf("%d", id), Label: grade.Name, Selected: selected})
 	}
-	return options
+
+	return
 }
 
 func eventGrades(grades []uint) []frm.Option {
