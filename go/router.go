@@ -25,17 +25,17 @@ const (
 	urlLicence  = "/license"
 	urlShooters = "/shooters"
 	urlSVG      = "/v"
-	//GET with PARAMETERS
-	urlClub            = "/club/"             //clubID
-	urlEntries         = "/entries/"          //eventID
-	urlEventSettings   = "/event-settings/"   //eventID
-	urlEventReport     = "/event-report/"     //eventID
-	urlScoreboard      = "/scoreboard/"       //eventID
-	urlEnterShots      = "/enter-shots/"      //eventID
-	urlEnterShotsAll   = "/enter-shots-all/"  //eventID
-	urlPrintScorecards = "/print-scorecards/" //eventID/shooterID
-	urlEnterTotals     = "/enter-totals/"     //eventID
-	urlEnterTotalsAll  = "/enter-totals-all/" //eventID
+	// GET with PARAMETERS.
+	urlClub            = "/club/"             // clubID
+	urlEntries         = "/entries/"          // eventID
+	urlEventSettings   = "/event-settings/"   // eventID
+	urlEventReport     = "/event-report/"     // eventID
+	urlScoreboard      = "/scoreboard/"       // eventID
+	urlEnterShots      = "/enter-shots/"      // eventID
+	urlEnterShotsAll   = "/enter-shots-all/"  // eventID
+	urlPrintScorecards = "/print-scorecards/" // eventID/shooterID
+	urlEnterTotals     = "/enter-totals/"     // eventID
+	urlEnterTotalsAll  = "/enter-totals-all/" // eventID
 )
 
 var (
@@ -85,7 +85,7 @@ var (
 		Link: urlLicence,
 	}}
 
-	//URL validation matching
+	// URL validation matching.
 	regexID      = regexp.MustCompile(`^[a-z0-9]+$`)
 	regexPath    = regexp.MustCompile(`^[a-z0-9]+/[a-z0-9]+$`)
 	regexBarcode = regexp.MustCompile(`^[a-z0-9]+/[a-z0-9]+#[a-z0-9]+$`)
@@ -115,7 +115,7 @@ func init() {
 	getParameters(urlEnterTotals, enterTotalsIncomplete, regexPath)
 	getParameters(urlEnterTotalsAll, enterTotalsAll, regexPath)
 
-	//TODO BUG any url breaks when appending "&*((&*%"
+	// TODO BUG any url breaks when appending "&*((&*%"
 	get404(events)
 }
 
@@ -124,7 +124,7 @@ func post(url string, formID uint8, p func(f frm.Form) (string, error)) {
 		url,
 		func(w http.ResponseWriter, r *http.Request) {
 			if r.Method != "POST" {
-				/*405 Method Not Allowed
+				/* 405 Method Not Allowed
 				A request was made of a resource using a request method not supported by that resource; for example,
 				using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
 				//en.wikipedia.org/wiki/List_of_HTTP_status_codes*/
@@ -149,15 +149,15 @@ func post(url string, formID uint8, p func(f frm.Form) (string, error)) {
 
 			var redirect string
 			redirect, form.Err = p(form)
-			//Display any insert errors onscreen.
+			// Display any insert errors onscreen.
 			if form.Err != nil {
 				form.Fields[0].Focus = true
 				redirectError(w, r, form)
 				return
 			}
 
-			//Display default acknowledgement message using a session
-			session.Set(w, frm.Form{Action: formID}) //Don't store validated fields in session
+			// Display default acknowledgement message using a session.
+			session.Set(w, frm.Form{Action: formID}) // Don't store validated fields in session.
 
 			if redirect == "" {
 				redirect = r.Referer()
@@ -191,15 +191,15 @@ func processSocket(ws *websocket.Conn) {
 			log.Println(err)
 		}
 	}
-	//Start a loop to listen to incoming websocket traffic from all clients.
+	// Start a loop to listen to incoming websocket traffic from all clients.
 	for {
-		//Ignore any empty messages.
+		// Ignore any empty messages.
 		if websocket.Message.Receive(ws, &msg) != nil || len(msg) < 1 {
 			break
 		}
-		//The first character of the websocket message is used as a "router" to decide where to send the message.
+		// The first character of the websocket message is used as a "router" to decide where to send the message.
 		formID = msg[0]
-		//Ignore any messages that do not have a case in this switch.
+		// Ignore any messages that do not have a case in this switch.
 		switch formID {
 		case frmEventTotalScores:
 			var urlValues url.Values
@@ -232,7 +232,7 @@ func processSocket(ws *websocket.Conn) {
 				}
 				send(fmt.Sprintf("!%U%s", msg[0], response))
 			}
-		case 126: //getDisciplines:
+		case 126: // getDisciplines:
 			var response []byte
 			response, err = json.Marshal(globalDisciplines)
 			if err != nil {

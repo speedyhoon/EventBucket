@@ -10,15 +10,15 @@ import (
 func entries(w http.ResponseWriter, r *http.Request, event Event) {
 	fs, action := session.Get(w, r, frmEventShooterNew, frmEventShooterExisting)
 	if action == frmEventShooterExisting {
-		//Existing shooter select box
+		// Existing shooter select box.
 		fs[action].Fields[3].Err = fs[frmEventShooterExisting].Fields[0].Err
-		//Grade
+		// Grade.
 		fs[action].Fields[6].Err = fs[frmEventShooterExisting].Fields[1].Err
 		fs[action].Fields[6].Value = fs[frmEventShooterExisting].Fields[1].Value
-		//Age Group
+		// Age Group.
 		fs[action].Fields[4].Err = fs[frmEventShooterExisting].Fields[2].Err
 		fs[action].Fields[4].Value = fs[frmEventShooterExisting].Fields[2].Value
-		//Existing Shooter button
+		// Existing Shooter button.
 		fs[action].Fields[7].Err = fs[frmEventShooterExisting].Fields[3].Err
 	}
 	fs[frmEventShooterNew].Fields[2].Options = clubsDataList()
@@ -27,12 +27,12 @@ func entries(w http.ResponseWriter, r *http.Request, event Event) {
 	fs[frmEventShooterNew].Fields[6].Options = grades
 	fs[frmEventShooterNew].Fields[6].Value = event.ID
 	fs[frmEventShooterNew].Fields[7].Value = event.ID
-	//TODO what was the below ignored field used for?
+	// TODO what was the below ignored field used for?
 	//fs[frmEventShooterNew].Fields = append(fs[frmEventShooterNew].Fields, frm.Field{Value: event.ID})
 
 	fs[frmEventShooterNew].Fields[3].Options = searchShootersOptions("", "", event.Club.Name)
 
-	//Provide event ID for link to change available grades in event settings
+	// Provide event ID for link to change available grades in event settings.
 	fs[frmEventShooterNew].Fields[6].Value = event.ID
 
 	render(w, page{
@@ -50,19 +50,19 @@ func entries(w http.ResponseWriter, r *http.Request, event Event) {
 }
 
 func eventInsert(f frm.Form) (string, error) {
-	//Try to find an existing club and insert and insert one if it doesn't exist.
+	// Try to find an existing club and insert and insert one if it doesn't exist.
 	clubID, err := clubInsertIfNone(f.Fields[0].Str())
 	if err != nil {
 		return "", err
 	}
 
-	//Insert new event into database.
+	// Insert new event into database.
 	ID, err := Event{
 		ClubID:   clubID,
 		Name:     f.Fields[1].Str(),
 		DateTime: f.Fields[2].Time(),
 		Closed:   false,
-		AutoInc:  AutoInc{Range: 1}, //The next incremental range id to use.
+		AutoInc:  AutoInc{Range: 1}, // The next incremental range id to use.
 	}.insert()
 	return urlEventSettings + ID, err
 }
@@ -74,7 +74,7 @@ func eventAvailableGradesUpsert(f frm.Form) (string, error) {
 }
 
 func eventShooterInsert(f frm.Form) (string, error) {
-	//Populate club name if it is empty
+	// Populate club name if it is empty.
 	if f.Fields[2].Value == "" {
 		f.Fields[2].Value = defaultClub().Name
 	} else if _, err := clubInsertIfNone(f.Fields[2].Str()); err != nil {
@@ -90,13 +90,13 @@ func eventShooterInsert(f frm.Form) (string, error) {
 		Sex:       f.Fields[5].Checked(),
 		Grades:    f.Fields[6].Uints(),
 	}
-	//Insert shooter into Shooter Bucket
+	// Insert shooter into Shooter Bucket.
 	shooterID, err := shooter.insert()
 	if err != nil {
 		return "", err
 	}
 
-	//Insert shooter into event
+	// Insert shooter into event.
 	eventID := f.Fields[7].Str()
 	shooter.ID = shooterID
 	return urlEntries + eventID,

@@ -54,7 +54,7 @@ func enterTotals(w http.ResponseWriter, r *http.Request, showAll bool, event Eve
 }
 
 func eventTotalUpsert(fields []frm.Field) string {
-	//Save score to event in database.
+	// Save score to event in database.
 	err := updateDocument(tblEvent, fields[2].Str(), &shooterScore{
 		rangeID: fields[3].Str(),
 		id:      fields[4].Uint(),
@@ -64,7 +64,7 @@ func eventTotalUpsert(fields []frm.Field) string {
 			ShootOff: fields[5].Uint(),
 		}}, &Event{}, upsertScore)
 
-	//Return any upsert errors onscreen.
+	// Return any upsert errors onscreen.
 	if err != nil {
 		return err.Error()
 	}
@@ -74,15 +74,15 @@ func eventTotalUpsert(fields []frm.Field) string {
 func eventRange(ranges []Range, rangeID rID, w http.ResponseWriter, r *http.Request) (Range, error) {
 	for _, r := range ranges {
 		if r.ID == uint(rangeID) {
-			//If range is an aggregate return an error message.
+			// If range is an aggregate return an error message.
 			if r.IsAgg {
 				return Range{}, errors.New("range is an aggregate and scores can't be entered directly")
 			}
-			//Return valid range.
+			// Return valid range.
 			return r, nil
 		}
 	}
-	//Otherwise event doesn't contain a range with that id and return 404.
+	// Otherwise event doesn't contain a range with that id and return 404.
 	errorHandler(w, r, "range")
 	return Range{}, errors.New("a range with that ID doesn't exists in this event")
 }

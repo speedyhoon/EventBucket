@@ -14,19 +14,19 @@ import (
 )
 
 var (
-	//Command line flags.
+	// Command line flags.
 	portAddr  = ":"
 	isPrivate bool
 
-	//Logging
+	// Logging.
 	//#ifdef DEBUG
-	trc = log.New(os.Stdout, "\x1b[33;1mTRACE: ", log.Lshortfile) //Flags can be log.Lshortfile|log.Ltime
+	trc = log.New(os.Stdout, "\x1b[33;1mTRACE: ", log.Lshortfile) // Flags can be log.Lshortfile|log.Ltime
 	inf = log.New(os.Stdout, "\x1b[36;1m", 0)
 	//#endif
 )
 
 func main() {
-	//Command line flags
+	// Command line flags.
 	flag.BoolVar(&mainTheme, "dark", false, "Switch EventBucket to use a dark theme for night shooting")
 	gradesFilePath := flag.String("grades", "", "Load grade settings from a JSON file. If the file doesn't exist, EventBucket will try to create it & exit")
 	httpListen := flag.String("http", "127.0.0.1:80", "host:port to listen on")
@@ -34,15 +34,15 @@ func main() {
 	flag.Parse()
 
 	//#ifdef DEBUG
-	log.SetPrefix("\x1b[31;1mWARN: ") //Red
+	log.SetPrefix("\x1b[31;1mWARN: ") // Red.
 	//#endif
 	log.SetFlags(log.Lshortfile)
 	log.SetOutput(os.Stderr)
 
-	//Try to load the grades file if any are specified
+	// Try to load the grades file if any are specified.
 	if loadGrades(*gradesFilePath) != nil {
 		redoGlobals([]Discipline{})
-		//If a file path was specified try to create one
+		// If a file path was specified try to create one.
 		if *gradesFilePath != "" {
 			buildGradesFile(*gradesFilePath)
 			os.Exit(2)
@@ -59,7 +59,7 @@ func main() {
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt)
 
-	//HTTP server host & port
+	// HTTP server host & port.
 	host, port, err := net.SplitHostPort(*httpListen)
 	if err != nil {
 		log.Fatal(err)

@@ -28,7 +28,7 @@ func scoreboard(w http.ResponseWriter, r *http.Request, event Event, rangeID rID
 	})
 }
 
-//findAggs expands any aggregates within the slice supplied
+// findAggs expands any aggregates within the slice supplied.
 func findAggs(rangeID uint, ranges []Range) (rs []Range) {
 	for _, r := range ranges {
 		if r.ID == rangeID {

@@ -11,7 +11,7 @@ import (
 func events(w http.ResponseWriter, r *http.Request) {
 	events, err := getEvents(onlyOpen)
 	if err == nil {
-		//Sort list of events by date then by name
+		// Sort list of events by date then by name.
 		eventOrderedBy(sortByDate, sortByName).Sort(events)
 	}
 	fs, _ := session.Get(w, r, frmEventNew)
@@ -54,7 +54,7 @@ func (ms *eventSort) Swap(i, j int) {
 
 func (ms *eventSort) Less(i, j int) bool {
 	p, q := &ms.events[i], &ms.events[j]
-	//Try all but the last comparison.
+	// Try all but the last comparison.
 	var k int
 	for k = 0; k < len(ms.less)-1; k++ {
 		less := ms.less[k]

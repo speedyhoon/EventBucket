@@ -35,13 +35,13 @@ type Mark struct {
 // Grade are subcategories of each discipline that shooters can be grouped together by similar skill levels.
 type Grade struct {
 	ID          uint   `json:"id,omitempty"`
-	Name        string `json:"name,omitempty"` //Target A, F Class B, Match Reserve
-	Abbr        string `json:"abbr,omitempty"` //Abbreviation of Name: A,B,C,FA,FB,FO,MO,MR
+	Name        string `json:"name,omitempty"` // Target A, F Class B, Match Reserve.
+	Abbr        string `json:"abbr,omitempty"` // Abbreviation of Name: A,B,C,FA,FB,FO,MO,MR.
 	ClassID     uint   `json:"classID,omitempty"`
 	DuplicateTo []uint `json:"duplicateTo,omitempty"`
 }
 
-// Shot is exported
+// Shot is exported.
 type Shot struct {
 	Value      uint   `json:"value"`
 	Center     uint   `json:"center,omitempty"`
@@ -124,7 +124,7 @@ func eventGrades(grades []uint) []frm.Option {
 	return options
 }
 
-// QtyTotal add together Sighter quantity and Shots quantity
+// QtyTotal add together Sighter quantity and Shots quantity.
 func (d Discipline) QtyTotal() uint {
 	return d.QtySighters + d.QtyShots
 }
@@ -140,8 +140,8 @@ func defaultGlobalDisciplines() []Discipline {
 	XV5 := Mark{Buttons: "012345VX",
 		DoCountBack2: true,
 		Shots: map[string]Shot{
-			//TODO add button title=Miss to start shooting button
-			//TODO if CountBack, CountBack2 or Shot is missing - default to "0"?
+			// TODO add button title=Miss to start shooting button.
+			// TODO if CountBack, CountBack2 or Shot is missing - default to "0"?
 			"-": {CountBack: "0", CountBack2: "0", Shot: "-", Sighter: "-"},
 			"0": {CountBack: "0", CountBack2: "0", Shot: "0", Sighter: "a"},
 			"1": {CountBack: "1", CountBack2: "1", Shot: "1", Sighter: "b", Value: 1},
@@ -152,8 +152,8 @@ func defaultGlobalDisciplines() []Discipline {
 			"V": {CountBack: "6", CountBack2: "6", Shot: "V", Sighter: "v", Value: 5, Center: 1},
 			"6": {CountBack: "6", CountBack2: "6", Shot: "V", Sighter: "g", Value: 5, Center: 1},
 			"X": {CountBack: "6", CountBack2: "7", Shot: "X", Sighter: "x", Value: 5, Center: 1, Center2: 1},
-			//Sighters
-			//TODO possibly remove these sighters?
+			// Sighters.
+			// TODO possibly remove these sighters?
 			"a": {Shot: "0", Sighter: "a"},
 			"b": {Shot: "1", Sighter: "b"},
 			"c": {Shot: "2", Sighter: "c"},
@@ -163,11 +163,11 @@ func defaultGlobalDisciplines() []Discipline {
 			"g": {Shot: "6", Sighter: "g"},
 			"v": {Shot: "V", Sighter: "v"},
 			"x": {Shot: "X", Sighter: "x"},
-			//TODO sort isn't sorting by countback 2 descending.
-			//TODO precedence is taken over the last X shot rather than the most X's shot
+			// TODO sort isn't sorting by countback 2 descending.
+			// TODO precedence is taken over the last X shot rather than the most X's shot.
 		}}
-	//Disciplines F Standard, F Open and F/TR have been merged together because they all use the same scoring method (0123456X). Although they are technically separate disciplines, most events assign the same number of shots and sighters for all three.  If the disciplines need to be independent, these settings can be overwritten using the command line flag -grades and specifying a JSON settings file. e.g. EventBucket.exe -grades my_new_grades.json
-	//EventBucket will not import or remember the settings file next time you start the application. Adding command line flags to an EventBucket shortcut is the easiest way to specify settings every time EventBucket is started.
+	// Disciplines F Standard, F Open and F/TR have been merged together because they all use the same scoring method (0123456X). Although they are technically separate disciplines, most events assign the same number of shots and sighters for all three.  If the disciplines need to be independent, these settings can be overwritten using the command line flag -grades and specifying a JSON settings file. e.g. EventBucket.exe -grades my_new_grades.json
+	// EventBucket will not import or remember the settings file next time you start the application. Adding command line flags to an EventBucket shortcut is the easiest way to specify settings every time EventBucket is started.
 	return []Discipline{{
 		ID:          0,
 		Name:        "Target Rifle",
@@ -175,8 +175,8 @@ func defaultGlobalDisciplines() []Discipline {
 		QtyShots:    10,
 		TopShot:     5,
 		Marking:     XV5,
-		//Target rifle is traditionally scored up to 5 (bullseye) which is has a larger area than 6 on an F class target.
-		//This causes significantly more shoot-offs for winning a range than F Class.
+		// Target rifle is traditionally scored up to 5 (bullseye) which is has a larger area than 6 on an F class target.
+		// This causes significantly more shoot-offs for winning a range than F Class.
 		Grades: []Grade{{ID: 0, Abbr: "A", Name: "Target A"},
 			{ID: 1, Abbr: "B", Name: "Target B"},
 			{ID: 2, Abbr: "C", Name: "Target C"}},
@@ -221,7 +221,7 @@ func defaultGlobalDisciplines() []Discipline {
 		TopShot:     5,
 		Marking:     XV5,
 		Grades: []Grade{{ID: 7, Abbr: "MO", Name: "Match Open"},
-			{ID: 8, Abbr: "MR", Name: "Match Reserve", DuplicateTo: []uint{7}}}, //If shooter is Match Reserve, duplicate them in the Match Open category. Used for Victorian Match Rifle Championships.
+			{ID: 8, Abbr: "MR", Name: "Match Reserve", DuplicateTo: []uint{7}}}, // If shooter is Match Reserve, duplicate them in the Match Open category. Used for Victorian Match Rifle Championships.
 	}, {
 		ID:          3,
 		Name:        "Service Rifle",
@@ -241,14 +241,14 @@ func defaultGlobalDisciplines() []Discipline {
 				"V": {CountBack: "6", Shot: "V", Sighter: "v", Value: 5, Center: 1},
 				"6": {CountBack: "6", Shot: "V", Sighter: "v", Value: 5, Center: 1},
 				"X": {CountBack: "6", Shot: "V", Sighter: "v", Value: 5, Center: 1},
-				//TODO change sighters so they are not stored in the database.
-				//if shot, ok := shotMap[input]; ok{
-				//		return shot
-				//else
-				//		for id, shot := range shotMap{
-				//			if input == shot.Sighter
-				//				return shot
-				//otherwise ignore input
+				/* TODO change sighters so they are not stored in the database.
+				if shot, ok := shotMap[input]; ok{
+						return shot
+				else
+						for id, shot := range shotMap{
+							if input == shot.Sighter
+								return shot
+				otherwise ignore input*/
 				"a": {CountBack: "0", Shot: "0", Sighter: "a"},
 				"b": {CountBack: "0", Shot: "1", Sighter: "b"},
 				"c": {CountBack: "0", Shot: "2", Sighter: "c"},
@@ -265,14 +265,14 @@ func defaultGlobalDisciplines() []Discipline {
 
 func loadGrades(filePath string) error {
 	if filePath == "" {
-		//TODO default to grades.yml? and search through the current working directory, EB.exe directory, %appdata%, %programdata%.
-		//When loaded display filepath loaded
-		//maybe only load from a single directory if none specified?
-		//TODO change the default for portableApps mode
+		// TODO default to grades.yml? and search through the current working directory, EB.exe directory, %appdata%, %programdata%.
+		// When loaded display filepath loaded.
+		// Maybe only load from a single directory if none specified?
+		// TODO change the default for portableApps mode.
 		return errors.New("file specified is empty")
 	}
 	contents, err := os.ReadFile(filePath)
-	//If file is empty, try to write a new JSON file.
+	// If file is empty, try to write a new JSON file.
 	if err != nil {
 		log.Println(err)
 		return err
@@ -280,7 +280,7 @@ func loadGrades(filePath string) error {
 	var disciplines []Discipline
 	err = json.Unmarshal(contents, &disciplines)
 	if err != nil {
-		//Unable to unmarshal settings from JSON file.
+		// Unable to unmarshal settings from JSON file.
 		log.Println(err)
 		return fmt.Errorf("error: %v, File: %v", err, filePath)
 	}
@@ -290,10 +290,10 @@ func loadGrades(filePath string) error {
 }
 
 func buildGradesFile(filePath string) {
-	//Generate JSON from globalDisciplines
+	// Generate JSON from globalDisciplines.
 	src, err := json.MarshalIndent(globalDisciplines, "", "\t")
 	if err != nil {
-		//Output marshal errors
+		// Output marshal errors.
 		log.Println(err)
 	}
 	if !strings.HasSuffix(filePath, ".json") {
@@ -307,7 +307,7 @@ func buildGradesFile(filePath string) {
 	inf.Println("Created grades settings file:", filePath)
 }
 
-// TODO Change the event to point to a certain grade revision with an id and save grades in a different database bucket (table)
+// TODO Change the event to point to a certain grade revision with an id and save grades in a different database bucket (table).
 func findGrade(index uint) Grade {
 	if index < uint(len(globalGrades)) {
 		return globalGrades[index]
@@ -315,4 +315,4 @@ func findGrade(index uint) Grade {
 	return Grade{}
 }
 
-//TODO create a new grades settings page to change the shots, sighters etc.
+// TODO create a new grades settings page to change the shots, sighters etc.

@@ -60,7 +60,7 @@ func updateShotScores(fields []frm.Field) string {
 	}
 	shooter := event.Shooters[shooterID]
 
-	//Calculate the score with the shots given
+	// Calculate the score with the shots given.
 	newScore := calcTotalCenters(fields[0].Str(), globalGrades[shooter.Grade].ClassID)
 
 	err = updateDocument(tblEvent, event.ID, &shooterScore{
@@ -69,14 +69,14 @@ func updateShotScores(fields []frm.Field) string {
 		score:   newScore,
 	}, &Event{}, upsertScore)
 
-	//Display any upsert errors onscreen.
+	// Display any upsert errors onscreen.
 	if err != nil {
 		return err.Error()
 	}
 
 	var score string
 
-	//Return the score to the client
+	// Return the score to the client.
 	if newScore.Centers == 0 {
 		score = fmt.Sprintf("%v", newScore.Total)
 	} else {
@@ -103,13 +103,13 @@ func updateShotScores(fields []frm.Field) string {
 // This function assumes all validation on input "shots" has at least been done!
 // AND input "shots" is verified to contain all characters in settings[class].validShots!
 func calcTotalCenters(shots string, classID uint) Score {
-	//TODO need validation to check that the shots given match the required validation given posed by the event. e.g. sighters are not in the middle of the shoot or shot are not missing in the middle of a shoot
+	// TODO need validation to check that the shots given match the required validation given posed by the event. e.g. sighters are not in the middle of the shoot or shot are not missing in the middle of a shoot.
 	var total, centers uint
 	var countBack string
 	defaultClassSettings := defaultGlobalDisciplines()
 	if classID < uint(len(defaultClassSettings)) {
 
-		//Ignore the first sighter shots from being added to the total score. Unused sighters should be still be present in the data passed
+		// Ignore the first sighter shots from being added to the total score. Unused sighters should be still be present in the data passed.
 		//for _, shot := range strings.Split(shots[defaultClassSettings[classID].QtySighters:], "") {
 		for _, shot := range strings.Split(shots, "") {
 			total += defaultClassSettings[classID].Marking.Shots[shot].Value

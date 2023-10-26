@@ -26,7 +26,7 @@ type page struct {
 	Data                         map[string]interface{}
 	Error                        error
 	template                     string
-	SubTemplate                  string //Which template to load within the main template
+	SubTemplate                  string // Which template to load within the main template.
 	skipCSP                      bool
 	Status                       int
 }
@@ -122,7 +122,7 @@ func init() {
 //#endif
 
 func render(w http.ResponseWriter, p page) {
-	//Brotli compress response, even if AcceptEncoding doesn't contain "br"
+	// Brotli compress response, even if AcceptEncoding doesn't contain "br".
 	wz := compressResponse{
 		WriteCloser:    brotli.NewWriterLevel(w, brotli.BestCompression),
 		ResponseWriter: w,
@@ -133,7 +133,7 @@ func render(w http.ResponseWriter, p page) {
 		}
 	}()
 
-	//Add HTTP headers so browsers don't cache the HTML resource because it may contain different content every request.
+	// Add HTTP headers so browsers don't cache the HTML resource because it may contain different content every request.
 	headers(wz, mime.HTML, nocache, cnst.Gzip, p.csp())
 
 	if p.Status != 0 {
@@ -141,7 +141,7 @@ func render(w http.ResponseWriter, p page) {
 	}
 
 	if p.SubTemplate == "" {
-		//Convert page.Title to the lowercase HTML template file name
+		// Convert page.Title to the lowercase HTML template file name.
 		p.SubTemplate = strings.Replace(strings.ToLower(p.Title), " ", "", -1)
 	}
 

@@ -33,11 +33,10 @@ func sorterCountBack2(rangeID string, c1, c2 *EventShooter) bool {
 	return c1.Scores[rangeID].CountBack2 > c2.Scores[rangeID].CountBack2
 }
 
-/*
-	func sorterFirstName(rangeID string, c1, c2 *EventShooter) bool {
-		return c1.FirstName < c2.FirstName
-	}
-*/
+/*func sorterFirstName(rangeID string, c1, c2 *EventShooter) bool {
+	return c1.FirstName < c2.FirstName
+}*/
+
 func sorterShootOff(rangeID string, c1, c2 *EventShooter) bool {
 	//t.Println("sorterShootOff", rangeID, c1.ID, c1.FirstName, c1.Surname, c2.ID, c2.FirstName, c2.Surname)
 	/*if c1.Scores[rangeID].CountBack != "" && c1.Scores[rangeID].CountBack == c2.Scores[rangeID].CountBack {
@@ -82,7 +81,7 @@ func (ms *multiEventShooterSorter) Swap(i, j int) {
 // TODO change the functions to return -1, 0, 1 and reduce the number of calls for greater efficiency.
 func (ms *multiEventShooterSorter) Less(i, j int) bool {
 	p, q := &ms.shooter[i], &ms.shooter[j]
-	//Try all but the last comparison.
+	// Try all but the last comparison.
 	var k int
 	for k = 0; k < len(ms.sort)-1; k++ {
 		sortFunc := ms.sort[k]
@@ -98,7 +97,7 @@ func (ms *multiEventShooterSorter) Less(i, j int) bool {
 
 // TODO don't add grade separators for database range sorting updates.
 func addGradeSeparatorToShooterObjectAndPositions(eventShooters []EventShooter, rangeID string) []EventShooter {
-	//Add a boolean field to each shooter in a list of ordered shooters and is true for the first shooter that has a different grade than the last
+	// Add a boolean field to each shooter in a list of ordered shooters and is true for the first shooter that has a different grade than the last.
 	var previousShooterGrade uint = math.MaxUint32
 
 	var position, index uint
@@ -106,7 +105,7 @@ func addGradeSeparatorToShooterObjectAndPositions(eventShooters []EventShooter, 
 	var previousScore, score Score
 	var shooterTie, sameGrade bool
 
-	//Loop through each shooter
+	// Loop through each shooter.
 	for shooterID := range eventShooters {
 		sameGrade = eventShooters[shooterID].Grade == previousShooterGrade
 		if !sameGrade {
@@ -120,7 +119,7 @@ func addGradeSeparatorToShooterObjectAndPositions(eventShooters []EventShooter, 
 
 		index++
 
-		//Check if shooters grades and scores are the same
+		// Check if shooters grades and scores are the same.
 		shooterTie = sameGrade && score.Total == previousScore.Total && score.Centers == previousScore.Centers && score.Centers2 == previousScore.Centers2 && score.CountBack == previousScore.CountBack && score.CountBack2 == previousScore.CountBack2 && score.ShootOff == previousScore.ShootOff
 		if shooterTie {
 			previousScore.Ordinal = utl.Ordinal(position, shooterTie)
