@@ -2,7 +2,7 @@
 	var places
 		,j = new XMLHttpRequest
 		,path = document.location.pathname.split('/');
-	//Add clubID to GET parameters if it exists. Otherwise the response will return all clubs, i.e. path = ['', 'page-name', 'clubID']
+	//Add clubID to GET parameters if it exists. Otherwise, the response will return all clubs, i.e. path = ['', 'page-name', 'clubID'].
 	j.open('GET', '/forms.mapClubs.action'+(path[2] ? '?C='+path[2] :''), true);
 	j.send();
 	j.onreadystatechange = function stateChanger(){
