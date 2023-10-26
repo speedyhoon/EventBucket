@@ -4,14 +4,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/speedyhoon/frm"
 )
 
-//Discipline separates different types of shooting so the number of shots & sighters can be easily changed while still using the same targets and Mark as another Discipline, e.g. Target rifles and Match rifles are vastly different disciplines but use the same scoring standard.
+// Discipline separates different types of shooting so the number of shots & sighters can be easily changed while still using the same targets and Mark as another Discipline, e.g. Target rifles and Match rifles are vastly different disciplines but use the same scoring standard.
 type Discipline struct {
 	Name        string  `json:"name,omitempty"`
 	ID          uint    `json:"id,omitempty"`
@@ -25,14 +25,14 @@ type Discipline struct {
 	TopTotal    uint    `json:"-"`
 }
 
-//Mark is a group of settings associated with possible shooter scores on a target also known as "marking". Each type of target scoring standard can be specified by a Mark and be reused within several Disciplines.
+// Mark is a group of settings associated with possible shooter scores on a target also known as "marking". Each type of target scoring standard can be specified by a Mark and be reused within several Disciplines.
 type Mark struct {
 	Buttons      string          `json:"buttons,omitempty"`
 	Shots        map[string]Shot `json:"shots,omitempty"`
 	DoCountBack2 bool            `json:"doCountBack2,omitempty"`
 }
 
-//Grade are subcategories of each discipline that shooters can be grouped together by similar skill levels.
+// Grade are subcategories of each discipline that shooters can be grouped together by similar skill levels.
 type Grade struct {
 	ID          uint   `json:"id,omitempty"`
 	Name        string `json:"name,omitempty"` //Target A, F Class B, Match Reserve
@@ -41,7 +41,7 @@ type Grade struct {
 	DuplicateTo []uint `json:"duplicateTo,omitempty"`
 }
 
-//Shot is exported
+// Shot is exported
 type Shot struct {
 	Value      uint   `json:"value"`
 	Center     uint   `json:"center,omitempty"`
@@ -52,7 +52,7 @@ type Shot struct {
 	CountBack2 string `json:"countBack2,omitempty"`
 }
 
-//TODO remove variable prefix global and possibly replace with a struct instead.
+// TODO remove variable prefix global and possibly replace with a struct instead.
 var (
 	globalDisciplines     []Discipline
 	globalGrades          []Grade
@@ -124,7 +124,7 @@ func eventGrades(grades []uint) []frm.Option {
 	return options
 }
 
-//QtyTotal add together Sighter quantity and Shots quantity
+// QtyTotal add together Sighter quantity and Shots quantity
 func (d Discipline) QtyTotal() uint {
 	return d.QtySighters + d.QtyShots
 }
@@ -271,7 +271,7 @@ func loadGrades(filePath string) error {
 		//TODO change the default for portableApps mode
 		return errors.New("file specified is empty")
 	}
-	contents, err := ioutil.ReadFile(filePath)
+	contents, err := os.ReadFile(filePath)
 	//If file is empty, try to write a new JSON file.
 	if err != nil {
 		log.Println(err)
@@ -300,14 +300,14 @@ func buildGradesFile(filePath string) {
 		filePath += ".json"
 	}
 
-	err = ioutil.WriteFile(filePath, src, 0777)
+	err = os.WriteFile(filePath, src, 0777)
 	if err != nil {
 		log.Println(err, "Unable to write to file", filePath)
 	}
 	inf.Println("Created grades settings file:", filePath)
 }
 
-//TODO Change the event to point to a certain grade revision with an id and save grades in a different database bucket (table)
+// TODO Change the event to point to a certain grade revision with an id and save grades in a different database bucket (table)
 func findGrade(index uint) Grade {
 	if index < uint(len(globalGrades)) {
 		return globalGrades[index]
