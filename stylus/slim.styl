@@ -28,13 +28,13 @@ h1, h2, h3, h4, h5, h6, legend
 	margin-bottom: 0
 
 .asc, thead td:not(.asc):not(:empty):hover
-	background: url("/v/asc")
+	background: url(/svg/asc.svg)
 	//padding-left: .8em
 
 .desc, .asc:hover
-	background: url("/v/desc")
+	background: url(/svg/desc.svg)
 
-[src="/v/logo"]
+[src="/svg/logo.svg"]
 	width: 210px
 	height: 25px
 
@@ -66,7 +66,7 @@ thead
 		margin: .5em
 
 .tick
-	background: url("/v/tick") center center
+	background: url(/svg/tick.svg) center center
 
 .small
 	font-size: smaller
@@ -84,12 +84,12 @@ thead
 		text-align: center
 
 table[data-e] tbody td:last-child:empty
-	background: url("/v/edit") center center
+	background: url(/svg/edit.svg) center center
 	cursor: pointer
 	min-width: .5em
 
 .edit
-	background: url("/v/edit") center center
+	background: url(/svg/edit.svg) center center
 	display: inline-block
 	float: right
 	min-height: 1em
@@ -117,7 +117,7 @@ table[data-e] tbody td:last-child:empty
 
 @media not print
 	html
-		background: $background url("/v/shooter") bottom left no-repeat
+		background: $background url(/svg/shooter.svg) bottom left no-repeat
 		background-attachment: fixed
 		background-size: 14em
 		color: $grey
