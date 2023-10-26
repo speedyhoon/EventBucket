@@ -6,7 +6,7 @@
 		<li><a href=/>Events</a>
 		{{range.}}
 			{{if and .RangeMenu $.Page.Data.Event}}
-				<!--Can't merge these two if statements because $.Page.Data.Event doesn't exist for clubs & club pages-->
+				<!-- Can't merge these two if statements because $.Page.Data.Event doesn't exist for clubs & club pages -->
 				{{if and $.Page.Data.Event.Ranges (gt (len $.Page.Data.Event.Shooters) 0)}}
 					<li>
 						{{.Name}}
