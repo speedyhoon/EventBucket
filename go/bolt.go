@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/binary"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"path/filepath"
@@ -41,7 +42,7 @@ func startDB(dbPath string) {
 		log.Fatalln("Connection timeout. Unable to open", dbPath)
 	}
 
-	//Prepare database by creating all buckets (tables) needed. Otherwise view (read only) transactions will fail.
+	//Prepare database by creating all buckets (tables) needed. Otherwise, view (read only) transactions will fail.
 	err = db.Update(func(tx *bolt.Tx) error {
 		for index, bucketName := range [][]byte{tblClub, tblEvent, tblShooter} {
 			_, err = tx.CreateBucketIfNotExists(bucketName)
@@ -56,7 +57,7 @@ func startDB(dbPath string) {
 	}
 }
 
-//view checks if a bucket exists before executing the provided function myCall
+// view checks if a bucket exists before executing the provided function myCall
 func view(bucketName []byte, myCall func(*bolt.Bucket) error) error {
 	return db.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(bucketName)
@@ -67,7 +68,7 @@ func view(bucketName []byte, myCall func(*bolt.Bucket) error) error {
 	})
 }
 
-//search executes view() first and then checks if each item can be unmarshalled before executing the provided function myCall
+// search executes view() first and then checks if each item can be unmarshalled before executing the provided function myCall
 func search(table []byte, object interface{}, myCall func(interface{}) error) error {
 	return view(table, func(b *bolt.Bucket) error {
 		return b.ForEach(func(_, value []byte) error {
@@ -79,7 +80,7 @@ func search(table []byte, object interface{}, myCall func(interface{}) error) er
 	})
 }
 
-//tblQty returns the total number of records contained in the bucket (table)
+// tblQty returns the total number of records contained in the bucket (table)
 func tblQty(bucketName []byte) (qty uint) {
 	err := view(bucketName, func(bucket *bolt.Bucket) error {
 		qty = uint(bucket.Stats().KeyN)
@@ -244,7 +245,7 @@ func updateShooterDetails(decode interface{}, contents interface{}) interface{} 
 func updateClubDetails(decode interface{}, contents interface{}) interface{} {
 	club := decode.(*Club)
 	update := contents.(*Club)
-	//Manually set each one otherwise it would override the existing club and its details (Mounds etc)
+	//Manually set each one otherwise it would override the existing club and its details (Mounds etc.)
 	club.Name = update.Name
 	club.Address = update.Address
 	club.Town = update.Town
@@ -423,7 +424,7 @@ func defaultClub() Club {
 		return nil
 	})
 	if err != nil {
-		if err == success {
+		if errors.Is(err, success) {
 			return club
 		}
 		log.Println(err)
@@ -536,7 +537,7 @@ func (s ScoreMap) calcAgg(aggRangeIDs []uint) (total Score) {
 	return total
 }
 
-//Converts base36 string to []byte used for bolt maps
+// Converts base36 string to []byte used for bolt maps
 func b36toBy(id string) ([]byte, error) {
 	num, err := strconv.ParseUint(id, 36, 64)
 	if err != nil {
@@ -585,12 +586,12 @@ func getClubByName(clubName string) (club Club, ok bool) {
 	clubName = strings.ToLower(clubName)
 
 	err := search(tblClub, &club, func(club interface{}) error {
-		//Case insensitive search
+		// Case-insensitive search
 		if strings.ToLower(club.(*Club).Name) == clubName {
 			//Return a successful error to stop searching any further
 			return success
 		}
 		return nil
 	})
-	return club, err != nil && err == success
+	return club, err != nil && errors.Is(err, success)
 }
