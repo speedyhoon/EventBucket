@@ -391,6 +391,7 @@ func getMapClubs(clubID string) (clubs []Club, err error) {
 	})
 }
 
+// TODO clubsDataList should generate a new HTML datalist so the database doesn't need to be called all the time!
 func clubsDataList() (clubs []frm.Option) {
 	err := search(tblClub, &Club{}, func(c interface{}) error {
 		club := *c.(*Club)
@@ -415,6 +416,7 @@ func getEvents(query func(Event) bool) ([]Event, error) {
 	})
 }
 
+// TODO defaultClub should save the default club details to memory or disk so the database doesn't need to be called all the time.
 func defaultClub() Club {
 	var club Club
 	err := search(tblClub, &club, func(interface{}) error {
@@ -575,6 +577,7 @@ func searchShooters(firstName, surname, club string) (shooters []Shooter) {
 	return
 }
 
+// TODO searchShootersOptions should output to template when any shooter is inserted/updated -- instead of calling the database!
 func searchShootersOptions(firstName, surname, club string) (options []frm.Option) {
 	for _, s := range searchShooters(firstName, surname, club) {
 		options = append(options, frm.Option{Value: s.ID, Label: s.FirstName + " " + s.Surname + ", " + s.Club})

@@ -57,7 +57,7 @@ var (
 	globalDisciplines     []Discipline
 	globalGrades          []Grade
 	globalGradesDataList  []frm.Option
-	globalAvailableGrades []frm.Option
+	globalAvailableGrades []frm.Option // TODO is this global variable actually used?
 )
 
 func redoGlobals(disciplines []Discipline) {
@@ -76,6 +76,7 @@ func defaultGrades(classes []Discipline) []Grade {
 	var grades []Grade
 	for classID, class := range classes {
 		for _, grade := range class.Grades {
+			// TODO this should probably be `grade.ClassID = class.ID` to prevent any issues if the Disciplines are reordered and the index no longer matches the ID.
 			grade.ClassID = uint(classID)
 			grades = append(grades, grade)
 		}
@@ -97,6 +98,7 @@ func availableGrades(grades []uint) []frm.Option {
 		selected := len(grades) == 0
 		if !selected {
 			for _, gradeID := range grades {
+				// TODO this should probably be `grade.ID = gradeID` to prevent any issues if the Grades are reordered and the index no longer matches the ID.
 				if uint(id) == gradeID {
 					selected = true
 					break

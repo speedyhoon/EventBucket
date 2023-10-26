@@ -4,7 +4,7 @@
   namespace: clubNew
   inputs:
   - label: Club Name
-    name: n
+    name: n         # TODO auto generate the form field names -- but this requires auto modifying the JavaScript files too!
     accesskey: N
     v8: StrReq
     minlen: 1
@@ -322,7 +322,7 @@
     type: hidden
     name: S
     v8: UintReq
-    max: 65535
+    max: 65535      # TODO fix fake ID limit from the front end. This should be uint, (NOT uint32? or uint64?)
   - label: Event ID
     name: E
     type: hidden

@@ -222,7 +222,7 @@ func processSocket(ws *websocket.Conn) {
 			}
 
 			if fields, passed := vl.IsValid(urlValues, frm.GetFields(formID)); passed {
-				send("!" + updateShotScores(fields))
+				send("!" + updateShotScores(fields)) // TODO replace "!" with a constant.
 			} else {
 				var response []byte
 				response, err = json.Marshal(fields)
@@ -230,16 +230,16 @@ func processSocket(ws *websocket.Conn) {
 					log.Println(err)
 					continue
 				}
-				send(fmt.Sprintf("!%U%s", msg[0], response))
+				send(fmt.Sprintf("!%U%s", msg[0], response)) // TODO replace "!" with a constant.
 			}
-		case 126: // getDisciplines:
+		case 126: // getDisciplines:	// TODO replace 126 with a constant.
 			var response []byte
 			response, err = json.Marshal(globalDisciplines)
 			if err != nil {
 				log.Println(err)
 				continue
 			}
-			send(fmt.Sprintf("~%s", response))
+			send(fmt.Sprintf("~%s", response)) // TODO replace "~" with a constant.
 		}
 	}
 }
