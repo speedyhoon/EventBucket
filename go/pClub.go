@@ -12,7 +12,7 @@ import (
 )
 
 func club(w http.ResponseWriter, r *http.Request, club Club) {
-	fs, action := session.Get(w, r, getFields, frmClubEdit, frmClubMoundNew)
+	fs, action := session.Get(w, r, frmClubEdit, frmClubMoundNew)
 
 	if action == frmClubEdit {
 		fs[action].Fields[0].Value = club.Name
@@ -49,7 +49,7 @@ func club(w http.ResponseWriter, r *http.Request, club Club) {
 
 func clubs(w http.ResponseWriter, r *http.Request) {
 	clubs, err := getClubs()
-	f, _ := session.Get(w, r, getFields, frmClubNew)
+	f, _ := session.Get(w, r, frmClubNew)
 	render(w, page{
 		Title: "Clubs",
 		Error: err,

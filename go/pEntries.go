@@ -8,7 +8,7 @@ import (
 )
 
 func entries(w http.ResponseWriter, r *http.Request, event Event) {
-	fs, action := session.Get(w, r, getFields, frmEventShooterNew, frmEventShooterExisting)
+	fs, action := session.Get(w, r, frmEventShooterNew, frmEventShooterExisting)
 	if action == frmEventShooterExisting {
 		//Existing shooter select box
 		fs[action].Fields[3].Err = fs[frmEventShooterExisting].Fields[0].Err

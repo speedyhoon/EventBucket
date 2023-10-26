@@ -14,7 +14,7 @@ func events(w http.ResponseWriter, r *http.Request) {
 		//Sort list of events by date then by name
 		eventOrderedBy(sortByDate, sortByName).Sort(events)
 	}
-	fs, _ := session.Get(w, r, getFields, frmEventNew)
+	fs, _ := session.Get(w, r, frmEventNew)
 
 	render(w, page{
 		Title: "Events",
@@ -31,7 +31,7 @@ func onlyOpen(event Event) bool {
 	return !event.Closed
 }
 
-//TODO change sort form true/false to 1/0/-1
+// TODO change sort form true/false to 1/0/-1.
 type compareEvent func(p1, p2 *Event) bool
 
 type eventSort struct {

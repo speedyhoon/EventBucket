@@ -140,7 +140,7 @@ func post(url string, formID uint8, p func(f frm.Form) (string, error)) {
 
 				return
 			}
-			f, ok := vl.IsValidRequest(r, getFields(formID))
+			f, ok := vl.IsValidRequest(r, frm.GetFields(formID))
 			form := frm.Form{Action: formID, Fields: f}
 			if !ok {
 				redirectError(w, r, form)
@@ -176,12 +176,12 @@ func get(url string, formID uint8, page func(http.ResponseWriter, *http.Request,
 	http.HandleFunc(
 		url,
 		isGetMethod(func(w http.ResponseWriter, r *http.Request) {
-			f, _ := vl.IsValidRequest(r, getFields(formID))
+			f, _ := vl.IsValidRequest(r, frm.GetFields(formID))
 			page(w, r, f)
 		}))
 }
 
-//Start listening to each websocket client that connects.
+// Start listening to each websocket client that connects.
 func processSocket(ws *websocket.Conn) {
 	var msg string
 	var formID uint8
@@ -208,7 +208,7 @@ func processSocket(ws *websocket.Conn) {
 				log.Println(err)
 				continue
 			}
-			if fields, passed := vl.IsValid(urlValues, getFields(formID)); passed {
+			if fields, passed := vl.IsValid(urlValues, frm.GetFields(formID)); passed {
 				send(eventTotalUpsert(fields))
 			} else {
 				send(fmt.Sprintf("Unable to save %v.", msg))
@@ -221,7 +221,7 @@ func processSocket(ws *websocket.Conn) {
 				continue
 			}
 
-			if fields, passed := vl.IsValid(urlValues, getFields(formID)); passed {
+			if fields, passed := vl.IsValid(urlValues, frm.GetFields(formID)); passed {
 				send("!" + updateShotScores(fields))
 			} else {
 				var response []byte
