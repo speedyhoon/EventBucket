@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-//AutoInc is an auto increment counter
+// AutoInc is an auto increment counter.
 type AutoInc struct {
 	Event   uint `json:"E,omitempty"`
 	Club    uint `json:"C,omitempty"`
@@ -15,7 +15,7 @@ type AutoInc struct {
 	Shooter uint `json:"S,omitempty"`
 }
 
-//Club is exported
+// Club is exported.
 type Club struct {
 	ID        string   `json:"I"`
 	Name      string   `json:"n"`
@@ -30,13 +30,13 @@ type Club struct {
 	AutoInc   AutoInc  `json:"U,omitempty"`
 }
 
-//Mound could in future contain additional details like distance
+// Mound could in future contain additional details like distance.
 type Mound struct {
 	Name string
 	ID   uint
 }
 
-//Event is exported
+// Event is exported.
 type Event struct {
 	ID       string         `json:"I"`
 	Name     string         `json:"n"`
@@ -52,7 +52,7 @@ type Event struct {
 	Teams    map[string]Team     `json:"T,omitempty"`*/
 }
 
-//RangeNames returns a string of comma separated event range names excluding aggregate ranges
+// RangeNames returns a string of comma separated event range names excluding aggregate ranges.
 func (e Event) RangeNames() string {
 	var names []string
 	for _, r := range e.Ranges {
@@ -76,7 +76,7 @@ type Championship struct {
 	Teams    map[string]Team     `json:"T,omitempty"`
 }*/
 
-//Range is exported
+// Range is exported.
 type Range struct {
 	ID     uint   `json:"I"`
 	Name   string `json:"n"`
@@ -87,19 +87,19 @@ type Range struct {
 	//Status uint8  `json:"u,omitempty"` //ENUM change to 1 when the first shooter has recorded their first shot. Change to 2 when the range is finished.
 }
 
-//StrID returns Range.ID as a string instead of an unsigned integer
+// StrID returns Range.ID as a string instead of an unsigned integer.
 func (r Range) StrID() string {
 	return fmt.Sprintf("%v", r.ID)
 }
 
 type rID uint //rangeID
 
-//StrID returns Range.ID as a string instead of an unsigned integer
+// StrID returns Range.ID as a string instead of an unsigned integer.
 func (r rID) StrID() string {
 	return fmt.Sprintf("%d", r)
 }
 
-//Score is exported
+// Score is exported.
 type Score struct {
 	Total      uint   `json:"t,omitempty"`
 	Centers    uint   `json:"c,omitempty"`
@@ -114,10 +114,10 @@ type Score struct {
 	//Warning    uint8  `json:"w,omitempty"`
 }
 
-//ScoreMap represents a list of Scores indexed by rangeIDs
+// ScoreMap represents a list of Scores indexed by rangeIDs.
 type ScoreMap map[string]Score
 
-//get returns a Score given a rangeID index
+// get returns a Score given a rangeID index.
 func (s ScoreMap) get(id uint) (sc Score, ok bool) {
 	sc, ok = s[strconv.FormatUint(uint64(id), 10)]
 
@@ -126,7 +126,7 @@ func (s ScoreMap) get(id uint) (sc Score, ok bool) {
 
 type sID uint //shooterID
 
-//EventShooter is exported
+// EventShooter is exported.
 type EventShooter struct {
 	ID             uint     `json:"I"`
 	FirstName      string   `json:"f"`
@@ -150,7 +150,7 @@ type EventShooter struct {
 	//4 = shoot off
 }
 
-//Shooter is exported
+// Shooter is exported.
 type Shooter struct {
 	ID        string           `json:"I"` //EventBucket shooters ID
 	SID       uint             `json:"J,omitempty"`
@@ -163,9 +163,9 @@ type Shooter struct {
 	Address   string           `json:"a,omitempty"`
 	Email     string           `json:"e,omitempty"`
 	Status    int              `json:"v,omitempty"` //Shooter details 0=not modified, 1=updated, 2=merged, 3=deleted
-	//If shooter details are merged with another existing shooter then this is the other NRAA_SID it was merged with
-	//When merging set one record to merged, the other to deleted.
-	//Both records must set MergedSID to the other corresponding shooter SID
+	// If shooter details are merged with another existing shooter, then this is the other NRAA_SID it was merged with.
+	// When merging set one record to merged, the other to deleted.
+	// Both records must set MergedSID to the other corresponding shooter SID.
 	MergedSID int       `json:"m,omitempty"`
 	Modified  time.Time `json:"o,omitempty"`
 	AgeGroup  uint      `json:"r,omitempty"`
@@ -173,7 +173,7 @@ type Shooter struct {
 	Sex       bool      `json:"x,omitempty"`
 }
 
-//Skill is used for importing shooters from JSON files
+// Skill is used for importing shooters from JSON files.
 type Skill struct {
 	AvgScore  float64 `json:"a,omitempty"`
 	ShootQty  int     `json:"q,omitempty"`

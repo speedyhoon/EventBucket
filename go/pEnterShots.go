@@ -100,8 +100,8 @@ func updateShotScores(fields []frm.Field) string {
 	return fmt.Sprintf("%s", response)
 }
 
-//This function assumes all validation on input "shots" has at least been done!
-//AND input "shots" is verified to contain all characters in settings[class].validShots!
+// This function assumes all validation on input "shots" has at least been done!
+// AND input "shots" is verified to contain all characters in settings[class].validShots!
 func calcTotalCenters(shots string, classID uint) Score {
 	//TODO need validation to check that the shots given match the required validation given posed by the event. e.g. sighters are not in the middle of the shoot or shot are not missing in the middle of a shoot
 	var total, centers uint
@@ -115,7 +115,7 @@ func calcTotalCenters(shots string, classID uint) Score {
 			total += defaultClassSettings[classID].Marking.Shots[shot].Value
 			centers += defaultClassSettings[classID].Marking.Shots[shot].Center
 
-			//Append count back in reverse order so it can be ordered by the last few shots
+			// Append count back in reverse order, so it can be ordered by the last few shots.
 			countBack = defaultClassSettings[classID].Marking.Shots[shot].CountBack + countBack
 			/*if shot == "-" {
 				warning = legendIncompleteScore

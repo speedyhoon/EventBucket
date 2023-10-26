@@ -33,9 +33,11 @@ func sorterCountBack2(rangeID string, c1, c2 *EventShooter) bool {
 	return c1.Scores[rangeID].CountBack2 > c2.Scores[rangeID].CountBack2
 }
 
-/*func sorterFirstName(rangeID string, c1, c2 *EventShooter) bool {
-	return c1.FirstName < c2.FirstName
-}*/
+/*
+	func sorterFirstName(rangeID string, c1, c2 *EventShooter) bool {
+		return c1.FirstName < c2.FirstName
+	}
+*/
 func sorterShootOff(rangeID string, c1, c2 *EventShooter) bool {
 	//t.Println("sorterShootOff", rangeID, c1.ID, c1.FirstName, c1.Surname, c2.ID, c2.FirstName, c2.Surname)
 	/*if c1.Scores[rangeID].CountBack != "" && c1.Scores[rangeID].CountBack == c2.Scores[rangeID].CountBack {
@@ -77,7 +79,7 @@ func (ms *multiEventShooterSorter) Swap(i, j int) {
 	ms.shooter[i], ms.shooter[j] = ms.shooter[j], ms.shooter[i]
 }
 
-//TODO change the functions to return -1, 0, 1 and reduce the number of calls for greater efficiency
+// TODO change the functions to return -1, 0, 1 and reduce the number of calls for greater efficiency.
 func (ms *multiEventShooterSorter) Less(i, j int) bool {
 	p, q := &ms.shooter[i], &ms.shooter[j]
 	//Try all but the last comparison.
@@ -94,7 +96,7 @@ func (ms *multiEventShooterSorter) Less(i, j int) bool {
 	return ms.sort[k](ms.rangeID, p, q)
 }
 
-//TODO don't add grade separators for database range sorting updates
+// TODO don't add grade separators for database range sorting updates.
 func addGradeSeparatorToShooterObjectAndPositions(eventShooters []EventShooter, rangeID string) []EventShooter {
 	//Add a boolean field to each shooter in a list of ordered shooters and is true for the first shooter that has a different grade than the last
 	var previousShooterGrade uint = math.MaxUint32
