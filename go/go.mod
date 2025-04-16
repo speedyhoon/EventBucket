@@ -14,7 +14,7 @@ require (
 	github.com/speedyhoon/text v0.0.0-20180110231808-e6cf2e6e3e3e
 	github.com/speedyhoon/utl v0.0.0-20211208115559-579b0d41ba64
 	github.com/speedyhoon/vl v0.0.0-20230614053333-01b2d08af252
-	golang.org/x/net v0.17.0
+	golang.org/x/net v0.38.0
 )
 
-require golang.org/x/sys v0.13.0 // indirect
+require golang.org/x/sys v0.31.0 // indirect
