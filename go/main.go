@@ -5,6 +5,7 @@ package main
 import (
 	"context"
 	"flag"
+	"github.com/speedyhoon/brwsr"
 	"log"
 	"net"
 	"net/http"
@@ -88,7 +89,7 @@ func main() {
 		inf.Println(httpAddr)
 		//#else
 		httpAddr = "http://" + httpAddr
-		openBrowser(httpAddr)
+		_ = brwsr.Open(httpAddr)
 		inf.Printf("A browser window should open. If not, please visit %s", httpAddr)
 		//#endif
 	}()

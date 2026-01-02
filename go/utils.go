@@ -3,8 +3,6 @@ package main
 import (
 	"log"
 	"os"
-	"os/exec"
-	"runtime"
 	"strconv"
 	"strings"
 )
@@ -41,20 +39,4 @@ func mkDir(path string) error {
 		}
 	}
 	return err
-}
-
-// startBrowser tries to open the URL in a browser, and returns whether it succeed.
-func openBrowser(url string) bool {
-	var args []string
-	switch runtime.GOOS {
-	case "darwin":
-		// macOS, iOS.
-		args = []string{"open"}
-	case "windows":
-		args = []string{"cmd", "/c", "start"}
-	default:
-		// android, dragonfly, freebsd, linux, nacl, netbsd, openbsd, plan9, solaris.
-		args = []string{"xdg-open"}
-	}
-	return exec.Command(args[0], append(args[1:], url)...).Start() == nil
 }

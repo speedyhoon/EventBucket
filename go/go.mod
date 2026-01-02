@@ -1,11 +1,14 @@
 module github.com/speedyhoon/EventBucket
 
-go 1.20
+go 1.24.4
+
+toolchain go1.24.5
 
 require (
 	github.com/andybalholm/brotli v1.0.6
 	github.com/boltdb/bolt v1.3.1
 	github.com/boombuler/barcode v1.0.1
+	github.com/speedyhoon/brwsr v1.0.0
 	github.com/speedyhoon/cnst v0.0.0-20230516134829-e3b9b359801c
 	github.com/speedyhoon/cnst/hdrs v0.0.0-20211113032207-c4ee6ced7c21
 	github.com/speedyhoon/cnst/mime v0.0.0-20230516134829-e3b9b359801c

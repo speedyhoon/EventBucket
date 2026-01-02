@@ -5,7 +5,11 @@ github.com/boltdb/bolt v1.3.1/go.mod h1:clJnj/oiGkjum5o1McbSZDSLxVThjynRyGBgiAx2
 github.com/boombuler/barcode v1.0.1 h1:NDBbPmhS+EqABEs5Kg3n/5ZNjy73Pz7SIV+KCeqyXcs=
 github.com/boombuler/barcode v1.0.1/go.mod h1:paBWMcWSl3LHKBqUq+rly7CNSldXjb2rDl3JlRe0mD8=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
+github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
+github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
+github.com/speedyhoon/brwsr v1.0.0 h1:kF9f2n61QsM1HnUW53GmapPuoxLq8v4Zgn74kmOptlk=
+github.com/speedyhoon/brwsr v1.0.0/go.mod h1:HObwru7w7CEozCSMImvGOBC8uZ0KlGobvzLi1uOtGyM=
 github.com/speedyhoon/cnst v0.0.0-20230516134829-e3b9b359801c h1:3ZK+GU6zfkIVqdXRmIBUh0w5pp9g9E4VOBqRrQYjPa0=
 github.com/speedyhoon/cnst v0.0.0-20230516134829-e3b9b359801c/go.mod h1:dLZMUWcsKHwqMPV9WkwZA75Aj+Mxf1Acbz/s3dwVEBA=
 github.com/speedyhoon/cnst/hdrs v0.0.0-20211113032207-c4ee6ced7c21 h1:1Emev0gqj7Q66RekMmOv3ImnnqlBZBNerlE33TAm2RE=
@@ -23,8 +27,10 @@ github.com/speedyhoon/utl v0.0.0-20211208115559-579b0d41ba64/go.mod h1:3etiVxTlU
 github.com/speedyhoon/vl v0.0.0-20230614053333-01b2d08af252 h1:JWLeb5Jm9nAYS42I6MX4EkqGbQ6vLuTEwsy7GAoMfXs=
 github.com/speedyhoon/vl v0.0.0-20230614053333-01b2d08af252/go.mod h1:086bIrEcKHZ+rECpWDM21haeekkb3f1XnL1jmPoZsUc=
 github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcUk=
+github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
 golang.org/x/net v0.17.0 h1:pVaXccu2ozPjCXewfr1S7xza/zcXTity9cCdXQYSjIM=
 golang.org/x/net v0.17.0/go.mod h1:NxSsAGuq816PNPmqtQdLE42eU2Fs7NoRIZrHJAlaCOE=
 golang.org/x/sys v0.13.0 h1:Af8nKPmuFypiUBjVoU9V20FiaFXOcuZI21p0ycVYYGE=
 golang.org/x/sys v0.13.0/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=
+gopkg.in/yaml.v3 v3.0.1/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
