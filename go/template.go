@@ -142,7 +142,7 @@ func render(w http.ResponseWriter, p page) {
 
 	if p.SubTemplate == "" {
 		// Convert page.Title to the lowercase HTML template file name.
-		p.SubTemplate = strings.Replace(strings.ToLower(p.Title), " ", "", -1)
+		p.SubTemplate = strings.ReplaceAll(strings.ToLower(p.Title), " ", "")
 	}
 
 	//#ifdef DEBUG
