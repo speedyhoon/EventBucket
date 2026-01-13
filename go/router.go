@@ -123,7 +123,7 @@ func post(url string, formID uint8, p func(f frm.Form) (string, error)) {
 	http.HandleFunc(
 		url,
 		func(w http.ResponseWriter, r *http.Request) {
-			if r.Method != "POST" {
+			if r.Method != http.MethodPost {
 				/* 405 Method Not Allowed
 				A request was made of a resource using a request method not supported by that resource; for example,
 				using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
