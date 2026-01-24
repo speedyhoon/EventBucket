@@ -68,186 +68,186 @@ func init() {
 		case frmClubNew:
 			return []frm.Field{
 				// TODO automatically generate comments to label each field so you know which one is which easily.
-				{Name: "n", V8: vl.StrReq},
+				{Name: "n", Vl: vl.StrReq},
 			}
 		case frmClubEdit:
 			return []frm.Field{
-				{Name: "n", V8: vl.StrReq},
-				{Name: "a", V8: vl.Str},
-				{Name: "w", V8: vl.Str},
-				{Name: "p", V8: vl.Str},
-				{Name: "x", V8: vl.Float64, Min: -90, Max: 90, Step: 1e-06},
-				{Name: "y", V8: vl.Float64, Min: -180, Max: 180, Step: 1e-06},
-				{Name: "b", V8: vl.Bool},
-				{Name: "u", V8: vl.Str},
-				{Name: "C", V8: vl.Regex, Regex: regexID},
+				{Name: "n", Vl: vl.StrReq},
+				{Name: "a", Vl: vl.Str},
+				{Name: "w", Vl: vl.Str},
+				{Name: "p", Vl: vl.Str},
+				{Name: "x", Vl: vl.Float64, Min: -90, Max: 90, Step: 1e-06},
+				{Name: "y", Vl: vl.Float64, Min: -180, Max: 180, Step: 1e-06},
+				{Name: "b", Vl: vl.Bool},
+				{Name: "u", Vl: vl.Str},
+				{Name: "C", Vl: vl.Regex, Regex: regexID},
 			}
 		case frmClubMoundNew:
 			return []frm.Field{
-				{Name: "n", V8: vl.StrReq},
-				{Name: "C", V8: vl.Regex, Regex: regexID},
+				{Name: "n", Vl: vl.StrReq},
+				{Name: "C", Vl: vl.Regex, Regex: regexID},
 			}
 		case frmEditShootingMound:
 			return []frm.Field{
-				{Name: "n", V8: vl.StrReq},
+				{Name: "n", Vl: vl.StrReq},
 				// TODO replace with Uint16 if the maximum is math.MaxUint16.
-				{Name: "I", V8: vl.Uint, Max: 65535},
-				{Name: "C", V8: vl.Regex, Regex: regexID},
+				{Name: "I", Vl: vl.Uint, Max: 65535},
+				{Name: "C", Vl: vl.Regex, Regex: regexID},
 			}
 		case frmMapClubs:
 			return []frm.Field{
-				{Name: "C", V8: vl.Regex, Regex: regexID},
+				{Name: "C", Vl: vl.Regex, Regex: regexID},
 			}
 		case frmEventNew:
 			club := defaultClub()
 			return []frm.Field{
-				{Name: "C", V8: vl.Str, Value: club.Name, Required: club.IsDefault, MinLen: 1, Options: clubsDataList()},
-				{Name: "n", V8: vl.StrReq},
-				{Name: "d", V8: vl.DateTime, Value: time.Now().Format(dateTime), Placeholder: dateTime, MaxLen: 16, MinLen: 14},
+				{Name: "C", Vl: vl.Str, Value: club.Name, Required: club.IsDefault, MinLen: 1, Options: clubsDataList()},
+				{Name: "n", Vl: vl.StrReq},
+				{Name: "d", Vl: vl.DateTime, Value: time.Now().Format(dateTime), Placeholder: dateTime, MaxLen: 16, MinLen: 14},
 			}
 		case frmEventEdit:
 			return []frm.Field{
-				{Name: "C", V8: vl.StrReq, Options: clubsDataList()},
-				{Name: "n", V8: vl.StrReq},
-				{Name: "d", V8: vl.DateTime, Placeholder: dateTime, MaxLen: 16, MinLen: 14},
-				{Name: "c", V8: vl.Bool},
-				{Name: "E", V8: vl.Regex, Regex: regexID},
+				{Name: "C", Vl: vl.StrReq, Options: clubsDataList()},
+				{Name: "n", Vl: vl.StrReq},
+				{Name: "d", Vl: vl.DateTime, Placeholder: dateTime, MaxLen: 16, MinLen: 14},
+				{Name: "c", Vl: vl.Bool},
+				{Name: "E", Vl: vl.Regex, Regex: regexID},
 			}
 		case frmEventRangeNew:
 			return []frm.Field{
-				{Name: "n", V8: vl.StrReq},
-				{Name: "E", V8: vl.Regex, Regex: regexID},
+				{Name: "n", Vl: vl.StrReq},
+				{Name: "E", Vl: vl.Regex, Regex: regexID},
 			}
 		case frmEventRangeEdit:
 			return []frm.Field{
 				// TODO fix fake maximum uint id limit.
-				{Name: "I", V8: vl.UintReq, Min: 1, Max: 65535},
-				{Name: "n", V8: vl.StrReq},
-				{Name: "k", V8: vl.Bool},
+				{Name: "I", Vl: vl.UintReq, Min: 1, Max: 65535},
+				{Name: "n", Vl: vl.StrReq},
+				{Name: "k", Vl: vl.Bool},
 				// TODO fix fake maximum uint id limit.
-				{Name: "o", V8: vl.UintReq, Max: 65535},
-				{Name: "E", V8: vl.Regex, Regex: regexID},
+				{Name: "o", Vl: vl.UintReq, Max: 65535},
+				{Name: "E", Vl: vl.Regex, Regex: regexID},
 			}
 		case frmEventAggNew:
 			return []frm.Field{
-				{Name: "n", V8: vl.StrReq},
+				{Name: "n", Vl: vl.StrReq},
 				// TODO fix fake maximum uint id limit.
-				{Name: "R", V8: vl.UintList, Required: true, MaxLen: 5, MinLen: 2, Min: 1, Max: 65535},
-				{Name: "E", V8: vl.Regex, Regex: regexID},
+				{Name: "R", Vl: vl.UintList, Required: true, MaxLen: 5, MinLen: 2, Min: 1, Max: 65535},
+				{Name: "E", Vl: vl.Regex, Regex: regexID},
 			}
 		case frmEventAggEdit:
 			return []frm.Field{
-				{Name: "E", V8: vl.Regex, Regex: regexID},
+				{Name: "E", Vl: vl.Regex, Regex: regexID},
 				// TODO fix fake maximum uint id limit.
-				{Name: "I", V8: vl.UintReq, Min: 1, Max: 65535},
-				{Name: "n", V8: vl.StrReq},
+				{Name: "I", Vl: vl.UintReq, Min: 1, Max: 65535},
+				{Name: "n", Vl: vl.StrReq},
 				// TODO fix fake maximum uint id limit.
-				{Name: "R", V8: vl.UintList, Required: true, MinLen: 2, Min: 1, Max: 65535},
+				{Name: "R", Vl: vl.UintList, Required: true, MinLen: 2, Min: 1, Max: 65535},
 				// TODO fix fake maximum uint id limit.
-				{Name: "o", V8: vl.UintReq, Max: 65535},
+				{Name: "o", Vl: vl.UintReq, Max: 65535},
 			}
 		case frmEventShooterNew:
 			clubName := defaultClub().Name
 			return []frm.Field{
-				{Name: "f", V8: vl.StrReq},
-				{Name: "s", V8: vl.StrReq},
+				{Name: "f", Vl: vl.StrReq},
+				{Name: "s", Vl: vl.StrReq},
 				// TODO replace database call with datalist template insertion.
-				{Name: "C", V8: vl.Str, Placeholder: clubName, Options: clubsDataList()},
+				{Name: "C", Vl: vl.Str, Placeholder: clubName, Options: clubsDataList()},
 				// TODO replace database call with datalist template insertion.
-				{Name: "S", V8: vl.Str, Options: searchShootersOptions("", "", clubName)},
-				{Name: "r", V8: vl.UintOpt, Options: dataListAgeGroup()},
-				{Name: "x", V8: vl.Bool},
-				{Name: "g", V8: vl.UintList, Required: true, Max: len(globalGrades) - 1, Options: globalGradesDataList},
-				{Name: "E", V8: vl.Regex, Regex: regexID},
+				{Name: "S", Vl: vl.Str, Options: searchShootersOptions("", "", clubName)},
+				{Name: "r", Vl: vl.UintOpt, Options: dataListAgeGroup()},
+				{Name: "x", Vl: vl.Bool},
+				{Name: "g", Vl: vl.UintList, Required: true, Max: len(globalGrades) - 1, Options: globalGradesDataList},
+				{Name: "E", Vl: vl.Regex, Regex: regexID},
 			}
 		case frmEntriesEditShooterDetails:
 			return []frm.Field{
 				// TODO fix fake maximum uint id limit.
-				{Name: "S", V8: vl.UintReq, Max: 65535},
-				{Name: "E", V8: vl.RegexReq, Regex: regexID},
-				{Name: "f", V8: vl.StrReq},
-				{Name: "s", V8: vl.StrReq},
-				{Name: "C", V8: vl.Regex, Regex: regexID},
-				{Name: "g", V8: vl.UintReq, Max: len(globalGrades) - 1, Options: globalGradesDataList},
-				{Name: "r", V8: vl.UintOpt, Options: dataListAgeGroup()},
-				{Name: "x", V8: vl.Bool},
-				{Name: "k", V8: vl.Bool},
+				{Name: "S", Vl: vl.UintReq, Max: 65535},
+				{Name: "E", Vl: vl.RegexReq, Regex: regexID},
+				{Name: "f", Vl: vl.StrReq},
+				{Name: "s", Vl: vl.StrReq},
+				{Name: "C", Vl: vl.Regex, Regex: regexID},
+				{Name: "g", Vl: vl.UintReq, Max: len(globalGrades) - 1, Options: globalGradesDataList},
+				{Name: "r", Vl: vl.UintOpt, Options: dataListAgeGroup()},
+				{Name: "x", Vl: vl.Bool},
+				{Name: "k", Vl: vl.Bool},
 			}
 		case frmEventShooterExisting:
 			return []frm.Field{
-				{Name: "S", V8: vl.RegexReq, Regex: regexID},
-				{Name: "g", V8: vl.UintList, Required: true, Max: len(globalGrades) - 1, Options: globalGradesDataList},
-				{Name: "r", V8: vl.UintOpt, Options: dataListAgeGroup()},
-				{Name: "E", V8: vl.RegexReq, Regex: regexID},
+				{Name: "S", Vl: vl.RegexReq, Regex: regexID},
+				{Name: "g", Vl: vl.UintList, Required: true, Max: len(globalGrades) - 1, Options: globalGradesDataList},
+				{Name: "r", Vl: vl.UintOpt, Options: dataListAgeGroup()},
+				{Name: "E", Vl: vl.RegexReq, Regex: regexID},
 			}
 		case frmEventTotalScores:
 			return []frm.Field{
-				{Name: "t", V8: vl.UintReq, Max: 120},
-				{Name: "c", V8: vl.Uint, Max: 20},
-				{Name: "E", V8: vl.RegexReq, Regex: regexID},
+				{Name: "t", Vl: vl.UintReq, Max: 120},
+				{Name: "c", Vl: vl.Uint, Max: 20},
+				{Name: "E", Vl: vl.RegexReq, Regex: regexID},
 				// TODO fix fake maximum uint id limit.
-				{Name: "R", V8: vl.UintReq, Min: 1, Max: 65535},
+				{Name: "R", Vl: vl.UintReq, Min: 1, Max: 65535},
 				// TODO fix fake maximum uint id limit.
-				{Name: "S", V8: vl.UintReq, Max: 65535},
-				{Name: "h", V8: vl.Uint, Max: 100},
+				{Name: "S", Vl: vl.UintReq, Max: 65535},
+				{Name: "h", Vl: vl.Uint, Max: 100},
 			}
 		case frmEventAvailableGrades:
 			return []frm.Field{
 				// TODO replace availableGrades() with datalist template insertion.
-				{Name: "g", V8: vl.UintList, Required: true, Max: len(globalGrades) - 1, Options: availableGrades()},
-				{Name: "E", V8: vl.Regex, Regex: regexID},
+				{Name: "g", Vl: vl.UintList, Required: true, Max: len(globalGrades) - 1, Options: availableGrades()},
+				{Name: "E", Vl: vl.Regex, Regex: regexID},
 			}
 		case frmEventUpdateShotScore:
 			return []frm.Field{
-				{Name: "s", V8: vl.StrReq, MaxLen: 12},
-				{Name: "E", V8: vl.RegexReq, Regex: regexID},
+				{Name: "s", Vl: vl.StrReq, MaxLen: 12},
+				{Name: "E", Vl: vl.RegexReq, Regex: regexID},
 				// TODO fix fake maximum uint id limit.
-				{Name: "R", V8: vl.UintReq, Min: 1, Max: 65535},
+				{Name: "R", Vl: vl.UintReq, Min: 1, Max: 65535},
 				// TODO fix fake maximum uint id limit.
-				{Name: "S", V8: vl.UintReq, Max: 65535},
+				{Name: "S", Vl: vl.UintReq, Max: 65535},
 			}
 		case frmShooterNew:
 			club := defaultClub()
 			return []frm.Field{
-				{Name: "f", V8: vl.StrReq},
-				{Name: "s", V8: vl.StrReq},
+				{Name: "f", Vl: vl.StrReq},
+				{Name: "s", Vl: vl.StrReq},
 				// TODO replace database call with datalist template insertion.
-				{Name: "C", V8: vl.Str, Placeholder: club.Name, Required: club.IsDefault, MinLen: 1, Options: clubsDataList()},
-				{Name: "r", V8: vl.UintOpt, Options: dataListAgeGroup()},
-				{Name: "x", V8: vl.Bool},
-				{Name: "g", V8: vl.UintList, Required: true, Max: len(globalGrades) - 1, Options: globalGradesDataList},
+				{Name: "C", Vl: vl.Str, Placeholder: club.Name, Required: club.IsDefault, MinLen: 1, Options: clubsDataList()},
+				{Name: "r", Vl: vl.UintOpt, Options: dataListAgeGroup()},
+				{Name: "x", Vl: vl.Bool},
+				{Name: "g", Vl: vl.UintList, Required: true, Max: len(globalGrades) - 1, Options: globalGradesDataList},
 			}
 		case frmShooterDetails:
 			return []frm.Field{
-				{Name: "f", V8: vl.StrReq},
-				{Name: "s", V8: vl.StrReq},
-				{Name: "C", V8: vl.StrReq},
-				{Name: "g", V8: vl.UintList, Required: true, Max: len(globalGrades) - 1, Options: globalGradesDataList},
-				{Name: "r", V8: vl.UintOpt, Options: dataListAgeGroup()},
-				{Name: "x", V8: vl.Bool},
-				{Name: "I", V8: vl.RegexReq, Regex: regexID},
+				{Name: "f", Vl: vl.StrReq},
+				{Name: "s", Vl: vl.StrReq},
+				{Name: "C", Vl: vl.StrReq},
+				{Name: "g", Vl: vl.UintList, Required: true, Max: len(globalGrades) - 1, Options: globalGradesDataList},
+				{Name: "r", Vl: vl.UintOpt, Options: dataListAgeGroup()},
+				{Name: "x", Vl: vl.Bool},
+				{Name: "I", Vl: vl.RegexReq, Regex: regexID},
 			}
 		case frmShooterUpdate:
 			return []frm.Field{
-				{Name: "f", V8: vl.Str},
-				{Name: "s", V8: vl.Str},
-				{Name: "C", V8: vl.Str},
+				{Name: "f", Vl: vl.Str},
+				{Name: "s", Vl: vl.Str},
+				{Name: "C", Vl: vl.Str},
 			}
 		case frmShooterSearch:
 			club := defaultClub()
 			return []frm.Field{
-				{Name: "f", V8: vl.Str},
-				{Name: "s", V8: vl.Str},
+				{Name: "f", Vl: vl.Str},
+				{Name: "s", Vl: vl.Str},
 				// TODO replace database call with datalist template insertion.
-				{Name: "C", V8: vl.Str, Placeholder: club.Name, Required: club.IsDefault, Options: clubsDataList()},
+				{Name: "C", Vl: vl.Str, Placeholder: club.Name, Required: club.IsDefault, Options: clubsDataList()},
 			}
 		case frmShootersImport:
 			return []frm.Field{
-				{Name: "f", V8: vl.FileReq},
+				{Name: "f", Vl: vl.FileReq},
 			}
 		case frmSettings:
 			return []frm.Field{
-				{Name: "t", V8: vl.Bool},
+				{Name: "t", Vl: vl.Bool},
 			}
 		}
 		return nil
