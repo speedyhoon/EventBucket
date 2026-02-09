@@ -11,6 +11,7 @@ import (
 	"github.com/speedyhoon/cnst"
 	"github.com/speedyhoon/cnst/mime"
 	"github.com/speedyhoon/frm"
+	"github.com/speedyhoon/numnam"
 	"github.com/speedyhoon/text/template"
 	"github.com/speedyhoon/utl"
 )
@@ -82,7 +83,7 @@ var (
 			return ""
 		},
 		"ordinal": func(x int) string {
-			return utl.Ordinal(uint(x), false)
+			return numnam.Ordinal(uint64(x))
 		},
 		"findRange": func(rangeID uint, ranges []Range) Range {
 			for _, r := range ranges {

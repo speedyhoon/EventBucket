@@ -5,7 +5,7 @@ import (
 	"math"
 	"sort"
 
-	"github.com/speedyhoon/utl"
+	"github.com/speedyhoon/numnam"
 )
 
 type sortEventShooter func(r1 string, p1, p2 *EventShooter) bool
@@ -122,14 +122,14 @@ func addGradeSeparatorToShooterObjectAndPositions(eventShooters []EventShooter, 
 		// Check if shooters grades and scores are the same.
 		shooterTie = sameGrade && score.Total == previousScore.Total && score.Centers == previousScore.Centers && score.Centers2 == previousScore.Centers2 && score.CountBack == previousScore.CountBack && score.CountBack2 == previousScore.CountBack2 && score.ShootOff == previousScore.ShootOff
 		if shooterTie {
-			previousScore.Ordinal = utl.Ordinal(position, shooterTie)
+			previousScore.Ordinal = numnam.OrdinalEqual(position, shooterTie)
 			eventShooters[previousShooter].Scores[rangeID] = previousScore
 		} else {
 			position++
 		}
 
 		score.Position = position
-		score.Ordinal = utl.Ordinal(position, shooterTie)
+		score.Ordinal = numnam.OrdinalEqual(position, shooterTie)
 		if eventShooters[shooterID].Scores == nil {
 			eventShooters[shooterID].Scores = make(ScoreMap, 1)
 		}

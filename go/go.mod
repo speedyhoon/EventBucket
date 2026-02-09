@@ -9,18 +9,19 @@ require (
 	github.com/boltdb/bolt v1.3.1
 	github.com/boombuler/barcode v1.1.0
 	github.com/speedyhoon/brwsr v1.0.0
-	github.com/speedyhoon/cnst v0.0.0-20250502153641-20575b9123ba
-	github.com/speedyhoon/cnst/hdrs v0.0.0-20211113032207-c4ee6ced7c21
-	github.com/speedyhoon/cnst/mime v0.0.0-20250502153641-20575b9123ba
-	github.com/speedyhoon/frm v0.0.0-20250916235408-b9e8d699b84e
-	github.com/speedyhoon/session v0.0.0-20250826062843-e411b2909198
-	github.com/speedyhoon/text v0.0.0-20241219012428-8f112b6b4454
-	github.com/speedyhoon/utl v0.0.0-20250416234816-20f7a523763c
-	github.com/speedyhoon/vl v0.0.0-20250319060316-714fb3e49463
-	golang.org/x/net v0.42.0
+	github.com/speedyhoon/cnst v0.0.0-20260206045209-9a53ffbbe39b
+	github.com/speedyhoon/cnst/hdr v0.0.0-20260206045209-9a53ffbbe39b
+	github.com/speedyhoon/cnst/mime v0.0.0-20260206045209-9a53ffbbe39b
+	github.com/speedyhoon/frm v0.0.0-20260121042211-4b724f12575e
+	github.com/speedyhoon/numnam v0.0.0-20260203072053-447015b4d8d5
+	github.com/speedyhoon/session v0.0.0-20260125000254-97960b1e5ad1
+	github.com/speedyhoon/text v0.0.0-20250319062420-ab0385d8dc04
+	github.com/speedyhoon/utl v0.0.0-20250911020201-cba0f7bd8705
+	github.com/speedyhoon/vl v0.0.0-20260117111942-d1d44ded597d
+	golang.org/x/net v0.49.0
 )
 
 require (
-	github.com/speedyhoon/utl/tf v0.0.0-20250416234816-20f7a523763c // indirect
-	golang.org/x/sys v0.34.0 // indirect
+	github.com/speedyhoon/utl/tf v0.0.0-20250911020201-cba0f7bd8705 // indirect
+	golang.org/x/sys v0.41.0 // indirect
 )
