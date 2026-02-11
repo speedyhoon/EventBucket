@@ -14,6 +14,7 @@ require (
 	github.com/speedyhoon/cnst/mime v0.0.0-20260206045209-9a53ffbbe39b
 	github.com/speedyhoon/frm v0.0.0-20260121042211-4b724f12575e
 	github.com/speedyhoon/numnam v0.0.0-20260203072053-447015b4d8d5
+	github.com/speedyhoon/plrl v0.0.0-20260211001811-4633f847e897
 	github.com/speedyhoon/session v0.0.0-20260125000254-97960b1e5ad1
 	github.com/speedyhoon/text v0.0.0-20250319062420-ab0385d8dc04
 	github.com/speedyhoon/utl v0.0.0-20250911020201-cba0f7bd8705

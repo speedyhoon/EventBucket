@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/speedyhoon/frm"
+	"github.com/speedyhoon/plrl"
 )
 
 func enterTotalsAll(w http.ResponseWriter, r *http.Request, event Event, rangeID rID) {
@@ -47,7 +48,7 @@ func enterTotals(w http.ResponseWriter, r *http.Request, showAll bool, event Eve
 			"URL":         "enter-totals",
 			"ShowAll":     showAll,
 			"Hidden":      hidden,
-			"Plural":      plural(hidden, " is", "s have"),
+			"Plural":      plrl.Any(hidden, " is", "s have"),
 			"Disciplines": globalDisciplines,
 		},
 	})
