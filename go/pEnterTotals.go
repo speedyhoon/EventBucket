@@ -85,5 +85,5 @@ func eventRange(ranges []Range, rangeID rID, w http.ResponseWriter, r *http.Requ
 	}
 	// Otherwise event doesn't contain a range with that id and return 404.
 	errorHandler(w, r, "range")
-	return Range{}, errors.New("a range with that ID doesn't exists in this event")
+	return Range{}, errors.New("a range with that ID doesn't exist in this event")
 }
