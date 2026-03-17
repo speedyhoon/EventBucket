@@ -96,7 +96,7 @@ type rID uint // rangeID.
 
 // StrID returns Range.ID as a string instead of an unsigned integer.
 func (r rID) StrID() string {
-	return fmt.Sprintf("%d", r)
+	return strconv.FormatUint(uint64(r), 64)
 }
 
 // Score is exported.
