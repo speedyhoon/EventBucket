@@ -110,7 +110,7 @@ func calcTotalCenters(shots string, classID uint) Score {
 	if classID < uint(len(defaultClassSettings)) {
 
 		// Ignore the first sighter shots from being added to the total score. Unused sighters should be still be present in the data passed.
-		//for _, shot := range strings.Split(shots[defaultClassSettings[classID].QtySighters:], "") {
+		// for _, shot := range strings.Split(shots[defaultClassSettings[classID].QtySighters:], "") {
 		for _, shot := range strings.Split(shots, "") {
 			total += defaultClassSettings[classID].Marking.Shots[shot].Value
 			centers += defaultClassSettings[classID].Marking.Shots[shot].Center

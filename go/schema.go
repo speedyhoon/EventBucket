@@ -84,7 +84,7 @@ type Range struct {
 	Order  uint   `json:"-"`
 	Locked bool   `json:"k,omitempty"`
 	IsAgg  bool   `json:"g,omitempty"` // Prevents aggs switching to normal ranges.
-	//Status uint8  `json:"u,omitempty"`	// ENUM change to 1 when the first shooter has recorded their first shot. Change to 2 when the range is finished.
+	// Status uint8  `json:"u,omitempty"`	// ENUM change to 1 when the first shooter has recorded their first shot. Change to 2 when the range is finished.
 }
 
 // StrID returns Range.ID as a string instead of an unsigned integer.
@@ -111,7 +111,7 @@ type Score struct {
 	ShootOff   uint   `json:"h,omitempty"`
 	Ordinal    string `json:"o,omitempty"` // Used for scoreboard only.
 	Position   uint   `json:"p,omitempty"`
-	//Warning    uint8  `json:"w,omitempty"`
+	// Warning    uint8  `json:"w,omitempty"`
 }
 
 // ScoreMap represents a list of Scores indexed by rangeIDs.

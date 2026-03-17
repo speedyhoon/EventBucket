@@ -23,8 +23,8 @@ func enterTotals(w http.ResponseWriter, r *http.Request, showAll bool, event Eve
 		return
 	}
 
-	//_, forms := sessionForms(w, r, eventTotalScores)
-	//t.Printf("%+v\n", forms[0])
+	// _, forms := sessionForms(w, r, eventTotalScores)
+	// t.Printf("%+v\n", forms[0])
 
 	var hidden int
 	if !showAll && !event.Closed {
