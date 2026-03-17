@@ -5,13 +5,14 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/speedyhoon/brwsr"
 	"log"
 	"net"
 	"net/http"
 	"os"
 	"os/signal"
 	"path/filepath"
+
+	"github.com/speedyhoon/brwsr"
 )
 
 var (
