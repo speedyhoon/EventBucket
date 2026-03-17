@@ -83,7 +83,7 @@ type Range struct {
 	Aggs   []uint `json:"A,omitempty"`
 	Order  uint   `json:"-"`
 	Locked bool   `json:"k,omitempty"`
-	IsAgg  bool   `json:"g,omitempty"` // Prevents aggs switching to normal ranges.
+	IsAgg  bool   `json:"g,omitempty"` // Prevents aggregate ranges switching to normal ranges.
 	// Status uint8  `json:"u,omitempty"`	// ENUM change to 1 when the first shooter has recorded their first shot. Change to 2 when the range is finished.
 }
 
@@ -164,7 +164,7 @@ type Shooter struct {
 	Email     string           `json:"e,omitempty"`
 	Status    int              `json:"v,omitempty"` /* Shooter details 0=not modified, 1=updated, 2=merged, 3=deleted
 	If shooter details are merged with another existing shooter, then this is the other `NRAA_SID` it was merged with.
-	When merging set one record to merged, the other to deleted.
+	When merging set one record to merged, the other to deleted status.
 	Both records must set MergedSID to the other corresponding shooter SID.*/
 	MergedSID int       `json:"m,omitempty"`
 	Modified  time.Time `json:"o,omitempty"`
