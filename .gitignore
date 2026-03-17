@@ -1,10 +1,4 @@
 .dev/
-.idea/
 .old/
 _old/
 built/
-*.exe
-*.exe~
-*.lnk
-*.syso
-desktop.ini
