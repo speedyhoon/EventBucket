@@ -3,7 +3,7 @@ module github.com/speedyhoon/EventBucket
 go 1.24.5
 
 require (
-	github.com/andybalholm/brotli v1.2.0
+	github.com/andybalholm/brotli v1.2.1
 	github.com/boltdb/bolt v1.3.1
 	github.com/boombuler/barcode v1.1.0
 	github.com/speedyhoon/brwsr v1.0.0
