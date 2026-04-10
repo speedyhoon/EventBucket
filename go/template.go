@@ -44,7 +44,7 @@ var (
 	tmpl8     *template.Template
 	tempFuncs = template.FuncMap{
 		"a": func(attribute string, value interface{}) string {
-			//"a": func(attribute string, value interface{}) template.HTMLAttr {
+			// "a": func(attribute string, value interface{}) template.HTMLAttr {
 			var output string
 			switch value.(type) {
 			case bool:
@@ -67,12 +67,12 @@ var (
 				if len(value.([]frm.Option)) > 0 {
 					output = attribute
 				}
-			//#ifdef DEBUG
+			// #ifdef DEBUG
 			default:
 				log.Printf("attribute type %T not defined\n%v %v\n", value, value, len(value.([]frm.Option)))
-				//#endif
+				// #endif
 			}
-			//return template.HTMLAttr(output)
+			// return template.HTMLAttr(output)
 			return output
 		},
 		"grade": findGrade,
@@ -120,7 +120,7 @@ func init() {
 	}
 }
 
-//#endif
+// #endif
 
 func render(w http.ResponseWriter, p page) {
 	// Brotli compress response, even if AcceptEncoding doesn't contain "br".
@@ -146,7 +146,7 @@ func render(w http.ResponseWriter, p page) {
 		p.SubTemplate = strings.ReplaceAll(strings.ToLower(p.Title), " ", "")
 	}
 
-	//#ifdef DEBUG
+	// #ifdef DEBUG
 	var err error
 	tmpl8, err = template.New("").Funcs(tempFuncs).ParseFiles(
 		filepath.Join(runDir, "h"),
@@ -156,7 +156,7 @@ func render(w http.ResponseWriter, p page) {
 		http.Error(wz, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	//#endif
+	// #endif
 
 	type markupEnv struct {
 		Page  page

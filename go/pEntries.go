@@ -28,7 +28,7 @@ func entries(w http.ResponseWriter, r *http.Request, event Event) {
 	fs[frmEventShooterNew].Fields[6].Value = event.ID
 	fs[frmEventShooterNew].Fields[7].Value = event.ID
 	// TODO what was the below ignored field used for?
-	//fs[frmEventShooterNew].Fields = append(fs[frmEventShooterNew].Fields, frm.Field{Value: event.ID})
+	// fs[frmEventShooterNew].Fields = append(fs[frmEventShooterNew].Fields, frm.Field{Value: event.ID})
 
 	fs[frmEventShooterNew].Fields[3].Options = searchShootersOptions("", "", event.Club.Name)
 
@@ -50,7 +50,7 @@ func entries(w http.ResponseWriter, r *http.Request, event Event) {
 }
 
 func eventInsert(f frm.Form) (string, error) {
-	// Try to find an existing club and insert and insert one if it doesn't exist.
+	// Try to find an existing club and insert one if it doesn't exist.
 	clubID, err := clubInsertIfNone(f.Fields[0].Str())
 	if err != nil {
 		return "", err

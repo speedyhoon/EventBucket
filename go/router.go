@@ -128,7 +128,7 @@ func post(url string, formID uint8, p func(f frm.Form) (string, error)) {
 				A request was made of a resource using a request method not supported by that resource; for example,
 				using GET on a form which requires data to be presented via POST, or using POST on a read-only resource.
 				//en.wikipedia.org/wiki/List_of_HTTP_status_codes*/
-				//http.Redirect(w, r, r.Referer(), http.StatusMethodNotAllowed)
+				// http.Redirect(w, r, r.Referer(), http.StatusMethodNotAllowed)
 
 				render(w, page{
 					Title:  "Error",
