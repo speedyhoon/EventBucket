@@ -20,8 +20,8 @@ github.com/speedyhoon/numnam v0.0.0-20260203072053-447015b4d8d5 h1:xclgmHwYXC4vu
 github.com/speedyhoon/numnam v0.0.0-20260203072053-447015b4d8d5/go.mod h1:yStEt6i5jVB9vGyLrY8MTVIERIBL3jF6xxqCGKjnHaE=
 github.com/speedyhoon/plrl v0.0.0-20260211071452-4bd6e6405597 h1:Y5hBPASXJlpPb7v3uLJRmbGDrMjKc0K1nppNP1TYwVA=
 github.com/speedyhoon/plrl v0.0.0-20260211071452-4bd6e6405597/go.mod h1:XNF5451C/zadFpSy/FnDLHHCcK6DI5PVulkSN1dKYLA=
-github.com/speedyhoon/session v0.3.0 h1:xOzmWpDXd6s6kBmk+bncDWUbNmO96jAfH0jylItJIlo=
-github.com/speedyhoon/session v0.3.0/go.mod h1:lBs/mNColKDD3mpNKs/hT3pby59NAWBwO5frzDSweaI=
+github.com/speedyhoon/session v0.4.0 h1:kSaJzLKcKxwbAnrgg/Us23/Ev3BP2jsrsrQy2ebMIzQ=
+github.com/speedyhoon/session v0.4.0/go.mod h1:lBs/mNColKDD3mpNKs/hT3pby59NAWBwO5frzDSweaI=
 github.com/speedyhoon/text v0.0.0-20250319062420-ab0385d8dc04 h1:enw6o5KY06GtXuEqr3DZStR3P9O+LCIYCEPUAW/h1qU=
 github.com/speedyhoon/text v0.0.0-20250319062420-ab0385d8dc04/go.mod h1:st0gsvKdzoX3YYrIRJeWWSUGZleYQAcIORdu/JAwXes=
 github.com/speedyhoon/utl v0.0.0-20260315024855-0c863838fe45 h1:mHI2co2GnwTNWj+4AoRWLQj8mZLA3cmrx3OWcTIoKvo=

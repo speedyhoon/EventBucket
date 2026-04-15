@@ -13,7 +13,7 @@ require (
 	github.com/speedyhoon/frm v0.0.0-20260121042211-4b724f12575e
 	github.com/speedyhoon/numnam v0.0.0-20260203072053-447015b4d8d5
 	github.com/speedyhoon/plrl v0.0.0-20260211071452-4bd6e6405597
-	github.com/speedyhoon/session v0.3.0
+	github.com/speedyhoon/session v0.4.0
 	github.com/speedyhoon/text v0.0.0-20250319062420-ab0385d8dc04
 	github.com/speedyhoon/utl v0.0.0-20260315024855-0c863838fe45
 	github.com/speedyhoon/vl v0.0.0-20260316055911-4f260db8a63b
